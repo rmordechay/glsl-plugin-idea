@@ -1,3 +1,4 @@
+![Downloads](https://img.shields.io/jetbrains/plugin/d/:18470)
 # GLSL Plugin
 
 GLSL plugin support for JetBrains IDE's.

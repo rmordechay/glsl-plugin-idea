@@ -1,13 +1,10 @@
 .gradle
 .DS_Store
-.idea/shelf
-/confluence/target
 /dependencies/repo
 /android.tests.dependencies
 /dependencies/android.tests.dependencies
 /dist
 /local
-/gh-pages
 /ideaSDK
 /clionSDK
 /android-studio/sdk
@@ -17,10 +14,6 @@ out/
 workspace.xml
 *.versionsBackup
 /idea/testData/debugger/tinyApp/classes*
-/jps-plugin/testData/kannotator
-/js/js.translator/testData/out/
-/js/js.translator/testData/out-min/
-/js/js.translator/testData/out-pir/
 gradle/
 build/
 !**/src/**/build
@@ -39,5 +32,4 @@ outTmp/
 kotlin-ide/
 /archive/
 /src/main/gen/
-/plugin-sign/
 /glsl-spec/

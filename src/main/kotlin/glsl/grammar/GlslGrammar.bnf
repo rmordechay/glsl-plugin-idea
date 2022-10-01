@@ -1,0 +1,1215 @@
+{
+    parserClass="glsl._GlslParser"
+    psiClassPrefix="Glsl"
+    psiImplClassSuffix="Impl"
+    psiPackage="glsl.psi.interfaces"
+    psiImplPackage="glsl.psi.impl"
+    parserUtilClass="glsl.plugin.utils.GlslPsiUtils"
+
+    extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+    elementTypeHolderClass="glsl.GlslTypes"
+    elementTypeClass="glsl.plugin.language.GlslElementType"
+    tokenTypeClass="glsl.plugin.language.GlslTokenType"
+
+    implements("variable_identifier|type_name")="glsl.plugin.psi.GlslIdentifier"
+    mixin("variable_identifier|type_name")="glsl.plugin.psi.GlslIdentifierImpl"
+    implements("expr")="glsl.plugin.psi.GlslExprType"
+    mixin("expr")="glsl.plugin.psi.GlslExprTypeImpl"
+    // Types
+    implements("struct_specifier")="glsl.plugin.psi.named.GlslNamedUserType"
+    mixin("struct_specifier")="glsl.plugin.psi.named.GlslNamedStructSpecifier"
+    implements("block_structure")="glsl.plugin.psi.named.GlslNamedUserType"
+    mixin("block_structure")="glsl.plugin.psi.named.GlslNamedBlockStructure"
+    // Identifiers
+    implements("function_header")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("function_header")="glsl.plugin.psi.named.GlslNamedFunctionHeader"
+    implements("parameter_declarator")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("parameter_declarator")="glsl.plugin.psi.named.GlslNamedParameterDeclarator"
+    implements("single_declaration")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("single_declaration")="glsl.plugin.psi.named.GlslNamedSingleDeclaration"
+    implements("init_declarator_variable")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("init_declarator_variable")="glsl.plugin.psi.named.GlslNamedInitDeclaratorVariable"
+    implements("block_structure_wrapper")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("block_structure_wrapper")="glsl.plugin.psi.named.GlslNamedBlockStructureWrapper"
+    implements("struct_declarator")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("struct_declarator")="glsl.plugin.psi.named.GlslNamedStructDeclarator"
+    implements("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedDeclarationIdentifierWrapper"
+    implements("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedPpSingleDeclaration"
+    implements("pp_define_function")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("pp_define_function")="glsl.plugin.psi.named.GlslNamedPpDefineFunction"
+    implements("pp_define_param")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("pp_define_param")="glsl.plugin.psi.named.GlslNamedPpDefineParam"
+
+
+    extends("expr_no_assignment|assignment_expr")=expr
+    extends("(comma_seperated|conditional|shift|relational|equality|and|exclusive_or|inclusive_or|logical_and|logical_xor|logical_or|mul|add|unary)_expr")=expr_no_assignment
+    extends("postfix_inc|postfix_field_selection|postfix_array_index|primary_expr|function_call")=postfix_expr
+
+    name("postfix.*|.*expr")="expression"
+    name(".*statement|case_label")="statement"
+    name(".*operator")="operator"
+    name(".*qualifier")="qualifier"
+    name("block_structure|function_prototype|single_declaration")="declration"
+    name("type_specifier")="type"
+
+    tokens = [
+        WHITE_SPACE='regexp:[ \n\r\t\f]+'
+        LINE_COMMENT='regexp://+.*'
+        MULTILINE_COMMENT='regexp:/\*([\s\S]*?)\*/[ \t\n\x0B\f\r]*'
+        PP_VERSION="#version"
+        PP_DEFINE="#define"
+        PP_UNDEF="#undef"
+        PP_IF="#if"
+        PP_IFDEF="#ifdef"
+        BACKSLASH="\\"
+        PP_IFNDEF="#ifndef"
+        PP_ELSE="#else"
+        PP_ELIF="#elif"
+        PP_ENDIF="#endif"
+        PP_ERROR="#error"
+        PP_PRAGMA="#pragma"
+        PP_EXTENSION="#extension"
+        PP_INCLUDE="#include"
+        PP_LINE="#line"
+//        PP_TEXT="regexp:[^\\\n]*"
+        MACRO_LINE="__LINE__"
+        MACRO_FILE="__FILE__"
+        MACRO_VERSION="__VERSION__"
+        SEMICOLON=";"
+        COMMA=","
+        COLON=":"
+        EQUAL="="
+        LEFT_PAREN="("
+        RIGHT_PAREN=")"
+        DOT="."
+        BANG="!"
+        DASH="-"
+        TILDE="~"
+        PLUS="+"
+        STAR="*"
+        SLASH="/"
+        BACKSLASH="\\"
+        PERCENT="%"
+        LEFT_ANGLE="<"
+        RIGHT_ANGLE=">"
+        VERTICAL_BAR="|"
+        CARET="^"
+        AMPERSAND="&"
+        QUESTION="?"
+        LEFT_BRACKET="["
+        RIGHT_BRACKET="]"
+        LEFT_BRACE="{"
+        RIGHT_BRACE="}"
+        ADD_ASSIGN="+="
+        SUB_ASSIGN="-="
+        MUL_ASSIGN="*="
+        DIV_ASSIGN="/="
+        MOD_ASSIGN="%="
+        RIGHT_ASSIGN=">>="
+        LEFT_ASSIGN="<<="
+        AND_ASSIGN="&="
+        OR_ASSIGN="|="
+        XOR_ASSIGN="^="
+        RIGHT_OP=">>"
+        LEFT_OP="<<"
+        AND_OP="&&"
+        OR_OP="||"
+        XOR_OP="^^"
+        EQ_OP="=="
+        GE_OP="!="
+        NE_OP=">="
+        LE_OP="<="
+        DEC_OP="--"
+        INC_OP="++"
+        COLONCOLON="::"
+        HASH="#"
+        BREAK="break"
+        CONTINUE="continue"
+        DO="do"
+        FOR="for"
+        WHILE="while"
+        SWITCH="switch"
+        CASE="case"
+        DEFAULT="default"
+        IF="if"
+        ELSE="else"
+        DISCARD="discard"
+        // storage qualifier
+        CENTROID="centroid"
+        INOUT="inout"
+        IN="in"
+        OUT="out"
+        CONST="const"
+        UNIFORM="uniform"
+        ATTR="attribute"
+        VARYING="varying"
+        BUFFER="buffer"
+        VOLATILE="volatile"
+        PATCH="patch"
+        SAMPLE="sample"
+        SUBROUTINE="subroutine"
+        COHERENT="coherent"
+        DEVICECOHERENT="devicecoherent"
+        QUEUEFAMILYCOHERENT="queuefamilycoherent"
+        WORKGROUPCOHERENT="workgroupcoherent"
+        SUBGROUPCOHERENT="subgroupcoherent"
+        SHADERCALLCOHERENT="shadercallcoherent"
+        NONPRIVATE="nonprivate"
+        RESTRICT="restrict"
+        READONLY="readonly"
+        WRITEONLY="writeonly"
+        INVARIANT="invariant"
+        PACKED="packed"
+        RESOURCE="resource"
+        SHARED="shared"
+        STRUCT="struct"
+        TERMINATE_INVOCATION="terminateInvocation"
+        TERMINATE_RAY="terminateRayEXT"
+        IGNORE_INTERSECTION="ignoreIntersectionEXT"
+        RETURN="return"
+        LAYOUT="layout"
+        HIGH_PRECISION="highp"
+        MEDIUM_PRECISION="mediump"
+        LOW_PRECISION="lowp"
+        SUPERP="superp"
+        PRECISION="precision"
+        PRECISE="precise"
+        NONUNIFORM="nonuniformEXT"
+        DEMOTE="demote"
+        PAYLOADNV="rayPayloadNV"
+        PAYLOADEXT="rayPayloadEXT"
+        PAYLOADINNV="rayPayloadInNV"
+        PAYLOADINEXT="rayPayloadInEXT"
+        HITATTRNV="hitAttributeNV"
+        HITATTREXT="hitAttributeEXT"
+        CALLDATANV="callableDataNV"
+        CALLDATAEXT="callableDataEXT"
+        CALLDATAINNV="callableDataInNV"
+        CALLDATAINEXT="callableDataInEXT"
+        ACCSTRUCTNV="accelerationStructureNV"
+        ACCSTRUCTEXT="accelerationStructureEXT"
+        RAYQUERYEXT="rayQueryEXT"
+        // interpolation_qualifier
+        SMOOTH="smooth"
+        FLAT="flat"
+        NOPERSPECTIVE="noperspective"
+        EXPLICITINTERPAMD="__explicitInterpAMD"
+        PERVERTEXNV="pervertexNV"
+        PERPRIMITIVENV="perprimitiveNV"
+        PERVIEWNV="perviewNV"
+        PERTASKNV="taskNV"
+        // spirv
+        SPIRV_INSTRUCTION="spirv_instruction"
+        SPIRV_EXECUTION_MODE="spirv_execution_mode"
+        SPIRV_EXECUTION_MODE_ID="spirv_execution_mode_id"
+        SPIRV_DECORATE="spirv_decorate"
+        SPIRV_DECORATE_ID="spirv_decorate_id"
+        SPIRV_DECORATE_STRING="spirv_decorate_string"
+        SPIRV_TYPE="spirv_type"
+        SPIRV_STORAGE_CLASS="spirv_storage_class"
+        SPIRV_BY_REFERENCE="spirv_by_reference"
+        SPIRV_LITERAL="spirv_literal"
+        // Types
+        VOID="void"
+        BOOL="bool"
+        FLOAT="float"
+        INT="int"
+        ATOMIC_UINT="atomic_uint"
+        BVEC2="bvec2"
+        BVEC3="bvec3"
+        BVEC4="bvec4"
+        VEC2="vec2"
+        VEC3="vec3"
+        VEC4="vec4"
+        IVEC2="ivec2"
+        IVEC3="ivec3"
+        IVEC4="ivec4"
+        UVEC2="uvec2"
+        UVEC3="uvec3"
+        UVEC4="uvec4"
+        DVEC2="dvec2"
+        DVEC3="dvec3"
+        DVEC4="dvec4"
+        I64VEC2="i64vec2"
+        I64VEC3="i64vec3"
+        I64VEC4="i64vec4"
+        U64VEC2="u64vec2"
+        U64VEC3="u64vec3"
+        U64VEC4="u64vec4"
+        I8VEC2="i8vec2"
+        I8VEC3="i8vec3"
+        I8VEC4="i8vec4"
+        U8VEC2="u8vec2"
+        U8VEC3="u8vec3"
+        U8VEC4="u8vec4"
+        I16VEC2="i16vec2"
+        I16VEC3="i16vec3"
+        I16VEC4="i16vec4"
+        U16VEC2="u16vec2"
+        U16VEC3="u16vec3"
+        U16VEC4="u16vec4"
+        I32VEC2="i32vec2"
+        I32VEC3="i32vec3"
+        I32VEC4="i32vec4"
+        U32VEC2="u32vec2"
+        U32VEC3="u32vec3"
+        U32VEC4="u32vec4"
+        F16VEC2="f16vec2"
+        F16VEC3="f16vec3"
+        F16VEC4="f16vec4"
+        F32VEC2="f32vec2"
+        F32VEC3="f32vec3"
+        F32VEC4="f32vec4"
+        F64VEC2="f64vec2"
+        F64VEC3="f64vec3"
+        F64VEC4="f64vec4"
+        MAT2="mat2"
+        MAT3="mat3"
+        MAT4="mat4"
+        MAT2X2="mat2x2"
+        MAT2X3="mat2x3"
+        MAT2X4="mat2x4"
+        MAT3X2="mat3x2"
+        MAT3X3="mat3x3"
+        MAT3X4="mat3x4"
+        MAT4X2="mat4x2"
+        MAT4X3="mat4x3"
+        MAT4X4="mat4x4"
+        DMAT2="dmat2"
+        DMAT3="dmat3"
+        DMAT4="dmat4"
+        DMAT2X2="dmat2x2"
+        DMAT2X3="dmat2x3"
+        DMAT2X4="dmat2x4"
+        DMAT3X2="dmat3x2"
+        DMAT3X3="dmat3x3"
+        DMAT3X4="dmat3x4"
+        DMAT4X2="dmat4x2"
+        DMAT4X3="dmat4x3"
+        DMAT4X4="dmat4x4"
+        F16MAT2="f16mat2"
+        F16MAT3="f16mat3"
+        F16MAT4="f16mat4"
+        F16MAT2X2="f16mat2x2"
+        F16MAT2X3="f16mat2x3"
+        F16MAT2X4="f16mat2x4"
+        F16MAT3X2="f16mat3x2"
+        F16MAT3X3="f16mat3x3"
+        F16MAT3X4="f16mat3x4"
+        F16MAT4X2="f16mat4x2"
+        F16MAT4X3="f16mat4x3"
+        F16MAT4X4="f16mat4x4"
+        F32MAT2="f32mat2"
+        F32MAT3="f32mat3"
+        F32MAT4="f32mat4"
+        F32MAT2X2="f32mat2x2"
+        F32MAT2X3="f32mat2x3"
+        F32MAT2X4="f32mat2x4"
+        F32MAT3X2="f32mat3x2"
+        F32MAT3X3="f32mat3x3"
+        F32MAT3X4="f32mat3x4"
+        F32MAT4X2="f32mat4x2"
+        F32MAT4X3="f32mat4x3"
+        F32MAT4X4="f32mat4x4"
+        F64MAT2="f64mat2"
+        F64MAT3="f64mat3"
+        F64MAT4="f64mat4"
+        F64MAT2X2="f64mat2x2"
+        F64MAT2X3="f64mat2x3"
+        F64MAT2X4="f64mat2x4"
+        F64MAT3X2="f64mat3x2"
+        F64MAT3X3="f64mat3x3"
+        F64MAT3X4="f64mat3x4"
+        F64MAT4X2="f64mat4x2"
+        F64MAT4X3="f64mat4x3"
+        F64MAT4X4="f64mat4x4"
+        UINT="uint"
+        IMAGE1D="image1D"
+        IIMAGE1D="iimage1D"
+        UIMAGE1D="uimage1D"
+        IMAGE2D="image2D"
+        IIMAGE2D="iimage2D"
+        UIMAGE2D="uimage2D"
+        IMAGE3D="image3D"
+        IIMAGE3D="iimage3D"
+        UIMAGE3D="uimage3D"
+        IMAGE2DRECT="image2DRect"
+        IIMAGE2DRECT="iimage2DRect"
+        UIMAGE2DRECT="uimage2DRect"
+        IMAGECUBE="imageCube"
+        IIMAGECUBE="iimageCube"
+        UIMAGECUBE="uimageCube"
+        IMAGEBUFFER="imageBuffer"
+        IIMAGEBUFFER="iimageBuffer"
+        UIMAGEBUFFER="uimageBuffer"
+        IMAGE1DARRAY="image1DArray"
+        IIMAGE1DARRAY="iimage1DArray"
+        UIMAGE1DARRAY="uimage1DArray"
+        IMAGE2DARRAY="image2DArray"
+        IIMAGE2DARRAY="iimage2DArray"
+        UIMAGE2DARRAY="uimage2DArray"
+        IMAGECUBEARRAY="imageCubeArray"
+        IIMAGECUBEARRAY="iimageCubeArray"
+        UIMAGECUBEARRAY="uimageCubeArray"
+        IMAGE2DMS="image2DMS"
+        IIMAGE2DMS="iimage2DMS"
+        UIMAGE2DMS="uimage2DMS"
+        IMAGE2DMSARRAY="image2DMSArray"
+        IIMAGE2DMSARRAY="iimage2DMSArray"
+        UIMAGE2DMSARRAY="uimage2DMSArray"
+        I64IMAGE1D="i64image1D"
+        U64IMAGE1D="u64image1D"
+        I64IMAGE2D="i64image2D"
+        U64IMAGE2D="u64image2D"
+        I64IMAGE3D="i64image3D"
+        U64IMAGE3D="u64image3D"
+        I64IMAGE2DRECT="i64image2DRect"
+        U64IMAGE2DRECT="u64image2DRect"
+        I64IMAGECUBE="i64imageCube"
+        U64IMAGECUBE="u64imageCube"
+        I64IMAGEBUFFER="i64imageBuffer"
+        U64IMAGEBUFFER="u64imageBuffer"
+        I64IMAGE1DARRAY="i64image1DArray"
+        U64IMAGE1DARRAY="u64image1DArray"
+        I64IMAGE2DARRAY="i64image2DArray"
+        U64IMAGE2DARRAY="u64image2DArray"
+        I64IMAGECUBEARRAY="i64imageCubeArray"
+        U64IMAGECUBEARRAY="u64imageCubeArray"
+        I64IMAGE2DMS="i64image2DMS"
+        U64IMAGE2DMS="u64image2DMS"
+        I64IMAGE2DMSARRAY="i64image2DMSArray"
+        U64IMAGE2DMSARRAY="u64image2DMSArray"
+        DOUBLE="double"
+        UINT8_T="uint8_t"
+        UINT16_T="uint16_t"
+        INT32_T="int32_t"
+        UINT64_T="uint64_t"
+        INT8_T="int8_t"
+        INT16_T="int16_t"
+        INT64_T="int64_t"
+        UINT32_T="uint32_t"
+        FLOAT16_T="float16_t"
+        FLOAT32_T="float32_t"
+        FLOAT64_T="float64_t"
+        SAMPLER2D="sampler2D"
+        SAMPLERCUBE="samplerCube"
+        SAMPLERCUBESHADOW="samplerCubeShadow"
+        SAMPLER2DARRAY="sampler2DArray"
+        SAMPLER2DARRAYSHADOW="sampler2DArrayShadow"
+        ISAMPLER2D="isampler2D"
+        ISAMPLER3D="isampler3D"
+        ISAMPLERCUBE="isamplerCube"
+        ISAMPLER2DARRAY="isampler2DArray"
+        USAMPLER2D="usampler2D"
+        USAMPLER3D="usampler3D"
+        USAMPLERCUBE="usamplerCube"
+        USAMPLER2DARRAY="usampler2DArray"
+        SAMPLER3D="sampler3D"
+        SAMPLER2DSHADOW="sampler2DShadow"
+        TEXTURE2D="texture2D"
+        TEXTURECUBE="textureCube"
+        TEXTURE2DARRAY="texture2DArray"
+        ITEXTURE2D="itexture2D"
+        ITEXTURE3D="itexture3D"
+        ITEXTURECUBE="itextureCube"
+        ITEXTURE2DARRAY="itexture2DArray"
+        UTEXTURE2D="utexture2D"
+        UTEXTURE3D="utexture3D"
+        UTEXTURECUBE="utextureCube"
+        UTEXTURE2DARRAY="utexture2DArray"
+        TEXTURE3D="texture3D"
+        SAMPLER="sampler"
+        SAMPLERSHADOW="samplerShadow"
+        TEXTURECUBEARRAY="textureCubeArray"
+        ITEXTURECUBEARRAY="itextureCubeArray"
+        UTEXTURECUBEARRAY="utextureCubeArray"
+        SAMPLERCUBEARRAY="samplerCubeArray"
+        SAMPLERCUBEARRAYSHADOW="samplerCubeArrayShadow"
+        ISAMPLERCUBEARRAY="isamplerCubeArray"
+        USAMPLERCUBEARRAY="usamplerCubeArray"
+        SAMPLER1DARRAYSHADOW="sampler1DArrayShadow"
+        ISAMPLER1DARRAY="isampler1DArray"
+        USAMPLER1D="usampler1D"
+        ISAMPLER1D="isampler1D"
+        USAMPLER1DARRAY="usampler1DArray"
+        SAMPLERBUFFER="samplerBuffer"
+        ISAMPLER2DRECT="isampler2DRect"
+        USAMPLER2DRECT="usampler2DRect"
+        ISAMPLERBUFFER="isamplerBuffer"
+        USAMPLERBUFFER="usamplerBuffer"
+        SAMPLER2DMS="sampler2DMS"
+        ISAMPLER2DMS="isampler2DMS"
+        USAMPLER2DMS="usampler2DMS"
+        SAMPLER2DMSARRAY="sampler2DMSArray"
+        ISAMPLER2DMSARRAY="isampler2DMSArray"
+        USAMPLER2DMSARRAY="usampler2DMSArray"
+        SAMPLER1D="sampler1D"
+        SAMPLER1DSHADOW="sampler1DShadow"
+        SAMPLER2DRECT="sampler2DRect"
+        SAMPLER2DRECTSHADOW="sampler2DRectShadow"
+        SAMPLER1DARRAY="sampler1DArray"
+        SAMPLEREXTERNALOES="samplerExternalOES"
+        SAMPLEREXTERNAL2DY2YEXT="__samplerExternal2DY2YEXT"
+        ITEXTURE1DARRAY="itexture1DArray"
+        UTEXTURE1D="utexture1D"
+        ITEXTURE1D="itexture1D"
+        UTEXTURE1DARRAY="utexture1DArray"
+        TEXTUREBUFFER="textureBuffer"
+        ITEXTURE2DRECT="itexture2DRect"
+        UTEXTURE2DRECT="utexture2DRect"
+        ITEXTUREBUFFER="itextureBuffer"
+        UTEXTUREBUFFER="utextureBuffer"
+        TEXTURE2DMS="texture2DMS"
+        ITEXTURE2DMS="itexture2DMS"
+        UTEXTURE2DMS="utexture2DMS"
+        TEXTURE2DMSARRAY="texture2DMSArray"
+        ITEXTURE2DMSARRAY="itexture2DMSArray"
+        UTEXTURE2DMSARRAY="utexture2DMSArray"
+        TEXTURE1D="texture1D"
+        TEXTURE2DRECT="texture2DRect"
+        TEXTURE1DARRAY="texture1DArray"
+        SUBPASSINPUT="subpassInput"
+        SUBPASSINPUTMS="subpassInputMS"
+        ISUBPASSINPUT="isubpassInput"
+        ISUBPASSINPUTMS="isubpassInputMS"
+        USUBPASSINPUT="usubpassInput"
+        USUBPASSINPUTMS="usubpassInputMS"
+        F16SAMPLER1D="f16sampler1D"
+        F16SAMPLER2D="f16sampler2D"
+        F16SAMPLER3D="f16sampler3D"
+        F16SAMPLER2DRECT="f16sampler2DRect"
+        F16SAMPLERCUBE="f16samplerCube"
+        F16SAMPLER1DARRAY="f16sampler1DArray"
+        F16SAMPLER2DARRAY="f16sampler2DArray"
+        F16SAMPLERCUBEARRAY="f16samplerCubeArray"
+        F16SAMPLERBUFFER="f16samplerBuffer"
+        F16SAMPLER2DMS="f16sampler2DMS"
+        F16SAMPLER2DMSARRAY="f16sampler2DMSArray"
+        F16SAMPLER1DSHADOW="f16sampler1DShadow"
+        F16SAMPLER2DSHADOW="f16sampler2DShadow"
+        F16SAMPLER2DRECTSHADOW="f16sampler2DRectShadow"
+        F16SAMPLERCUBESHADOW="f16samplerCubeShadow"
+        F16SAMPLER1DARRAYSHADOW="f16sampler1DArrayShadow"
+        F16SAMPLER2DARRAYSHADOW="f16sampler2DArrayShadow"
+        F16SAMPLERCUBEARRAYSHADOW="f16samplerCubeArrayShadow"
+        F16IMAGE1D="f16image1D"
+        F16IMAGE2D="f16image2D"
+        F16IMAGE3D="f16image3D"
+        F16IMAGE2DRECT="f16image2DRect"
+        F16IMAGECUBE="f16imageCube"
+        F16IMAGE1DARRAY="f16image1DArray"
+        F16IMAGE2DARRAY="f16image2DArray"
+        F16IMAGECUBEARRAY="f16imageCubeArray"
+        F16IMAGEBUFFER="f16imageBuffer"
+        F16IMAGE2DMS="f16image2DMS"
+        F16IMAGE2DMSARRAY="f16image2DMSArray"
+        F16TEXTURE1D="f16texture1D"
+        F16TEXTURE2D="f16texture2D"
+        F16TEXTURE3D="f16texture3D"
+        F16TEXTURE2DRECT="f16texture2DRect"
+        F16TEXTURECUBE="f16textureCube"
+        F16TEXTURE1DARRAY="f16texture1DArray"
+        F16TEXTURE2DARRAY="f16texture2DArray"
+        F16TEXTURECUBEARRAY="f16textureCubeArray"
+        F16TEXTUREBUFFER="f16textureBuffer"
+        F16TEXTURE2DMS="f16texture2DMS"
+        F16TEXTURE2DMSARRAY="f16texture2DMSArray"
+        F16SUBPASSINPUT="f16subpassInput"
+        F16SUBPASSINPUTMS="f16subpassInputMS"
+        FCOOPMATNV="fcoopmatNV"
+        ICOOPMATNV="icoopmatNV"
+        UCOOPMATNV="ucoopmatNV"
+        FLOATCONSTANT="regexp:((\d+[.]\d+)|(\d+[.])|([.]\d+))f?"
+        UINTCONSTANT="regexp:(0x[\da-fA-F]+|\d+)u|U"
+        INTCONSTANT="regexp:0x[\da-fA-F]+|\d+"
+        BOOLCONSTANT="regexp:false|true"
+        STRING_LITERAL="regexp:(\"([^\"\\]|\[.])*\")"
+        IDENTIFIER="regexp:[a-zA-Z_]+\w*"
+    ]
+}
+
+root ::= translation_unit*
+
+private translation_unit
+    ::= external_declaration
+
+external_declaration
+    ::= pp_statement
+    |   function_definition
+    |   declaration
+    |   SEMICOLON
+
+// *******************
+// *** Declaration ***
+// *******************
+declaration
+    ::= function_prototype SEMICOLON
+    |   PRECISION precision_qualifier type_specifier SEMICOLON
+	|   block_structure_wrapper SEMICOLON
+	|   init_declarator_list SEMICOLON
+	|   type_qualifier identifier_list? SEMICOLON
+	|   spirv_instruction_qualifier function_prototype SEMICOLON
+	|   spirv_execution_mode_qualifier SEMICOLON
+    {   pin(".*")=1 }
+
+function_definition
+    ::= function_prototype compound_statement_no_new_scope
+
+variable_identifier
+    ::= IDENTIFIER
+
+private init_declarator_list
+    ::= single_declaration (COMMA init_declarator_variable array_specifier? (EQUAL initializer)?)*
+    {   pin(".*")=1 }
+
+init_declarator_variable
+    ::= variable_identifier
+
+single_declaration
+    ::= fully_specified_type variable_identifier array_specifier? (EQUAL initializer)?
+    |   fully_specified_type variable_identifier EQUAL initializer
+    |   fully_specified_type variable_identifier?
+    {   pin(".*")=2 }
+
+private initializer_list
+    ::= initializer (COMMA initializer)*
+
+private initializer
+    ::= LEFT_BRACE initializer_list COMMA RIGHT_BRACE
+	|   LEFT_BRACE initializer_list? RIGHT_BRACE
+	|   expr_no_assignment
+
+private identifier_list
+	::= declaration_identifier_wrapper (COMMA declaration_identifier_wrapper)*
+
+declaration_identifier_wrapper ::= variable_identifier
+
+// *****************
+// *** Statement ***
+// *****************
+statement
+    ::= compound_statement
+    |   simple_statement
+
+private recover_statement ::= !(RIGHT_BRACE)
+
+private statement_list
+    ::= statement*
+    {   recoverWhile=recover_statement  }
+
+compound_statement
+    ::= LEFT_BRACE statement_list? RIGHT_BRACE
+    {   pin=2   }
+
+compound_statement_no_new_scope
+    ::= LEFT_BRACE statement_list? RIGHT_BRACE
+    {   pin=2   }
+
+private statement_no_new_scope
+    ::= compound_statement_no_new_scope
+	|   simple_statement
+
+private statement_scoped
+    ::= compound_statement
+    |   simple_statement
+
+private simple_statement
+    ::= expr_statement
+    |   declaration_statement
+	|   selection_statement
+	|   switch_statement
+	|   iteration_statement
+	|   jump_statement
+	|   case_label
+	|   demote_statement
+	|   pp_statement
+
+private expr_statement
+    ::= expr SEMICOLON
+    {   pin=1   }
+
+private declaration_statement
+    ::= declaration
+    |   SEMICOLON
+
+private demote_statement
+    ::= DEMOTE SEMICOLON
+    {   pin=1   }
+
+selection_statement
+    ::= attribute? selection_statement_nonattributed
+
+private selection_statement_nonattributed
+    ::= IF LEFT_PAREN expr RIGHT_PAREN selection_rest_statement
+    {   pin=1   }
+
+private selection_rest_statement
+    ::= statement_scoped (ELSE statement_scoped)?
+
+switch_statement
+    ::= attribute? switch_statement_nonattributed
+
+private switch_statement_nonattributed
+    ::= SWITCH LEFT_PAREN expr RIGHT_PAREN LEFT_BRACE switch_statement_list RIGHT_BRACE
+    {   pin=1   }
+
+private switch_statement_list
+    ::= statement_list
+
+case_label
+    ::= CASE expr COLON
+	|   DEFAULT COLON
+	{   pin(".*")=1    }
+
+iteration_statement
+    ::= attribute? iteration_statement_nonattributed
+
+private iteration_statement_nonattributed
+    ::= WHILE LEFT_PAREN condition RIGHT_PAREN statement_no_new_scope
+	|   DO statement WHILE LEFT_PAREN expr RIGHT_PAREN SEMICOLON
+	|   FOR LEFT_PAREN for_init_statement for_rest_statement RIGHT_PAREN statement_no_new_scope
+    {   pin(".*")=1   }
+
+private for_init_statement
+    ::= expr_statement
+	|   declaration_statement
+
+private conditionopt
+    ::= condition?
+
+condition
+    ::= expr (variable_identifier EQUAL initializer)?
+
+for_rest_statement
+    ::= conditionopt SEMICOLON expr?
+    {   pin=1   }
+
+jump_statement
+    ::= CONTINUE SEMICOLON
+	|   BREAK SEMICOLON
+	|   RETURN expr? SEMICOLON
+	|   DISCARD SEMICOLON
+	|   TERMINATE_INVOCATION SEMICOLON
+	|   TERMINATE_RAY SEMICOLON
+	|   IGNORE_INTERSECTION SEMICOLON
+	{   pin(".*")=1    }
+
+// ******************
+// *** Expression ***
+// ******************
+expr
+    ::= assignment_expr
+    |   expr_no_assignment (COMMA expr_no_assignment)*
+
+// This rule should be like 'conditional_expr' in the original grammar, which have all
+// expressions without assignment
+expr_no_assignment
+    ::= conditional_expr
+    |   shift_expr
+    |   relational_expr
+    |   equality_expr
+    |   and_expr
+    |   exclusive_or_expr
+    |   inclusive_or_expr
+    |   logical_and_expr
+    |   logical_xor_expr
+    |   logical_or_expr
+    |   mul_expr
+    |   add_expr
+    |   unary_expr
+
+postfix_expr
+    ::= postfix_array_index
+    |   function_call
+    |   postfix_field_selection
+    |   postfix_inc
+    |   primary_expr
+
+private integer_expression
+    ::= expr
+
+postfix_inc
+    ::= postfix_expr (INC_OP|DEC_OP)
+
+postfix_struct_member
+    ::= function_call
+    |   variable_identifier (LEFT_BRACKET integer_expression RIGHT_BRACKET)?
+
+postfix_field_selection
+    ::= postfix_expr (DOT postfix_struct_member)+
+    {   pin(".*")=1    }
+
+postfix_array_index
+    ::= postfix_expr (LEFT_BRACKET integer_expression RIGHT_BRACKET)+
+
+primary_expr_variable
+   ::= <<primaryExprVariable>>
+   {   elementType=variable_identifier    }
+
+primary_expr
+    ::= primary_expr_variable
+    |   LEFT_PAREN expr RIGHT_PAREN
+    |   FLOATCONSTANT
+    |   INTCONSTANT
+    |   UINTCONSTANT
+	|   BOOLCONSTANT
+	|   STRING_LITERAL
+    |   DOUBLECONSTANT
+
+unary_expr
+    ::= (INC_OP | DEC_OP) postfix_expr
+    |   unary_operator postfix_expr
+    |   postfix_expr
+
+private unary_operator
+    ::= PLUS
+    |   DASH
+    |   BANG
+    |   TILDE
+
+mul_expr
+    ::= expr_no_assignment (STAR | SLASH | PERCENT) expr_no_assignment
+
+add_expr
+    ::= expr_no_assignment (PLUS | DASH) expr_no_assignment
+
+shift_expr
+    ::= expr_no_assignment (LEFT_OP | RIGHT_OP) expr_no_assignment
+
+relational_expr
+    ::= expr_no_assignment (LEFT_ANGLE | RIGHT_ANGLE | LE_OP | GE_OP) expr_no_assignment
+
+equality_expr
+    ::= expr_no_assignment (EQ_OP | NE_OP) expr_no_assignment
+
+and_expr
+    ::= expr_no_assignment AMPERSAND expr_no_assignment
+
+exclusive_or_expr
+    ::= expr_no_assignment CARET expr_no_assignment
+
+inclusive_or_expr
+    ::= expr_no_assignment VERTICAL_BAR expr_no_assignment
+
+logical_and_expr
+    ::= expr_no_assignment AND_OP expr_no_assignment
+
+logical_xor_expr
+    ::= expr_no_assignment XOR_OP expr_no_assignment
+
+logical_or_expr
+    ::= expr_no_assignment OR_OP expr_no_assignment
+
+conditional_expr
+    ::= expr_no_assignment QUESTION expr_no_assignment COLON expr_no_assignment
+
+assignment_expr
+    ::= unary_expr assignment_operator expr
+    {   pin(".*")=assignment_operator}
+
+assignment_operator
+    ::= EQUAL
+	|   MUL_ASSIGN
+	|   DIV_ASSIGN
+	|   MOD_ASSIGN
+	|   ADD_ASSIGN
+	|   SUB_ASSIGN
+	|   LEFT_ASSIGN
+	|   RIGHT_ASSIGN
+	|   AND_ASSIGN
+	|   XOR_ASSIGN
+	|   OR_ASSIGN
+
+constant_expr
+    ::= expr_no_assignment
+
+private invariant_qualifier
+    ::= INVARIANT
+
+private interpolation_qualifier
+    ::= SMOOTH
+	|   FLAT
+	|   NOPERSPECTIVE
+	|   EXPLICITINTERPAMD
+	|   PERVERTEXNV
+	|   PERPRIMITIVENV
+	|   PERVIEWNV
+	|   PERTASKNV
+
+// ****************
+// *** Function ***
+// ****************
+function_prototype
+    ::= attribute? function_declarator RIGHT_PAREN attribute?
+    {   pin=2 }
+
+private function_declarator
+    ::= function_header func_header_with_params?
+
+function_header
+    ::= fully_specified_type variable_identifier LEFT_PAREN
+
+private recover_func_header_with_params ::= !(RIGHT_PAREN)
+
+func_header_with_params
+    ::= parameter_declaration (COMMA parameter_declaration)*
+    {   recoverWhile=recover_func_header_with_params    }
+
+private parameter_declaration
+    ::= type_qualifier? (parameter_declarator | parameter_type_specifier)
+
+parameter_declarator
+    ::= type_specifier variable_identifier array_specifier?
+
+private parameter_type_specifier
+    ::= type_specifier
+
+function_call
+    ::= function_call_or_method
+
+private function_call_or_method
+    ::= function_call_generic
+
+private function_call_generic
+    ::= function_call_header_with_parameters RIGHT_PAREN
+	|   function_call_header_no_parameters RIGHT_PAREN
+
+private function_call_header_no_parameters
+    ::= function_identifier LEFT_PAREN VOID?
+
+private recover_function_call_header_with_parameters ::= !(RIGHT_PAREN)
+
+private function_call_header_with_parameters
+    ::= function_call_header expr_no_assignment (COMMA expr_no_assignment)*
+    {   recoverWhile=recover_function_call_header_with_parameters   }
+
+private function_call_header
+    ::= function_identifier LEFT_PAREN
+
+private function_identifier
+    ::= variable_identifier array_specifier?
+    |   type_specifier
+    |   non_uniform_qualifier
+
+// **************
+// *** Struct ***
+// **************
+block_structure_wrapper ::=
+    block_structure (variable_identifier array_specifier?)?
+
+block_structure
+    ::= type_qualifier type_name LEFT_BRACE struct_declaration_list RIGHT_BRACE
+
+struct_specifier
+    ::= STRUCT type_name? LEFT_BRACE struct_declaration_list RIGHT_BRACE
+    {   pin=1  }
+
+private struct_declaration_list
+    ::= struct_declaration*
+
+struct_declaration
+    ::= fully_specified_type struct_declarator_list SEMICOLON
+    |   pp_statement
+    {   pin=1 }
+
+private recover_struct_declaration_list ::= !(SEMICOLON|COMMA|RIGHT_BRACE)
+
+private struct_declarator_list
+    ::= struct_declarator (COMMA struct_declarator)*
+    {   recoverWhile=recover_struct_declaration_list    }
+
+struct_declarator
+    ::= variable_identifier array_specifier?
+
+// **************
+// *** Types ****
+// **************
+type_name ::=
+    IDENTIFIER
+
+private fully_specified_type
+    ::= type_qualifier? type_specifier
+
+type_specifier
+    ::= (type_specifier_builtin|type_specifier_user) type_parameter_specifier_opt? array_specifier?
+
+private type_parameter_specifier_opt
+    ::= type_parameter_specifier
+
+type_parameter_specifier
+    ::= LEFT_ANGLE type_parameter_specifier_list RIGHT_ANGLE
+
+type_specifier_builtin // Builtin
+    ::= VOID | FLOAT | INT | UINT | BOOL | DOUBLE
+    |   VEC2 | VEC3 | VEC4 | BVEC2 | BVEC3 | BVEC4 | IVEC2 | IVEC3 | IVEC4 | UVEC2 | UVEC3 | UVEC4 | DVEC2 | DVEC3
+    |   F64VEC3 | F64VEC4 | I8VEC2 | I8VEC3 | I8VEC4 | I16VEC2 | I16VEC3 | I16VEC4 | I32VEC2 | I32VEC3 | I32VEC4
+    |   I64VEC3 | I64VEC4 | U8VEC2 | U8VEC3 | U8VEC4 | U16VEC2 | U16VEC3 | U16VEC4 | U32VEC2 | U32VEC3 | U32VEC4
+    |   F32VEC3 | F32VEC4 | F64VEC2 | U64VEC2 | U64VEC3 | U64VEC4 | I64VEC2 | F16VEC3 | F16VEC4 | DVEC4 | F16VEC2 | F32VEC2
+    |   MAT2 | MAT3 | MAT4 | MAT2X2 | MAT2X3 | MAT2X4 | MAT3X2 | MAT3X3 | MAT3X4 | MAT4X2 | MAT4X3
+    |   MAT4X4 | DMAT2 | DMAT3 | DMAT4 | DMAT2X2 | DMAT2X3 | DMAT2X4 | DMAT3X2 | DMAT3X3 | DMAT3X4 | DMAT4X2
+    |   DMAT4X3 | DMAT4X4 | F16MAT2 | F16MAT3 | F16MAT4 | F16MAT2X2 | F16MAT2X3 | F16MAT2X4 | F16MAT3X2 | F16MAT3X3
+    |   F16MAT3X4 | F16MAT4X2 | F16MAT4X3 | F16MAT4X4 | F32MAT2 | F32MAT3 | F32MAT4 | F32MAT2X2 | F32MAT2X3 | F32MAT2X4
+    |   F32MAT3X2 | F32MAT3X3 | F32MAT3X4 | F32MAT4X2 | F32MAT4X3 | F32MAT4X4 | F64MAT2 | F64MAT3 | F64MAT4 | F64MAT2X2
+    |   F64MAT2X3 | F64MAT2X4 | F64MAT3X2 | F64MAT3X3 | F64MAT3X4 | F64MAT4X2 | F64MAT4X3 | F64MAT4X4 | FLOAT16_T
+    |   INT64_T | UINT64_T | ACCSTRUCTNV | FLOAT32_T | FLOAT64_T | INT8_T | UINT8_T | INT16_T | UINT16_T | INT32_T | UINT32_T
+    |   ACCSTRUCTEXT | RAYQUERYEXT | ATOMIC_UINT | SAMPLER1D | SAMPLER2D | SAMPLER3D | SAMPLERCUBE | SAMPLER2DSHADOW
+    |   SAMPLERCUBESHADOW | SAMPLER2DARRAY | SAMPLER2DARRAYSHADOW | SAMPLER1DSHADOW | SAMPLER1DARRAY | SAMPLER1DARRAYSHADOW
+    |   SAMPLERCUBEARRAY | SAMPLERCUBEARRAYSHADOW | F16SAMPLER1D | F16SAMPLER2D | F16SAMPLER3D | F16SAMPLERCUBE
+    |   F16SAMPLER1DSHADOW | F16SAMPLER2DSHADOW | F16SAMPLERCUBESHADOW | F16SAMPLER1DARRAY | F16SAMPLER2DARRAY
+    |   F16SAMPLER1DARRAYSHADOW | F16SAMPLER2DARRAYSHADOW | F16SAMPLERCUBEARRAY | F16SAMPLERCUBEARRAYSHADOW | ISAMPLER1D
+    |   ISAMPLER2D | ISAMPLER3D | ISAMPLERCUBE | ISAMPLER2DARRAY | USAMPLER2D | USAMPLER3D | USAMPLERCUBE | ISAMPLER1DARRAY
+    |   ISAMPLERCUBEARRAY | USAMPLER1D | USAMPLER1DARRAY | USAMPLERCUBEARRAY | TEXTURECUBEARRAY | ITEXTURECUBEARRAY
+    |   UTEXTURECUBEARRAY | USAMPLER2DARRAY | TEXTURE2D | TEXTURE3D | TEXTURE2DARRAY | TEXTURECUBE | ITEXTURE2D
+    |   ITEXTURE3D | ITEXTURECUBE | ITEXTURE2DARRAY | UTEXTURE2D | UTEXTURE3D | UTEXTURECUBE | UTEXTURE2DARRAY | SAMPLER
+    |   SAMPLERSHADOW | SAMPLER2DRECT | SAMPLER2DRECTSHADOW | F16SAMPLER2DRECT | F16SAMPLER2DRECTSHADOW | ISAMPLER2DRECT
+    |   USAMPLER2DRECT | SAMPLERBUFFER | F16SAMPLERBUFFER | ISAMPLERBUFFER | USAMPLERBUFFER | SAMPLER2DMS | F16SAMPLER2DMS
+    |   ISAMPLER2DMS | USAMPLER2DMS | SAMPLER2DMSARRAY | F16SAMPLER2DMSARRAY | ISAMPLER2DMSARRAY | USAMPLER2DMSARRAY
+    |   TEXTURE1D | F16TEXTURE1D | F16TEXTURE2D | F16TEXTURE3D | F16TEXTURECUBE | TEXTURE1DARRAY | F16TEXTURE1DARRAY
+    |   F16TEXTURE2DARRAY | F16TEXTURECUBEARRAY | ITEXTURE1D | ITEXTURE1DARRAY | UTEXTURE1D | UTEXTURE1DARRAY
+    |   TEXTURE2DRECT | F16TEXTURE2DRECT | ITEXTURE2DRECT | UTEXTURE2DRECT | TEXTUREBUFFER | F16TEXTUREBUFFER
+    |   ITEXTUREBUFFER | UTEXTUREBUFFER | TEXTURE2DMS | F16TEXTURE2DMS | ITEXTURE2DMS | UTEXTURE2DMS | TEXTURE2DMSARRAY
+    |   F16TEXTURE2DMSARRAY | ITEXTURE2DMSARRAY | UTEXTURE2DMSARRAY | IMAGE1D | F16IMAGE1D | IIMAGE1D | UIMAGE1D | IMAGE2D
+    |   F16IMAGE2D | IIMAGE2D | UIMAGE2D | IMAGE3D | F16IMAGE3D | IIMAGE3D | UIMAGE3D | IMAGE2DRECT | F16IMAGE2DRECT
+    |   IIMAGE2DRECT | UIMAGE2DRECT | IMAGECUBE | F16IMAGECUBE | IIMAGECUBE | UIMAGECUBE | IMAGEBUFFER | F16IMAGEBUFFER
+    |   IIMAGEBUFFER | UIMAGEBUFFER | IMAGE1DARRAY | F16IMAGE1DARRAY | IIMAGE1DARRAY | UIMAGE1DARRAY | IMAGE2DARRAY
+    |   F16IMAGE2DARRAY | IIMAGE2DARRAY | UIMAGE2DARRAY | IMAGECUBEARRAY | F16IMAGECUBEARRAY | IIMAGECUBEARRAY
+    |   UIMAGECUBEARRAY | IMAGE2DMS | F16IMAGE2DMS | IIMAGE2DMS | UIMAGE2DMS | IMAGE2DMSARRAY | F16IMAGE2DMSARRAY
+    |   IIMAGE2DMSARRAY | UIMAGE2DMSARRAY | I64IMAGE1D | U64IMAGE1D | I64IMAGE2D | U64IMAGE2D | I64IMAGE3D | U64IMAGE3D
+    |   I64IMAGE2DRECT | U64IMAGE2DRECT | I64IMAGECUBE | U64IMAGECUBE | I64IMAGEBUFFER | U64IMAGEBUFFER | I64IMAGE1DARRAY
+    |   U64IMAGE1DARRAY | I64IMAGE2DARRAY | U64IMAGE2DARRAY | I64IMAGECUBEARRAY | U64IMAGECUBEARRAY | I64IMAGE2DMS
+    |   U64IMAGE2DMS | I64IMAGE2DMSARRAY | U64IMAGE2DMSARRAY | SAMPLEREXTERNALOES | SAMPLEREXTERNAL2DY2YEXT | SUBPASSINPUT
+    |   SUBPASSINPUTMS | F16SUBPASSINPUT | F16SUBPASSINPUTMS | ISUBPASSINPUT | ISUBPASSINPUTMS | USUBPASSINPUT
+    |   USUBPASSINPUTMS | FCOOPMATNV | ICOOPMATNV | UCOOPMATNV
+
+type_specifier_user
+    ::= spirv_type_specifier | struct_specifier | type_name
+
+// ******************
+// *** Qualifier ****
+// ******************
+type_qualifier
+    ::= single_type_qualifier+
+
+private single_type_qualifier
+    ::= layout_qualifier
+    |   storage_qualifier
+	|   precision_qualifier
+	|   interpolation_qualifier
+	|   invariant_qualifier
+	|   precise_qualifier
+	|   non_uniform_qualifier
+	|   spirv_storage_class_qualifier
+	|   spirv_decorate_qualifier
+	|   SPIRV_BY_REFERENCE
+	|   SPIRV_LITERAL
+
+layout_qualifier
+    ::= LAYOUT LEFT_PAREN layout_qualifier_id_list RIGHT_PAREN
+    {   pin=1 }
+
+private recover_layout_qualifier_list ::= !(SEMICOLON|RIGHT_PAREN)
+
+private layout_qualifier_id_list
+    ::= layout_qualifier_id (COMMA layout_qualifier_id)*
+    {   recoverWhile=recover_layout_qualifier_list    }
+
+layout_qualifier_id
+    ::= variable_identifier (EQUAL constant_expr)?
+	|   SHARED
+    {   pin(".*")=1 }
+
+precise_qualifier
+    ::= PRECISE
+
+non_uniform_qualifier
+    ::= NONUNIFORM
+
+private type_name_list
+    ::= variable_identifier (COMMA variable_identifier)*
+
+array_specifier
+    ::= (LEFT_BRACKET expr_no_assignment? RIGHT_BRACKET)+
+
+private type_parameter_specifier_list
+    ::= unary_expr (COMMA unary_expr)*
+
+private storage_qualifier
+    ::= CONST | INOUT | IN | OUT | CENTROID | UNIFORM | SHARED | BUFFER | ATTR | VARYING | PATCH | SAMPLE | HITATTRNV
+    | HITATTREXT | PAYLOADNV | PAYLOADEXT | PAYLOADINNV | PAYLOADINEXT | CALLDATANV | CALLDATAEXT | CALLDATAINNV | CALLDATAINEXT
+    | COHERENT | DEVICECOHERENT | QUEUEFAMILYCOHERENT | WORKGROUPCOHERENT | SUBGROUPCOHERENT | NONPRIVATE | SHADERCALLCOHERENT
+    | VOLATILE | RESTRICT | READONLY | WRITEONLY | SUBROUTINE | SUBROUTINE LEFT_PAREN type_name_list RIGHT_PAREN
+
+private precision_qualifier
+    ::= HIGH_PRECISION
+	|   MEDIUM_PRECISION
+	|   LOW_PRECISION
+
+// ******************
+// *** Attribute ****
+// ******************
+attribute
+    ::= LEFT_BRACKET LEFT_BRACKET attribute_list RIGHT_BRACKET RIGHT_BRACKET
+    {   pin=2   }
+
+private attribute_list
+    ::= single_attribute (COMMA single_attribute)*
+
+single_attribute
+    ::= variable_identifier
+	|   variable_identifier LEFT_PAREN constant_expr RIGHT_PAREN
+
+// **************
+// *** SPIR-V ****
+// **************
+private spirv_requirements_list
+    ::= spirv_requirements_parameter (COMMA spirv_requirements_parameter)*
+
+spirv_requirements_parameter
+    ::= variable_identifier EQUAL LEFT_BRACKET spirv_extension_list RIGHT_BRACKET
+	|   variable_identifier EQUAL LEFT_BRACKET spirv_capability_list RIGHT_BRACKET
+
+private spirv_extension_list
+    ::= STRING_LITERAL (COMMA STRING_LITERAL)*
+
+private spirv_capability_list
+    ::= INTCONSTANT (COMMA INTCONSTANT)*
+
+spirv_execution_mode_qualifier
+    ::= SPIRV_EXECUTION_MODE LEFT_PAREN INTCONSTANT RIGHT_PAREN
+	|   SPIRV_EXECUTION_MODE LEFT_PAREN spirv_requirements_list COMMA INTCONSTANT RIGHT_PAREN
+	|   SPIRV_EXECUTION_MODE LEFT_PAREN INTCONSTANT COMMA spirv_execution_mode_parameter_list RIGHT_PAREN
+	|   SPIRV_EXECUTION_MODE LEFT_PAREN spirv_requirements_list COMMA INTCONSTANT COMMA spirv_execution_mode_parameter_list RIGHT_PAREN
+	|   SPIRV_EXECUTION_MODE_ID LEFT_PAREN INTCONSTANT COMMA spirv_execution_mode_id_parameter_list RIGHT_PAREN
+	|   SPIRV_EXECUTION_MODE_ID LEFT_PAREN spirv_requirements_list COMMA INTCONSTANT COMMA spirv_execution_mode_id_parameter_list RIGHT_PAREN
+
+private spirv_execution_mode_parameter_list
+    ::= spirv_execution_mode_parameter (COMMA spirv_execution_mode_parameter)*
+
+spirv_execution_mode_parameter
+    ::= FLOATCONSTANT
+	|   INTCONSTANT
+	|   UINTCONSTANT
+	|   BOOLCONSTANT
+	|   STRING_LITERAL
+
+private spirv_execution_mode_id_parameter_list
+    ::= constant_expr (COMMA constant_expr)*
+
+spirv_storage_class_qualifier
+    ::= SPIRV_STORAGE_CLASS LEFT_PAREN INTCONSTANT RIGHT_PAREN
+	|   SPIRV_STORAGE_CLASS LEFT_PAREN spirv_requirements_list COMMA INTCONSTANT RIGHT_PAREN
+
+spirv_decorate_qualifier
+    ::= SPIRV_DECORATE LEFT_PAREN INTCONSTANT RIGHT_PAREN
+	|   SPIRV_DECORATE LEFT_PAREN spirv_requirements_list COMMA INTCONSTANT RIGHT_PAREN
+	|   SPIRV_DECORATE LEFT_PAREN INTCONSTANT COMMA spirv_decorate_parameter_list RIGHT_PAREN
+	|   SPIRV_DECORATE LEFT_PAREN spirv_requirements_list COMMA INTCONSTANT COMMA spirv_decorate_parameter_list RIGHT_PAREN
+	|   SPIRV_DECORATE_ID LEFT_PAREN INTCONSTANT COMMA spirv_decorate_id_parameter_list RIGHT_PAREN
+	|   SPIRV_DECORATE_ID LEFT_PAREN spirv_requirements_list COMMA INTCONSTANT COMMA spirv_decorate_id_parameter_list RIGHT_PAREN
+	|   SPIRV_DECORATE_STRING LEFT_PAREN INTCONSTANT COMMA spirv_decorate_string_parameter_list RIGHT_PAREN
+	|   SPIRV_DECORATE_STRING LEFT_PAREN spirv_requirements_list COMMA INTCONSTANT COMMA spirv_decorate_string_parameter_list RIGHT_PAREN
+
+private spirv_decorate_parameter_list
+    ::= spirv_decorate_parameter (COMMA spirv_decorate_parameter)*
+
+spirv_decorate_parameter
+    ::= FLOATCONSTANT
+	|   INTCONSTANT
+	|   UINTCONSTANT
+	|   BOOLCONSTANT
+
+private spirv_decorate_id_parameter_list
+    ::= constant_expr (COMMA constant_expr)*
+
+private spirv_decorate_string_parameter_list
+    ::= STRING_LITERAL (COMMA STRING_LITERAL)*
+
+spirv_type_specifier
+    ::= SPIRV_TYPE LEFT_PAREN spirv_instruction_qualifier_list COMMA spirv_type_parameter_list RIGHT_PAREN
+	|   SPIRV_TYPE LEFT_PAREN spirv_requirements_list COMMA spirv_instruction_qualifier_list COMMA spirv_type_parameter_list RIGHT_PAREN
+	|   SPIRV_TYPE LEFT_PAREN spirv_instruction_qualifier_list RIGHT_PAREN
+	|   SPIRV_TYPE LEFT_PAREN spirv_requirements_list COMMA spirv_instruction_qualifier_list RIGHT_PAREN
+
+private spirv_type_parameter_list
+    ::= spirv_type_parameter (COMMA spirv_type_parameter)*
+
+spirv_type_parameter
+    ::= constant_expr
+
+spirv_instruction_qualifier
+    ::= SPIRV_INSTRUCTION LEFT_PAREN spirv_instruction_qualifier_list RIGHT_PAREN
+	|   SPIRV_INSTRUCTION LEFT_PAREN spirv_requirements_list COMMA spirv_instruction_qualifier_list RIGHT_PAREN
+
+private spirv_instruction_qualifier_list
+    ::= spirv_instruction_qualifier_id (COMMA spirv_instruction_qualifier_id)*
+
+spirv_instruction_qualifier_id
+    ::= variable_identifier EQUAL STRING_LITERAL
+	|   variable_identifier EQUAL INTCONSTANT
+
+// *********************
+// *** Preprocessor ****
+// *********************
+pp_statement
+    ::=  pp_literal (FLOATCONSTANT|INTCONSTANT|STRING_LITERAL|BOOLCONSTANT|PP_TEXT)*
+    |    (PP_UNDEF|PP_IFDEF|PP_IFNDEF) variable_identifier PP_END
+    |    (PP_ENDIF|PP_ELSE|HASH) PP_END
+    |    pp_define_declaration PP_END
+    |    pp_conditional PP_END
+    |    pp_version_declaration PP_END
+    |    pp_extension PP_END
+    |    pp_include_declaration PP_END
+    |    pp_line PP_END
+    |    macro_literal INTCONSTANT PP_END
+
+private pp_extension
+    ::= PP_EXTENSION variable_identifier COLON ('require'|'enable'|'warn'|'disable')
+    {   pin(".*")=1   }
+
+pp_include_declaration
+    ::= PP_INCLUDE (STRING_LITERAL | LEFT_ANGLE variable_identifier (SLASH variable_identifier)* RIGHT_ANGLE)
+    {   pin(".*")=1  generateTokenAccessors=true }
+
+private pp_version_declaration
+    ::= PP_VERSION INTCONSTANT ('core'|'es'|'compatibility')?
+    {   pin(".*")=1   }
+
+private pp_line
+    ::= PP_LINE INTCONSTANT INTCONSTANT?
+    {   pin(".*")=1   }
+
+private pp_conditional
+    ::= (PP_IF|PP_ELIF) expr_no_assignment
+    {   pin(".*")=1   }
+
+private pp_define_declaration
+    ::= PP_DEFINE (pp_define_function|pp_single_declaration)
+    {   pin(".*")=1   }
+
+private recover_pp_define_function ::= !(RIGHT_PAREN|PP_END)
+
+pp_single_declaration
+    ::= variable_identifier expr?
+
+pp_define_function
+    ::= variable_identifier LEFT_PAREN pp_define_params RIGHT_PAREN expr
+    {   pin=2 }
+
+private pp_define_params
+    ::= pp_define_param  (COMMA pp_define_param)*
+    {   pin=1 recoverWhile=recover_pp_define_function   }
+
+pp_define_param
+    ::= variable_identifier
+
+pp_literal
+    ::= PP_PRAGMA
+    |   PP_ERROR
+
+macro_literal
+    ::= MACRO_LINE
+    |   MACRO_FILE
+    |   MACRO_VERSION

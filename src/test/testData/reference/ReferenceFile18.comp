@@ -1,0 +1,1 @@
+uint a = gl_LocalInvocationID.<caret>x;

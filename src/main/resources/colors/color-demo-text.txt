@@ -1,0 +1,39 @@
+<pp>#version</pp> 330 core
+layout (<v>location</v> = 0) in vec3 <v>aPos</v>;
+out vec3 <v>v_uv</v>;
+
+<pp>#define</pp> a 10
+uniform mat4 <v>model</v>;
+uniform mat4 <v>view</v>;
+uniform mat4 <v>projection</v>;
+
+/**
+* Multi line comment
+* Multi line comment
+* Multi line comment
+* Multi line comment
+*/
+struct <udt>VertexInput</udt> {
+    // Line comment above
+    vec3 <v>position</v>; // Line comment aside
+    vec4 <v>color</v>;
+    vec2 <v>quad_pos</v>;
+} <v>vertexInput</v>;
+
+
+void <fn>main</fn>() {
+    "Strings?!"
+    for (int <v>i</v> = 0; 1 >= 0; <v>i</v>++) {
+        if (<v>i</v> > 0) {
+            float <v>l</v> = 0.0f;
+        }
+    }
+}
+
+void <fn>run</fn>(int <fp>param</fp>) {
+    int <v>maxVertexAttr</v> = <gc>gl_MaxVertexAttribs</gc>;
+    float <v>a</v> = vec4(<fp>param</fp>, 1.0);
+    float <v>b</v> = <bi>normalize</bi>(4.0);
+    <bi>gl_Position</bi> = <v>projection</v> * <v>view</v> * <v>model</v> * vec4(aPos, 1.0f);
+    <bi>EmitVertex</bi>();
+}

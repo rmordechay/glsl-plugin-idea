@@ -1,0 +1,344 @@
+#version 330
+#version 330 es
+#version 330 core
+#version 330 compatibility
+
+#define a 10
+#define a(x) x + 1
+#define a(x, y, z) x * y * z
+
+;;;
+// One line comment
+
+
+/*
+* Multi line comment
+* Multi line comment
+* Multi line comment
+* Multi line comment
+*/
+
+
+#define A a + 2 \
++ 2 / 2
+
+#define a(a, b) a + \
+1 + 1 + (x + 2) - (x * 2) \
++ 1 + (x + 2) - (x * 2) \
++ 1 + (x + 2) - (x * 2)
+
+/*
+* Multi line comment
+* Multi line comment
+* Multi line comment
+* Multi line comment
+*/
+
+int a;
+
+#define A 10
+
+/*
+* Multi line comment
+* Multi line comment
+* Multi line comment
+* Multi line comment
+*/
+
+#define A 10 + a
+#if 10 == 10
+#elif 20 > 19
+#endif
+
+#include "file.h"
+#define a 10
+#if VARIABLE > 5
+int a = 2;
+#elif VARIABLE < 2
+int a = 1;
+#else
+int a = 0;
+
+/*
+* Multi line comment
+* Multi line comment
+* Multi line comment
+* Multi line comment
+*/
+
+__LINE__ 10
+__FILE__ 10
+__VERSION__ 10
+
+struct DummyStruct {
+    int struct_declarator1;
+    int struct_declarator4, struct_declarator5;
+} dummyStruct;
+
+struct DummyStruct {
+    int struct_declarator1;
+    int struct_declarator4, struct_declarator5;
+};
+
+struct DummyStruct {
+    int struct_declarator1;
+    int struct_declarator2[];
+    #ifdef a
+    int struct_declarator3[][];
+    int struct_declarator4, struct_declarator5;
+} dummyStruct;
+
+struct DummyStruct {
+    int struct_declarator1;
+    int struct_declarator4, struct_declarator5;
+} dummyStruct[];
+
+struct DummyStruct {
+    int struct_declarator1;
+    struct A {int a;} struct_declarator4, struct_declarator5;
+} dummyStruct[4];
+
+in DummyBlock {
+    int struct_declarator1;
+    struct A {int a;} struct_declarator4, struct_declarator5;
+} dummyStruct;
+
+in DummyBlock {
+    struct A {int a;} struct_declarator4, struct_declarator5;
+};
+
+in DummyBlock {
+    int struct_declarator1;
+    int struct_declarator2;
+    int struct_declarator3;
+    int struct_declarator4, struct_declarator5;
+    int struct_declarator4, struct_declarator5;
+    struct A {int a;} struct_declarator4, struct_declarator5;
+} dummyStruct[];
+
+in UserType {
+    int struct_declarator1;
+    int struct_declarator2;
+    int struct_declarator3;
+    int struct_declarator4, struct_declarator5;
+    int struct_declarator4, struct_declarator5;
+    struct A {int a;} struct_declarator4, struct_declarator5;
+} dummyStruct[4];
+
+struct A {
+    int a;
+};
+const float CONSTANT_DECLRATION = 0.2;
+float;
+float single_declaration;
+float single_declaration[];
+float single_declaration[3];
+float single_declaration = 0.2;
+float single_declaration[] = { 1, 2, 3 };
+float single_declaration[2] = 0.2;
+int a = a.b.c.i;
+
+float a = 0;
+float a = 0, b;
+float a = 0, b[];
+float a = 0, b = 0;
+float a = 0, b[] = 2;
+float a, b[][] = 2;
+float a, b[2][1] = 2;
+float a[], b[2][1] = 2, c, d;
+float a[1], b[2][1] = 2, c, d = 0;
+float a[1][2][3], b[2][1] = 2, c, d[] = 0;
+float a[1][2][3], b[2][1] = 2, c, d[] = 0, e;
+float a[1][2][3], b[2][1] = 2, c, d[] = 0, e = 2;
+
+
+int a = 8.4781762f;
+int a = 8.478176E2f;
+int a = 8.478176e2;
+int a = 8.478176E+2;
+int a = 8.478176e+20;
+int a = 8.478176E-223;
+int a = 8.478176e-24;
+
+int a = a;
+int a = a[1];
+int a = a[1][2];
+int a = a[1][2][3];
+
+int a = 1;
+int a = 1u;
+int a = -1;
+int a = -1u;
+int a = 0xA0000000;
+int a = 0xABcdEF00u;
+int a = 0xffffffff;
+int a = 0x80000000;
+int a = 0xffffffffu;
+int a = 3000000000;
+int a = 2147483648;
+
+float a = 1;
+float a = .1;
+float a = 1.;
+float a = .1f;
+float a = 1.f;
+float a = 1.0;
+float a = 1.0000;
+float a = 1.0000f;
+float a = 000.0000f;
+float a = 111.0000f;
+float a = ((((12))));
+float a = ((((12) / a) + 2) * 2);
+float _a = a(b(c.x * d.x));
+float _a = { 1, 2, 3, 4 };
+float _a = { 1.0, 2.0, 3.0, 4.0 };
+float _a = { 1.0 + 2, 2.0 * 2, 3.0 / 2, 4.0 - 2.0 };
+
+float[] a = float[](1, 2, 3);
+float[] a = float[3](1, 2, 3);
+UserType[] a = UserType[](1, 2, 3);
+UserType[] a = UserType[3](1, 2, 3);
+
+
+int a = a();
+int a = a;
+int a = a++;
+int a = a.b;
+int a = a().b;
+int a = a++.b;
+int a = a[1].b;
+int a = a.b.c;
+int a = a().b.c;
+int a = a++.b.c;
+int a = a[1].b.c;
+int a = a == true ? a + a : a;
+int a = a >= 5 ? a + a : a * 2;
+int a = a == 0 ? a + a : a + 1;
+int a = true ? b : a;
+
+layout (location) in vec2 layout_declration;
+layout (location = 0) in vec3 layout_declration;
+layout (location = 2) in vec2 layout_declration;
+layout (location = 1, max_vertices) in vec4 layout_declration;
+layout (location = 1, max_vertices = func_call()) in vec4 layout_declration;
+layout (location = 1, max_vertices = 2 > a) in vec4 layout_declration;
+layout (location = 1, max_vertices = 2) in struct A {int a;} layout_declration;
+layout (location = 3) centroid out float layout_declration;
+layout (location) uniform UniformType {
+    mat3 a;
+    mat4 b;
+} uni;
+
+void main();
+void main(int a);
+void main(int a, int b);
+void main(UserType a, int b);
+void main(UserType a, UserType b);
+UserType main();
+UserType main(int a);
+UserType main(int a, int b);
+UserType main(UserType a, int b);
+UserType main(UserType a, UserType b);
+void main() {}
+void main(int a) {}
+void main(int a, int b) {}
+void main(UserType a, int b) {}
+void main(UserType a, UserType b) {}
+UserType main() {}
+UserType main(int a) {}
+UserType main(int a, int b) {}
+UserType main(UserType a, int b) {}
+UserType main(UserType a, UserType b) {}
+
+noperspective centroid out vec2 a;
+centroid out vec2 a;
+smooth out vec2 a[];
+
+int function_definition(DummyBlock x, float y) {
+    ;;;;
+    void main();
+    void main(int a);
+    void main(int a, int b);
+    void main(UserType a, int b);
+    void main(UserType a, UserType b);
+    UserType main();
+    UserType main(int a);
+    UserType main(int a, int b);
+    UserType main(UserType a, int b);
+    UserType main(UserType a, UserType b);
+    expr_statement();
+
+    if (selection_statement == 1) {
+        if (inner_id < 6) {
+            dummy;
+        }
+    } else if (selection_statement_else) {
+        dummy;
+    } else {
+        dummy;
+    }
+
+    if (selection_statement == 1)
+    if (inner_id < 6) {
+        dummy;
+    }
+    else if (selection_statement_else)
+    dummy;
+    else
+    dummy;
+
+    if (_x % int(a.x / 2) == 0 || _y % int(b.y / 2) == 0) {
+        a = vec4(0, 0, 1, 1);
+    }
+
+    for (int i; i > 20; i++) {
+        int a = i;
+        a = i + 2;
+    }
+
+    while (shouldRun) {
+        if (!shouldRun) {
+            call();
+            int a = 2;
+            shouldRun = false;
+            break;
+        } else {
+            call();
+            continue;
+        }
+        shouldRun = 1;
+    }
+
+    do {
+        int shouldRun = 1;
+        shouldRun = 0;
+    } while (shouldRun);
+
+    switch (switch_statement) {
+        case 1:
+            return 1;
+        case 2:
+            return 2;
+        default:
+            return 3;
+    }
+    float f();
+    #include "some text"
+    float g();
+    float h();
+
+    UserType a;
+    UserType a = a;
+    float declaration_statement;
+    float declaration_statement[];
+    float declaration_statement[3];
+    float declaration_statement = f(g(h()));
+    float declaration_statement[] = { 1, 2, 3 };
+    float declaration_statement[2] = f(g(h(x, y), z));
+
+    demote;
+    return jump_statement;
+    return;
+    EmitVertex();
+    gl_Position = a.b * vec4((x * vec3(5.0, 5.0, 0.0)) + y[0].xyz, 1.0);
+}

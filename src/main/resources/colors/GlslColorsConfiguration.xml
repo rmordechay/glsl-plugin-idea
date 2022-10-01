@@ -1,0 +1,74 @@
+<?xml version='1.0'?>
+<list>
+    <option name="GLSL_KEYWORD">
+        <value>
+            <option name="FOREGROUND" value="D27070"/>
+        </value>
+    </option>
+    <option name="GLSL_BUILTIN_TYPE">
+        <value>
+            <option name="FOREGROUND" value="D5994A"/>
+        </value>
+    </option>
+    <option name="GLSL_BUILTIN_NAME_TEXT_ATTR">
+        <value>
+            <option name="FOREGROUND" value="78AA87"/>
+        </value>
+    </option>
+    <option name="GLSL_BUILTIN_GLOBAL_CONSTANTS">
+        <value>
+            <option name="FOREGROUND" value="A672BA"/>
+        </value>
+    </option>
+    <option name="GLSL_VARIABLE">
+        <value>
+            <option name="FOREGROUND" value="6595C7"/>
+        </value>
+    </option>
+    <option name="GLSL_USER_DEFINED_TYPE">
+        <value>
+            <option name="FOREGROUND" value="1E97C2"/>
+        </value>
+    </option>
+    <option name="GLSL_STRING">
+        <value>
+            <option name="FOREGROUND" value="E6DB74"/>
+        </value>
+    </option>
+    <option name="GLSL_BOOLEAN">
+        <value>
+            <option name="FOREGROUND" value="F92674"/>
+        </value>
+    </option>
+    <option name="GLSL_PREPROCESSOR">
+        <value>
+            <option name="FOREGROUND" value="F92674"/>
+        </value>
+    </option>
+    <option name="GLSL_NUMBER">
+        <value>
+            <option name="FOREGROUND" value="A2AC5D"/>
+        </value>
+    </option>
+    <option name="GLSL_FUNCTION">
+        <value>
+            <option name="FOREGROUND" value="85A840"/>
+        </value>
+    </option>
+    <option name="GLSL_FUNCTION_PARAM">
+        <value>
+            <option name="FOREGROUND" value="A08282"/>
+        </value>
+    </option>
+
+    <option name="GLSL_LINE_COMMENT">
+        <value>
+            <option name="FOREGROUND" value="888888"/>
+        </value>
+    </option>
+    <option name="GLSL_MULTILINE_COMMENT">
+        <value>
+            <option name="FOREGROUND" value="629755"/>
+        </value>
+    </option>
+</list>

@@ -1,0 +1,16 @@
+<templateSet group="GLSL">
+    <template name="for" value="for (int $INDEX$ = 0; $COPY_INDEX$ &lt; $UPPER_BOUND$; $COPY_INDEX$++) {&#10;   $END$&#10;}" description="" toReformat="false" toShortenFQNames="false">
+        <variable name="INDEX" expression="" defaultValue="" alwaysStopAt="true"/>
+        <variable name="COPY_INDEX" expression="" defaultValue="" alwaysStopAt="true"/>
+        <variable name="UPPER_BOUND" expression="" defaultValue="" alwaysStopAt="true"/>
+        <context>
+            <option name="GLSL" value="true"/>
+        </context>
+    </template>
+    <template name="fori" value="for (int i = 0; i &lt; $UPPER_BOUND$; i++) {&#10;   $END$&#10;}" description="" toReformat="false" toShortenFQNames="false">
+        <variable name="UPPER_BOUND" expression="" defaultValue="" alwaysStopAt="true"/>
+        <context>
+            <option name="GLSL" value="true"/>
+        </context>
+    </template>
+</templateSet>

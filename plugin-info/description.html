@@ -1,0 +1,42 @@
+<p>Plugin support for <b>GLSL</b>.</p>
+<br>
+<p><u>Features:</u></p>
+<ul>
+    <li>Identifiers References</li>
+    <li>Code completion</li>
+    <li>Refactoring</li>
+    <li>Formatter</li>
+    <li>Syntax highlighting</li>
+    <li>Go to / find usage</li>
+    <li>Documentation for GLSL builtin functions</li>
+    <li>(Partial) directive support</li>
+</ul>
+<br>
+<p><u>Supported file extensions:</u></p>
+<ul>
+    <li>.glsl</li>
+    <li>.vert</li>
+    <li>.tesc</li>
+    <li>.tese</li>
+    <li>.geom</li>
+    <li>.frag</li>
+    <li>.comp</li>
+</ul>
+<br>
+<p><u>Planned (but not yet supported):</u></p>
+<ul>
+    <li>Type checking</li>
+    <li>Full directive support</li>
+    <li>Extensions</li>
+</ul>
+<p><u>Known issues:</u></p>
+<ul>
+    <li>As it's pretty hard to predict all the possible valid variables that a shader can have, warnings/errors about
+        undeclared variables are disabled in order to avoid incorrect warnings. For now, if the variable is not found,
+        it will get no syntax coloring. So this is not to say that a white colored variable is not valid, only that it may not be found.
+        In the future, when all possible variables will be collected, this (essential) feature will be activated.</li>
+    <li>It's also hard to collect all OpenGL extensions functions and behaviour. Therefore, their names cannot be resolved, which leads to
+        some problems, and more specifically, the code analyser will falsely mark the extended name as not found, even though it was found.
+        So when using extensions you should expect to see some errors. </li>
+    <li>In older IDE versions the plugin icon (next to files and inside popups) is not available</li>
+</ul>

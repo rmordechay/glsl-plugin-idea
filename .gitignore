@@ -20,7 +20,7 @@ build/
 !**/test/**/build
 *.iml
 !**/testData/**/*.iml
-.idea/
+/.idea/
 .rpt2_cache/
 libraries/tools/kotlin-test-js-runner/lib/
 local.properties

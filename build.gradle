@@ -39,7 +39,7 @@ generateParser {
     doFirst {
         delete 'src/main/gen/psi'
     }
-    source = 'src/main/kotlin/glsl/grammar/GlslGrammar.bnf'
+    source = 'grammar/GlslGrammar.bnf'
     targetRoot = 'src/main/gen'
     pathToParser = '_GlslParser.java'
     pathToPsiRoot = 'psi'
@@ -47,7 +47,7 @@ generateParser {
 
 generateLexer {
     dependsOn(generateParser)
-    source = 'src/main/kotlin/glsl/grammar/GlslLexer.flex'
+    source = 'grammar/GlslLexer.flex'
     targetDir = 'src/main/gen/glsl'
     targetClass = '_GlslLexer.java'
 }

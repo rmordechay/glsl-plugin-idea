@@ -14,7 +14,6 @@ out/
 workspace.xml
 *.versionsBackup
 /idea/testData/debugger/tinyApp/classes*
-gradle/
 build/
 !**/src/**/build
 !**/test/**/build

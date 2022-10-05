@@ -330,8 +330,8 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         var includePath: String? = null
         if (ppIncludeDeclaration.stringLiteral != null) {
             includePath = ppIncludeDeclaration.stringLiteral?.text?.replace("\"", "")
-        } else if (ppIncludeDeclaration.variableIdentifierList.isNotEmpty()) {
-            includePath = ppIncludeDeclaration.variableIdentifierList.joinToString("/") { it.getName() }
+        } else if (ppIncludeDeclaration.ppIncludePathList.isNotEmpty()) {
+            includePath = ppIncludeDeclaration.ppIncludePathList.last().text
         }
         if (includePath == null) return
         if (includePath.contains("/")) {

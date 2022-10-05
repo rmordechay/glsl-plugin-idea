@@ -7,6 +7,8 @@
 #include "file.h"
 __LINE__ 10
 
+#include < shaders / func.frag >
+
 // One line comment
     struct  DummyStruct     {
                 // One line comment

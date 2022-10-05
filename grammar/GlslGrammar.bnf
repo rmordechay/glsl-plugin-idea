@@ -1157,11 +1157,11 @@ pp_statement
     ::=  pp_literal (FLOATCONSTANT|INTCONSTANT|STRING_LITERAL|BOOLCONSTANT|PP_TEXT)*
     |    (PP_UNDEF|PP_IFDEF|PP_IFNDEF) variable_identifier PP_END
     |    (PP_ENDIF|PP_ELSE|HASH) PP_END
+    |    PP_INCLUDE pp_include_declaration PP_END
     |    pp_define_declaration PP_END
     |    pp_conditional PP_END
     |    pp_version_declaration PP_END
     |    pp_extension PP_END
-    |    pp_include_declaration PP_END
     |    pp_line PP_END
     |    macro_literal INTCONSTANT PP_END
 
@@ -1170,8 +1170,12 @@ private pp_extension
     {   pin(".*")=1   }
 
 pp_include_declaration
-    ::= PP_INCLUDE (STRING_LITERAL | LEFT_ANGLE variable_identifier (SLASH variable_identifier)* RIGHT_ANGLE)
+    ::= LEFT_ANGLE pp_include_path (SLASH pp_include_path)* RIGHT_ANGLE
+    |   STRING_LITERAL
     {   pin(".*")=1  generateTokenAccessors=true }
+
+pp_include_path
+    ::= variable_identifier (DOT variable_identifier)?
 
 private pp_version_declaration
     ::= PP_VERSION INTCONSTANT ('core'|'es'|'compatibility')?

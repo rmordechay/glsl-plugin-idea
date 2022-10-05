@@ -3,9 +3,16 @@
 #version 330 core
 #version 330 compatibility
 
+#include <shaders/func.frag>
+#include <shaders/func>
+#include <shader.glsl>
+#include <shader>
+#include "file.h"
+
 #define a 10
 #define a(x) x + 1
 #define a(x, y, z) x * y * z
+
 
 ;;;
 // One line comment
@@ -50,7 +57,7 @@ int a;
 #elif 20 > 19
 #endif
 
-#include "file.h"
+
 #define a 10
 #if VARIABLE > 5
 int a = 2;

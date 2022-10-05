@@ -25,7 +25,6 @@ compileKotlin {
 intellij {
 //    version = 'IC-203.5981.155'
     version = 'IC-2022.2.1'
-//    version = 'AI-221.6008.13.2211.8963757'
     updateSinceUntilBuild = true
 }
 

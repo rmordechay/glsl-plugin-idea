@@ -330,14 +330,14 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         var includePath: String? = null
         if (ppIncludeDeclaration.stringLiteral != null) {
             includePath = ppIncludeDeclaration.stringLiteral?.text?.replace("\"", "")
-        } else if (ppIncludeDeclaration.ppIncludePathList.isNotEmpty()) {
-            includePath = ppIncludeDeclaration.ppIncludePathList.last().text
+        } else if (ppIncludeDeclaration.ppIncludeBrackets != null) {
+            includePath = ppIncludeDeclaration.ppIncludeBrackets!!.ppIncludePathList.last().text
         }
         if (includePath == null) return
         if (includePath.contains("/")) {
             includePath = includePath.substring(includePath.lastIndexOf('/') + 1)
         }
-        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project))
+        val virtualFile = FilenameIndex.getVirtualFilesByName(project, includePath, GlobalSearchScope.allScope(project))
         if (virtualFile.isEmpty()) return
         val loadText = LoadTextUtil.loadText(virtualFile.first())
         val glslFile = PsiFileFactory.getInstance(project).createFileFromText(includePath, GlslFileType(), loadText) as? GlslFile

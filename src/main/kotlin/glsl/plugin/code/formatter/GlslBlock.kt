@@ -4,6 +4,7 @@ import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.psi.tree.IFileElementType
 import glsl.GlslTypes.*
 import glsl.psi.interfaces.GlslExprNoAssignment
 
@@ -23,29 +24,29 @@ class GlslBlock(
 ) : AbstractBlock(node, wrap, myAlignment) {
 
     /**
-    *
-    */
+     *
+     */
     override fun getIndent(): Indent? {
         return myIndent
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
         return mySpacing.getSpacing(this, child1, child2)
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun isLeaf(): Boolean {
         return node.firstChildNode == null
     }
 
     /**
-    *
-    */
+     * This method is called after ENTER was pressed.
+     */
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
         if (node.elementType in COMPOUND_STATEMENTS) {
             return ChildAttributes(Indent.getNormalIndent(), null)
@@ -54,8 +55,8 @@ class GlslBlock(
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun buildChildren(): List<Block> {
         val blocks = arrayListOf<Block>()
         val newAlignment = Alignment.createAlignment()
@@ -105,7 +106,7 @@ class GlslBlock(
     private fun getCommentBlock(child: ASTNode, newAlignment: Alignment): GlslBlock {
         val parentType = node.elementType
         when (parentType) {
-            EXTERNAL_DECLARATION -> {
+            is IFileElementType -> {
                 return GlslBlock(child, wrap, newAlignment, mySpacing, Indent.getNoneIndent())
             }
             in COMPOUND_STATEMENTS -> {

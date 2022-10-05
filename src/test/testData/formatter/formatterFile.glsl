@@ -1,5 +1,5 @@
 #version 330
-    // One line comment
+// One line comment
 /*
 * Multi line comment
 */
@@ -7,7 +7,7 @@
 #include "file.h"
 __LINE__ 10
 
-        // One line comment
+// One line comment
     struct  DummyStruct     {
                 // One line comment
             int struct_declarator1  ;

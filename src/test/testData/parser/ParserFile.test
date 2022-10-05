@@ -166,14 +166,14 @@ int a = a[1][2];
 int a = a[1][2][3];
 
 int a = 1;
-int a = 1u;
+uint a = 1u;
 int a = -1;
-int a = -1u;
+uint a = -1u;
 int a = 0xA0000000;
-int a = 0xABcdEF00u;
+uint a = 0xABcdEF00u;
 int a = 0xffffffff;
 int a = 0x80000000;
-int a = 0xffffffffu;
+uint a = 0xffffffffu;
 int a = 3000000000;
 int a = 2147483648;
 

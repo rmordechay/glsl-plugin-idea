@@ -123,6 +123,9 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         }
     }
 
+    /**
+     *
+     */
     private fun resolveDeclarationType(declaration: GlslDeclaration?) {
         if (declaration != null) {
             val structSpecifier = declaration.singleDeclaration?.typeSpecifier?.typeSpecifierUser?.structSpecifier
@@ -217,7 +220,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
             paramsDeclarators.zip(exprList).forEach { (paramDeclarator, expr) ->
                 val callerType = expr.getExprType()
                 val definitionType = paramDeclarator.getAssociatedType() ?: return@forEach
-                if (callerType?.isEqual(definitionType) == true) {
+                if (callerType?.getTypeText() == definitionType.getTypeText()) {
                     matchedArgs += 1
                 } else {
                     return@forEach
@@ -324,7 +327,13 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private fun lookupInPpIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
         if (ppIncludeDeclaration == null) return
         val project = GlslUtils.getProject()
-        var includePath = ppIncludeDeclaration.stringLiteral?.text?.replace("\"", "") ?: return
+        var includePath: String? = null
+        if (ppIncludeDeclaration.stringLiteral != null) {
+            includePath = ppIncludeDeclaration.stringLiteral?.text?.replace("\"", "")
+        } else if (ppIncludeDeclaration.variableIdentifierList.isNotEmpty()) {
+            includePath = ppIncludeDeclaration.variableIdentifierList.joinToString("/") { it.getName() }
+        }
+        if (includePath == null) return
         if (includePath.contains("/")) {
             includePath = includePath.substring(includePath.lastIndexOf('/') + 1)
         }

@@ -60,20 +60,19 @@ class GlslCodeAnnotator : Annotator {
     private fun annotateFunctionCall(variableIdentifier: GlslVariableIdentifier, exprList: List<GlslExpr>, holder: AnnotationHolder) {
         val resolvedFunction = variableIdentifier.reference?.resolve()
         val funcName = variableIdentifier.text
-        var paramDeclarators: List<GlslNamedElement> = emptyList()
+        var paramDeclarators: List<GlslNamedElement>? = null
         if (resolvedFunction is GlslNamedFunctionHeader) {
             paramDeclarators = resolvedFunction.getParameterDeclarators()
         } else if (resolvedFunction is GlslNamedUserType) {
             paramDeclarators = resolvedFunction.getStructMembers()
         }
         if (exprList.isEmpty()) {
-            if (paramDeclarators.isNotEmpty()) {
-                annotateNoMatchingFunc(variableIdentifier, funcName, emptyList(), holder)
-            }
+            if (paramDeclarators != null && paramDeclarators.isEmpty()) return
+            annotateNoMatchingFunc(variableIdentifier, funcName, emptyList(), holder)
         } else {
             val exprTypes = exprList.map { it.getExprType() }
             if (exprTypes.contains(null)) return
-            if (paramDeclarators.size != exprTypes.size) {
+            if (paramDeclarators == null || paramDeclarators.size != exprTypes.size) {
                 val exprTypesText = exprTypes.mapNotNull { it!!.getTypeText() }
                 annotateNoMatchingFunc(variableIdentifier, funcName, exprTypesText, holder)
                 return
@@ -98,7 +97,8 @@ class GlslCodeAnnotator : Annotator {
             val exprType = expr.getExprType()
             val declarationType = singleDeclaration.getAssociatedType()
             if (exprType?.isEqual(declarationType) == false) {
-                setHighlightingError(singleDeclaration.variableIdentifier, holder, INCOMPATIBLE_TYPES_IN_INIT)
+                val msg = "Required: ${declarationType?.getTypeText() ?: ""}; Found: ${exprType.getTypeText()}"
+                setHighlightingError(singleDeclaration.variableIdentifier, holder, INCOMPATIBLE_TYPES_IN_INIT + msg)
             }
         }
     }

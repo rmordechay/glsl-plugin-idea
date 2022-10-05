@@ -3,9 +3,11 @@
 ## [1.0.5]
 ### Added 
 - Scalar constructor support (int, float, double, bool).
+- More file extensions are supported: **vsh**, **gsh**, **fsh**.
 ### Fixed
 - Support for angled brackets #include.
-- Added missing imageStore builtin functions.
+- Added missing imageStore and imageLoad builtin functions.
+- Wrong error with struct constructors.
 
 ## [1.0.4]
 Big release.

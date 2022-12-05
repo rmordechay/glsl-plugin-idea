@@ -1,5 +1,8 @@
 # GLSL Plugin Changelog
 
+## [1.0.6]
+- Support for 2022.3
+
 ## [1.0.5]
 ### Added 
 - Scalar constructor support (int, float, double, bool).

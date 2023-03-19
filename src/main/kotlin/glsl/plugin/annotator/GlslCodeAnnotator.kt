@@ -97,7 +97,7 @@ class GlslCodeAnnotator : Annotator {
             val exprType = expr.getExprType()
             val declarationType = singleDeclaration.getAssociatedType()
             if (exprType?.isEqual(declarationType) == false) {
-                val msg = "Required: ${declarationType?.getTypeText() ?: ""}; Found: ${exprType.getTypeText()}"
+                val msg = "\nRequired: ${declarationType?.getTypeText() ?: ""}; Found: ${exprType.getTypeText()}."
                 setHighlightingError(singleDeclaration.variableIdentifier, holder, INCOMPATIBLE_TYPES_IN_INIT + msg)
             }
         }
@@ -107,10 +107,10 @@ class GlslCodeAnnotator : Annotator {
      *
      */
     private fun annotateAssignmentExpr(element: GlslAssignmentExpr, holder: AnnotationHolder) {
+        val assignmentType = element.assignmentOperator.text
         val exprList = element.exprList
         val leftType = exprList.first().getExprType()
         val rightType = exprList.last().getExprType()
-        val assignmentType = element.assignmentOperator.text
         if (!setOf('*', '/', '+', '-').contains(assignmentType.first())) {
             if (leftType?.isEqual(rightType) == false) {
                 setHighlightingError(exprList.first(), holder,  INCOMPATIBLE_TYPES_IN_INIT)

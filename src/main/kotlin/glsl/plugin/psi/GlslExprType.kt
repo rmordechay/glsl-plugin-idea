@@ -76,7 +76,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
                 if (postfixType is GlslMatrix) {
                     return postfixType.getChildType(postfixExpr.exprList)
                 }
-                return getPostfixType(postfixExpr.postfixExpr)
+                return postfixType
             }
             is GlslPostfixInc -> return getPostfixType(postfixExpr.postfixExpr)
         }

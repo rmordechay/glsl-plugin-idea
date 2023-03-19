@@ -758,6 +758,9 @@ primary_expr
 	|   BOOLCONSTANT
 	|   STRING_LITERAL
     |   DOUBLECONSTANT
+    |   MACRO_LINE
+    |   MACRO_FILE
+    |   MACRO_VERSION
 
 unary_expr
     ::= (INC_OP | DEC_OP) postfix_expr
@@ -1156,7 +1159,6 @@ spirv_instruction_qualifier_id
 pp_statement
     ::=  pp_literal (FLOATCONSTANT|INTCONSTANT|STRING_LITERAL|BOOLCONSTANT|PP_TEXT)*
     |    (PP_UNDEF|PP_IFDEF|PP_IFNDEF) variable_identifier PP_END
-    |    (PP_ENDIF|PP_ELSE|HASH) PP_END
     |    pp_include_declaration PP_END
     |    pp_define_declaration PP_END
     |    pp_conditional PP_END
@@ -1189,6 +1191,9 @@ private pp_line
 
 private pp_conditional
     ::= (PP_IF|PP_ELIF) expr_no_assignment
+    |   PP_ENDIF
+    |   PP_ELSE
+    |   HASH
     {   pin(".*")=1   }
 
 private pp_define_declaration

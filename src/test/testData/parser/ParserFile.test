@@ -57,6 +57,9 @@ int a;
 #elif 20 > 19
 #endif
 
+#if __VERSION__ == 1.0
+#define BB 10
+#endif
 
 #define a 10
 #if VARIABLE > 5

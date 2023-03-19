@@ -1,5 +1,10 @@
 # GLSL Plugin Changelog
 
+## [1.0.7]
+### Added 
+- Macros on preprocessors if statements (__VERSION__, __LINE__...) 
+- User defined colors to operators 
+
 ## [1.0.6]
 - Updated build version to 223.*
  

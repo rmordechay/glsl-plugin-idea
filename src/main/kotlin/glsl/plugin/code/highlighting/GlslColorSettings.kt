@@ -29,6 +29,7 @@ class GlslColorSettings : ColorSettingsPage {
             AttributesDescriptor("Function // Function parameter", GlslTextAttributes.FUNC_PARAM_TEXT_ATTR),
             AttributesDescriptor("Builtin type", GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR),
             AttributesDescriptor("Preprocessor name", GlslTextAttributes.PREPROCESSOR_TEXT_ATTR),
+            AttributesDescriptor("Operators", GlslTextAttributes.OPERATORS_TEXT_ATTR),
             AttributesDescriptor("Bad character", GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR),
         )
 

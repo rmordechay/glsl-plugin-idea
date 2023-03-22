@@ -13,6 +13,14 @@
 #define a(x) x + 1
 #define a(x, y, z) x * y * z
 
+#define float2 vec2
+#define float3 vec3
+#define float4 vec4
+#define bool2 bvec2
+#define bool3 bvec3
+#define bool4 bvec4
+#define float3x3 mat3x3
+#define float4x3 mat4x3
 
 ;;;
 // One line comment

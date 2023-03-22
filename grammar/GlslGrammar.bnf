@@ -1194,13 +1194,16 @@ private pp_conditional
     {   pin(".*")=1   }
 
 private pp_define_declaration
-    ::= PP_DEFINE (pp_define_function|pp_single_declaration)
+    ::= PP_DEFINE (pp_define_function|pp_type_declaration|pp_single_declaration)
     {   pin(".*")=1   }
 
 private recover_pp_define_function ::= !(RIGHT_PAREN|PP_END)
 
 pp_single_declaration
     ::= variable_identifier expr?
+
+pp_type_declaration
+    ::= variable_identifier (type_specifier_builtin|single_type_qualifier)
 
 pp_define_function
     ::= variable_identifier LEFT_PAREN pp_define_params RIGHT_PAREN expr

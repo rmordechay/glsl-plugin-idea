@@ -12,6 +12,7 @@ import glsl.data.GlslDefinitions.SCALARS_CONSTRUCTORS
 import glsl.data.GlslErrorMessages
 import glsl.data.GlslErrorMessages.Companion.CONDITION_MUST_BE_BOOL
 import glsl.data.GlslErrorMessages.Companion.CONSTRUCTOR_PRIMITIVE_ONE_ARGUMENT
+import glsl.data.GlslErrorMessages.Companion.INCOMPATIBLE_TYPES_IN_ASSIGNMENT
 import glsl.data.GlslErrorMessages.Companion.INCOMPATIBLE_TYPES_IN_INIT
 import glsl.data.GlslErrorMessages.Companion.INVALID_TYPES_ARGUMENT_CONSTRUCTOR
 import glsl.data.GlslErrorMessages.Companion.TOO_FEW_ARGUMENTS_CONSTRUCTOR
@@ -97,7 +98,7 @@ class GlslCodeAnnotator : Annotator {
             val exprType = expr.getExprType()
             val declarationType = singleDeclaration.getAssociatedType()
             if (exprType?.isEqual(declarationType) == false) {
-                val msg = "\nRequired: ${declarationType?.getTypeText() ?: ""}; Found: ${exprType.getTypeText()}."
+                val msg = " Required: ${declarationType?.getTypeText() ?: ""}; Found: ${exprType.getTypeText()}."
                 setHighlightingError(singleDeclaration.variableIdentifier, holder, INCOMPATIBLE_TYPES_IN_INIT + msg)
             }
         }
@@ -108,13 +109,14 @@ class GlslCodeAnnotator : Annotator {
      */
     private fun annotateAssignmentExpr(element: GlslAssignmentExpr, holder: AnnotationHolder) {
         val assignmentType = element.assignmentOperator.text
+        if (setOf('*', '/', '+', '-').contains(assignmentType.first())) return
+
         val exprList = element.exprList
         val leftType = exprList.first().getExprType()
         val rightType = exprList.last().getExprType()
-        if (!setOf('*', '/', '+', '-').contains(assignmentType.first())) {
-            if (leftType?.isEqual(rightType) == false) {
-                setHighlightingError(exprList.first(), holder,  INCOMPATIBLE_TYPES_IN_INIT)
-            }
+        if (rightType == null || leftType == null) return
+        if (!rightType.isEqual(leftType)) {
+            setHighlightingError(exprList.first(), holder,  INCOMPATIBLE_TYPES_IN_ASSIGNMENT.format(leftType.getTypeText(), rightType.getTypeText()))
         }
     }
 

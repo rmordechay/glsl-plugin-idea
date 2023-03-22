@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import glsl.plugin.psi.builtins.GlslMatrix
 import glsl.plugin.psi.builtins.GlslScalar
+import glsl.plugin.psi.builtins.GlslVector
 import glsl.psi.interfaces.*
 
 interface GlslExprType : PsiElement {
@@ -74,6 +75,8 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
             is GlslPostfixArrayIndex -> {
                 val postfixType = getPostfixType(postfixExpr.postfixExpr)
                 if (postfixType is GlslMatrix) {
+                    return postfixType.getChildType(postfixExpr.exprList)
+                } else if (postfixType is GlslVector) {
                     return postfixType.getChildType(postfixExpr.exprList)
                 }
                 return postfixType

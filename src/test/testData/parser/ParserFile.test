@@ -278,6 +278,11 @@ int function_definition(DummyBlock x, float y) {
     UserType main(UserType a, UserType b);
     expr_statement();
 
+    v[2] = 1;
+    v[1] = 1.;
+    v[2][2] = 1;
+    v[1][2][2] = 1.;
+
     if (selection_statement == 1) {
         if (inner_id < 6) {
             dummy;

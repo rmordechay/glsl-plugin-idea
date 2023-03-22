@@ -5,6 +5,7 @@ import glsl.data.GlslDefinitions
 import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.utils.GlslBuiltinUtils
+import glsl.psi.interfaces.GlslExpr
 import glsl.psi.interfaces.GlslMulExpr
 
 
@@ -51,6 +52,21 @@ class GlslVector(private val typeText: String) : GlslType {
     /**
      *
      */
+    private fun getVectorComponentType(): String {
+        val typeText = getTypeText().first()
+        return when (typeText) {
+            'v', 'f' -> "float"
+            'd' -> "double"
+            'u' -> "uint"
+            'i' -> "int"
+            'b' -> "bool"
+            else -> ""
+        }
+    }
+
+    /**
+     *
+     */
     override fun isConvertible(other: String): Boolean {
         val implicitConversions = GlslDefinitions.VECTORS[getTypeText()]
         return implicitConversions?.contains(other) ?: false
@@ -79,5 +95,15 @@ class GlslVector(private val typeText: String) : GlslType {
             return null
         }
         return this
+    }
+
+    /**
+     *
+     */
+    fun getChildType(exprList: List<GlslExpr>): GlslType {
+        if (exprList.isEmpty()) {
+            return this
+        }
+        return GlslScalar(getVectorComponentType())
     }
 }

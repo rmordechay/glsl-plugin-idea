@@ -937,10 +937,7 @@ private fully_specified_type
     ::= type_qualifier? type_specifier
 
 type_specifier
-    ::= (type_specifier_builtin|type_specifier_user) type_parameter_specifier_opt? array_specifier?
-
-private type_parameter_specifier_opt
-    ::= type_parameter_specifier
+    ::= (type_specifier_builtin|type_specifier_user) type_parameter_specifier? array_specifier?
 
 type_parameter_specifier
     ::= LEFT_ANGLE type_parameter_specifier_list RIGHT_ANGLE

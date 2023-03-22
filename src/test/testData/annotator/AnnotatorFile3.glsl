@@ -58,15 +58,10 @@ void main() {
     vec3 vec = vec3(1.0, 1.0, 1.0);
     vec3 vec = <error descr="Too few arguments to constructor of 'vec3'.">vec3</error>(1.0, 1.0);
     vec3 vec = <error descr="Too many arguments to constructor of 'vec3'.">vec3</error>(1.0, vec2(1.0), vec2(1.0));
-    vec4 <error descr="Incompatible types in initialization (and no available implicit conversion).
-Required: vec4; Found: int.">a</error> = VAR + 12;
-    <error descr="Incompatible types in initialization (and no available implicit conversion).">or2</error> |= 2;
-    vec3 <error descr="Incompatible types in initialization (and no available implicit conversion).
-Required: vec3; Found: vec4.">b</error> = a[0];
-    vec3 <error descr="Incompatible types in initialization (and no available implicit conversion).
-Required: vec3; Found: vec4.">b</error> = a[0][0];
-    ivec2 <error descr="Incompatible types in initialization (and no available implicit conversion).
-Required: ivec2; Found: vec2.">vec</error> = vec2(1.0);
-    vec4 <error descr="Incompatible types in initialization (and no available implicit conversion).
-Required: vec4; Found: vec3.">vec</error> = vec3(1.0);
+    vec4 <error descr="Incompatible types in initialization (and no available implicit conversion). Required: vec4; Found: int.">a</error> = VAR + 12;
+    or2 |= 2;
+    vec3 <error descr="Incompatible types in initialization (and no available implicit conversion). Required: vec3; Found: float.">b</error> = a[0];
+    vec3 <error descr="Incompatible types in initialization (and no available implicit conversion). Required: vec3; Found: float.">b</error> = a[0][0];
+    ivec2 <error descr="Incompatible types in initialization (and no available implicit conversion). Required: ivec2; Found: vec2.">vec</error> = vec2(1.0);
+    vec4 <error descr="Incompatible types in initialization (and no available implicit conversion). Required: vec4; Found: vec3.">vec</error> = vec3(1.0);
 }

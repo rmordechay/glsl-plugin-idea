@@ -2,22 +2,22 @@
 <list>
     <option name="GLSL_KEYWORD">
         <value>
-            <option name="FOREGROUND" value="D27070"/>
+            <option name="FOREGROUND" value="FC8585"/>
         </value>
     </option>
     <option name="GLSL_BUILTIN_TYPE">
         <value>
-            <option name="FOREGROUND" value="D5994A"/>
+            <option name="FOREGROUND" value="F6C071"/>
         </value>
     </option>
     <option name="GLSL_BUILTIN_NAME_TEXT_ATTR">
         <value>
-            <option name="FOREGROUND" value="78AA87"/>
+            <option name="FOREGROUND" value="A3E7CB"/>
         </value>
     </option>
     <option name="GLSL_BUILTIN_GLOBAL_CONSTANTS">
         <value>
-            <option name="FOREGROUND" value="A672BA"/>
+            <option name="FOREGROUND" value="86E0E0"/>
         </value>
     </option>
     <option name="GLSL_VARIABLE">
@@ -62,7 +62,7 @@
     </option>
     <option name="GLSL_FUNCTION_PARAM">
         <value>
-            <option name="FOREGROUND" value="A08282"/>
+            <option name="FOREGROUND" value="FA8A7A"/>
         </value>
     </option>
 

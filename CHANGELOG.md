@@ -1,9 +1,13 @@
 # GLSL Plugin Changelog
 
 ## [1.0.7]
+### Fixed
+- Wrong type compatibility warning on array index assignment.
 ### Added 
 - Macros on preprocessors if statements (__VERSION__, __LINE__...) 
-- User defined colors to operators 
+- User defined colors to operators
+### Updated
+- Syntax colors should have a stronger contrast
 
 ## [1.0.6]
 - Updated build version to 223.*

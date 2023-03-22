@@ -3,11 +3,12 @@
 ## [1.0.7]
 ### Fixed
 - Wrong type compatibility warning on array index assignment.
+- Changed texture2D, texture3D and textureCube to functions instead of types.
 ### Added 
-- Macros on preprocessors if statements (__VERSION__, __LINE__...) 
-- User defined colors to operators
+- Macros on preprocessors with if statements (__VERSION__, __LINE__...). 
+- User defined colors to operators.
 ### Updated
-- Syntax colors should have a stronger contrast
+- Syntax colors should have a stronger contrast.
 
 ## [1.0.6]
 - Updated build version to 223.*

@@ -450,8 +450,6 @@ MACRO_VERSION="__VERSION__"
   "usampler2DArray"                { return USAMPLER2DARRAY; }
   "sampler3D"                      { return SAMPLER3D; }
   "sampler2DShadow"                { return SAMPLER2DSHADOW; }
-  "texture2D"                      { return TEXTURE2D; }
-  "textureCube"                    { return TEXTURECUBE; }
   "texture2DArray"                 { return TEXTURE2DARRAY; }
   "itexture2D"                     { return ITEXTURE2D; }
   "itexture3D"                     { return ITEXTURE3D; }
@@ -461,7 +459,6 @@ MACRO_VERSION="__VERSION__"
   "utexture3D"                     { return UTEXTURE3D; }
   "utextureCube"                   { return UTEXTURECUBE; }
   "utexture2DArray"                { return UTEXTURE2DARRAY; }
-  "texture3D"                      { return TEXTURE3D; }
   "sampler"                        { return SAMPLER; }
   "samplerShadow"                  { return SAMPLERSHADOW; }
   "textureCubeArray"               { return TEXTURECUBEARRAY; }

@@ -51,7 +51,7 @@ generateLexer {
     targetClass = '_GlslLexer.java'
 }
 
-tasks.register('generateGrammarClean') {
+task generateGrammarClean {
     doFirst {
         delete 'src/main/gen'
     }

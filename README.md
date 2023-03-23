@@ -1,3 +1,11 @@
+![Alt text](/Users/roi.mordechay/Desktop/programming/glsl-plugin-idea/src/main/resources/META-INF/pluginIcon.svg)
+
+
+![Version](https://img.shields.io/jetbrains/plugin/v/18470)
+![Downloads](https://img.shields.io/jetbrains/plugin/d/18470)
+![Rating](https://img.shields.io/jetbrains/plugin/r/rating/18470)
+
+
 # GLSL Plugin
 
 GLSL plugin support for JetBrains IDE's.

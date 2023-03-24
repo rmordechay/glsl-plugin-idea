@@ -7,6 +7,7 @@ import glsl.plugin.psi.builtins.GlslMatrix
 import glsl.plugin.psi.builtins.GlslScalar
 import glsl.plugin.psi.builtins.GlslVector
 import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.reference.GlslReference
 import glsl.psi.interfaces.GlslTypeSpecifier
 
 /**
@@ -60,7 +61,7 @@ interface GlslType {
             if (userType.structSpecifier != null) {
                 return userType.structSpecifier
             } else if (userType.typeName != null) {
-                val reference = userType.typeName?.reference
+                val reference = userType.typeName?.reference as GlslReference
                 return reference?.resolveType()
             }
             return null

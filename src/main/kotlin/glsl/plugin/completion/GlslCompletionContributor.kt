@@ -29,7 +29,6 @@ class GlslCompletionContributor : CompletionContributor() {
         psiElement(FLOATCONSTANT),
         psiElement(DOUBLECONSTANT),
     )
-
     private val afterDot = psiElement().afterLeaf(".")
     private val afterPpLiteral = psiElement().afterLeaf("#")
     private val insidePpStatement = psiElement().inside(GlslPpStatement::class.java)
@@ -40,10 +39,10 @@ class GlslCompletionContributor : CompletionContributor() {
         .andNot(psiElement().afterLeaf(numeric))
         .andNot(afterDot)
 
-    private val insideTypeSpecifier = psiElement(IDENTIFIER)
+    private val insideTypeSpecifier = psiElement(TYPE_NAME_IDENTIFIER)
         .withParent(GlslTypeName::class.java)
         .andNot(psiElement().afterLeaf(numeric))
-        .inside(GlslTypeSpecifier::class.java)
+        .inside(GlslSingleDeclaration::class.java)
 
     private val insideExpression = psiElement(IDENTIFIER)
         .andNot(psiElement().afterLeaf(numeric))

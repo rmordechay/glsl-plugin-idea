@@ -1,1 +1,1 @@
-int main(in int a, i)
+int main(in int a, i<caret>)

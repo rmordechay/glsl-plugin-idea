@@ -2,9 +2,10 @@
 
 ## [1.0.8]
 ### Added 
-- Type definition to #define. e.g. #define float4 vec4. Still doesn't really work but it's a good beginning.
+- Type definition to #define. e.g. #define float4 vec4. Still doesn't really work, but it's a good beginning.
 ### Fixed
 - Texture functions bug for texture3D and textureCube  
+- Initialization of user-defined types array bug.  
 
 ## [1.0.7]
 ### Fixed

@@ -46,6 +46,9 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
         return pack(mapTokenToTextAttr(tokenType))
     }
 
+    /**
+     *
+     */
     private fun mapTokenToTextAttr(tokenType: IElementType): TextAttributesKey? {
         return when (tokenType) {
             GlslTypes.LINE_COMMENT -> LINE_COMMENT_TEXT_ATTR

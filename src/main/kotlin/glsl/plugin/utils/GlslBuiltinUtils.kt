@@ -28,7 +28,6 @@ object GlslBuiltinUtils {
         val glslFile = PsiFileFactory.getInstance(project)
             .createFileFromText(fileName, GlslFileType(), funcsString) as? GlslFile
         glslFile?.viewProvider?.virtualFile?.isWritable = false
-        glslFile?.viewProvider
         return glslFile
     }
 

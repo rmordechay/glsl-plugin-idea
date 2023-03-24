@@ -25,7 +25,6 @@ import static glsl.GlslTypes.*;
 %unicode
 %state IN_MULITLINE_COMMENT
 %state PREPROCESSOR_IGNORE
-%state PREPROCESSOR_IGNORE_BACKSLASH
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
@@ -80,7 +79,7 @@ MACRO_VERSION="__VERSION__"
 }
 
 <PREPROCESSOR_IGNORE> {
-  "\\"                             { yybegin(PREPROCESSOR_IGNORE_BACKSLASH); return WHITE_SPACE;}
+  "\\"                             { return WHITE_SPACE;}
   {NEW_LINE}                       { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {FLOATCONSTANT}                  { return FLOATCONSTANT; }
@@ -89,10 +88,6 @@ MACRO_VERSION="__VERSION__"
   {BOOLCONSTANT}                   { return BOOLCONSTANT; }
   {STRING_LITERAL}                 { return STRING_LITERAL; }
   {PP_TEXT}                        { return PP_TEXT;}
-}
-
-<PREPROCESSOR_IGNORE_BACKSLASH> {
-    {NEW_LINE}                     { yybegin(PREPROCESSOR_IGNORE); return WHITE_SPACE; }
 }
 
 <YYINITIAL> {

@@ -323,6 +323,7 @@
         BOOLCONSTANT="regexp:false|true"
         STRING_LITERAL="regexp:(\"([^\"\\]|\[.])*\")"
         IDENTIFIER="regexp:[a-zA-Z_]+\w*"
+        TYPE_NAME_IDENTIFIER="regexp:[a-zA-Z_]+\w*"
     ]
 }
 
@@ -357,8 +358,7 @@ variable_identifier
     ::= IDENTIFIER
 
 private init_declarator_list
-    ::= single_declaration (COMMA init_declarator_variable array_specifier? EQUAL initializer)*
-    |   single_declaration (COMMA init_declarator_variable array_specifier?)*
+    ::= single_declaration (COMMA init_declarator_variable array_specifier? (EQUAL initializer)?)*
     {   pin(".*")=1 }
 
 init_declarator_variable
@@ -369,7 +369,7 @@ single_declaration
     |   fully_specified_type variable_identifier EQUAL initializer
     |   fully_specified_type variable_identifier array_specifier?
     |   fully_specified_type
-//    {   pin(".*")=2 }
+    {   pin(".*")="EQUAL" }
 
 private initializer_list
     ::= initializer (COMMA initializer)*
@@ -542,10 +542,6 @@ postfix_field_selection
 postfix_array_index
     ::= postfix_expr (LEFT_BRACKET integer_expression RIGHT_BRACKET)+
 
-primary_expr_variable
-   ::= <<primaryExprVariable>>
-   {   elementType=variable_identifier    }
-
 primary_expr
     ::= variable_identifier
     |   LEFT_PAREN expr RIGHT_PAREN
@@ -708,7 +704,7 @@ struct_specifier
     {   pin=1  }
 
 private struct_declaration_list
-    ::= struct_declaration*
+    ::= struct_declaration+
 
 struct_declaration
     ::= fully_specified_type struct_declarator_list SEMICOLON

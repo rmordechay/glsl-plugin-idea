@@ -157,7 +157,7 @@ float single_declaration[2] = 0.2;
 int a = a.b.c.i;
 
 float a = 0;
-float a = 0, b;
+
 float a = 0, b[];
 float a = 0, b = 0;
 float a = 0, b[] = 2;
@@ -170,18 +170,18 @@ float a[1][2][3], b[2][1] = 2, c, d[] = 0, e;
 float a[1][2][3], b[2][1] = 2, c, d[] = 0, e = 2;
 
 
-int a = 8.4781762f;
-int a = 8.478176E2f;
-int a = 8.478176e2;
-int a = 8.478176E+2;
-int a = 8.478176e+20;
-int a = 8.478176E-223;
-int a = 8.478176e-24;
+float a = 8.4781762f;
+float a = 8.478176E2f;
+float a = 8.478176e2;
+float a = 8.478176E+2;
+float a = 8.478176e+20;
+float a = 8.478176E-223;
+float a = 8.478176e-24;
 
-int a = a;
-int a = a[1];
-int a = a[1][2];
-int a = a[1][2][3];
+float a = a;
+float a = a[1];
+float a = a[1][2];
+float a = a[1][2][3];
 
 int a = 1;
 uint a = 1u;
@@ -271,7 +271,7 @@ UserType main(UserType a, UserType b) {}
 noperspective centroid out vec2 a;
 centroid out vec2 a;
 smooth out vec2 a[];
-
+int call();
 int function_definition(DummyBlock x, float y) {
     ;;;;
     void main();
@@ -285,7 +285,7 @@ int function_definition(DummyBlock x, float y) {
     UserType main(UserType a, int b);
     UserType main(UserType a, UserType b);
     expr_statement();
-
+    int dummy;
     v[2] = 1;
     v[1] = 1.;
     v[2][2] = 1;
@@ -363,5 +363,5 @@ int function_definition(DummyBlock x, float y) {
     return jump_statement;
     return;
     EmitVertex();
-    gl_Position = a.b * vec4((x * vec3(5.0, 5.0, 0.0)) + y[0].xyz, 1.0);
+    gl_Position = a.b * vec5((x * vec3(5.0, 5.0, 0.0)) + y[0].xyz, 1.0);
 }

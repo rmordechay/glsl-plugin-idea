@@ -131,8 +131,8 @@ MACRO_VERSION="__VERSION__"
   {PP_ELIF}                        { inPp = true; return PP_ELIF;}
   {PP_ERROR}                       { yybegin(PREPROCESSOR_IGNORE); return PP_ERROR;}
   {PP_PRAGMA}                      { yybegin(PREPROCESSOR_IGNORE); return PP_PRAGMA;}
-  // Punctuation
   "#"                              { inPp = true; return HASH; }
+  // Punctuation
   ";"                              { afterType = false; afterTypeQualifier = false; return SEMICOLON; }
   ","                              { afterType = false; afterTypeQualifier = false; return COMMA; }
   ":"                              { afterType = false; afterTypeQualifier = false; return COLON; }
@@ -236,92 +236,92 @@ MACRO_VERSION="__VERSION__"
     "dmat4x3"                      { afterType = true; return DMAT4X3; }
     "dmat4x4"                      { afterType = true; return DMAT4X4; }
     "atomic_uint"                  { afterType = true; return ATOMIC_UINT; }
-    "sampler2d"                    { afterType = true; return SAMPLER2D; }
-    "sampler3d"                    { afterType = true; return SAMPLER3D; }
-    "samplercube"                  { afterType = true; return SAMPLERCUBE; }
-    "sampler2dshadow"              { afterType = true; return SAMPLER2DSHADOW; }
-    "samplercubeshadow"            { afterType = true; return SAMPLERCUBESHADOW; }
-    "sampler2darray"               { afterType = true; return SAMPLER2DARRAY; }
-    "sampler2darrayshadow"         { afterType = true; return SAMPLER2DARRAYSHADOW; }
-    "samplercubearray"             { afterType = true; return SAMPLERCUBEARRAY; }
-    "samplercubearrayshadow"       { afterType = true; return SAMPLERCUBEARRAYSHADOW; }
-    "isampler2d"                   { afterType = true; return ISAMPLER2D; }
-    "isampler3d"                   { afterType = true; return ISAMPLER3D; }
-    "isamplercube"                 { afterType = true; return ISAMPLERCUBE; }
-    "isampler2darray"              { afterType = true; return ISAMPLER2DARRAY; }
-    "isamplercubearray"            { afterType = true; return ISAMPLERCUBEARRAY; }
-    "usampler2d"                   { afterType = true; return USAMPLER2D; }
-    "usampler3d"                   { afterType = true; return USAMPLER3D; }
-    "usamplercube"                 { afterType = true; return USAMPLERCUBE; }
-    "usampler2darray"              { afterType = true; return USAMPLER2DARRAY; }
-    "usamplercubearray"            { afterType = true; return USAMPLERCUBEARRAY; }
-    "sampler1d"                    { afterType = true; return SAMPLER1D; }
-    "sampler1dshadow"              { afterType = true; return SAMPLER1DSHADOW; }
-    "sampler1darray"               { afterType = true; return SAMPLER1DARRAY; }
-    "sampler1darrayshadow"         { afterType = true; return SAMPLER1DARRAYSHADOW; }
-    "isampler1d"                   { afterType = true; return ISAMPLER1D; }
-    "isampler1darray"              { afterType = true; return ISAMPLER1DARRAY; }
-    "usampler1d"                   { afterType = true; return USAMPLER1D; }
-    "usampler1darray"              { afterType = true; return USAMPLER1DARRAY; }
-    "sampler2drect"                { afterType = true; return SAMPLER2DRECT; }
-    "sampler2drectshadow"          { afterType = true; return SAMPLER2DRECTSHADOW; }
-    "isampler2drect"               { afterType = true; return ISAMPLER2DRECT; }
-    "usampler2drect"               { afterType = true; return USAMPLER2DRECT; }
-    "samplerbuffer"                { afterType = true; return SAMPLERBUFFER; }
-    "isamplerbuffer"               { afterType = true; return ISAMPLERBUFFER; }
-    "usamplerbuffer"               { afterType = true; return USAMPLERBUFFER; }
-    "sampler2dms"                  { afterType = true; return SAMPLER2DMS; }
-    "isampler2dms"                 { afterType = true; return ISAMPLER2DMS; }
-    "usampler2dms"                 { afterType = true; return USAMPLER2DMS; }
-    "sampler2dmsarray"             { afterType = true; return SAMPLER2DMSARRAY; }
-    "isampler2dmsarray"            { afterType = true; return ISAMPLER2DMSARRAY; }
-    "usampler2dmsarray"            { afterType = true; return USAMPLER2DMSARRAY; }
-    "image2d"                      { afterType = true; return IMAGE2D; }
-    "iimage2d"                     { afterType = true; return IIMAGE2D; }
-    "uimage2d"                     { afterType = true; return UIMAGE2D; }
-    "image3d"                      { afterType = true; return IMAGE3D; }
-    "iimage3d"                     { afterType = true; return IIMAGE3D; }
-    "uimage3d"                     { afterType = true; return UIMAGE3D; }
-    "imagecube"                    { afterType = true; return IMAGECUBE; }
-    "iimagecube"                   { afterType = true; return IIMAGECUBE; }
-    "uimagecube"                   { afterType = true; return UIMAGECUBE; }
-    "imagebuffer"                  { afterType = true; return IMAGEBUFFER; }
-    "iimagebuffer"                 { afterType = true; return IIMAGEBUFFER; }
-    "uimagebuffer"                 { afterType = true; return UIMAGEBUFFER; }
-    "image1d"                      { afterType = true; return IMAGE1D; }
-    "iimage1d"                     { afterType = true; return IIMAGE1D; }
-    "uimage1d"                     { afterType = true; return UIMAGE1D; }
-    "image1darray"                 { afterType = true; return IMAGE1DARRAY; }
-    "iimage1darray"                { afterType = true; return IIMAGE1DARRAY; }
-    "uimage1darray"                { afterType = true; return UIMAGE1DARRAY; }
-    "image2drect"                  { afterType = true; return IMAGE2DRECT; }
-    "iimage2drect"                 { afterType = true; return IIMAGE2DRECT; }
-    "uimage2drect"                 { afterType = true; return UIMAGE2DRECT; }
-    "image2darray"                 { afterType = true; return IMAGE2DARRAY; }
-    "iimage2darray"                { afterType = true; return IIMAGE2DARRAY; }
-    "uimage2darray"                { afterType = true; return UIMAGE2DARRAY; }
-    "imagecubearray"               { afterType = true; return IMAGECUBEARRAY; }
-    "iimagecubearray"              { afterType = true; return IIMAGECUBEARRAY; }
-    "uimagecubearray"              { afterType = true; return UIMAGECUBEARRAY; }
-    "image2dms"                    { afterType = true; return IMAGE2DMS; }
-    "iimage2dms"                   { afterType = true; return IIMAGE2DMS; }
-    "uimage2dms"                   { afterType = true; return UIMAGE2DMS; }
-    "image2dmsarray"               { afterType = true; return IMAGE2DMSARRAY; }
-    "iimage2dmsarray"              { afterType = true; return IIMAGE2DMSARRAY; }
-    "uimage2dmsarray"              { afterType = true; return UIMAGE2DMSARRAY; }
+    "sampler2D"                    { afterType = true; return SAMPLER2D; }
+    "sampler3D"                    { afterType = true; return SAMPLER3D; }
+    "samplerCube"                  { afterType = true; return SAMPLERCUBE; }
+    "sampler2DShadow"              { afterType = true; return SAMPLER2DSHADOW; }
+    "samplerCubeShadow"            { afterType = true; return SAMPLERCUBESHADOW; }
+    "sampler2DArray"               { afterType = true; return SAMPLER2DARRAY; }
+    "sampler2DArrayShadow"         { afterType = true; return SAMPLER2DARRAYSHADOW; }
+    "samplerCubeArray"             { afterType = true; return SAMPLERCUBEARRAY; }
+    "samplerCubeArrayShadow"       { afterType = true; return SAMPLERCUBEARRAYSHADOW; }
+    "isampler2D"                   { afterType = true; return ISAMPLER2D; }
+    "isampler3D"                   { afterType = true; return ISAMPLER3D; }
+    "isamplerCube"                 { afterType = true; return ISAMPLERCUBE; }
+    "isampler2DArray"              { afterType = true; return ISAMPLER2DARRAY; }
+    "isamplerCubeArray"            { afterType = true; return ISAMPLERCUBEARRAY; }
+    "usampler2D"                   { afterType = true; return USAMPLER2D; }
+    "usampler3D"                   { afterType = true; return USAMPLER3D; }
+    "usamplerCube"                 { afterType = true; return USAMPLERCUBE; }
+    "usampler2DArray"              { afterType = true; return USAMPLER2DARRAY; }
+    "usamplerCubeArray"            { afterType = true; return USAMPLERCUBEARRAY; }
+    "sampler1D"                    { afterType = true; return SAMPLER1D; }
+    "sampler1DShadow"              { afterType = true; return SAMPLER1DSHADOW; }
+    "sampler1DArray"               { afterType = true; return SAMPLER1DARRAY; }
+    "sampler1DArrayShadow"         { afterType = true; return SAMPLER1DARRAYSHADOW; }
+    "isampler1D"                   { afterType = true; return ISAMPLER1D; }
+    "isampler1DArray"              { afterType = true; return ISAMPLER1DARRAY; }
+    "usampler1D"                   { afterType = true; return USAMPLER1D; }
+    "usampler1DArray"              { afterType = true; return USAMPLER1DARRAY; }
+    "sampler2DRect"                { afterType = true; return SAMPLER2DRECT; }
+    "sampler2DRectShadow"          { afterType = true; return SAMPLER2DRECTSHADOW; }
+    "isampler2DRect"               { afterType = true; return ISAMPLER2DRECT; }
+    "usampler2DRect"               { afterType = true; return USAMPLER2DRECT; }
+    "samplerBuffer"                { afterType = true; return SAMPLERBUFFER; }
+    "isamplerBuffer"               { afterType = true; return ISAMPLERBUFFER; }
+    "usamplerBuffer"               { afterType = true; return USAMPLERBUFFER; }
+    "sampler2DMS"                  { afterType = true; return SAMPLER2DMS; }
+    "isampler2DMS"                 { afterType = true; return ISAMPLER2DMS; }
+    "usampler2DMS"                 { afterType = true; return USAMPLER2DMS; }
+    "sampler2DMSArray"             { afterType = true; return SAMPLER2DMSARRAY; }
+    "isampler2DMSArray"            { afterType = true; return ISAMPLER2DMSARRAY; }
+    "usampler2DMSArray"            { afterType = true; return USAMPLER2DMSARRAY; }
+    "image2D"                      { afterType = true; return IMAGE2D; }
+    "iimage2D"                     { afterType = true; return IIMAGE2D; }
+    "uimage2D"                     { afterType = true; return UIMAGE2D; }
+    "image3D"                      { afterType = true; return IMAGE3D; }
+    "iimage3D"                     { afterType = true; return IIMAGE3D; }
+    "uimage3D"                     { afterType = true; return UIMAGE3D; }
+    "imageCube"                    { afterType = true; return IMAGECUBE; }
+    "iimageCube"                   { afterType = true; return IIMAGECUBE; }
+    "uimageCube"                   { afterType = true; return UIMAGECUBE; }
+    "imageBuffer"                  { afterType = true; return IMAGEBUFFER; }
+    "iimageBuffer"                 { afterType = true; return IIMAGEBUFFER; }
+    "uimageBuffer"                 { afterType = true; return UIMAGEBUFFER; }
+    "image1D"                      { afterType = true; return IMAGE1D; }
+    "iimage1D"                     { afterType = true; return IIMAGE1D; }
+    "uimage1D"                     { afterType = true; return UIMAGE1D; }
+    "image1DArray"                 { afterType = true; return IMAGE1DARRAY; }
+    "iimage1DArray"                { afterType = true; return IIMAGE1DARRAY; }
+    "uimage1DArray"                { afterType = true; return UIMAGE1DARRAY; }
+    "image2DRect"                  { afterType = true; return IMAGE2DRECT; }
+    "iimage2DRect"                 { afterType = true; return IIMAGE2DRECT; }
+    "uimage2DRect"                 { afterType = true; return UIMAGE2DRECT; }
+    "image2DArray"                 { afterType = true; return IMAGE2DARRAY; }
+    "iimage2DArray"                { afterType = true; return IIMAGE2DARRAY; }
+    "uimage2DArray"                { afterType = true; return UIMAGE2DARRAY; }
+    "imageCubeArray"               { afterType = true; return IMAGECUBEARRAY; }
+    "iimageCubeArray"              { afterType = true; return IIMAGECUBEARRAY; }
+    "uimageCubeArray"              { afterType = true; return UIMAGECUBEARRAY; }
+    "image2DMS"                    { afterType = true; return IMAGE2DMS; }
+    "iimage2DMS"                   { afterType = true; return IIMAGE2DMS; }
+    "uimage2DMS"                   { afterType = true; return UIMAGE2DMS; }
+    "image2DMSArray"               { afterType = true; return IMAGE2DMSARRAY; }
+    "iimage2DMSArray"              { afterType = true; return IIMAGE2DMSARRAY; }
+    "uimage2DMSArray"              { afterType = true; return UIMAGE2DMSARRAY; }
     // Control
-    "if"                           { afterType = false; afterTypeQualifier = false; return IF; }
-    "else"                         { afterType = false; afterTypeQualifier = false; return ELSE; }
-    "switch"                       { afterType = false; afterTypeQualifier = false; return SWITCH; }
-    "case"                         { afterType = false; afterTypeQualifier = false; return CASE; }
-    "default"                      { afterType = false; afterTypeQualifier = false; return DEFAULT; }
-    "while"                        { afterType = false; afterTypeQualifier = false; return WHILE; }
-    "do"                           { afterType = false; afterTypeQualifier = false; return DO; }
-    "for"                          { afterType = false; afterTypeQualifier = false; return FOR; }
-    "continue"                     { afterType = false; afterTypeQualifier = false; return CONTINUE; }
-    "break"                        { afterType = false; afterTypeQualifier = false; return BREAK; }
-    "return"                       { afterType = false; afterTypeQualifier = false; return RETURN; }
-    "discard"                      { afterType = false; afterTypeQualifier = false; return DISCARD; }
+    "if"                           { return IF; }
+    "else"                         { return ELSE; }
+    "switch"                       { return SWITCH; }
+    "case"                         { return CASE; }
+    "default"                      { return DEFAULT; }
+    "while"                        { return WHILE; }
+    "do"                           { return DO; }
+    "for"                          { return FOR; }
+    "continue"                     { return CONTINUE; }
+    "break"                        { return BREAK; }
+    "return"                       { return RETURN; }
+    "discard"                      { return DISCARD; }
     // storage_qualifier
     "const"                        { afterTypeQualifier = true; return CONST; }
     "inout"                        { afterTypeQualifier = true; return INOUT; }
@@ -393,12 +393,12 @@ MACRO_VERSION="__VERSION__"
     "spirv_by_reference"           { return SPIRV_BY_REFERENCE; }
     "spirv_literal"                { return SPIRV_LITERAL; }
     // User-defined
-    {FLOATCONSTANT}                  { return FLOATCONSTANT; }
-    {INTCONSTANT}                    { return INTCONSTANT; }
-    {UINTCONSTANT}                   { return UINTCONSTANT; }
-    {BOOLCONSTANT}                   { return BOOLCONSTANT; }
-    {STRING_LITERAL}                 { return STRING_LITERAL; }
-    {IDENTIFIER}                     {
+    {FLOATCONSTANT}                { return FLOATCONSTANT; }
+    {INTCONSTANT}                  { return INTCONSTANT; }
+    {UINTCONSTANT}                 { return UINTCONSTANT; }
+    {BOOLCONSTANT}                 { return BOOLCONSTANT; }
+    {STRING_LITERAL}               { return STRING_LITERAL; }
+    {IDENTIFIER}                   {
           String text = yytext().toString();
           if (afterType) {
               afterType = false;

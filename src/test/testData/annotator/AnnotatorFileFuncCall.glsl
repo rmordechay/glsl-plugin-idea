@@ -6,6 +6,7 @@ void funcIvec4(ivec4 vec);
 void funcMat(ivec4 vec);
 void funcMat(mat3 mat);
 void funcMat3x2(mat3x2 mat);
+struct MyType {int a;};
 void funcMyType(MyType myType);
 
 

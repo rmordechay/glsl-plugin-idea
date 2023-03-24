@@ -96,7 +96,7 @@ layout  (   location) uniform UniformType        {
     mat4    b ;
 }   uni   ;
 
-
+struct    UserType   {   int a   ;  }   ;
     void    main(  UserType   a      , UserType b)  {}
     UserType main   () {}
 
@@ -105,6 +105,7 @@ layout  (   location) uniform UniformType        {
 centroid   out    vec2 a;
 smooth   out vec2 a[];
   // One line comment
+struct DummyBlock {int a;};
 int     function_definition     (    float x  , float y     );
 int function_definition(    DummyBlock x  , float y     )      {
     int a = 2   == b   ?    b    :     abs()  ;

@@ -75,7 +75,7 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
         val dummyDeclaration = if (this is GlslVariableIdentifier) {
             "void $newName;"
         } else if (this is GlslTypeName) {
-            "$newName;"
+            "struct $newName {int a;};"
         } else {
             return this
         }

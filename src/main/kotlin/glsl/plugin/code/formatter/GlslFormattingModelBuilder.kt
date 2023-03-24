@@ -69,6 +69,7 @@ class GlslFormattingModelBuilder : FormattingModelBuilder {
             .between(RIGHT_PAREN, COMPOUND_STATEMENT_NO_NEW_SCOPE).spaces(1)
             .between(FUNCTION_PROTOTYPE, COMPOUND_STATEMENT_NO_NEW_SCOPE).spaces(1)
             .between(VARIABLE_IDENTIFIER, LEFT_PAREN).none()
+            .withinPairInside(LEFT_BRACE, RIGHT_BRACE, STRUCT_SPECIFIER).spaces(1)
             .withinPair(LEFT_PAREN, RIGHT_PAREN).spaceIf(commonSettings.SPACE_WITHIN_PARENTHESES)
             .withinPair(LEFT_BRACKET, RIGHT_BRACKET).spaceIf(commonSettings.SPACE_WITHIN_BRACKETS)
             .withinPairInside(LEFT_BRACE, RIGHT_BRACE, SINGLE_DECLARATION).spaces(1)

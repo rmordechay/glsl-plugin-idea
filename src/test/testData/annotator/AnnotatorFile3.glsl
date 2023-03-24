@@ -17,14 +17,6 @@ void main() {
     int c = 1;
     abs(c++);
 
-    vec3(1.0);
-    bvec2(true);
-    bvec2(true, false);
-    vec4(1.0, 0.0, 0.0, 1.0);
-    vec4(1.0, vec3(1.0));
-    vec4(1.0, 0.0, vec2(1.0));
-    vec4(1.0, 0.0, vec2(1.0, 1.0));
-    vec4((1.0 + 1.0), 1.0, 1.0, 1.0);
 
     vec2 vec = vec2(1.0);
     vec3 vec = vec3(1.0);

@@ -4,7 +4,6 @@
     psiImplClassSuffix="Impl"
     psiPackage="glsl.psi.interfaces"
     psiImplPackage="glsl.psi.impl"
-    parserUtilClass="glsl.plugin.utils.GlslPsiUtils"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 

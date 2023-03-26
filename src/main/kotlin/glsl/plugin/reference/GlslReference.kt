@@ -3,16 +3,16 @@ package glsl.plugin.reference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.fileEditor.impl.LoadTextUtil
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
-import com.intellij.psi.search.FilenameIndex
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
+import com.intellij.psi.util.PsiUtilCore
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.GlslIdentifier
@@ -25,8 +25,8 @@ import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
 import glsl.plugin.utils.GlslElementManipulator
-import glsl.plugin.utils.GlslPsiUtils.getPostfixIdentifier
 import glsl.plugin.utils.GlslUtils
+import glsl.plugin.utils.GlslUtils.getPostfixIdentifier
 import glsl.psi.interfaces.*
 
 
@@ -45,7 +45,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private var currentFilterType = EQUALS
     private val resolvedReferences = arrayListOf<GlslNamedElement>()
 
-    private val resolver = AbstractResolver<GlslReference, GlslNamedElement> { reference, _ ->
+    private val cacheResolver = AbstractResolver<GlslReference, GlslNamedElement> { reference, _ ->
         reference.doResolve()
         reference.resolvedReferences.firstOrNull()
     }
@@ -56,7 +56,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     override fun resolve(): GlslNamedElement? {
         val project = GlslUtils.getProject()
         val resolveCache = ResolveCache.getInstance(project)
-        return resolveCache.resolveWithCaching(this, resolver, true, false)
+        return resolveCache.resolveWithCaching(this, cacheResolver, true, false)
     }
 
     /**
@@ -337,9 +337,10 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (includePath.contains("/")) {
             includePath = includePath.substring(includePath.lastIndexOf('/') + 1)
         }
-        val virtualFile = FilenameIndex.getVirtualFilesByName(project, includePath, GlobalSearchScope.allScope(project))
-        if (virtualFile.isEmpty()) return
-        val loadText = LoadTextUtil.loadText(virtualFile.first())
+        val virtualFile = LocalFileSystem.getInstance().findFileByPath(includePath)?.let { file ->
+            PsiUtilCore.findFileSystemItem(project, file)?.virtualFile
+        } ?: return
+        val loadText = LoadTextUtil.loadText(virtualFile)
         val glslFile = PsiFileFactory.getInstance(project).createFileFromText(includePath, GlslFileType(), loadText) as? GlslFile
         val externalDeclarations = PsiTreeUtil.findChildrenOfType(glslFile, GlslExternalDeclaration::class.java)
         for (externalDeclaration in externalDeclarations) {

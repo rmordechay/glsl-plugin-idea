@@ -14,7 +14,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
 import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.GlslIdentifier
-import glsl.psi.interfaces.GlslFunctionPrototype
+import glsl.plugin.psi.GlslIdentifierImpl
+import glsl.psi.interfaces.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import javax.swing.Icon
@@ -34,6 +35,19 @@ object GlslUtils {
         }
         project = ProjectManager.getInstance().openProjects.first()
         return project
+    }
+
+    /**
+     *
+     */
+    fun getPostfixIdentifier(postfixExpr: GlslPostfixExpr?): GlslIdentifierImpl? {
+        return when (postfixExpr) {
+            is GlslPrimaryExpr -> postfixExpr.variableIdentifier as? GlslIdentifierImpl
+            is GlslFunctionCall -> postfixExpr.variableIdentifier as? GlslIdentifierImpl
+            is GlslPostfixArrayIndex -> getPostfixIdentifier(postfixExpr.postfixExpr)
+            is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
+            else -> null
+        }
     }
 
     /**

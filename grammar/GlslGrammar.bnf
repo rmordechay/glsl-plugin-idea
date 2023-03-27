@@ -13,6 +13,7 @@
 
     implements("variable_identifier|type_name")="glsl.plugin.psi.GlslIdentifier"
     mixin("variable_identifier|type_name")="glsl.plugin.psi.GlslIdentifierImpl"
+    mixin("include_path")="glsl.plugin.psi.GlslInclude"
     implements("expr")="glsl.plugin.psi.GlslExprType"
     mixin("expr")="glsl.plugin.psi.GlslExprTypeImpl"
     // Types
@@ -1076,8 +1077,12 @@ private pp_extension
     {   pin(".*")=1   }
 
 pp_include_declaration
-    ::= PP_INCLUDE (STRING_LITERAL | pp_include_brackets)
-    {   pin(".*")=1  generateTokenAccessors=true }
+    ::= PP_INCLUDE include_path
+    {   pin(".*")=1 }
+
+include_path ::=
+    STRING_LITERAL
+    { generateTokenAccessors=true }
 
 pp_include_brackets
     ::= LEFT_ANGLE pp_include_path (SLASH pp_include_path)* RIGHT_ANGLE

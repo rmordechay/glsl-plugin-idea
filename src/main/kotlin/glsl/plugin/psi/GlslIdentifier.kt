@@ -103,3 +103,19 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
         return node.text == "IntellijIdeaRulezzz"
     }
 }
+
+abstract class GlslInclude(node: ASTNode) : ASTWrapperPsiElement(node), ContributedReferenceHost {
+    /**
+     *
+     */
+    override fun getReferences(): Array<out PsiReference?> {
+        return PsiReferenceService.getService().getContributedReferences(this)
+    }
+
+    /**
+     *
+     */
+    override fun getReference(): PsiReference? {
+        return references.firstOrNull()
+    }
+}

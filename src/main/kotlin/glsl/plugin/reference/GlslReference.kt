@@ -1,20 +1,13 @@
 package glsl.plugin.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.openapi.fileEditor.impl.LoadTextUtil
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
-import com.intellij.psi.util.PsiUtilCore
-import glsl.plugin.language.GlslFile
-import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.psi.GlslIdentifierImpl
 import glsl.plugin.psi.GlslType
@@ -112,10 +105,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
                 externalDeclaration = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
                 val declaration = externalDeclaration?.declaration
                 resolveDeclarationType(declaration)
-                val ppIncludeDeclaration = externalDeclaration?.ppStatement?.ppIncludeDeclaration
-                if (ppIncludeDeclaration != null) {
-                    lookupInPpIncludeDeclaration(ppIncludeDeclaration)
-                }
             }
             return null
         } catch (_: StopLookupException) {
@@ -239,7 +228,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (externalDeclaration == null) return
         lookupInFunctionPrototype(externalDeclaration.functionDefinition?.functionPrototype, false)
         lookupInDeclaration(externalDeclaration.declaration)
-        lookupInPpStatement(externalDeclaration.ppStatement)
     }
 
     /**
@@ -306,7 +294,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      */
     private fun lookupInPpStatement(ppStatement: GlslPpStatement?) {
         if (ppStatement == null) return
-        lookupInPpIncludeDeclaration(ppStatement.ppIncludeDeclaration)
         findReferenceInElement(ppStatement.ppSingleDeclaration)
         findReferenceInElement(ppStatement.ppDefineFunction)
     }
@@ -318,33 +305,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         val ppDefineFunction = getParentOfType(element, GlslPpDefineFunction::class.java) ?: return
         for (ppParam in ppDefineFunction.ppDefineParamList) {
             findReferenceInElement(ppParam)
-        }
-    }
-
-    /**
-     *
-     */
-    private fun lookupInPpIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
-        if (ppIncludeDeclaration == null) return
-        val project = GlslUtils.getProject()
-        var includePath: String? = null
-        if (ppIncludeDeclaration.stringLiteral != null) {
-            includePath = ppIncludeDeclaration.stringLiteral?.text?.replace("\"", "")
-        } else if (ppIncludeDeclaration.ppIncludeBrackets != null) {
-            includePath = ppIncludeDeclaration.ppIncludeBrackets!!.ppIncludePathList.last().text
-        }
-        if (includePath == null) return
-        if (includePath.contains("/")) {
-            includePath = includePath.substring(includePath.lastIndexOf('/') + 1)
-        }
-        val virtualFile = LocalFileSystem.getInstance().findFileByPath(includePath)?.let { file ->
-            PsiUtilCore.findFileSystemItem(project, file)?.virtualFile
-        } ?: return
-        val loadText = LoadTextUtil.loadText(virtualFile)
-        val glslFile = PsiFileFactory.getInstance(project).createFileFromText(includePath, GlslFileType(), loadText) as? GlslFile
-        val externalDeclarations = PsiTreeUtil.findChildrenOfType(glslFile, GlslExternalDeclaration::class.java)
-        for (externalDeclaration in externalDeclarations) {
-            lookupInExternalDeclaration(externalDeclaration)
         }
     }
 

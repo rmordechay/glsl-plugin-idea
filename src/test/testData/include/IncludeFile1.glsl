@@ -1,3 +1,3 @@
-#include "Include2.glsl"
+#include "<caret>IncludeFile2.glsl"
 
-int f = <caret>func();
+int f = func();

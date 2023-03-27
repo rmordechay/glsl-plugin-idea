@@ -113,16 +113,16 @@ struct DummyStruct {
 
 struct DummyStruct {
     int struct_declarator1;
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct A { int a; } struct_declarator4, struct_declarator5;
 } dummyStruct[4];
 
 in DummyBlock {
     int struct_declarator1;
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct A { int a; } struct_declarator4, struct_declarator5;
 } dummyStruct;
 
 in DummyBlock {
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct A { int a; } struct_declarator4, struct_declarator5;
 };
 
 in DummyBlock {
@@ -131,7 +131,7 @@ in DummyBlock {
     int struct_declarator3;
     int struct_declarator4, struct_declarator5;
     int struct_declarator4, struct_declarator5;
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct A { int a; } struct_declarator4, struct_declarator5;
 } dummyStruct[];
 
 in UserType {
@@ -140,7 +140,7 @@ in UserType {
     int struct_declarator3;
     int struct_declarator4, struct_declarator5;
     int struct_declarator4, struct_declarator5;
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct A { int a; } struct_declarator4, struct_declarator5;
 } dummyStruct[4];
 
 struct A {
@@ -240,7 +240,7 @@ layout (location = 2) in vec2 layout_declration;
 layout (location = 1, max_vertices) in vec4 layout_declration;
 layout (location = 1, max_vertices = func_call()) in vec4 layout_declration;
 layout (location = 1, max_vertices = 2 > a) in vec4 layout_declration;
-layout (location = 1, max_vertices = 2) in struct A {int a;} layout_declration;
+layout (location = 1, max_vertices = 2) in struct A { int a; } layout_declration;
 layout (location = 3) centroid out float layout_declration;
 layout (location) uniform UniformType {
     mat3 a;

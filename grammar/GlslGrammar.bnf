@@ -1082,7 +1082,7 @@ pp_include_declaration
 
 pp_include_path
     ::= STRING_LITERAL
-    |   LEFT_BRACKET variable_identifier RIGHT_BRACKET
+    |   LEFT_ANGLE variable_identifier (SLASH variable_identifier)* (DOT variable_identifier)? RIGHT_ANGLE
 
 private pp_version_declaration
     ::= PP_VERSION INTCONSTANT ('core'|'es'|'compatibility')?

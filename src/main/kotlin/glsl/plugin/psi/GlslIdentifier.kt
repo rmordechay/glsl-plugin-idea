@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.*
+import glsl.plugin.reference.GlslFileReference
 import glsl.plugin.reference.GlslReference
 import glsl.psi.interfaces.GlslTypeName
 import glsl.psi.interfaces.GlslVariableIdentifier
@@ -115,7 +116,7 @@ abstract class GlslInclude(node: ASTNode) : ASTWrapperPsiElement(node), Contribu
     /**
      *
      */
-    override fun getReference(): PsiReference? {
-        return references.firstOrNull()
+    override fun getReference(): GlslFileReference? {
+        return references.firstOrNull() as GlslFileReference
     }
 }

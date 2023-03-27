@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
 import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.psi.GlslIdentifierImpl
+import glsl.plugin.psi.GlslInclude
 import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.reference.FilterType.CONTAINS
@@ -105,6 +106,10 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
                 externalDeclaration = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
                 val declaration = externalDeclaration?.declaration
                 resolveDeclarationType(declaration)
+                val ppIncludeDeclaration = externalDeclaration?.ppStatement?.ppIncludeDeclaration
+                if (ppIncludeDeclaration != null) {
+                    lookupInPpIncludeDeclaration(ppIncludeDeclaration)
+                }
             }
             return null
         } catch (_: StopLookupException) {
@@ -228,6 +233,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (externalDeclaration == null) return
         lookupInFunctionPrototype(externalDeclaration.functionDefinition?.functionPrototype, false)
         lookupInDeclaration(externalDeclaration.declaration)
+        lookupInPpStatement(externalDeclaration.ppStatement)
     }
 
     /**
@@ -294,6 +300,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      */
     private fun lookupInPpStatement(ppStatement: GlslPpStatement?) {
         if (ppStatement == null) return
+        lookupInPpIncludeDeclaration(ppStatement.ppIncludeDeclaration)
         findReferenceInElement(ppStatement.ppSingleDeclaration)
         findReferenceInElement(ppStatement.ppDefineFunction)
     }
@@ -305,6 +312,20 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         val ppDefineFunction = getParentOfType(element, GlslPpDefineFunction::class.java) ?: return
         for (ppParam in ppDefineFunction.ppDefineParamList) {
             findReferenceInElement(ppParam)
+        }
+    }
+
+    /**
+     *
+     */
+    private fun lookupInPpIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
+        if (ppIncludeDeclaration == null) return
+        val glslInclude = ppIncludeDeclaration.ppIncludePath as GlslInclude
+        val reference = glslInclude.reference as GlslFileReference
+        val externalDeclarations = reference.resolve()?.children ?: return
+        for (externalDeclaration in externalDeclarations) {
+            if (externalDeclaration !is GlslExternalDeclaration) continue
+            lookupInExternalDeclaration(externalDeclaration)
         }
     }
 

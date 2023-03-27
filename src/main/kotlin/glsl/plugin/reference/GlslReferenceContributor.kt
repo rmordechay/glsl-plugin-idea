@@ -2,7 +2,6 @@ package glsl.plugin.reference
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
-import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
@@ -10,14 +9,14 @@ import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferen
 import com.intellij.util.ProcessingContext
 import glsl.GlslTypes
 import glsl.plugin.psi.GlslIdentifierImpl
-import glsl.psi.interfaces.GlslIncludePath
+import glsl.psi.interfaces.GlslPpIncludePath
 
 
 /**
  *
  */
 class GlslReferenceContributor : PsiReferenceContributor() {
-    private val numeric = StandardPatterns.or(
+    private val numeric = or(
         psiElement(GlslTypes.INTCONSTANT),
         psiElement(GlslTypes.UINTCONSTANT),
         psiElement(GlslTypes.FLOATCONSTANT),
@@ -30,7 +29,7 @@ class GlslReferenceContributor : PsiReferenceContributor() {
         .andNot(psiElement().afterLeaf("struct"))
         .andNot(psiElement().afterLeaf(numeric))
 
-    private val includePattern = psiElement(GlslIncludePath::class.java)
+    private val includePattern = psiElement(GlslPpIncludePath::class.java)
 
     /**
      *
@@ -43,13 +42,13 @@ class GlslReferenceContributor : PsiReferenceContributor() {
      *
      */
     inner class GlslReferenceProvider : PsiReferenceProvider() {
-
         override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
             if (element is GlslIdentifierImpl) {
                 val range = TextRange(0, element.name.length)
                 return arrayOf(GlslReference(element, range))
-            } else if (element is GlslIncludePath) {
-                val path = element.text.replace("\"", "")
+            } else if (element is GlslPpIncludePath) {
+                val text = element.text
+                val path =  element.text.substring(1, text.length - 1)
                 return GlslFileReferenceSet(path, element, this).allReferences
             }
             return PsiReference.EMPTY_ARRAY
@@ -59,16 +58,16 @@ class GlslReferenceContributor : PsiReferenceContributor() {
     inner class GlslFileReferenceSet(path: String, element: PsiElement, provider: PsiReferenceProvider?)
         : FileReferenceSet(path, element, 0, provider, true) {
 
-        override fun createFileReference(range: TextRange?, index: Int, text: String): FileReference? {
-            return GlslFileReference(this, range, index, text)
+        override fun createFileReference(range: TextRange?, index: Int, text: String): GlslFileReference? {
+            if (range == null) return null
+            val rangeShiftedRight = range.shiftRight(1) // Shifted one right because of parentheses or brackets
+            return GlslFileReference(this, rangeShiftedRight, index, text)
         }
     }
+}
 
-    inner class GlslFileReference(fileReferenceSet: FileReferenceSet, range: TextRange?, index: Int, text: String) : FileReference(fileReferenceSet, range, index, text) {
-        override fun handleElementRename(newElementName: String): PsiElement {
-            return super.handleElementRename(newElementName)
-        }
-    }
+class GlslFileReference(fileReferenceSet: FileReferenceSet, range: TextRange?, index: Int, path: String) : FileReference(fileReferenceSet, range, index, path) {
+
 }
 
 

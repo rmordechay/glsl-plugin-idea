@@ -5,6 +5,7 @@
 - Important change in grammar. Plugin can differentiate better between user type and variables (may still have issues); 
 ### Added 
 - Type definition to #define. e.g. #define float4 vec4. Still doesn't really work, but it's a good beginning.
+- File reference. Elements can now be referenced from outside the file (with #include)
 ### Fixed
 - Texture functions bug for texture3D and textureCube  
 - Initialization of user-defined types array bug.  

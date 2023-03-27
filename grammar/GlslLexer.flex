@@ -89,10 +89,9 @@ MACRO_VERSION="__VERSION__"
 %%
 
 <IN_MULITLINE_COMMENT> {
-    "*/"                           { yybegin(YYINITIAL); return MULTILINE_COMMENT; }
-    [^*\n]+                        { return MULTILINE_COMMENT; }
-    "*"                            { return MULTILINE_COMMENT; }
+    "*/"                           { yybegin(YYINITIAL);return MULTILINE_COMMENT; }
     {NEW_LINE}                     { return MULTILINE_COMMENT; }
+    .+                             { return MULTILINE_COMMENT; }
 }
 
 <PREPROCESSOR_IGNORE> {
@@ -124,7 +123,7 @@ MACRO_VERSION="__VERSION__"
                                       }
                                       return WHITE_SPACE;
                                    }
-    "/*"                           { yybegin(IN_MULITLINE_COMMENT);  return MULTILINE_COMMENT; }
+    "/*"                           { yybegin(IN_MULITLINE_COMMENT); return MULTILINE_COMMENT; }
     {LINE_COMMENT}                 { return LINE_COMMENT; }
     // Preprocessors
     {PP_VERSION}                   { inPp = true; return PP_VERSION;}

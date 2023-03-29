@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import glsl.GlslTypes
 import glsl.plugin.psi.GlslIdentifierImpl
+import glsl.plugin.utils.GlslUtils.isValidIncludePath
 import glsl.psi.interfaces.GlslPpIncludePath
 
 
@@ -51,8 +52,9 @@ class GlslReferenceContributor : PsiReferenceContributor() {
                 val range = TextRange(0, element.name.length)
                 return arrayOf(GlslReference(element, range))
             } else if (element is GlslPpIncludePath) {
-                val text = element.text
-                val path =  text.substring(1, text.length - 1)
+                val includePath = element.text
+                if (!isValidIncludePath(includePath)) return PsiReference.EMPTY_ARRAY
+                val path =  includePath.substring(1, includePath.length - 1)
                 return GlslFileReferenceSet(path, element, this).allReferences
             }
             return PsiReference.EMPTY_ARRAY

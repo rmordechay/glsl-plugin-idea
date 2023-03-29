@@ -3,10 +3,9 @@ package glsl.plugin.language
 import com.intellij.lexer.FlexAdapter
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
-import glsl.GlslTypes.LEFT_ANGLE
-import glsl.GlslTypes.STRING_LITERAL
 import glsl._GlslLexer
 import glsl.plugin.utils.GlslUtils
+import glsl.plugin.utils.GlslUtils.isValidIncludePath
 import glsl.psi.interfaces.GlslExternalDeclaration
 
 class GlslLexerAdapter : FlexAdapter(_GlslLexer(null)) {
@@ -26,9 +25,6 @@ class GlslLexerAdapter : FlexAdapter(_GlslLexer(null)) {
     private fun resolveInclude() {
         super.advance() // One extra for white space
         super.advance()
-        if (listOf(STRING_LITERAL, LEFT_ANGLE).contains(super.getTokenType()).not()) {
-            return
-        }
         var includePath = tokenText
         if (!isValidIncludePath(includePath)) return
         includePath = includePath.substring(1, includePath.length - 1)
@@ -39,14 +35,5 @@ class GlslLexerAdapter : FlexAdapter(_GlslLexer(null)) {
             val typeSpecifier = child.declaration?.singleDeclaration?.getAssociatedType()?.getTypeText() ?: continue
             (flex as? _GlslLexer)?.userTypesTable?.add(typeSpecifier)
         }
-    }
-
-    /**
-     *
-     */
-    private fun isValidIncludePath(path: String): Boolean {
-        val first = path.first()
-        val last = path.last()
-        return (first == '"' && last == '"') || (first == '<' && last == '>')
     }
 }

@@ -3,11 +3,7 @@
 #version 330 core
 #version 330 compatibility
 
-#include <shaders/func.frag>
-#include <shaders/func>
-#include <shader.glsl>
-#include <shader>
-#include "file.h"
+
 
 #define a 10
 #define a(x) x + 1
@@ -349,7 +345,6 @@ int function_definition(DummyBlock x, float y) {
             return 3;
     }
     float f();
-    #include "some text"
     float g();
     float h();
 

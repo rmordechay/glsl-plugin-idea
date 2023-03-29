@@ -23,7 +23,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun createLexer(project: Project?): Lexer {
-        return GlslLexerAdapter()
+        return GlslLexerAdapter(project)
     }
 
     /**
@@ -73,35 +73,5 @@ class GlslParserDefinition : ParserDefinition {
      */
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return GlslFile(viewProvider)
-    }
-
-
-    /**
-     *
-     */
-    private fun replaceDirective(text: String): String {
-        val defineNames = hashMapOf<String, String>()
-        val lines = text.lines().toMutableList()
-        for (i in lines.indices) {
-            val line = lines[i]
-            if (line.isEmpty()) continue
-            if (line.startsWith("#define")) {
-                val lineWithoutDefine = line.substring("#define ".length)
-                val firstWordIndex = lineWithoutDefine.indexOf(' ')
-                if (firstWordIndex == -1) continue
-                val word = lineWithoutDefine.substring(0, firstWordIndex)
-                val rest = lineWithoutDefine.substring(firstWordIndex)
-                defineNames[word] = rest
-                lines[i] = ""
-            } else {
-                for (entry in defineNames.entries) {
-                    if (line.contains(entry.key)) {
-                        lines[i] = line.replace(entry.key, entry.value)
-                    }
-                }
-            }
-        }
-
-        return lines.joinToString("\n")
     }
 }

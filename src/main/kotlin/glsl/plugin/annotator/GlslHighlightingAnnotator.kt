@@ -37,7 +37,6 @@ class GlslHighlightingAnnotator : Annotator {
                 setDeclarationHighlighting(element, holder)
             }
         }
-
     }
 
     /**

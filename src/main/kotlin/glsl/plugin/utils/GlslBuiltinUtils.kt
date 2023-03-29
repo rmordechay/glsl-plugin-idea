@@ -173,9 +173,9 @@ object GlslBuiltinUtils {
     /**
      *
      */
-    fun isBuiltin(name: String?, fileExtension: String? = null): Boolean {
+    fun isBuiltin(name: String?): Boolean {
         if (name == null) return false
-        return isBuiltinName(name, fileExtension) || isBuiltinConstant(name)
+        return isBuiltinName(name, null) || isBuiltinConstant(name)
     }
 
     /**

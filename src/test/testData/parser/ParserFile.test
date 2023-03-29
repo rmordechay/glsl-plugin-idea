@@ -52,6 +52,9 @@
 int a;
 
 #define A 10
+#define c() 10
+#define A(b) 10
+#define A(b)
 
 /*
 * Multi line comment

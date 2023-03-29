@@ -1,5 +1,5 @@
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import glsl.plugin.reference.GlslFileReference
 import glsl.psi.interfaces.GlslStructSpecifier
 import org.junit.Test
 
@@ -12,14 +12,13 @@ class GlslIncludeTest : BasePlatformTestCase() {
     @Test
     fun testReferenceFile1() {
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile1.glsl")
-        assertInstanceOf(reference, GlslFileReference::class.java)
+        assertInstanceOf(reference, FileReference::class.java)
     }
 
     @Test
     fun testReferenceFile2() {
-        myFixture.configureByFile("IncludeFile1.glsl")
-        myFixture.configureByFile("IncludeFile2.glsl")
-        val reference = myFixture.getReferenceAtCaretPosition("IncludeFile1.glsl")
+        myFixture.configureByFile("IncludeFile4.glsl")
+        val reference = myFixture.getReferenceAtCaretPosition("IncludeFile3.glsl")
         assertInstanceOf(reference?.resolve(), GlslStructSpecifier::class.java)
     }
 }

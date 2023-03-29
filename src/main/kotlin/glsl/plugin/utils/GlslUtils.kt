@@ -11,6 +11,10 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
+import com.intellij.psi.search.FilenameIndex
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.tree.TokenSet
 import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.GlslIdentifier
@@ -24,20 +28,27 @@ import javax.swing.Icon
  *
  */
 object GlslUtils {
-    private lateinit var project: Project
+    private lateinit var openProject: Project
 
     /**
      *
      */
-    fun getProject(): Project? {
-        if (::project.isInitialized) {
-            return project
+    fun getPsiFileByPath(path: String): PsiFile? {
+        val project = getOpenProject()
+        val virtualFile = FilenameIndex.getVirtualFilesByName(path, GlobalSearchScope.allScope(project))
+        if (virtualFile.isEmpty()) return null
+        return PsiManager.getInstance(project).findFile(virtualFile.toTypedArray()[0])
+    }
+
+    /**
+     *
+     */
+    fun getOpenProject(): Project {
+        if (::openProject.isInitialized) {
+            return openProject
         }
-        project = ProjectManager.getInstance().openProjects.first()
-        if (project.isDisposed) {
-            return project
-        }
-        return null
+        openProject = ProjectManager.getInstance().openProjects.first()
+        return openProject
     }
 
     /**
@@ -198,7 +209,7 @@ class GlslElementManipulator : AbstractElementManipulator<GlslIdentifier>() {
     }
 }
 
-class GlslContext : TemplateContextType("GLSL", "GLSL") {
+class GlslTemplateContext : TemplateContextType("GLSL", "GLSL") {
     override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
         return templateActionContext.file is GlslFile
     }

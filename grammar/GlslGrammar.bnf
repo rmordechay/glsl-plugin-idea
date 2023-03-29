@@ -1112,7 +1112,7 @@ pp_type_declaration
     ::= variable_identifier (type_specifier_builtin|single_type_qualifier)
 
 pp_define_function
-    ::= variable_identifier LEFT_PAREN pp_define_params RIGHT_PAREN expr
+    ::= variable_identifier LEFT_PAREN pp_define_params? RIGHT_PAREN expr?
     {   pin=2 }
 
 private pp_define_params

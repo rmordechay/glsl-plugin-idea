@@ -23,9 +23,8 @@ object GlslBuiltinUtils {
      *
      */
     private fun getBuiltinFile(fileName: String): GlslFile? {
-        val project = GlslUtils.getProject()
         val funcsString = GlslUtils.getResourceFileAsString("builtin-objects/$fileName.glsl") ?: return null
-        val glslFile = PsiFileFactory.getInstance(project)
+        val glslFile = PsiFileFactory.getInstance(GlslUtils.getOpenProject())
             .createFileFromText(fileName, GlslFileType(), funcsString) as? GlslFile
         glslFile?.viewProvider?.virtualFile?.isWritable = false
         return glslFile

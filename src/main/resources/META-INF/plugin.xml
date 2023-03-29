@@ -63,7 +63,7 @@
 
         <!--  Live Template  -->
         <defaultLiveTemplates           file="/live-templates/glsl-live-template.xml"/>
-        <liveTemplateContext            implementation="glsl.plugin.utils.GlslContext"/>
+        <liveTemplateContext            implementation="glsl.plugin.utils.GlslTemplateContext"/>
     </extensions>
 
     <actions>

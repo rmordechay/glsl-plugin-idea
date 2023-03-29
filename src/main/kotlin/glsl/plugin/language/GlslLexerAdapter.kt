@@ -1,9 +1,6 @@
 package glsl.plugin.language
 
 import com.intellij.lexer.FlexAdapter
-import com.intellij.psi.PsiManager
-import com.intellij.psi.search.FilenameIndex
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
 import glsl.GlslTypes.LEFT_ANGLE
@@ -27,7 +24,6 @@ class GlslLexerAdapter : FlexAdapter(_GlslLexer(null)) {
      *
      */
     private fun resolveInclude() {
-        val project = GlslUtils.getProject() ?: return
         super.advance() // One extra for white space
         super.advance()
         if (listOf(STRING_LITERAL, LEFT_ANGLE).contains(super.getTokenType()).not()) {
@@ -36,9 +32,7 @@ class GlslLexerAdapter : FlexAdapter(_GlslLexer(null)) {
         var includePath = tokenText
         if (!isValidIncludePath(includePath)) return
         includePath = includePath.substring(1, includePath.length - 1)
-        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project))
-        if (virtualFile.isEmpty()) return
-        val psiFile = PsiManager.getInstance(project).findFile(virtualFile.toTypedArray()[0])
+        val psiFile = GlslUtils.getPsiFileByPath(includePath)
         val children = psiFile?.children ?: return
         for (child in children) {
             if (child !is GlslExternalDeclaration) continue

@@ -1,3 +1,1 @@
-#include "IncludeFile2.glsl"
-
-A f = <caret>A(1);
+#include "<caret>IncludeFile2.glsl"

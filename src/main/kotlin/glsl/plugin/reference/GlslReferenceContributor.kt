@@ -1,11 +1,10 @@
 package glsl.plugin.reference
 
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
-import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
 import com.intellij.util.ProcessingContext
 import glsl.GlslTypes
 import glsl.plugin.psi.GlslIdentifierImpl
@@ -42,28 +41,24 @@ class GlslReferenceContributor : PsiReferenceContributor() {
      *
      */
     inner class GlslReferenceProvider : PsiReferenceProvider() {
+        private var project: Project? = null
+
         override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
+            if (project == null) {
+                project = element.project
+            }
             if (element is GlslIdentifierImpl) {
                 val range = TextRange(0, element.name.length)
                 return arrayOf(GlslReference(element, range))
             } else if (element is GlslPpIncludePath) {
                 val text = element.text
-                val path =  element.text.substring(1, text.length - 1)
+                val path =  text.substring(1, text.length - 1)
                 return GlslFileReferenceSet(path, element, this).allReferences
             }
             return PsiReference.EMPTY_ARRAY
         }
     }
 
-    inner class GlslFileReferenceSet(path: String, element: PsiElement, provider: PsiReferenceProvider?)
-        : FileReferenceSet(path, element, 0, provider, true) {
-
-        override fun createFileReference(range: TextRange?, index: Int, text: String): FileReference? {
-            if (range == null) return null
-            val rangeShiftedRight = range.shiftRight(1) // Shifted one right because of parentheses or brackets
-            return FileReference(this, rangeShiftedRight, index, text)
-        }
-    }
 }
 
 

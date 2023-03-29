@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
 import glsl.plugin.psi.GlslIdentifier
@@ -321,7 +322,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private fun lookupInPpIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
         if (ppIncludeDeclaration == null) return
         val glslInclude = ppIncludeDeclaration.ppIncludePath as GlslInclude
-        val reference = glslInclude.reference as GlslFileReference
+        val reference = glslInclude.reference as FileReference
         val externalDeclarations = reference.resolve()?.children ?: return
         for (externalDeclaration in externalDeclarations) {
             if (externalDeclaration !is GlslExternalDeclaration) continue

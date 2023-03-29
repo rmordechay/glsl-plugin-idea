@@ -30,13 +30,13 @@ import glsl.plugin.language.GlslLexerAdapter
 /**
  *
  */
-class GlslSyntaxHighlighter(val project: Project? = null) : SyntaxHighlighterBase() {
+class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
 
     /**
     *
     */
     override fun getHighlightingLexer(): Lexer {
-        return GlslLexerAdapter(project)
+        return GlslLexerAdapter()
     }
 
     /**
@@ -98,6 +98,6 @@ class GlslSyntaxHighlightingFactory : SyntaxHighlighterFactory() {
     *
     */
     override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
-        return GlslSyntaxHighlighter(project)
+        return GlslSyntaxHighlighter()
     }
 }

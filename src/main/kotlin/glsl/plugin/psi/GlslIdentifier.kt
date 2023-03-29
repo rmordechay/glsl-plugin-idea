@@ -79,6 +79,7 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
         } else {
             return this
         }
+
         val dummyElement = (PsiFileFactory
             .getInstance(project)
             .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)

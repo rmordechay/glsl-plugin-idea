@@ -58,16 +58,12 @@ class GlslReferenceContributor : PsiReferenceContributor() {
     inner class GlslFileReferenceSet(path: String, element: PsiElement, provider: PsiReferenceProvider?)
         : FileReferenceSet(path, element, 0, provider, true) {
 
-        override fun createFileReference(range: TextRange?, index: Int, text: String): GlslFileReference? {
+        override fun createFileReference(range: TextRange?, index: Int, text: String): FileReference? {
             if (range == null) return null
             val rangeShiftedRight = range.shiftRight(1) // Shifted one right because of parentheses or brackets
-            return GlslFileReference(this, rangeShiftedRight, index, text)
+            return FileReference(this, rangeShiftedRight, index, text)
         }
     }
-}
-
-class GlslFileReference(fileReferenceSet: FileReferenceSet, range: TextRange?, index: Int, path: String) : FileReference(fileReferenceSet, range, index, path) {
-
 }
 
 

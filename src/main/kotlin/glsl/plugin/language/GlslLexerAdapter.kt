@@ -1,7 +1,6 @@
 package glsl.plugin.language
 
 import com.intellij.lexer.FlexAdapter
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
@@ -13,7 +12,7 @@ import glsl._GlslLexer
 import glsl.plugin.utils.GlslUtils
 import glsl.psi.interfaces.GlslExternalDeclaration
 
-class GlslLexerAdapter(var project: Project? = null) : FlexAdapter(_GlslLexer(null)) {
+class GlslLexerAdapter : FlexAdapter(_GlslLexer(null)) {
     override fun getTokenType(): IElementType? {
         val currentToken = super.getTokenType()
         if (currentToken == GlslTypes.PP_INCLUDE) {
@@ -28,9 +27,7 @@ class GlslLexerAdapter(var project: Project? = null) : FlexAdapter(_GlslLexer(nu
      *
      */
     private fun resolveInclude() {
-        if (project == null) {
-            project = GlslUtils.getProject() ?: return
-        }
+        val project = GlslUtils.getProject() ?: return
         super.advance() // One extra for white space
         super.advance()
         if (listOf(STRING_LITERAL, LEFT_ANGLE).contains(super.getTokenType()).not()) {
@@ -39,9 +36,9 @@ class GlslLexerAdapter(var project: Project? = null) : FlexAdapter(_GlslLexer(nu
         var includePath = tokenText
         if (!isValidIncludePath(includePath)) return
         includePath = includePath.substring(1, includePath.length - 1)
-        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project!!))
+        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project))
         if (virtualFile.isEmpty()) return
-        val psiFile = PsiManager.getInstance(project!!).findFile(virtualFile.toTypedArray()[0])
+        val psiFile = PsiManager.getInstance(project).findFile(virtualFile.toTypedArray()[0])
         val children = psiFile?.children ?: return
         for (child in children) {
             if (child !is GlslExternalDeclaration) continue

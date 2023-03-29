@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.ContributedReferenceHost
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceService
-import glsl.plugin.reference.GlslFileReference
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
 
 abstract class GlslInclude(node: ASTNode) : ASTWrapperPsiElement(node), ContributedReferenceHost {
     /**
@@ -18,7 +18,7 @@ abstract class GlslInclude(node: ASTNode) : ASTWrapperPsiElement(node), Contribu
     /**
      *
      */
-    override fun getReference(): GlslFileReference? {
-        return references.firstOrNull() as GlslFileReference
+    override fun getReference(): FileReference? {
+        return references.firstOrNull() as FileReference
     }
 }

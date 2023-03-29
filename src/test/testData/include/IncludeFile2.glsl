@@ -1,1 +1,3 @@
-int func();
+struct A {
+    int i;
+};

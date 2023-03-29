@@ -48,7 +48,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      *
      */
     override fun resolve(): GlslNamedElement? {
-        val project = GlslUtils.getProject()
+        val project = GlslUtils.getProject() ?: return null
         val resolveCache = ResolveCache.getInstance(project)
         return resolveCache.resolveWithCaching(this, cacheResolver, true, false)
     }

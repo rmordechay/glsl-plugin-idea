@@ -11,11 +11,11 @@ import static glsl.GlslTypes.*;
 %%
 
 %{
-  boolean inPp = false;
-  boolean afterBackslash = false;
-  boolean afterType = false;
-  boolean afterTypeQualifier = false;
-  Set<CharSequence> userTypesTable = new HashSet<>();
+  private boolean inPp = false;
+  private boolean afterBackslash = false;
+  private boolean afterType = false;
+  private boolean afterTypeQualifier = false;
+  public Set<CharSequence> userTypesTable = new HashSet<>();
   public _GlslLexer() {
     this((java.io.Reader)null);
   }

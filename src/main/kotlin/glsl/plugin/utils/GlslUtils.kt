@@ -29,12 +29,15 @@ object GlslUtils {
     /**
      *
      */
-    fun getProject(): Project {
+    fun getProject(): Project? {
         if (::project.isInitialized) {
             return project
         }
         project = ProjectManager.getInstance().openProjects.first()
-        return project
+        if (project.isDisposed) {
+            return project
+        }
+        return null
     }
 
     /**

@@ -1100,7 +1100,7 @@ private pp_conditional
     {   pin(".*")=1   }
 
 private pp_define_declaration
-    ::= PP_DEFINE (pp_define_function|pp_type_declaration|pp_single_declaration)
+    ::= PP_DEFINE PP_TEXT
     {   pin(".*")=1   }
 
 private recover_pp_define_function ::= !(RIGHT_PAREN|PP_END)

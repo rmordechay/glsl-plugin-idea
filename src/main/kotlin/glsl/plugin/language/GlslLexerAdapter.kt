@@ -1,31 +1,92 @@
 package glsl.plugin.language
 
-import com.intellij.lexer.FlexAdapter
+import com.intellij.lexer.LexerBase
+import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
+import glsl.GlslTypes.PP_DEFINE
+import glsl.GlslTypes.PP_INCLUDE
 import glsl._GlslLexer
 import glsl.plugin.utils.GlslUtils
 import glsl.plugin.utils.GlslUtils.isValidIncludePath
 import glsl.psi.interfaces.GlslExternalDeclaration
 
-class GlslLexerAdapter : FlexAdapter(_GlslLexer(null)) {
+class GlslLexerAdapter : LexerBase() {
+    private val lexer = _GlslLexer(null)
+
+    private var state = 0
+    private var tokenType: IElementType? = null
+    private var bufferSequence: CharSequence = ""
+    private var tokenText = ""
+    private var tokenStart = 0
+    private var tokenEnd = 0
+    private var bufferEnd = 0
+
+    private val macrosTokens = hashMapOf<String, MutableList<IElementType>>()
+
     override fun getTokenType(): IElementType? {
-        val currentToken = super.getTokenType()
-        if (currentToken == GlslTypes.PP_INCLUDE) {
-            val firstPosition = currentPosition
+        if (tokenType == null) advance()
+        if (tokenType == PP_INCLUDE) {
             resolveInclude()
-            restore(firstPosition)
+        } else if (tokenType == PP_DEFINE) {
+            setDefineDefinition()
+        } else if (tokenType == GlslTypes.IDENTIFIER) {
+            if (isMacro()) {
+                return WHITE_SPACE
+            }
         }
-        return currentToken
+        return tokenType
+    }
+
+    /**
+     *
+     */
+    private fun isMacro() : Boolean {
+        return !macrosTokens.containsKey(tokenText)
+    }
+
+    override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
+        tokenType = null
+        bufferSequence = buffer
+        tokenStart = startOffset
+        tokenEnd = startOffset
+        bufferEnd = endOffset
+        lexer.reset(bufferSequence, startOffset, endOffset, initialState)
+    }
+
+    override fun advance() {
+        tokenType = lexer.advance()
+        tokenStart = lexer.tokenStart
+        tokenEnd = lexer.tokenEnd
+        tokenText = lexer.yytext().toString()
+        state = lexer.yystate()
+    }
+
+    override fun getState(): Int {
+        return state
+    }
+
+    override fun getBufferSequence(): CharSequence {
+        return bufferSequence
+    }
+
+    override fun getTokenStart(): Int {
+        return tokenStart
+    }
+
+    override fun getTokenEnd(): Int {
+        return tokenEnd
+    }
+
+    override fun getBufferEnd(): Int {
+        return bufferEnd
     }
 
     /**
      *
      */
     private fun resolveInclude() {
-        super.advance() // One extra for white space
-        super.advance()
-        var includePath = tokenText
+        var includePath = lookAhead()
         if (!isValidIncludePath(includePath)) return
         includePath = includePath.substring(1, includePath.length - 1)
         val psiFile = GlslUtils.getPsiFileByPath(includePath)
@@ -33,7 +94,61 @@ class GlslLexerAdapter : FlexAdapter(_GlslLexer(null)) {
         for (child in children) {
             if (child !is GlslExternalDeclaration) continue
             val typeSpecifier = child.declaration?.singleDeclaration?.getAssociatedType()?.getTypeText() ?: continue
-            (flex as? _GlslLexer)?.userTypesTable?.add(typeSpecifier)
+            lexer.userTypesTable?.add(typeSpecifier)
         }
+    }
+
+    /**
+     *
+     */
+    private fun setDefineDefinition() {
+        val text = lookAhead().trim()
+        val identifier = text.substringBefore(" ")
+        val body = text.substringAfter(" ")
+        val bodyLexer = GlslLexerAdapter()
+        bodyLexer.start(body)
+        bodyLexer.advance()
+        while (true) {
+            val bodyTokenType = bodyLexer.tokenType ?: break
+            if (bodyTokenType == WHITE_SPACE) {
+                bodyLexer.advance()
+                continue
+            }
+            macrosTokens.getOrPut(identifier) { mutableListOf() }.add(bodyTokenType)
+            bodyLexer.advance()
+        }
+    }
+
+    /**
+     *
+     */
+    private fun resolveDefine(tokenIndex: Int) : IElementType? {
+        val tokenText = tokenText
+        val tokens = macrosTokens[tokenText] ?: return null
+        if (tokens.size <= tokenIndex) {
+            advance()
+            return null
+        }
+        return tokens[tokenIndex]
+    }
+
+    /**
+     *
+     */
+    private fun lookAhead() : String {
+        val currentText = tokenText
+        val currentState = state
+        val currentTokenType = tokenType
+        val currentTokenStart = tokenStart
+        val currentTokenEnd = tokenEnd
+        advance()
+        val lookAheadText = tokenText
+        tokenText = currentText
+        state = currentState
+        tokenType = currentTokenType
+        tokenStart = currentTokenStart
+        tokenEnd = currentTokenEnd
+        lexer.reset(bufferSequence, tokenEnd, bufferEnd, state)
+        return lookAheadText
     }
 }

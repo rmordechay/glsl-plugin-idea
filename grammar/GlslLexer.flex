@@ -42,10 +42,13 @@ import static glsl.GlslTypes.*;
 %unicode
 %state IN_MULITLINE_COMMENT
 %state PREPROCESSOR_IGNORE
+%state PREPROCESSOR_DEFINE
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
+BACKSLASH="\\"{NEW_LINE}
 LINE_COMMENT="//"+.*
+
 
 DIGITS=\d+
 HEXA_DIGIT=[\da-fA-F]
@@ -95,8 +98,8 @@ MACRO_VERSION="__VERSION__"
 }
 
 <PREPROCESSOR_IGNORE> {
-    "\\"                           { return WHITE_SPACE;}
-    {NEW_LINE}                     { yybegin(YYINITIAL); return WHITE_SPACE; }
+    {BACKSLASH}                    { return WHITE_SPACE;}
+    {NEW_LINE}                     { yybegin(YYINITIAL); return PP_END; }
     {WHITE_SPACE}                  { return WHITE_SPACE; }
     {FLOATCONSTANT}                { return FLOATCONSTANT; }
     {DOUBLECONSTANT}               { return DOUBLECONSTANT; }
@@ -106,8 +109,16 @@ MACRO_VERSION="__VERSION__"
     {PP_TEXT}                      { return PP_TEXT;}
 }
 
+<PREPROCESSOR_DEFINE> {
+    {BACKSLASH}                    { return WHITE_SPACE;}
+    {NEW_LINE}                     { yybegin(YYINITIAL); return PP_END; }
+    {WHITE_SPACE}                  { return WHITE_SPACE; }
+    {PP_TEXT}                      { return PP_TEXT;}
+}
+
 <YYINITIAL> {
     {WHITE_SPACE}                  { return WHITE_SPACE; }
+    {BACKSLASH}                    { return WHITE_SPACE; }
     {NEW_LINE}                     {
                                       if (inPp && !afterBackslash) {
                                           afterBackslash = false;
@@ -138,7 +149,7 @@ MACRO_VERSION="__VERSION__"
     {MACRO_LINE}                   { inPp = true; return MACRO_LINE;}
     {MACRO_FILE}                   { inPp = true; return MACRO_FILE;}
     {MACRO_VERSION}                { inPp = true; return MACRO_VERSION;}
-    {PP_DEFINE}                    { inPp = true; return PP_DEFINE;}
+    {PP_DEFINE}                    { yybegin(PREPROCESSOR_DEFINE); return PP_DEFINE;}
     {PP_IF}                        { inPp = true; return PP_IF;}
     {PP_ELIF}                      { inPp = true; return PP_ELIF;}
     {PP_ERROR}                     { yybegin(PREPROCESSOR_IGNORE); return PP_ERROR;}
@@ -165,8 +176,8 @@ MACRO_VERSION="__VERSION__"
     "^"                            { reset(); return CARET; }
     "&"                            { reset(); return AMPERSAND; }
     "?"                            { reset(); return QUESTION; }
-    "["                            { reset(); return LEFT_BRACKET; }
-    "]"                            { reset(); return RIGHT_BRACKET; }
+    "["                            { return LEFT_BRACKET; }
+    "]"                            { return RIGHT_BRACKET; }
     "{"                            { reset(); return LEFT_BRACE; }
     "}"                            { reset(); return RIGHT_BRACE; }
     "+="                           { reset(); return ADD_ASSIGN; }

@@ -30,10 +30,8 @@ class GlslLexerAdapter : LexerBase() {
             resolveInclude()
         } else if (tokenType == PP_DEFINE) {
             setDefineDefinition()
-        } else if (tokenType == GlslTypes.IDENTIFIER) {
-            if (isMacro()) {
-                return WHITE_SPACE
-            }
+        } else if (tokenType == GlslTypes.IDENTIFIER && isMacro()) {
+            return tokenType
         }
         return tokenType
     }

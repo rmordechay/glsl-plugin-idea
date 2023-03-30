@@ -32,7 +32,6 @@ class GlslLexerAdapter : LexerBase() {
             setDefineDefinition()
         } else if (isMacro()) {
             setMacroExpansion()
-            tokenType = WHITE_SPACE
         }
         return tokenType
     }
@@ -65,11 +64,19 @@ class GlslLexerAdapter : LexerBase() {
     }
 
     override fun getTokenStart(): Int {
-        return tokenStart
+        return if (macroExpansion != null && macroExpansion!!.tokenIndex > 0) {
+            macroExpansion!!.endOffset
+        } else {
+            tokenStart
+        }
     }
 
     override fun getTokenEnd(): Int {
-        return tokenEnd
+        return if (macroExpansion != null) {
+            macroExpansion!!.endOffset
+        } else {
+            tokenEnd
+        }
     }
 
     override fun getBufferEnd(): Int {
@@ -117,6 +124,7 @@ class GlslLexerAdapter : LexerBase() {
         val nextToken = macroExpansion!!.getNextToken()
         if (nextToken == null) {
             macroExpansion = null
+            advance()
         } else {
             tokenType = nextToken
         }
@@ -128,6 +136,7 @@ class GlslLexerAdapter : LexerBase() {
     private fun setMacroExpansion() {
         val tokens = macrosTokens[tokenText] ?: return
         macroExpansion = MacroExpansion(tokens, tokenStart, tokenEnd)
+        tokenType = WHITE_SPACE
     }
 
     /**

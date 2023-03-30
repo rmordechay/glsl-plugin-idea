@@ -87,8 +87,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
                 externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
             }
             lookupInGlobalScope(externalDeclaration)
-        } catch (_: StopLookupException) {
-        }
+        } catch (_: StopLookupException) { }
     }
 
     /**

@@ -1094,7 +1094,7 @@ private pp_conditional
     {   pin(".*")=1   }
 
 private pp_define_declaration
-    ::= PP_DEFINE PP_TEXT
+    ::= PP_DEFINE PP_TEXT*
     {   pin(".*")=1   }
 
 pp_literal

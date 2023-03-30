@@ -87,7 +87,7 @@ MACRO_VERSION="__VERSION__"
 %%
 
 <IN_MULITLINE_COMMENT> {
-    "*/"                           { yybegin(YYINITIAL);return MULTILINE_COMMENT; }
+    "*/"                           { yybegin(YYINITIAL); return MULTILINE_COMMENT; }
     {NEW_LINE}                     { return MULTILINE_COMMENT; }
     .+                             { return MULTILINE_COMMENT; }
 }
@@ -96,7 +96,7 @@ MACRO_VERSION="__VERSION__"
     {NEW_LINE}                     { inPp = false; yybegin(YYINITIAL); return PP_END; }
     {BACKSLASH}                    { return WHITE_SPACE; }
     {WHITE_SPACE}                  { return WHITE_SPACE; }
-    {PP_TEXT}                      { return PP_TEXT;}
+    {PP_TEXT}                      { return PP_TEXT; }
 }
 
 <YYINITIAL> {
@@ -411,5 +411,4 @@ MACRO_VERSION="__VERSION__"
           return IDENTIFIER;
       }
 }
-
-[^] { return BAD_CHARACTER; }
+[^]                               { return BAD_CHARACTER; }

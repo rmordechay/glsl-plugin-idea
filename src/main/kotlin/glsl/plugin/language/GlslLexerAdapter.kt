@@ -32,6 +32,7 @@ class GlslLexerAdapter : LexerBase() {
             setDefineDefinition()
         } else if (isMacro()) {
             setMacroExpansion()
+            tokenType = WHITE_SPACE
         }
         return tokenType
     }
@@ -136,7 +137,6 @@ class GlslLexerAdapter : LexerBase() {
     private fun setMacroExpansion() {
         val tokens = macrosTokens[tokenText] ?: return
         macroExpansion = MacroExpansion(tokens, tokenEnd)
-        tokenType = WHITE_SPACE
     }
 
     /**
@@ -149,14 +149,14 @@ class GlslLexerAdapter : LexerBase() {
         val currentTokenStart = tokenStart
         val currentTokenEnd = tokenEnd
         advance()
-        val lookAheadText = tokenText
+        val peekText = tokenText
         tokenText = currentText
         state = currentState
         tokenType = currentTokenType
         tokenStart = currentTokenStart
         tokenEnd = currentTokenEnd
         lexer.reset(bufferSequence, tokenEnd, bufferEnd, state)
-        return lookAheadText
+        return peekText
     }
 
     /**

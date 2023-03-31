@@ -5,10 +5,12 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.or
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReference
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
 import com.intellij.util.ProcessingContext
 import glsl.GlslTypes
 import glsl.plugin.psi.GlslIdentifierImpl
-import glsl.plugin.utils.GlslUtils.isValidIncludePath
+import glsl.plugin.psi.GlslInclude
 import glsl.psi.interfaces.GlslPpIncludePath
 
 
@@ -50,14 +52,22 @@ class GlslReferenceContributor : PsiReferenceContributor() {
             }
             if (element is GlslIdentifierImpl) {
                 val range = TextRange(0, element.name.length)
-                return arrayOf(GlslReference(element, range))
-            } else if (element is GlslPpIncludePath) {
-                val includePath = element.text
-                if (!isValidIncludePath(includePath)) return PsiReference.EMPTY_ARRAY
-                val path =  includePath.substring(1, includePath.length - 1)
-                return GlslFileReferenceSet(path, element, this).allReferences
+                return arrayOf(GlslReference(element, range, project))
+            } else if (element is GlslInclude) {
+                val includePath = element.getPath() ?: return PsiReference.EMPTY_ARRAY
+                return GlslFileReferenceSet(includePath, element, this).allReferences
             }
             return PsiReference.EMPTY_ARRAY
+        }
+    }
+
+    class GlslFileReferenceSet(path: String, element: PsiElement, provider: PsiReferenceProvider?) :
+        FileReferenceSet(path, element, 0, provider, true) {
+        override fun createFileReference(range: TextRange?, index: Int, text: String): FileReference? {
+            if (range == null) return null
+            // Shifted one right because of parentheses or brackets
+            val rangeShiftedRight = range.shiftRight(1)
+            return FileReference(this, rangeShiftedRight, index, text)
         }
     }
 

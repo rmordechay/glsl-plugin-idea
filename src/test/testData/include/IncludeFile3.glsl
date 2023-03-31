@@ -1,3 +1,3 @@
 #include "IncludeFile4.glsl"
 
-A f = <caret>A(1);
+int f = <caret>var;

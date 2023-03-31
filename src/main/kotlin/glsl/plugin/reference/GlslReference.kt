@@ -1,6 +1,7 @@
 package glsl.plugin.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
@@ -20,7 +21,6 @@ import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
 import glsl.plugin.utils.GlslElementManipulator
-import glsl.plugin.utils.GlslUtils
 import glsl.plugin.utils.GlslUtils.getPostfixIdentifier
 import glsl.psi.interfaces.*
 
@@ -35,10 +35,11 @@ enum class FilterType {
 /**
  *
  */
-class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
+class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRange, private val project: Project?) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
 
     private var currentFilterType = EQUALS
     private val resolvedReferences = arrayListOf<GlslNamedElement>()
+    private val includePaths = hashSetOf<String>() // Collects include path to avoid recursion
 
     private val cacheResolver = AbstractResolver<GlslReference, GlslNamedElement> { reference, _ ->
         reference.doResolve()
@@ -49,7 +50,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      *
      */
     override fun resolve(): GlslNamedElement? {
-        val project = GlslUtils.getOpenProject()
+        if (project == null) return null
         val resolveCache = ResolveCache.getInstance(project)
         return resolveCache.resolveWithCaching(this, cacheResolver, true, false)
     }
@@ -76,6 +77,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         try {
             if (!shouldResolve()) return
             resolvedReferences.clear()
+            includePaths.add(element.containingFile.name)
             currentFilterType = filterType
             lookupInPostfixStructMember()
             lookupInBuiltin()
@@ -308,6 +310,10 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private fun lookupInPpIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
         if (ppIncludeDeclaration == null) return
         val glslInclude = ppIncludeDeclaration.ppIncludePath as GlslInclude
+        // Avoids recursion by checking the includes files that where already found
+        val includePath = glslInclude.getPath() ?: return
+        if (includePaths.contains(includePath)) return
+        includePaths.add(includePath)
         val reference = glslInclude.reference as FileReference
         val externalDeclarations = reference.resolve()?.children ?: return
         for (externalDeclaration in externalDeclarations) {

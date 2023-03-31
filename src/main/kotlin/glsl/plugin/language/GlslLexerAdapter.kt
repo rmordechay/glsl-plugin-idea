@@ -6,8 +6,8 @@ import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
 import glsl.GlslTypes.*
 import glsl._GlslLexer
+import glsl.plugin.psi.GlslInclude.Companion.isValidIncludePath
 import glsl.plugin.utils.GlslUtils
-import glsl.plugin.utils.GlslUtils.isValidIncludePath
 import glsl.psi.interfaces.GlslExternalDeclaration
 
 class GlslLexerAdapter : LexerBase() {
@@ -22,6 +22,9 @@ class GlslLexerAdapter : LexerBase() {
     private var macroExpansion: MacroExpansion? = null
     private val macrosTokens = hashMapOf<String, ArrayList<IElementType>>()
 
+    /**
+     *
+     */
     override fun getTokenType(): IElementType? {
         if (macroExpansion != null) {
             expandMacro()
@@ -36,6 +39,9 @@ class GlslLexerAdapter : LexerBase() {
         return tokenType
     }
 
+    /**
+     *
+     */
     override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
         tokenType = null
         bufferSequence = buffer
@@ -46,6 +52,9 @@ class GlslLexerAdapter : LexerBase() {
         advance()
     }
 
+    /**
+     *
+     */
     override fun advance() {
         if (macroExpansion != null) return
         tokenType = lexer.advance()
@@ -55,14 +64,23 @@ class GlslLexerAdapter : LexerBase() {
         state = lexer.yystate()
     }
 
+    /**
+     *
+     */
     override fun getState(): Int {
         return state
     }
 
+    /**
+     *
+     */
     override fun getBufferSequence(): CharSequence {
         return bufferSequence
     }
 
+    /**
+     *
+     */
     override fun getTokenStart(): Int {
         return if (macroExpansion != null && macroExpansion!!.tokenIndex > 0) {
             macroExpansion!!.endOffset
@@ -71,6 +89,9 @@ class GlslLexerAdapter : LexerBase() {
         }
     }
 
+    /**
+     *
+     */
     override fun getTokenEnd(): Int {
         return if (macroExpansion != null) {
             macroExpansion!!.endOffset
@@ -79,6 +100,9 @@ class GlslLexerAdapter : LexerBase() {
         }
     }
 
+    /**
+     *
+     */
     override fun getBufferEnd(): Int {
         return bufferEnd
     }

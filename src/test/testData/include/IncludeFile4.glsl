@@ -1,3 +1,1 @@
-struct A {
-    int i;
-};
+int var = 2;

@@ -195,17 +195,6 @@ object GlslUtils {
     fun removeArgsFromFuncText(funcText: String): String {
         return funcText.replace("\\(.*\\)".toRegex(), "")
     }
-
-
-    /**
-     *
-     */
-    @JvmStatic
-    fun isValidIncludePath(path: String): Boolean {
-        val first = path.first()
-        val last = path.last()
-        return (first == '"' && last == '"') || (first == '<' && last == '>')
-    }
 }
 
 /**

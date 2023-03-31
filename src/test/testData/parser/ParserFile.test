@@ -5,18 +5,18 @@
 
 
 
-//#define a0 10
-//#define a1(x) x + 1
-//#define a2(x, y, z) x * y * z
+#define a0 10
+#define a1(x) x + 1
+#define a2(x, y, z) x * y * z
 
-//#define float2 vec2
-//#define float3 vec3
-//#define float4 vec4
-//#define bool2 bvec2
-//#define bool3 bvec3
-//#define bool4 bvec4
-//#define float3x3 mat3x3
-//#define float4x3 mat4x3
+#define float2 vec2
+#define float3 vec3
+#define float4 vec4
+#define bool2 bvec2
+#define bool3 bvec3
+#define bool4 bvec4
+#define float3x3 mat3x3
+#define float4x3 mat4x3
 
 ;;;
 // One line comment
@@ -30,10 +30,10 @@
 */
 
 
-//#define A a + 2 \
+#define A a + 2 \
 + 2 / 2
 
-//#define a3(a, b) a + \
+#define a3(a, b) a + \
 1 + 1 + (x + 2) - (x * 2) \
 + 1 + (x + 2) - (x * 2) \
 + 1 + (x + 2) - (x * 2)
@@ -52,12 +52,23 @@
 /*====*/
 
 /*====*/
+
+#define A a + 2 \
++ 2 / 2
+
+#define a3(a, b) a + \
+1 + 1 + (x + 2) - (x * 2) \
++ 1 + (x + 2) - (x * 2) \
++ 1 + (x + 2) - (x * 2)
+
+int a = /* Multi line comment */ 2;
+/* Multi line comment */ int /* Multi line comment */  b = /* Multi line comment */ 2;
 int a = /* test */ 2;
 int func(int a/* test */);
-//#define A 10
-//#define c() 10
-//#define A(b) 10
-//#define A(b)
+#define A 10
+#define c() 10
+#define A(b) 10
+#define A(b)
 
 /*
 * Multi line comment
@@ -66,16 +77,16 @@ int func(int a/* test */);
 * Multi line comment
 */
 
-//#define A 10 + a
+#define A 10 + a
 #if 10 == 10
 #elif 20 > 19
 #endif
 
 #if __VERSION__ == 1.0
-//#define BB 10
+#define BB 10
 #endif
 
-//#define a4 10
+#define a4 10
 #if VARIABLE > 5
 int a = 2;
 #elif VARIABLE < 2

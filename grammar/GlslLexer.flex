@@ -87,7 +87,7 @@ MACRO_VERSION="__VERSION__"
 
 <PREPROCESSOR_IGNORE> {
     {NEW_LINE}                     { inPp = false; yybegin(YYINITIAL); return PP_END; }
-    {BACKSLASH}                    { return WHITE_SPACE; }
+    {BACKSLASH}                    { return BACKSLASH; }
     {WHITE_SPACE}                  { return WHITE_SPACE; }
     {PP_TEXT}                      { return PP_TEXT; }
 }
@@ -101,7 +101,7 @@ MACRO_VERSION="__VERSION__"
         }
         return WHITE_SPACE;
     }
-    {BACKSLASH}                    { return WHITE_SPACE; }
+    {BACKSLASH}                    { return BACKSLASH; }
     "/*"                           { yybegin(IN_MULITLINE_COMMENT); return MULTILINE_COMMENT; }
     {LINE_COMMENT}                 { return LINE_COMMENT; }
     // Preprocessors

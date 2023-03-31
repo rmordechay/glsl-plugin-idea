@@ -4,8 +4,7 @@ import com.intellij.lexer.LexerBase
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
-import glsl.GlslTypes.PP_DEFINE
-import glsl.GlslTypes.PP_INCLUDE
+import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl.plugin.utils.GlslUtils
 import glsl.plugin.utils.GlslUtils.isValidIncludePath
@@ -32,7 +31,7 @@ class GlslLexerAdapter : LexerBase() {
             setDefineDefinition()
         } else if (isMacro()) {
             setMacroExpansion()
-            tokenType = WHITE_SPACE
+            tokenType = MACRO_EXPANSION
         }
         return tokenType
     }

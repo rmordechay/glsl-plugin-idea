@@ -50,7 +50,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.create(GlslTypes.LINE_COMMENT, GlslTypes.MULTILINE_COMMENT)
+        return TokenSet.create(GlslTypes.LINE_COMMENT, GlslTypes.MULTILINE_COMMENT, GlslTypes.MACRO_EXPANSION, GlslTypes.BACKSLASH)
     }
 
     /**

@@ -49,8 +49,10 @@
     name("type_specifier")="type"
 
     tokens = [
-        LINE_COMMENT='regexp://+.*'
-        MULTILINE_COMMENT='regexp:/\*([\s\S]*?)\*/[ \t\n\x0B\f\r]*'
+        LINE_COMMENT='LINE_COMMENT'
+        MULTILINE_COMMENT='MULTILINE_COMMENT'
+        MACRO_EXPANSION='MACRO_EXPANSION'
+        BACKSLASH='BACKSLASH'
     ]
 }
 

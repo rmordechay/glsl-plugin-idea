@@ -11,7 +11,6 @@ import static glsl.GlslTypes.*;
 %%
 
 %{
-  public boolean inPp = false;
   public boolean afterType = false;
   public boolean afterTypeQualifier = false;
   public Set<CharSequence> userTypesTable = new HashSet<>();
@@ -34,25 +33,11 @@ import static glsl.GlslTypes.*;
 %unicode
 %state IN_MULITLINE_COMMENT
 %state PREPROCESSOR_IGNORE
+%state PREPROCESSOR
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
 BACKSLASH="\\"{NEW_LINE}
-
-DIGITS=\d+
-HEXA_DIGIT=[\da-fA-F]
-UNSIGNED="u"|"U"
-HEXA_PREFIX="0"("x"|"X")
-EXPONENT=("e"|"E")("+"|"-")?{DIGITS}
-FLOATING_SUFFIX_FLOAT="f"|"F"
-
-HEXA={HEXA_PREFIX}{HEXA_DIGIT}+
-INTCONSTANT={DIGITS}|{HEXA}
-UINTCONSTANT={INTCONSTANT}{UNSIGNED}
-
-FRACTIONAL=(({DIGITS}"."{DIGITS})|({DIGITS}".")|("."{DIGITS})){EXPONENT}?
-FRACTIONAL2={DIGITS}{EXPONENT}
-FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
 
 IDENTIFIER=[a-zA-Z_]+\w*
 BOOLCONSTANT=false|true
@@ -77,6 +62,19 @@ MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
 MACRO_VERSION="__VERSION__"
 
+DIGITS=\d+
+HEXA_DIGIT=[\da-fA-F]
+UNSIGNED="u"|"U"
+HEXA_PREFIX="0"("x"|"X")
+EXPONENT=("e"|"E")("+"|"-")?{DIGITS}
+FLOATING_SUFFIX_FLOAT="f"|"F"
+HEXA={HEXA_PREFIX}{HEXA_DIGIT}+
+INTCONSTANT={DIGITS}|{HEXA}
+UINTCONSTANT={INTCONSTANT}{UNSIGNED}
+FRACTIONAL=(({DIGITS}"."{DIGITS})|({DIGITS}".")|("."{DIGITS})){EXPONENT}?
+FRACTIONAL2={DIGITS}{EXPONENT}
+FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
+
 %%
 
 <IN_MULITLINE_COMMENT> {
@@ -86,18 +84,18 @@ MACRO_VERSION="__VERSION__"
 }
 
 <PREPROCESSOR_IGNORE> {
-    {NEW_LINE}                     { inPp = false; yybegin(YYINITIAL); return PP_END; }
+    {NEW_LINE}                     { yybegin(YYINITIAL); return PP_END; }
     {BACKSLASH}                    { return BACKSLASH; }
     {WHITE_SPACE}                  { return WHITE_SPACE; }
     {PP_TEXT}                      { return PP_TEXT; }
 }
 
-<YYINITIAL> {
+<YYINITIAL, PREPROCESSOR> {
     {WHITE_SPACE}                  { return WHITE_SPACE; }
     {NEW_LINE} {
-        if (inPp) {
-          inPp = false;
-          return PP_END;
+        if (zzLexicalState == PREPROCESSOR) {
+            yybegin(YYINITIAL);
+            return PP_END;
         }
         return WHITE_SPACE;
     }
@@ -105,24 +103,24 @@ MACRO_VERSION="__VERSION__"
     "/*"                           { yybegin(IN_MULITLINE_COMMENT); return MULTILINE_COMMENT; }
     {LINE_COMMENT}                 { return LINE_COMMENT; }
     // Preprocessors
-    {PP_VERSION}                   { inPp = true; return PP_VERSION;}
-    {PP_UNDEF}                     { inPp = true; return PP_UNDEF;}
-    {PP_IFDEF}                     { inPp = true; return PP_IFDEF;}
-    {PP_IFNDEF}                    { inPp = true; return PP_IFNDEF;}
-    {PP_ELSE}                      { inPp = true; return PP_ELSE;}
-    {PP_ENDIF}                     { inPp = true; return PP_ENDIF;}
-    {PP_INCLUDE}                   { inPp = true; return PP_INCLUDE;}
-    {PP_EXTENSION}                 { inPp = true; return PP_EXTENSION;}
-    {PP_LINE}                      { inPp = true; return PP_LINE;}
-    {MACRO_LINE}                   { inPp = true; return MACRO_LINE;}
-    {MACRO_FILE}                   { inPp = true; return MACRO_FILE;}
-    {MACRO_VERSION}                { inPp = true; return MACRO_VERSION;}
-    {PP_IF}                        { inPp = true; return PP_IF;}
-    {PP_ELIF}                      { inPp = true; return PP_ELIF;}
+    "#"                            { yybegin(PREPROCESSOR); return HASH; }
+    {PP_VERSION}                   { yybegin(PREPROCESSOR); return PP_VERSION;}
+    {PP_UNDEF}                     { yybegin(PREPROCESSOR); return PP_UNDEF;}
+    {PP_IFDEF}                     { yybegin(PREPROCESSOR); return PP_IFDEF;}
+    {PP_IFNDEF}                    { yybegin(PREPROCESSOR); return PP_IFNDEF;}
+    {PP_ELSE}                      { yybegin(PREPROCESSOR); return PP_ELSE;}
+    {PP_ENDIF}                     { yybegin(PREPROCESSOR); return PP_ENDIF;}
+    {PP_INCLUDE}                   { yybegin(PREPROCESSOR); return PP_INCLUDE;}
+    {PP_EXTENSION}                 { yybegin(PREPROCESSOR); return PP_EXTENSION;}
+    {PP_LINE}                      { yybegin(PREPROCESSOR); return PP_LINE;}
+    {MACRO_LINE}                   { yybegin(PREPROCESSOR); return MACRO_LINE;}
+    {MACRO_FILE}                   { yybegin(PREPROCESSOR); return MACRO_FILE;}
+    {MACRO_VERSION}                { yybegin(PREPROCESSOR); return MACRO_VERSION;}
+    {PP_IF}                        { yybegin(PREPROCESSOR); return PP_IF;}
+    {PP_ELIF}                      { yybegin(PREPROCESSOR); return PP_ELIF;}
     {PP_DEFINE}                    { yybegin(PREPROCESSOR_IGNORE); return PP_DEFINE;}
     {PP_ERROR}                     { yybegin(PREPROCESSOR_IGNORE); return PP_ERROR;}
     {PP_PRAGMA}                    { yybegin(PREPROCESSOR_IGNORE); return PP_PRAGMA;}
-    "#"                            { inPp = true; return HASH; }
     // Punctuation
     ";"                            { reset(); return SEMICOLON; }
     "{"                            { reset(); return LEFT_BRACE; }

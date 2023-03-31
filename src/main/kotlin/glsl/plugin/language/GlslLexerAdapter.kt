@@ -87,7 +87,7 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun resolveInclude() {
-        var includePath = lookAhead()
+        var includePath = peek()
         if (!isValidIncludePath(includePath)) return
         includePath = includePath.substring(1, includePath.length - 1)
         val psiFile = GlslUtils.getPsiFileByPath(includePath)
@@ -103,7 +103,7 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun setDefineDefinition() {
-        val text = lookAhead().trim()
+        val text = peek().trim()
         val identifier = text.substringBefore(" ")
         val body = text.substringAfter(" ")
         val bodyLexer = GlslLexerAdapter()
@@ -135,14 +135,14 @@ class GlslLexerAdapter : LexerBase() {
      */
     private fun setMacroExpansion() {
         val tokens = macrosTokens[tokenText] ?: return
-        macroExpansion = MacroExpansion(tokens, tokenStart, tokenEnd)
+        macroExpansion = MacroExpansion(tokens, tokenEnd)
         tokenType = WHITE_SPACE
     }
 
     /**
      *
      */
-    private fun lookAhead() : String {
+    private fun peek() : String {
         val currentText = tokenText
         val currentState = state
         val currentTokenType = tokenType
@@ -163,11 +163,11 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun isMacro() : Boolean {
-        return tokenType == GlslTypes.IDENTIFIER  && macrosTokens.containsKey(tokenText)
+        return tokenType == GlslTypes.IDENTIFIER && !lexer.afterType && !lexer.afterTypeQualifier && macrosTokens.containsKey(tokenText)
     }
 }
 
-class MacroExpansion(private val tokens: List<IElementType>, val startOffset: Int, val endOffset: Int, var tokenIndex: Int = 0) {
+class MacroExpansion(private val tokens: List<IElementType>, val endOffset: Int, var tokenIndex: Int = 0) {
     fun getNextToken(): IElementType? {
         return if (tokenIndex >= tokens.size) null else tokens[tokenIndex++]
     }

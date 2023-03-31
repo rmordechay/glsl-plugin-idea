@@ -11,9 +11,9 @@ import static glsl.GlslTypes.*;
 %%
 
 %{
-  private boolean inPp = false;
-  private boolean afterType = false;
-  private boolean afterTypeQualifier = false;
+  public boolean inPp = false;
+  public boolean afterType = false;
+  public boolean afterTypeQualifier = false;
   public Set<CharSequence> userTypesTable = new HashSet<>();
   public _GlslLexer() {
     this((java.io.Reader)null);
@@ -132,27 +132,6 @@ MACRO_VERSION="__VERSION__"
     "#"                            { inPp = true; return HASH; }
     // Punctuation
     ";"                            { reset(); return SEMICOLON; }
-    ","                            { reset(); return COMMA; }
-    ":"                            { reset(); return COLON; }
-    "="                            { reset(); return EQUAL; }
-    "("                            { reset(); return LEFT_PAREN; }
-    ")"                            { reset(); return RIGHT_PAREN; }
-    "."                            { reset(); return DOT; }
-    "!"                            { reset(); return BANG; }
-    "-"                            { reset(); return DASH; }
-    "~"                            { reset(); return TILDE; }
-    "+"                            { reset(); return PLUS; }
-    "*"                            { reset(); return STAR; }
-    "/"                            { reset(); return SLASH; }
-    "%"                            { reset(); return PERCENT; }
-    "<"                            { reset(); return LEFT_ANGLE; }
-    ">"                            { reset(); return RIGHT_ANGLE; }
-    "|"                            { reset(); return VERTICAL_BAR; }
-    "^"                            { reset(); return CARET; }
-    "&"                            { reset(); return AMPERSAND; }
-    "?"                            { reset(); return QUESTION; }
-    "["                            { return LEFT_BRACKET; }
-    "]"                            { return RIGHT_BRACKET; }
     "{"                            { reset(); return LEFT_BRACE; }
     "}"                            { reset(); return RIGHT_BRACE; }
     "+="                           { reset(); return ADD_ASSIGN; }
@@ -170,12 +149,33 @@ MACRO_VERSION="__VERSION__"
     "&="                           { reset(); return AND_ASSIGN; }
     "|="                           { reset(); return OR_ASSIGN; }
     "^="                           { reset(); return XOR_ASSIGN; }
-    "=="                           { reset(); return EQ_OP; }
-    "!="                           { reset(); return GE_OP; }
-    ">="                           { reset(); return NE_OP; }
-    "<="                           { reset(); return LE_OP; }
-    "--"                           { reset(); return DEC_OP; }
-    "++"                           { reset(); return INC_OP; }
+    ","                            { return COMMA; }
+    ":"                            { return COLON; }
+    "="                            { return EQUAL; }
+    "("                            { return LEFT_PAREN; }
+    ")"                            { return RIGHT_PAREN; }
+    "."                            { return DOT; }
+    "!"                            { return BANG; }
+    "-"                            { return DASH; }
+    "~"                            { return TILDE; }
+    "+"                            { return PLUS; }
+    "*"                            { return STAR; }
+    "/"                            { return SLASH; }
+    "%"                            { return PERCENT; }
+    "<"                            { return LEFT_ANGLE; }
+    ">"                            { return RIGHT_ANGLE; }
+    "|"                            { return VERTICAL_BAR; }
+    "^"                            { return CARET; }
+    "&"                            { return AMPERSAND; }
+    "?"                            { return QUESTION; }
+    "["                            { return LEFT_BRACKET; }
+    "]"                            { return RIGHT_BRACKET; }
+    "=="                           { return EQ_OP; }
+    "!="                           { return GE_OP; }
+    ">="                           { return NE_OP; }
+    "<="                           { return LE_OP; }
+    "--"                           { return DEC_OP; }
+    "++"                           { return INC_OP; }
     // Types
     "void"                         { afterType(); return VOID; }
     "float"                        { afterType(); return FLOAT; }
@@ -403,9 +403,11 @@ MACRO_VERSION="__VERSION__"
               return IDENTIFIER;
           } else if (afterTypeQualifier) {
               afterTypeQualifier = false;
+              afterType = true;
               userTypesTable.add(text);
               return TYPE_NAME_IDENTIFIER;
           } else if (userTypesTable.contains(text)) {
+              afterType = true;
               return TYPE_NAME_IDENTIFIER;
           }
           return IDENTIFIER;

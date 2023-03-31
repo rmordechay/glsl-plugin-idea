@@ -18,7 +18,6 @@ import glsl._GlslParser
  *
  */
 class GlslParserDefinition : ParserDefinition {
-
     /**
      *
      */

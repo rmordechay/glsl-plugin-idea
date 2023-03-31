@@ -20,7 +20,7 @@ class GlslLexerAdapter : LexerBase() {
     private var tokenEnd = 0
     private var bufferEnd = 0
     private var macroExpansion: MacroExpansion? = null
-    private val macrosTokens = hashMapOf<String, MutableList<IElementType>>()
+    private val macrosTokens = hashMapOf<String, ArrayList<IElementType>>()
 
     override fun getTokenType(): IElementType? {
         if (macroExpansion != null) {
@@ -105,13 +105,14 @@ class GlslLexerAdapter : LexerBase() {
     private fun setDefineDefinition() {
         val text = peek().trim()
         val identifier = text.substringBefore(" ")
+        if (macrosTokens.containsKey(identifier)) return
         val body = text.substringAfter(" ")
         val bodyLexer = GlslLexerAdapter()
         bodyLexer.start(body)
         while (true) {
             val bodyTokenType = bodyLexer.tokenType ?: break
             if (bodyTokenType != WHITE_SPACE) {
-                macrosTokens.getOrPut(identifier) { mutableListOf() }.add(bodyTokenType)
+                macrosTokens.getOrPut(identifier) { arrayListOf() }.add(bodyTokenType)
             }
             bodyLexer.advance()
         }

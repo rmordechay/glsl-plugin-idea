@@ -15,6 +15,8 @@ val COMPOUND_STATEMENTS = listOf(
     STRUCT_SPECIFIER
 )
 
+const val BACKSLASH_TOKEN = "\\\n"
+
 class GlslBlock(
     node: ASTNode,
     wrap: Wrap?,
@@ -62,7 +64,7 @@ class GlslBlock(
         val newAlignment = Alignment.createAlignment()
         var childNode = node.firstChildNode
         while (childNode != null) {
-            if (childNode.elementType != TokenType.WHITE_SPACE || childNode.text == "\\") {
+            if (childNode.elementType != TokenType.WHITE_SPACE || childNode.text == BACKSLASH_TOKEN) {
                 blocks.add(getChildBlock(childNode, newAlignment, Alignment.createAlignment()))
             }
             childNode = childNode.treeNext

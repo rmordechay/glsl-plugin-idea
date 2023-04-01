@@ -50,7 +50,7 @@
 
     tokens = [
             WHITE_SPACE='regexp:[ \n\r\t\f]+'
-            BACKSLASH="\\"
+            BACKSLASH="\\\n"
             // Comments
             LINE_COMMENT='regexp://+.*'
             MULTILINE_COMMENT='regexp:/*~*/|/* *+/'

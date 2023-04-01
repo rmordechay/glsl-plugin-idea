@@ -42,14 +42,14 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.create(TokenType.WHITE_SPACE)
+        return TokenSet.create(TokenType.WHITE_SPACE, GlslTypes.BACKSLASH)
     }
 
     /**
      *
      */
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.create(GlslTypes.LINE_COMMENT, GlslTypes.MULTILINE_COMMENT, GlslTypes.MACRO_EXPANSION, GlslTypes.BACKSLASH)
+        return TokenSet.create(GlslTypes.LINE_COMMENT, GlslTypes.MULTILINE_COMMENT, GlslTypes.MACRO_EXPANSION)
     }
 
     /**

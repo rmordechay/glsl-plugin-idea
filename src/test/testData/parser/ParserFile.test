@@ -18,6 +18,14 @@
 #define float3x3 mat3x3
 #define float4x3 mat4x3
 
+#ifdef GL_ES
+#define COMPAT_PRECISION mediump
+#else
+#define COMPAT_PRECISION
+#endif
+
+uniform COMPAT_PRECISION int FrameDirection;
+
 ;;;
 // One line comment
 

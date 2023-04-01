@@ -43,6 +43,7 @@ abstract class GlslInclude(node: ASTNode) : ASTWrapperPsiElement(node), Contribu
          *
          */
         fun isValidIncludePath(includePath: String): Boolean {
+            if (includePath.length < 3) return false
             val first = includePath.first()
             val last = includePath.last()
             return (first == '"' && last == '"') || (first == '<' && last == '>')

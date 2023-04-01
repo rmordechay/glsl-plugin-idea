@@ -3,7 +3,6 @@ package glsl.plugin.language
 import com.intellij.lexer.LexerBase
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
-import glsl.GlslTypes
 import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl.plugin.psi.GlslInclude.Companion.isValidIncludePath
@@ -127,7 +126,7 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun setDefineDefinition() {
-        val text = peek().trim()
+        val text = peek()
         val identifier = text.substringBefore(" ")
         if (macrosTokens.containsKey(identifier)) return
         val body = text.substringAfter(" ")
@@ -173,7 +172,8 @@ class GlslLexerAdapter : LexerBase() {
         val currentTokenStart = tokenStart
         val currentTokenEnd = tokenEnd
         advance()
-        val peekText = tokenText
+        if (tokenType == WHITE_SPACE) advance()
+        val peekText = tokenText.trim()
         tokenText = currentText
         state = currentState
         tokenType = currentTokenType
@@ -187,7 +187,7 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun isMacro() : Boolean {
-        return tokenType == GlslTypes.IDENTIFIER && !lexer.afterType && !lexer.afterTypeQualifier && macrosTokens.containsKey(tokenText)
+        return tokenType == IDENTIFIER && !lexer.afterType && !lexer.afterTypeQualifier && macrosTokens.containsKey(tokenText)
     }
 }
 

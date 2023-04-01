@@ -77,6 +77,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         try {
             if (!shouldResolve()) return
             resolvedReferences.clear()
+            includePaths.clear()
             includePaths.add(element.containingFile.name)
             currentFilterType = filterType
             lookupInPostfixStructMember()
@@ -108,9 +109,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
                 val declaration = externalDeclaration?.declaration
                 resolveDeclarationType(declaration)
                 val ppIncludeDeclaration = externalDeclaration?.ppStatement?.ppIncludeDeclaration
-                if (ppIncludeDeclaration != null) {
-                    lookupInPpIncludeDeclaration(ppIncludeDeclaration)
-                }
+                lookupInPpIncludeDeclaration(ppIncludeDeclaration)
             }
             return null
         } catch (_: StopLookupException) {

@@ -9,6 +9,11 @@ __LINE__ 10
 
 #include < shaders / func.frag >
 
+#define a3(a, b) a + \
+1 + 1 + (x + 2) - (x * 2) \
++ 1 + (x + 2) - (x * 2) \
++ 1 + (x + 2) - (x * 2)
+
 // One line comment
     struct  DummyStruct     {
                 // One line comment

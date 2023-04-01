@@ -1,3 +1,3 @@
-#include "IncludeFile6.glsl"
-
-A f = <caret>A(1);
+struct A {
+    int i;
+};

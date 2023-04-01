@@ -12,7 +12,6 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import glsl.GlslTypes
-import glsl._GlslParser
 
 /**
  *
@@ -29,7 +28,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun createParser(project: Project?): PsiParser {
-        return _GlslParser()
+        return GlslParserAdapter()
     }
 
     /**

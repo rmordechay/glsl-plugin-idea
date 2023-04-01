@@ -13,6 +13,7 @@ import static glsl.GlslTypes.*;
 %{
   public boolean afterType = false;
   public boolean afterTypeQualifier = false;
+  public boolean afterDot = false;
   public Set<CharSequence> userTypesTable = new HashSet<>();
 
     public _GlslLexer() {
@@ -22,6 +23,7 @@ import static glsl.GlslTypes.*;
     private void reset() {
       afterType = false;
       afterTypeQualifier = false;
+      afterDot = false;
     }
   
     private void afterType() {
@@ -137,6 +139,9 @@ FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
     ";"                            { reset(); return SEMICOLON; }
     "{"                            { reset(); return LEFT_BRACE; }
     "}"                            { reset(); return RIGHT_BRACE; }
+    "("                            { reset(); return LEFT_PAREN; }
+    ")"                            { reset(); return RIGHT_PAREN; }
+    ","                            { reset(); return COMMA; }
     "+="                           { return ADD_ASSIGN; }
     "-="                           { return SUB_ASSIGN; }
     "*="                           { return MUL_ASSIGN; }
@@ -152,12 +157,9 @@ FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
     "&="                           { return AND_ASSIGN; }
     "|="                           { return OR_ASSIGN; }
     "^="                           { return XOR_ASSIGN; }
-    ","                            { return COMMA; }
     ":"                            { return COLON; }
     "="                            { return EQUAL; }
-    "("                            { return LEFT_PAREN; }
-    ")"                            { return RIGHT_PAREN; }
-    "."                            { return DOT; }
+    "."                            { afterDot = true; return DOT; }
     "!"                            { return BANG; }
     "-"                            { return DASH; }
     "~"                            { return TILDE; }
@@ -401,11 +403,11 @@ FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
     {STRING_LITERAL}               { return STRING_LITERAL; }
     {IDENTIFIER}                   {
           String text = yytext().toString();
-          if (afterType) {
-              afterType = false;
+          if (afterType || afterDot) {
+              reset();
               return IDENTIFIER;
           } else if (afterTypeQualifier) {
-              afterType();
+              reset();
               userTypesTable.add(text);
               return TYPE_NAME_IDENTIFIER;
           } else if (userTypesTable.contains(text)) {

@@ -17,6 +17,8 @@ class GlslLexerAdapter : LexerBase() {
     private var tokenText = ""
     private var tokenStart = 0
     private var tokenEnd = 0
+    private var prevStart = 0
+    private var prevEnd = 0
     private var bufferEnd = 0
     private var macroExpansion: MacroExpansion? = null
     private val macrosTokens = hashMapOf<String, ArrayList<IElementType>>()
@@ -27,13 +29,13 @@ class GlslLexerAdapter : LexerBase() {
     override fun getTokenType(): IElementType? {
         if (macroExpansion != null) {
             expandMacro()
-        } else  if (tokenType == PP_INCLUDE) {
+        } else if (tokenType == PP_INCLUDE) {
             resolveInclude()
         } else if (tokenType == PP_DEFINE) {
             setDefineDefinition()
         } else if (isMacro()) {
-            setMacroExpansion()
-            tokenType = MACRO_EXPANSION
+//            setMacroExpansion()
+//            tokenType = MACRO_EXPANSION
         }
         return tokenType
     }
@@ -56,6 +58,8 @@ class GlslLexerAdapter : LexerBase() {
      */
     override fun advance() {
         if (macroExpansion != null) return
+        prevStart = tokenStart
+        prevEnd = tokenEnd
         tokenType = lexer.advance()
         tokenStart = lexer.tokenStart
         tokenEnd = lexer.tokenEnd
@@ -81,7 +85,7 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     override fun getTokenStart(): Int {
-        return if (macroExpansion != null && macroExpansion!!.tokenIndex > 0) {
+        return if (macroExpansion != null && macroExpansion!!.expansionStarted()) {
             macroExpansion!!.endOffset
         } else {
             tokenStart
@@ -129,6 +133,10 @@ class GlslLexerAdapter : LexerBase() {
         val text = peek()
         val identifier = text.substringBefore(" ")
         if (macrosTokens.containsKey(identifier)) return
+        if (text.indexOf(" ") == -1) { // #define can also have empty value
+            macrosTokens[identifier] = arrayListOf(WHITE_SPACE)
+            return
+        }
         val body = text.substringAfter(" ")
         val bodyLexer = GlslLexerAdapter()
         bodyLexer.start(body)
@@ -145,7 +153,7 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun expandMacro() {
-        val nextToken = macroExpansion!!.getNextToken()
+        val nextToken = macroExpansion?.getNextToken()
         if (nextToken == null) {
             macroExpansion = null
             advance()
@@ -159,13 +167,13 @@ class GlslLexerAdapter : LexerBase() {
      */
     private fun setMacroExpansion() {
         val tokens = macrosTokens[tokenText] ?: return
-        macroExpansion = MacroExpansion(tokens, tokenEnd)
+        macroExpansion = MacroExpansion(tokens, tokenEnd, tokenEnd)
     }
 
     /**
      *
      */
-    private fun peek() : String {
+    private fun peek(): String {
         val currentText = tokenText
         val currentState = state
         val currentTokenType = tokenType
@@ -186,13 +194,19 @@ class GlslLexerAdapter : LexerBase() {
     /**
      *
      */
-    private fun isMacro() : Boolean {
-        return tokenType == IDENTIFIER && !lexer.afterType && !lexer.afterTypeQualifier && macrosTokens.containsKey(tokenText)
+    private fun isMacro(): Boolean {
+        return (tokenType == IDENTIFIER || tokenType == TYPE_NAME_IDENTIFIER) && !lexer.afterType && !lexer.afterTypeQualifier && macrosTokens.containsKey(
+            tokenText
+        )
     }
-}
 
-class MacroExpansion(private val tokens: List<IElementType>, val endOffset: Int, var tokenIndex: Int = 0) {
-    fun getNextToken(): IElementType? {
-        return if (tokenIndex >= tokens.size) null else tokens[tokenIndex++]
+    inner class MacroExpansion(private val tokens: List<IElementType>, val startOffset: Int, val endOffset: Int, private var tokenIndex: Int = 0) {
+        fun getNextToken(): IElementType? {
+            return if (tokenIndex >= tokens.size) null else tokens[tokenIndex++]
+        }
+
+        fun expansionStarted(): Boolean {
+            return tokenIndex != 0
+        }
     }
 }

@@ -20,4 +20,13 @@ object GlslParserUtils : GeneratedParserUtilBase() {
         val tokenType = builder.tokenType
         return tokenType != PP_END && consumeToken(builder, tokenType)
     }
+
+    @JvmStatic
+    fun noSpace(builder: PsiBuilder, level: Int): Boolean {
+        val nextChar = builder.originalText[builder.currentOffset - 1]
+        if (nextChar.isWhitespace()) {
+            return false
+        }
+        return true
+    }
 }

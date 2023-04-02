@@ -21,8 +21,9 @@ class GlslLexerAdapter : LexerBase() {
     private var tokenEnd = 0
     private var bufferEnd = 0
     private val macrosTable = hashMapOf<String, GlslMacro>()
-    private var currentMacro: GlslMacro? = null
+
     private var macroExpansion: MacroExpansion? = null
+    private var currentMacro: GlslMacro? = null
     private var inPpFuncCall = false
     private var ppFuncCallName = ""
 
@@ -31,25 +32,17 @@ class GlslLexerAdapter : LexerBase() {
      */
     override fun getTokenType(): IElementType? {
         if (inPpFuncCall) {
-            if (tokenType == RIGHT_PAREN) {
-                setMacroExpansion(ppFuncCallName)
-                inPpFuncCall = false
-            }
-            tokenType = MACRO_EXPANSION
+            handlePpCallFuncExpansion()
         } else if (macroExpansion != null) {
             expandMacro()
         } else if (macrosTable.containsKey(tokenText)) {
-            if (peek() == "(") {
-                inPpFuncCall = true
-                ppFuncCallName = tokenText
-            } else {
-                setMacroExpansion(tokenText)
-            }
-            tokenType = MACRO_EXPANSION
+            startPpExpansion()
         } else if (state == PREPROCESSOR_DEFINE) {
             addTokenToMacro()
         } else if (tokenType == PP_END) {
             addCurrentMacroToTable()
+        }  else if (tokenType == PP_INCLUDE) {
+            resolveInclude()
         } else if (tokenType == IDENTIFIER) {
             setIdentifier()
         }
@@ -170,6 +163,30 @@ class GlslLexerAdapter : LexerBase() {
         }
         macrosTable[macro.identifier] = macro
         currentMacro = null
+    }
+
+    /**
+     *
+     */
+    private fun startPpExpansion() {
+        if (peek() == "(") {
+            inPpFuncCall = true
+            ppFuncCallName = tokenText
+        } else {
+            setMacroExpansion(tokenText)
+        }
+        tokenType = MACRO_EXPANSION
+    }
+
+    /**
+     *
+     */
+    private fun handlePpCallFuncExpansion() {
+        if (tokenType == RIGHT_PAREN) {
+            setMacroExpansion(ppFuncCallName)
+            inPpFuncCall = false
+        }
+        tokenType = MACRO_EXPANSION
     }
 
     /**

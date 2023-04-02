@@ -20,18 +20,18 @@ import static glsl.GlslTypes.*;
     this((java.io.Reader) null);
     }
     
-    private void reset() {
+    public void reset() {
       afterType = false;
       afterTypeQualifier = false;
       afterDot = false;
     }
   
-    private void afterType() {
+    public void afterType() {
         afterType = true;
         afterTypeQualifier = false;
     }
     
-    private void afterTypeQualifier() {
+    public void afterTypeQualifier() {
         afterTypeQualifier = true;
         afterType = false;
     }
@@ -401,20 +401,6 @@ FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
     {UINTCONSTANT}                 { return UINTCONSTANT; }
     {BOOLCONSTANT}                 { return BOOLCONSTANT; }
     {STRING_LITERAL}               { return STRING_LITERAL; }
-    {IDENTIFIER}                   {
-          String text = yytext().toString();
-          if (afterType || afterDot) {
-              reset();
-              return IDENTIFIER;
-          } else if (afterTypeQualifier) {
-              reset();
-              userTypesTable.add(text);
-              return TYPE_NAME_IDENTIFIER;
-          } else if (userTypesTable.contains(text)) {
-              afterType();
-              return TYPE_NAME_IDENTIFIER;
-          }
-          return IDENTIFIER;
-      }
+    {IDENTIFIER}                   { return IDENTIFIER; }
 }
 [^]                               { return BAD_CHARACTER; }

@@ -33,11 +33,29 @@ class GlslLexerAdapter : LexerBase() {
             resolveInclude()
         } else if (tokenType == PP_DEFINE) {
             setDefineDefinition()
-        } else if (isMacro()) {
-//            setMacroExpansion()
-//            tokenType = MACRO_EXPANSION
+        } else if (tokenType == IDENTIFIER) {
+            setIdentifier()
         }
         return tokenType
+    }
+
+    /**
+     *
+     */
+    private fun setIdentifier() {
+        if (lexer.afterType || lexer.afterDot) {
+            lexer.reset()
+        } else if (lexer.afterTypeQualifier) {
+            lexer.reset()
+            lexer.userTypesTable.add(tokenText)
+            tokenType = TYPE_NAME_IDENTIFIER
+        } else if (lexer.userTypesTable.contains(tokenText)) {
+            lexer.afterType()
+            tokenType = TYPE_NAME_IDENTIFIER
+        } else if (macrosTokens.containsKey(tokenText)) {
+            setMacroExpansion()
+            tokenType = MACRO_EXPANSION
+        }
     }
 
     /**
@@ -189,15 +207,6 @@ class GlslLexerAdapter : LexerBase() {
         tokenEnd = currentTokenEnd
         lexer.reset(bufferSequence, tokenEnd, bufferEnd, state)
         return peekText
-    }
-
-    /**
-     *
-     */
-    private fun isMacro(): Boolean {
-        return (tokenType == IDENTIFIER || tokenType == TYPE_NAME_IDENTIFIER) && !lexer.afterType && !lexer.afterTypeQualifier && macrosTokens.containsKey(
-            tokenText
-        )
     }
 
     inner class MacroExpansion(private val tokens: List<IElementType>, val startOffset: Int, val endOffset: Int, private var tokenIndex: Int = 0) {

@@ -35,10 +35,10 @@ class GlslLexerAdapter : LexerBase() {
             handlePpCallFuncExpansion()
         } else if (macroExpansion != null) {
             expandMacro()
-        } else if (macrosTable.containsKey(tokenText)) {
-            startPpExpansion()
         } else if (state == PREPROCESSOR_DEFINE) {
             addTokenToMacro()
+        } else if (macrosTable.containsKey(tokenText)) {
+            startPpExpansion()
         } else if (tokenType == PP_END) {
             addCurrentMacroToTable()
         }  else if (tokenType == PP_INCLUDE) {

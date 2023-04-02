@@ -39,12 +39,12 @@ uniform COMPAT_PRECISION int FrameDirection;
 
 
 #define AAAA a + 2 \
-+ 2 / 2
+ + 2 / 2
 
 #define a3(a, b) a + \
 1 + 1 + (x + 2) - (x * 2) \
-+ 1 + (x + 2) - (x * 2) \
-+ 1 + (x + 2) - (x * 2)
+ + 1 + (x + 2) - (x * 2) \
+ + 1 + (x + 2) - (x * 2)
 
 /*
 * Multi line comment
@@ -62,19 +62,19 @@ uniform COMPAT_PRECISION int FrameDirection;
 /*====*/
 
 #define AAAA a + 2 \
-+ 2 / 2
+ + 2 / 2
 
 #define a3(a, b) a + \
 1 + 1 + (x + 2) - (x * 2) \
-+ 1 + (x + 2) - (x * 2) \
-+ 1 + (x + 2) - (x * 2)
+ + 1 + (x + 2) - (x * 2) \
+ + 1 + (x + 2) - (x * 2)
 
 int a = /* Multi line comment */ 2;
 /* Multi line comment */ int /* Multi line comment */  b = /* Multi line comment */ 2;
 int a = /* test */ 2;
 int func(int a/* test */);
 #define AAAA 10
-#define c() 10
+#define coi() 10
 #define AAAA(b) 10
 #define AAAA(b)
 

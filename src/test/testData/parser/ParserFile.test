@@ -69,6 +69,15 @@ uniform COMPAT_PRECISION int FrameDirection;
  + 1 + (x + 2) - (x * 2) \
  + 1 + (x + 2) - (x * 2)
 
+#if defined(CENTER)
+const vec2 Center = CENTER;
+#else
+const vec2 Center = vec2(0.0);
+#endif
+
+#define ZOOM 0.09133
+#if defined(ZOOM)
+
 int a = /* Multi line comment */ 2;
 /* Multi line comment */ int /* Multi line comment */  b = /* Multi line comment */ 2;
 int a = /* test */ 2;

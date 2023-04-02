@@ -983,7 +983,7 @@ private pp_line
     {   pin(".*")=1   }
 
 private pp_conditional
-    ::= (PP_IF|PP_ELIF) expr_no_assignment
+    ::= (PP_IF|PP_ELIF) (('defined' LEFT_PAREN variable_identifier RIGHT_PAREN) | expr_no_assignment)
     |   PP_ENDIF
     |   PP_ELSE
     |   HASH

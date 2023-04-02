@@ -6,7 +6,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.util.containers.addIfNotNull
 import glsl.GlslTypes.*
 import glsl._GlslLexer
-import glsl._GlslLexer.PREPROCESSOR_DEFINE
+import glsl._GlslLexer.*
 import glsl.plugin.psi.GlslInclude.Companion.isValidIncludePath
 import glsl.plugin.utils.GlslUtils
 import glsl.psi.interfaces.GlslExternalDeclaration
@@ -37,7 +37,7 @@ class GlslLexerAdapter : LexerBase() {
             expandMacro()
         } else if (state == PREPROCESSOR_DEFINE) {
             addTokenToMacro()
-        } else if (macrosTable.containsKey(tokenText)) {
+        } else if (shouldExpandMacro()) {
             startPpExpansion()
         } else if (tokenType == PP_END) {
             addCurrentMacroToTable()
@@ -53,6 +53,7 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun setIdentifier() {
+        if (state in  listOf(PREPROCESSOR, PREPROCESSOR_DEFINE)) return
         if (lexer.afterType || lexer.afterDot) {
             lexer.reset()
         } else if (lexer.afterTypeQualifier) {
@@ -216,6 +217,13 @@ class GlslLexerAdapter : LexerBase() {
             macroExpansion = null
             advance()
         }
+    }
+
+    /**
+     *
+     */
+    private fun shouldExpandMacro(): Boolean {
+        return state == YYINITIAL && macrosTable.containsKey(tokenText)
     }
 
     /**

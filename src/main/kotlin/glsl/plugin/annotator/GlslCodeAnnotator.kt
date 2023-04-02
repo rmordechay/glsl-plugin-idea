@@ -80,8 +80,9 @@ class GlslCodeAnnotator : Annotator {
             }
             for ((i, paramDeclarator) in paramDeclarators.withIndex()) {
                 val declaratorType = paramDeclarator.getAssociatedType()
+                if (exprTypes.size < i) continue
                 val typesEqual = exprTypes[i]!!.isEqual(declaratorType)
-                if (!typesEqual) {
+                if (typesEqual == false) {
                     val exprTypesText = exprTypes.mapNotNull { it!!.getTypeText() }
                     annotateNoMatchingFunc(variableIdentifier, funcName, exprTypesText, holder)
                 }
@@ -117,7 +118,7 @@ class GlslCodeAnnotator : Annotator {
         val leftType = exprList.first().getExprType()
         val rightType = exprList.last().getExprType()
         if (rightType == null || leftType == null) return
-        if (!rightType.isEqual(leftType)) {
+        if (rightType.isEqual(leftType) == true) {
             setHighlightingError(exprList.first(), holder,  INCOMPATIBLE_TYPES_IN_ASSIGNMENT.format(leftType.getTypeText(), rightType.getTypeText()))
         }
     }
@@ -181,7 +182,7 @@ class GlslCodeAnnotator : Annotator {
         val thirdExpr = element.exprNoAssignmentList[2]
         val secondExprType = secondExpr.getExprType() ?: return
         val thirdExprType = thirdExpr.getExprType()
-        if (!secondExprType.isEqual(thirdExprType)) {
+        if (secondExprType.isEqual(thirdExprType) == true) {
             val msg = TYPES_CONDITIONAL_EXPR_NO_MATCH.format(secondExprType.getTypeText(), thirdExprType?.getTypeText())
             val range = TextRange(secondExpr.startOffset, thirdExpr.endOffset)
             setHighlightingError(range, holder, msg)

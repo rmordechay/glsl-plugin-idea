@@ -3,8 +3,10 @@ package glsl.plugin.language
 import com.intellij.lexer.LexerBase
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
+import com.intellij.util.containers.addIfNotNull
 import glsl.GlslTypes.*
 import glsl._GlslLexer
+import glsl._GlslLexer.PREPROCESSOR_DEFINE
 import glsl.plugin.psi.GlslInclude.Companion.isValidIncludePath
 import glsl.plugin.utils.GlslUtils
 import glsl.psi.interfaces.GlslExternalDeclaration
@@ -19,21 +21,26 @@ class GlslLexerAdapter : LexerBase() {
     private var tokenEnd = 0
     private var bufferEnd = 0
     private var macroExpansion: MacroExpansion? = null
-    private val macrosTokens = hashMapOf<String, ArrayList<IElementType>>()
+    private val macrosTokens = hashMapOf<String, GlslMacro>()
+    private var currentMacro: GlslMacro? = null
 
     /**
      *
      */
     override fun getTokenType(): IElementType? {
-        if (macroExpansion != null) {
-            expandMacro()
-        } else if (macrosTokens.containsKey(tokenText)) {
-            setMacroExpansion()
-            tokenType = MACRO_EXPANSION
-        } else if (tokenType == PP_INCLUDE) {
-            resolveInclude()
-        } else if (tokenType == PP_DEFINE) {
-//            setDefineDefinition()
+        if (tokenType == WHITE_SPACE) return tokenType
+        if (state == PREPROCESSOR_DEFINE) {
+            if (lexer.afterDefine) {
+                lexer.afterDefine = false
+                currentMacro = GlslMacro(peek())
+            } else {
+                currentMacro?.tokens?.addIfNotNull(tokenType)
+            }
+        } else if (tokenType == PP_END) {
+            if (currentMacro != null) {
+                macrosTokens[currentMacro!!.identifier] = currentMacro!!
+            }
+            currentMacro = null
         } else if (tokenType == IDENTIFIER) {
             setIdentifier()
         }
@@ -144,17 +151,17 @@ class GlslLexerAdapter : LexerBase() {
         val text = peek()
         val identifier = text.substringBefore(" ")
         if (macrosTokens.containsKey(identifier)) return
-        if (text.indexOf(" ") == -1) { // #define can also have empty value
-            macrosTokens[identifier] = arrayListOf(WHITE_SPACE)
-            return
-        }
+//        if (text.indexOf(" ") == -1) { // #define can also have empty value
+//            macrosTokens[identifier] = arrayListOf(WHITE_SPACE)
+//            return
+//        }
         val body = text.substringAfter(" ")
         val bodyLexer = GlslLexerAdapter()
         bodyLexer.start(body)
         while (true) {
             val bodyTokenType = bodyLexer.tokenType ?: break
             if (bodyTokenType != WHITE_SPACE) {
-                macrosTokens.getOrPut(identifier) { arrayListOf() }.add(bodyTokenType)
+//                macrosTokens.getOrPut(identifier) { arrayListOf() }.add(bodyTokenType)
             }
             bodyLexer.advance()
         }
@@ -177,8 +184,8 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun setMacroExpansion() {
-        val tokens = macrosTokens[tokenText] ?: return
-        macroExpansion = MacroExpansion(tokens.iterator())
+        val macro = macrosTokens[tokenText] ?: return
+        macroExpansion = MacroExpansion(macro.tokens.iterator())
     }
 
     /**
@@ -202,6 +209,9 @@ class GlslLexerAdapter : LexerBase() {
         return peekText
     }
 
+    /**
+     *
+     */
     inner class MacroExpansion(private val tokens: Iterator<IElementType>) {
         fun getNextToken(): IElementType? {
             if (tokens.hasNext()) {
@@ -209,5 +219,12 @@ class GlslLexerAdapter : LexerBase() {
             }
             return null
         }
+    }
+
+    /**
+     *
+     */
+    inner class GlslMacro(val identifier: String) {
+        val tokens = arrayListOf<IElementType>()
     }
 }

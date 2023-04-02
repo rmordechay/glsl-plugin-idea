@@ -14,6 +14,7 @@ import static glsl.GlslTypes.*;
   public boolean afterType = false;
   public boolean afterTypeQualifier = false;
   public boolean afterDot = false;
+  public boolean afterDefine = false;
   public Set<CharSequence> userTypesTable = new HashSet<>();
 
     public _GlslLexer() {
@@ -46,6 +47,7 @@ import static glsl.GlslTypes.*;
 %unicode
 %state IN_MULITLINE_COMMENT
 %state PREPROCESSOR_IGNORE
+%state PREPROCESSOR_DEFINE
 %state PREPROCESSOR
 
 WHITE_SPACE=[ \t\f]+
@@ -104,10 +106,10 @@ FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
     {PP_TEXT}                      { return PP_TEXT; }
 }
 
-<YYINITIAL, PREPROCESSOR> {
+<YYINITIAL, PREPROCESSOR, PREPROCESSOR_DEFINE> {
     {WHITE_SPACE}                  { return WHITE_SPACE; }
     {NEW_LINE} {
-        if (zzLexicalState == PREPROCESSOR) {
+        if (zzLexicalState == PREPROCESSOR || zzLexicalState == PREPROCESSOR_DEFINE) {
             yybegin(YYINITIAL);
             return PP_END;
         }
@@ -132,7 +134,7 @@ FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
     {MACRO_VERSION}                { yybegin(PREPROCESSOR); return MACRO_VERSION;}
     {PP_IF}                        { yybegin(PREPROCESSOR); return PP_IF;}
     {PP_ELIF}                      { yybegin(PREPROCESSOR); return PP_ELIF;}
-    {PP_DEFINE}                    { yybegin(PREPROCESSOR); return PP_DEFINE;}
+    {PP_DEFINE}                    { afterDefine = true; yybegin(PREPROCESSOR_DEFINE); return PP_DEFINE;}
     {PP_ERROR}                     { yybegin(PREPROCESSOR_IGNORE); return PP_ERROR;}
     {PP_PRAGMA}                    { yybegin(PREPROCESSOR_IGNORE); return PP_PRAGMA;}
     // Punctuation

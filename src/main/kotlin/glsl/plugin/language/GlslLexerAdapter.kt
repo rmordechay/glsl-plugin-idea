@@ -33,7 +33,7 @@ class GlslLexerAdapter : LexerBase() {
         } else if (tokenType == PP_INCLUDE) {
             resolveInclude()
         } else if (tokenType == PP_DEFINE) {
-            setDefineDefinition()
+//            setDefineDefinition()
         } else if (tokenType == IDENTIFIER) {
             setIdentifier()
         }

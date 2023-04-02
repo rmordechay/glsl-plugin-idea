@@ -4,6 +4,7 @@
     psiImplClassSuffix="Impl"
     psiPackage="glsl.psi.interfaces"
     psiImplPackage="glsl.psi.impl"
+    parserUtilClass="glsl.plugin.language.GlslParserUtils"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -956,9 +957,11 @@ pp_statement
 
 
 private pp_define_declaration
-    ::= PP_DEFINE PP_TEXT*
+    ::= PP_DEFINE pp_define_tokens
     {   pin(".*")=1   }
 
+pp_define_tokens
+    ::= <<ppDefineToken>>*
 
 pp_include_declaration
     ::= PP_INCLUDE pp_include_path

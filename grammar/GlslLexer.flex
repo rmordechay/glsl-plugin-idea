@@ -132,7 +132,7 @@ FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
     {MACRO_VERSION}                { yybegin(PREPROCESSOR); return MACRO_VERSION;}
     {PP_IF}                        { yybegin(PREPROCESSOR); return PP_IF;}
     {PP_ELIF}                      { yybegin(PREPROCESSOR); return PP_ELIF;}
-    {PP_DEFINE}                    { yybegin(PREPROCESSOR_IGNORE); return PP_DEFINE;}
+    {PP_DEFINE}                    { yybegin(PREPROCESSOR); return PP_DEFINE;}
     {PP_ERROR}                     { yybegin(PREPROCESSOR_IGNORE); return PP_ERROR;}
     {PP_PRAGMA}                    { yybegin(PREPROCESSOR_IGNORE); return PP_PRAGMA;}
     // Punctuation

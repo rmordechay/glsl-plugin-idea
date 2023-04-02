@@ -27,6 +27,9 @@ class GlslLexerAdapter : LexerBase() {
     override fun getTokenType(): IElementType? {
         if (macroExpansion != null) {
             expandMacro()
+        } else if (macrosTokens.containsKey(tokenText)) {
+            setMacroExpansion()
+            tokenType = MACRO_EXPANSION
         } else if (tokenType == PP_INCLUDE) {
             resolveInclude()
         } else if (tokenType == PP_DEFINE) {
@@ -41,10 +44,7 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun setIdentifier() {
-        if (macrosTokens.containsKey(tokenText)) {
-            setMacroExpansion()
-            tokenType = MACRO_EXPANSION
-        } else if (lexer.afterType || lexer.afterDot) {
+        if (lexer.afterType || lexer.afterDot) {
             lexer.reset()
         } else if (lexer.afterTypeQualifier) {
             lexer.reset()

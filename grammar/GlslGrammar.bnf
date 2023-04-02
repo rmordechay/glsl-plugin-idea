@@ -954,9 +954,11 @@ pp_statement
     |    pp_line PP_END
     |    macro_literal INTCONSTANT PP_END
 
-private pp_extension
-    ::= PP_EXTENSION variable_identifier COLON ('require'|'enable'|'warn'|'disable')
+
+private pp_define_declaration
+    ::= PP_DEFINE PP_TEXT*
     {   pin(".*")=1   }
+
 
 pp_include_declaration
     ::= PP_INCLUDE pp_include_path
@@ -981,8 +983,8 @@ private pp_conditional
     |   HASH
     {   pin(".*")=1   }
 
-private pp_define_declaration
-    ::= PP_DEFINE PP_TEXT*
+private pp_extension
+    ::= PP_EXTENSION variable_identifier COLON ('require'|'enable'|'warn'|'disable')
     {   pin(".*")=1   }
 
 pp_literal

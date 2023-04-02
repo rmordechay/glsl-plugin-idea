@@ -1,14 +1,15 @@
 # GLSL Plugin Changelog
 
 ## [1.0.8]
-### Updated
-- Important change in grammar. Plugin can differentiate better between user type and variables (may still have issues); 
 ### Added 
-- Type definition to #define. e.g. #define float4 vec4. Still doesn't really work, but it's a good beginning.
-- File reference. Elements can now be referenced from outside the file (with #include)
+- Better support for preprocessor - #define and #include should expand correctly.  
+- File reference. Both the elements and the file itself can now be referenced from outside the file (with #include)
+### Updated
+- Important change in grammar. Plugin can differentiate better between user type and variables (may still have issues).
+- Include statements should work better.
 ### Fixed
-- Texture functions bug for texture3D and textureCube  
-- Initialization of user-defined types array bug.  
+- Texture functions bug for texture3D and textureCube
+- Initialization of user-defined types array bug `UserType[i] userType`.  
 
 ## [1.0.7]
 ### Fixed

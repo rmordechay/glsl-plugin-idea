@@ -23,15 +23,28 @@ class GlslLexerAdapter : LexerBase() {
     private val macrosTable = hashMapOf<String, GlslMacro>()
     private var currentMacro: GlslMacro? = null
     private var macroExpansion: MacroExpansion? = null
+    private var inPpFuncCall = false
+    private var ppFuncCallName = ""
 
     /**
      *
      */
     override fun getTokenType(): IElementType? {
-        if (macroExpansion != null) {
+        if (inPpFuncCall) {
+            if (tokenType == RIGHT_PAREN) {
+                setMacroExpansion(ppFuncCallName)
+                inPpFuncCall = false
+            }
+            tokenType = MACRO_EXPANSION
+        } else if (macroExpansion != null) {
             expandMacro()
         } else if (macrosTable.containsKey(tokenText)) {
-            setMacroExpansion()
+            if (peek() == "(") {
+                inPpFuncCall = true
+                ppFuncCallName = tokenText
+            } else {
+                setMacroExpansion(tokenText)
+            }
             tokenType = MACRO_EXPANSION
         } else if (state == PREPROCESSOR_DEFINE) {
             addTokenToMacro()
@@ -191,8 +204,8 @@ class GlslLexerAdapter : LexerBase() {
     /**
      *
      */
-    private fun setMacroExpansion() {
-        val macro = macrosTable[tokenText] ?: return
+    private fun setMacroExpansion(key: String) {
+        val macro = macrosTable[key] ?: return
         macroExpansion = MacroExpansion(macro.tokens.iterator())
     }
 

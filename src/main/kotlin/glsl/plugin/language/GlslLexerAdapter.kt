@@ -41,7 +41,10 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     private fun setIdentifier() {
-        if (lexer.afterType || lexer.afterDot) {
+        if (macrosTokens.containsKey(tokenText)) {
+            setMacroExpansion()
+            tokenType = MACRO_EXPANSION
+        } else if (lexer.afterType || lexer.afterDot) {
             lexer.reset()
         } else if (lexer.afterTypeQualifier) {
             lexer.reset()
@@ -50,9 +53,6 @@ class GlslLexerAdapter : LexerBase() {
         } else if (lexer.userTypesTable.contains(tokenText)) {
             lexer.afterType()
             tokenType = TYPE_NAME_IDENTIFIER
-        } else if (macrosTokens.containsKey(tokenText)) {
-            setMacroExpansion()
-            tokenType = MACRO_EXPANSION
         }
     }
 

@@ -17,8 +17,6 @@ class GlslLexerAdapter : LexerBase() {
     private var tokenText = ""
     private var tokenStart = 0
     private var tokenEnd = 0
-    private var prevStart = 0
-    private var prevEnd = 0
     private var bufferEnd = 0
     private var macroExpansion: MacroExpansion? = null
     private val macrosTokens = hashMapOf<String, ArrayList<IElementType>>()
@@ -75,9 +73,12 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     override fun advance() {
-        if (macroExpansion != null) return
-        prevStart = tokenStart
-        prevEnd = tokenEnd
+        if (macroExpansion != null) {
+            if (tokenStart != tokenEnd) {
+                tokenStart = tokenEnd
+            }
+            return
+        }
         tokenType = lexer.advance()
         tokenStart = lexer.tokenStart
         tokenEnd = lexer.tokenEnd
@@ -103,22 +104,14 @@ class GlslLexerAdapter : LexerBase() {
      *
      */
     override fun getTokenStart(): Int {
-        return if (macroExpansion != null && macroExpansion!!.expansionStarted()) {
-            macroExpansion!!.endOffset
-        } else {
-            tokenStart
-        }
+        return tokenStart
     }
 
     /**
      *
      */
     override fun getTokenEnd(): Int {
-        return if (macroExpansion != null) {
-            macroExpansion!!.endOffset
-        } else {
-            tokenEnd
-        }
+        return tokenEnd
     }
 
     /**
@@ -172,11 +165,11 @@ class GlslLexerAdapter : LexerBase() {
      */
     private fun expandMacro() {
         val nextToken = macroExpansion?.getNextToken()
-        if (nextToken == null) {
+        if (nextToken != null) {
+            tokenType = nextToken
+        } else {
             macroExpansion = null
             advance()
-        } else {
-            tokenType = nextToken
         }
     }
 

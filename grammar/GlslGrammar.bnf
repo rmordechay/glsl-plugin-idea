@@ -957,8 +957,11 @@ pp_statement
 
 
 private pp_define_declaration
-    ::= PP_DEFINE pp_define_tokens
+    ::= PP_DEFINE variable_identifier pp_define_func_header? pp_define_tokens
     {   pin(".*")=1   }
+
+private pp_define_func_header
+    ::= LEFT_PAREN (variable_identifier (COMMA variable_identifier)*)? RIGHT_PAREN
 
 pp_define_tokens
     ::= <<ppDefineToken>>*

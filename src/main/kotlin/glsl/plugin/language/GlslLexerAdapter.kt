@@ -178,7 +178,7 @@ class GlslLexerAdapter : LexerBase() {
      */
     private fun setMacroExpansion() {
         val tokens = macrosTokens[tokenText] ?: return
-        macroExpansion = MacroExpansion(tokens, tokenEnd, tokenEnd)
+        macroExpansion = MacroExpansion(tokens.iterator())
     }
 
     /**
@@ -202,13 +202,12 @@ class GlslLexerAdapter : LexerBase() {
         return peekText
     }
 
-    inner class MacroExpansion(private val tokens: List<IElementType>, val startOffset: Int, val endOffset: Int, private var tokenIndex: Int = 0) {
+    inner class MacroExpansion(private val tokens: Iterator<IElementType>) {
         fun getNextToken(): IElementType? {
-            return if (tokenIndex >= tokens.size) null else tokens[tokenIndex++]
-        }
-
-        fun expansionStarted(): Boolean {
-            return tokenIndex != 0
+            if (tokens.hasNext()) {
+                return tokens.next()
+            }
+            return null
         }
     }
 }

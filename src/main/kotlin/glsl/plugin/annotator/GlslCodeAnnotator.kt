@@ -95,10 +95,12 @@ class GlslCodeAnnotator : Annotator {
      */
     private fun annotateSingleDeclaration(singleDeclaration: GlslSingleDeclaration, holder: AnnotationHolder) {
         for (expr in singleDeclaration.exprNoAssignmentList) {
-            val exprType = expr.getExprType()
-            val declarationType = singleDeclaration.getAssociatedType()
-            if (exprType?.isEqual(declarationType) == false) {
-                val msg = " Required: ${declarationType?.getTypeText() ?: ""}; Found: ${exprType.getTypeText()}."
+            val foundType = expr.getExprType()
+            val requiredType = singleDeclaration.getAssociatedType()
+            val requiredText = requiredType?.getTypeText()
+            if (requiredText?.isBlank() == true) continue
+            if (foundType?.isEqual(requiredType) == false) {
+                val msg = " Required: ${requiredType?.getTypeText() ?: ""}; Found: ${foundType.getTypeText()}."
                 setHighlightingError(singleDeclaration.variableIdentifier, holder, INCOMPATIBLE_TYPES_IN_INIT + msg)
             }
         }

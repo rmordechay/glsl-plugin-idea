@@ -11,6 +11,8 @@ import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.*
 import glsl.plugin.reference.GlslReference
+import glsl.psi.impl.GlslPpDefineDeclarationImpl
+import glsl.psi.interfaces.GlslPpDefineDeclaration
 import glsl.psi.interfaces.GlslTypeName
 import glsl.psi.interfaces.GlslVariableIdentifier
 
@@ -94,6 +96,7 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
     override fun getAsNamedElement(): GlslNamedElementImpl? {
         if (parent is GlslNamedIdentifier) return parent as GlslNamedIdentifierImpl
         if (parent is GlslNamedUserType) return parent as GlslNamedUserTypeImpl
+        if (parent is GlslPpDefineDeclaration) return parent as GlslPpDefineDeclarationImpl
         return null
     }
 

@@ -17,12 +17,12 @@ import glsl.data.GlslTokenSets
 import glsl.plugin.code.highlighting.GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.BOOLEAN_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.DIRECTIVE_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.KEYWORD_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.LINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MULTILINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.NUMBERS_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
 import glsl.plugin.language.GlslLexerAdapter
 
@@ -56,7 +56,7 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
             GlslTypes.STRING_LITERAL -> STRING_TEXT_ATTR
             GlslTypes.BOOLCONSTANT -> BOOLEAN_TEXT_ATTR
             in GlslTokenSets.ALL_OPERATORS -> OPERATORS_TEXT_ATTR
-            in GlslTokenSets.PREPROCESSORS -> PREPROCESSOR_TEXT_ATTR
+            in GlslTokenSets.DIRECTIVES -> DIRECTIVE_TEXT_ATTR
             in GlslTokenSets.NUMBER_SET -> NUMBERS_TEXT_ATTR
             in GlslTokenSets.KEYWORDS -> KEYWORD_TEXT_ATTR
             in GlslTokenSets.BUILTIN_TYPES -> BUILTIN_TYPE_TEXT_ATTR
@@ -77,7 +77,8 @@ object GlslTextAttributes {
     val STRING_TEXT_ATTR = createTextAttributesKey("GLSL_STRING", STRING)
     val BOOLEAN_TEXT_ATTR = createTextAttributesKey("GLSL_BOOLEAN", KEYWORD)
     val OPERATORS_TEXT_ATTR = createTextAttributesKey("GLSL_OPERATORS", OPERATION_SIGN)
-    val PREPROCESSOR_TEXT_ATTR = createTextAttributesKey("GLSL_PREPROCESSOR", KEYWORD)
+    val DIRECTIVE_TEXT_ATTR = createTextAttributesKey("GLSL_DIRECTIVE", KEYWORD)
+    val PP_DEFINE_DECLARATION = createTextAttributesKey("GLSL_PP_DEFINE_DECLARATION", CONSTANT)
     val STRUCT_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_STRUCT_IDENTIFIER", CLASS_NAME)
     val NUMBERS_TEXT_ATTR = createTextAttributesKey("GLSL_NUMBER", NUMBER)
     val KEYWORD_TEXT_ATTR = createTextAttributesKey("GLSL_KEYWORD", KEYWORD)
@@ -87,7 +88,6 @@ object GlslTextAttributes {
     val LINE_COMMENT_TEXT_ATTR = createTextAttributesKey("GLSL_LINE_COMMENT", LINE_COMMENT)
     val MULTILINE_COMMENT_TEXT_ATTR = createTextAttributesKey("GLSL_MULTILINE_COMMENT", LINE_COMMENT)
     val BAD_CHARACTER_TEXT_ATTR = createTextAttributesKey("GLSL_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
-    val NO_HIGHLIGHTING_TEXT_ATTR = createTextAttributesKey("NO_HIGHLIGHTING_TEXT", HighlighterColors.NO_HIGHLIGHTING)
 }
 
 /**

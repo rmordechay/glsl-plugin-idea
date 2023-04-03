@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.util.parentOfType
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.PP_DEFINE_DECLARATION
 import glsl.plugin.code.highlighting.GlslTextAttributes.VARIABLE_TEXT_ATTR
 import glsl.plugin.psi.GlslType
 import glsl.plugin.utils.GlslUtils
@@ -336,5 +337,45 @@ abstract class GlslNamedParameterDeclarator(node: ASTNode) : GlslNamedIdentifier
      */
     override fun getHighlightTextAttr(): TextAttributesKey {
         return FUNC_PARAM_TEXT_ATTR
+    }
+}
+
+/**
+ *
+ */
+abstract class GlslNamedPpDefineDeclaration(node: ASTNode) : GlslNamedIdentifierImpl(node) {
+    /**
+     *
+     */
+    override fun getSelf(): GlslPpDefineDeclaration {
+        return this as GlslPpDefineDeclaration
+    }
+
+    /**
+     *
+     */
+    override fun getNameIdentifier(): GlslVariableIdentifier? {
+        return getSelf().variableIdentifier
+    }
+
+    /**
+     *
+     */
+    override fun getAssociatedType(): GlslType? {
+        return null
+    }
+
+    /**
+     *
+     */
+    override fun getLookupIcon(): Icon {
+        return AllIcons.Nodes.Variable
+    }
+
+    /**
+     *
+     */
+    override fun getHighlightTextAttr(): TextAttributesKey {
+        return PP_DEFINE_DECLARATION
     }
 }

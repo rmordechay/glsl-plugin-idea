@@ -12,9 +12,12 @@
     elementTypeClass="glsl.plugin.language.GlslElementType"
     tokenTypeClass="glsl.plugin.language.GlslTokenType"
 
+    // Identifiers
     implements("variable_identifier|type_name")="glsl.plugin.psi.GlslIdentifier"
     mixin("variable_identifier|type_name")="glsl.plugin.psi.GlslIdentifierImpl"
+    // Include
     mixin("pp_include_path")="glsl.plugin.psi.GlslInclude"
+    // Expr
     implements("expr")="glsl.plugin.psi.GlslExprType"
     mixin("expr")="glsl.plugin.psi.GlslExprTypeImpl"
     // Types
@@ -22,7 +25,7 @@
     mixin("struct_specifier")="glsl.plugin.psi.named.GlslNamedStructSpecifier"
     implements("block_structure")="glsl.plugin.psi.named.GlslNamedUserType"
     mixin("block_structure")="glsl.plugin.psi.named.GlslNamedBlockStructure"
-    // Identifiers
+    // Declarations
     implements("function_header")="glsl.plugin.psi.named.GlslNamedIdentifier"
     mixin("function_header")="glsl.plugin.psi.named.GlslNamedFunctionHeader"
     implements("parameter_declarator")="glsl.plugin.psi.named.GlslNamedIdentifier"
@@ -37,6 +40,9 @@
     mixin("struct_declarator")="glsl.plugin.psi.named.GlslNamedStructDeclarator"
     implements("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedIdentifier"
     mixin("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedDeclarationIdentifierWrapper"
+    // Macros
+    implements("pp_define_declaration")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("pp_define_declaration")="glsl.plugin.psi.named.GlslNamedPpDefineDeclaration"
 
     extends("expr_no_assignment|assignment_expr")=expr
     extends("(comma_seperated|conditional|shift|relational|equality|and|exclusive_or|inclusive_or|logical_and|logical_xor|logical_or|mul|add|unary)_expr")=expr_no_assignment

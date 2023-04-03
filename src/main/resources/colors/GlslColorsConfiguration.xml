@@ -40,11 +40,6 @@
             <option name="FOREGROUND" value="F92674"/>
         </value>
     </option>
-    <option name="GLSL_PREPROCESSOR">
-        <value>
-            <option name="FOREGROUND" value="F92674"/>
-        </value>
-    </option>
     <option name="GLSL_OPERATORS">
         <value>
             <option name="FOREGROUND" value="A9B7C6"/>
@@ -65,7 +60,16 @@
             <option name="FOREGROUND" value="FA8A7A"/>
         </value>
     </option>
-
+    <option name="GLSL_DIRECTIVE">
+        <value>
+            <option name="FOREGROUND" value="BBB528"/>
+        </value>
+    </option>
+    <option name="GLSL_PP_DEFINE_DECLARATION">
+        <value>
+            <option name="FOREGROUND" value="328F54"/>
+        </value>
+    </option>
     <option name="GLSL_LINE_COMMENT">
         <value>
             <option name="FOREGROUND" value="888888"/>

@@ -41,7 +41,7 @@ class GlslGenericCompletion(private vararg var keywords: String, private val ico
  */
 class GlslPpCompletion : GlslCompletionProvider() {
 
-    private val preprocessors = GlslUtils.getTokenSetAsStrings(GlslTokenSets.PREPROCESSORS)
+    private val preprocessors = GlslUtils.getTokenSetAsStrings(GlslTokenSets.DIRECTIVES)
         .map { it.lowercase().replace("pp_", "") }
         .toTypedArray()
 

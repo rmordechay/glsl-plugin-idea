@@ -24,9 +24,6 @@ object GlslParserUtils : GeneratedParserUtilBase() {
     @JvmStatic
     fun noSpace(builder: PsiBuilder, level: Int): Boolean {
         val nextChar = builder.originalText[builder.currentOffset - 1]
-        if (nextChar.isWhitespace()) {
-            return false
-        }
-        return true
+        return !nextChar.isWhitespace()
     }
 }

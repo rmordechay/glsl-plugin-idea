@@ -27,8 +27,9 @@ class GlslColorSettings : ColorSettingsPage {
             AttributesDescriptor("User-defined type", GlslTextAttributes.USER_DEFINED_TYPE_TEXT_ATTR),
             AttributesDescriptor("Function // Function call and declaration", GlslTextAttributes.FUNC_TEXT_ATTR),
             AttributesDescriptor("Function // Function parameter", GlslTextAttributes.FUNC_PARAM_TEXT_ATTR),
+            AttributesDescriptor("Preprocessor // Directive", GlslTextAttributes.DIRECTIVE_TEXT_ATTR),
+            AttributesDescriptor("Preprocessor // Identifier", GlslTextAttributes.PP_DEFINE_DECLARATION),
             AttributesDescriptor("Builtin type", GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR),
-            AttributesDescriptor("Preprocessor name", GlslTextAttributes.PREPROCESSOR_TEXT_ATTR),
             AttributesDescriptor("Operators", GlslTextAttributes.OPERATORS_TEXT_ATTR),
             AttributesDescriptor("Bad character", GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR),
         )
@@ -41,7 +42,8 @@ class GlslColorSettings : ColorSettingsPage {
             "v" to GlslTextAttributes.VARIABLE_TEXT_ATTR,
             "si" to GlslTextAttributes.STRUCT_TYPE_TEXT_ATTR,
             "udt" to GlslTextAttributes.USER_DEFINED_TYPE_TEXT_ATTR,
-            "pp" to GlslTextAttributes.PREPROCESSOR_TEXT_ATTR,
+            "d" to GlslTextAttributes.DIRECTIVE_TEXT_ATTR,
+            "ppd" to GlslTextAttributes.PP_DEFINE_DECLARATION,
         )
     }
 

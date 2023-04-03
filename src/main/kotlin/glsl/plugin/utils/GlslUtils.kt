@@ -33,11 +33,11 @@ object GlslUtils {
     /**
      *
      */
-    fun getPsiFileByPath(path: String): PsiFile? {
-        val project = getOpenProject()
-        val virtualFile = FilenameIndex.getVirtualFilesByName(path, GlobalSearchScope.allScope(project))
+    fun getPsiFileByPath(project: Project?, path: String): PsiFile? {
+        val selectedProject = project ?: getOpenProject()
+        val virtualFile = FilenameIndex.getVirtualFilesByName(path, GlobalSearchScope.allScope(selectedProject))
         if (virtualFile.isEmpty()) return null
-        return PsiManager.getInstance(project).findFile(virtualFile.toTypedArray()[0])
+        return PsiManager.getInstance(selectedProject).findFile(virtualFile.toTypedArray()[0])
     }
 
     /**

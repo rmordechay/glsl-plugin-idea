@@ -71,7 +71,7 @@ class GlslColorSettings : ColorSettingsPage {
     /**
     *
     */
-    override fun getIcon(): Icon? {
+    override fun getIcon(): Icon {
         return GlslIcon.PLUGIN_FILE_ICON
     }
 

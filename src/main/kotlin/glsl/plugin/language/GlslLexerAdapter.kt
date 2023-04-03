@@ -1,6 +1,7 @@
 package glsl.plugin.language
 
 import com.intellij.lexer.LexerBase
+import com.intellij.openapi.project.Project
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.containers.addIfNotNull
@@ -11,7 +12,7 @@ import glsl.plugin.psi.GlslInclude.Companion.isValidIncludePath
 import glsl.plugin.utils.GlslUtils
 import glsl.psi.interfaces.GlslExternalDeclaration
 
-class GlslLexerAdapter : LexerBase() {
+class GlslLexerAdapter(val project: Project?, private val currentFileName: String? = null) : LexerBase() {
     private val lexer = _GlslLexer(null)
     private var state = 0
     private var tokenType: IElementType? = null
@@ -47,23 +48,6 @@ class GlslLexerAdapter : LexerBase() {
             setIdentifier()
         }
         return tokenType
-    }
-
-    /**
-     *
-     */
-    private fun setIdentifier() {
-        if (state in  listOf(PREPROCESSOR, PREPROCESSOR_DEFINE)) return
-        if (lexer.afterType || lexer.afterDot) {
-            lexer.reset()
-        } else if (lexer.afterTypeQualifier) {
-            lexer.reset()
-            lexer.userTypesTable.add(tokenText)
-            tokenType = TYPE_NAME_IDENTIFIER
-        } else if (lexer.userTypesTable.contains(tokenText)) {
-            lexer.afterType()
-            tokenType = TYPE_NAME_IDENTIFIER
-        }
     }
 
     /**
@@ -134,6 +118,53 @@ class GlslLexerAdapter : LexerBase() {
     /**
      *
      */
+    private fun setIdentifier() {
+        if (state in  listOf(PREPROCESSOR, PREPROCESSOR_DEFINE)) return
+        if (lexer.afterType || lexer.afterDot) {
+            lexer.reset()
+        } else if (lexer.afterTypeQualifier) {
+            lexer.reset()
+            lexer.userTypesTable.add(tokenText)
+            tokenType = TYPE_NAME_IDENTIFIER
+        } else if (lexer.userTypesTable.contains(tokenText)) {
+            lexer.afterType()
+            tokenType = TYPE_NAME_IDENTIFIER
+        }
+    }
+
+    /**
+     *
+     */
+    private fun resolveInclude() {
+        var includePath = peek()
+        if (!isValidIncludePath(includePath)) return
+        includePath = includePath.substring(1, includePath.length - 1)
+        if (currentFileName == includePath) return
+        val psiFile = GlslUtils.getPsiFileByPath(project, includePath)
+        val children = psiFile?.children ?: return
+        for (child in children) {
+            if (child !is GlslExternalDeclaration) continue
+            val typeSpecifier = child.declaration?.singleDeclaration?.getAssociatedType()?.getTypeText() ?: continue
+            lexer.userTypesTable?.add(typeSpecifier)
+        }
+    }
+
+    /**
+     *
+     */
+    private fun startPpExpansion() {
+        if (peek() == "(") {
+            inPpFuncCall = true
+            ppFuncCallName = tokenText
+        } else {
+            setMacroExpansion(tokenText)
+        }
+        tokenType = MACRO_EXPANSION
+    }
+
+    /**
+     *
+     */
     private fun addTokenToMacro() {
         if (lexer.afterDefine) {
             lexer.afterDefine = false
@@ -169,14 +200,14 @@ class GlslLexerAdapter : LexerBase() {
     /**
      *
      */
-    private fun startPpExpansion() {
-        if (peek() == "(") {
-            inPpFuncCall = true
-            ppFuncCallName = tokenText
+    private fun expandMacro() {
+        val nextToken = macroExpansion?.getNextToken()
+        if (nextToken != null) {
+            tokenType = nextToken
         } else {
-            setMacroExpansion(tokenText)
+            macroExpansion = null
+            advance()
         }
-        tokenType = MACRO_EXPANSION
     }
 
     /**
@@ -188,35 +219,6 @@ class GlslLexerAdapter : LexerBase() {
             inPpFuncCall = false
         }
         tokenType = MACRO_EXPANSION
-    }
-
-    /**
-     *
-     */
-    private fun resolveInclude() {
-        var includePath = peek()
-        if (!isValidIncludePath(includePath)) return
-        includePath = includePath.substring(1, includePath.length - 1)
-        val psiFile = GlslUtils.getPsiFileByPath(includePath)
-        val children = psiFile?.children ?: return
-        for (child in children) {
-            if (child !is GlslExternalDeclaration) continue
-            val typeSpecifier = child.declaration?.singleDeclaration?.getAssociatedType()?.getTypeText() ?: continue
-            lexer.userTypesTable?.add(typeSpecifier)
-        }
-    }
-
-    /**
-     *
-     */
-    private fun expandMacro() {
-        val nextToken = macroExpansion?.getNextToken()
-        if (nextToken != null) {
-            tokenType = nextToken
-        } else {
-            macroExpansion = null
-            advance()
-        }
     }
 
     /**

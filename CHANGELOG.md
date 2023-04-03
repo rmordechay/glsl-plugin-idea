@@ -2,7 +2,7 @@
 
 ## [1.0.8]
 ### Added 
-- Better support for preprocessor - #define and #include should expand correctly.  
+- Better support for preprocessors - #define and #include should expand correctly.  
 - File reference. Both the elements and the file itself can now be referenced from outside the file (with #include)
 ### Updated
 - Important change in grammar. Plugin can differentiate better between user type and variables (may still have issues).

@@ -21,7 +21,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun createLexer(project: Project?): Lexer {
-        return GlslLexerAdapter()
+        return GlslLexerAdapter(project)
     }
 
     /**

@@ -29,4 +29,12 @@ class GlslIncludeTest : BasePlatformTestCase() {
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile5.glsl")
         assertInstanceOf(reference?.resolve(), GlslStructSpecifier::class.java)
     }
+
+    @Test
+    fun testIncludeFile4() {
+        myFixture.configureByFile("IncludeFile7.glsl")
+        myFixture.configureByFile("IncludeFile8.glsl")
+        val reference = myFixture.getReferenceAtCaretPosition("IncludeFile5.glsl")
+        assertInstanceOf(reference?.resolve(), GlslStructSpecifier::class.java)
+    }
 }

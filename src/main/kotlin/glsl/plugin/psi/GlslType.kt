@@ -24,11 +24,11 @@ interface GlslType {
     /**
      *
      */
-    fun isEqual(other: GlslType?): Boolean? {
+    fun isEqual(other: GlslType?): Boolean {
         if (other == null) return false
         val selfText = getTypeText()
         val otherText = other.getTypeText()
-        if (selfText.isNullOrBlank() || otherText.isNullOrBlank()) return null
+        if (selfText.isNullOrBlank() || otherText.isNullOrBlank()) return true
         return selfText == otherText || isConvertible(otherText)
     }
 

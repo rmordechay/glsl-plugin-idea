@@ -70,6 +70,11 @@
             <option name="FOREGROUND" value="328F54"/>
         </value>
     </option>
+    <option name="GLSL_PP_DEFINE_FUNC_PARAM">
+        <value>
+            <option name="FOREGROUND" value="FA8A7A"/>
+        </value>
+    </option>
     <option name="GLSL_LINE_COMMENT">
         <value>
             <option name="FOREGROUND" value="888888"/>

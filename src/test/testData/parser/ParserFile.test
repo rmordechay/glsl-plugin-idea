@@ -26,6 +26,10 @@
 
 uniform COMPAT_PRECISION int FrameDirection;
 
+#define Kernel(x) dot(vec3(1), cos(vec3(0, 1, 2) * acos(- 1.) * (x + 1.)))
+int rel = 0;
+float w = Kernel(rel);
+
 ;;;
 // One line comment
 

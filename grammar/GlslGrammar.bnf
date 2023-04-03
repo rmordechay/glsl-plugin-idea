@@ -43,6 +43,8 @@
     // Macros
     implements("pp_define_declaration")="glsl.plugin.psi.named.GlslNamedIdentifier"
     mixin("pp_define_declaration")="glsl.plugin.psi.named.GlslNamedPpDefineDeclaration"
+    implements("pp_define_func_param")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("pp_define_func_param")="glsl.plugin.psi.named.GlslNamedPpFuncParam"
 
     extends("expr_no_assignment|assignment_expr")=expr
     extends("(comma_seperated|conditional|shift|relational|equality|and|exclusive_or|inclusive_or|logical_and|logical_xor|logical_or|mul|add|unary)_expr")=expr_no_assignment
@@ -828,7 +830,7 @@ private type_name_list
     ::= variable_identifier (COMMA variable_identifier)*
 
 array_specifier
-    ::= (LEFT_BRACKET expr_no_assignment? RIGHT_BRACKET)+
+    ::= (LEFT_BRACKET expr_no_assignment RIGHT_BRACKET)+
 
 private type_parameter_specifier_list
     ::= unary_expr (COMMA unary_expr)*
@@ -967,7 +969,10 @@ pp_define_declaration
     {   pin(".*")="PP_DEFINE"   }
 
 pp_define_func_header
-    ::= <<noSpace>> LEFT_PAREN (variable_identifier (COMMA variable_identifier)*)? RIGHT_PAREN
+    ::= <<noSpace>> LEFT_PAREN (pp_define_func_param (COMMA pp_define_func_param)*)? RIGHT_PAREN
+
+pp_define_func_param
+    ::= variable_identifier
 
 pp_define_tokens
     ::= <<ppDefineToken>>*

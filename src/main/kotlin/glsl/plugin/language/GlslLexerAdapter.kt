@@ -15,6 +15,7 @@ import java.io.File
 
 class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) : LexerBase() {
     private val lexer = _GlslLexer(null)
+    private var userTypesTable = hashSetOf<String>()
     private var state = 0
     private var tokenType: IElementType? = null
     private var bufferSequence: CharSequence = ""
@@ -132,9 +133,9 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
             lexer.reset()
         } else if (lexer.afterTypeQualifier) {
             lexer.reset()
-            lexer.userTypesTable.add(tokenText)
+            userTypesTable.add(tokenText)
             tokenType = TYPE_NAME_IDENTIFIER
-        } else if (lexer.userTypesTable.contains(tokenText)) {
+        } else if (userTypesTable.contains(tokenText)) {
             lexer.afterType()
             tokenType = TYPE_NAME_IDENTIFIER
         }
@@ -153,8 +154,8 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
         val children = psiFile?.children ?: return
         for (child in children) {
             if (child !is GlslExternalDeclaration) continue
-            val typeSpecifier = child.declaration?.singleDeclaration?.getAssociatedType()?.getTypeText() ?: continue
-            lexer.userTypesTable?.add(typeSpecifier)
+//            val typeSpecifier = child.declaration?.singleDeclaration?.getAssociatedType()?.getTypeText() ?: continue
+//            userTypesTable.add(typeSpecifier)
         }
     }
 

@@ -15,7 +15,6 @@ import static glsl.GlslTypes.*;
   public boolean afterTypeQualifier = false;
   public boolean afterDot = false;
   public boolean afterDefine = false;
-  public Set<CharSequence> userTypesTable = new HashSet<>();
 
     public _GlslLexer() {
     this((java.io.Reader) null);

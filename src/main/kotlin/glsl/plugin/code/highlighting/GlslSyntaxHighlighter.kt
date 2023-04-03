@@ -79,6 +79,7 @@ object GlslTextAttributes {
     val OPERATORS_TEXT_ATTR = createTextAttributesKey("GLSL_OPERATORS", OPERATION_SIGN)
     val DIRECTIVE_TEXT_ATTR = createTextAttributesKey("GLSL_DIRECTIVE", KEYWORD)
     val PP_DEFINE_DECLARATION = createTextAttributesKey("GLSL_PP_DEFINE_DECLARATION", CONSTANT)
+    val PP_DEFINE_FUNC_PARAM = createTextAttributesKey("GLSL_PP_DEFINE_FUNC_PARAM", PARAMETER)
     val STRUCT_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_STRUCT_IDENTIFIER", CLASS_NAME)
     val NUMBERS_TEXT_ATTR = createTextAttributesKey("GLSL_NUMBER", NUMBER)
     val KEYWORD_TEXT_ATTR = createTextAttributesKey("GLSL_KEYWORD", KEYWORD)

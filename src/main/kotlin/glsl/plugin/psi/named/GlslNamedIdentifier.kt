@@ -8,6 +8,7 @@ import com.intellij.psi.util.parentOfType
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.PP_DEFINE_DECLARATION
+import glsl.plugin.code.highlighting.GlslTextAttributes.PP_DEFINE_FUNC_PARAM
 import glsl.plugin.code.highlighting.GlslTextAttributes.VARIABLE_TEXT_ATTR
 import glsl.plugin.psi.GlslType
 import glsl.plugin.utils.GlslUtils
@@ -377,5 +378,46 @@ abstract class GlslNamedPpDefineDeclaration(node: ASTNode) : GlslNamedIdentifier
      */
     override fun getHighlightTextAttr(): TextAttributesKey {
         return PP_DEFINE_DECLARATION
+    }
+}
+
+
+/**
+ *
+ */
+abstract class GlslNamedPpFuncParam(node: ASTNode) : GlslNamedIdentifierImpl(node) {
+    /**
+     *
+     */
+    override fun getSelf(): GlslPpDefineFuncParam {
+        return this as GlslPpDefineFuncParam
+    }
+
+    /**
+     *
+     */
+    override fun getNameIdentifier(): GlslVariableIdentifier? {
+        return getSelf().variableIdentifier
+    }
+
+    /**
+     *
+     */
+    override fun getAssociatedType(): GlslType? {
+        return null
+    }
+
+    /**
+     *
+     */
+    override fun getLookupIcon(): Icon {
+        return AllIcons.Nodes.Parameter
+    }
+
+    /**
+     *
+     */
+    override fun getHighlightTextAttr(): TextAttributesKey {
+        return PP_DEFINE_FUNC_PARAM
     }
 }

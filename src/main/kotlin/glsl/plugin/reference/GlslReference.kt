@@ -82,6 +82,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
             currentFilterType = filterType
             lookupInPostfixStructMember()
             lookupInBuiltin()
+            lookupInPpParams()
             val externalDeclaration: GlslExternalDeclaration?
             val statement = getParentOfType(element, GlslStatement::class.java)
             if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
@@ -301,6 +302,17 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private fun lookupInPpStatement(ppStatement: GlslPpStatement?) {
         if (ppStatement == null) return
         lookupInPpIncludeDeclaration(ppStatement.ppIncludeDeclaration)
+    }
+
+    /**
+     *
+     */
+    private fun lookupInPpParams() {
+        val ppDefineFunction = getParentOfType(element, GlslPpDefineDeclaration::class.java) ?: return
+        val ppList = ppDefineFunction.ppDefineFuncHeader?.ppDefineFuncParamList ?: return
+        for (ppParam in ppList) {
+            findReferenceInElement(ppParam)
+        }
     }
 
     /**

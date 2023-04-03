@@ -17,11 +17,13 @@ import glsl.GlslTypes
  *
  */
 class GlslParserDefinition : ParserDefinition {
+    private var currentFileName: String? = null
+
     /**
      *
      */
     override fun createLexer(project: Project?): Lexer {
-        return GlslLexerAdapter(project)
+        return GlslLexerAdapter(project, currentFileName)
     }
 
     /**
@@ -70,6 +72,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
+        currentFileName = viewProvider.virtualFile.name
         return GlslFile(viewProvider)
     }
 }

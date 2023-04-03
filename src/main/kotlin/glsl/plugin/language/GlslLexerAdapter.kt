@@ -11,8 +11,9 @@ import glsl._GlslLexer.*
 import glsl.plugin.psi.GlslInclude.Companion.isValidIncludePath
 import glsl.plugin.utils.GlslUtils
 import glsl.psi.interfaces.GlslExternalDeclaration
+import java.io.File
 
-class GlslLexerAdapter(val project: Project?, private val currentFileName: String? = null) : LexerBase() {
+class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) : LexerBase() {
     private val lexer = _GlslLexer(null)
     private var state = 0
     private var tokenType: IElementType? = null
@@ -22,11 +23,18 @@ class GlslLexerAdapter(val project: Project?, private val currentFileName: Strin
     private var tokenEnd = 0
     private var bufferEnd = 0
     private val macrosTable = hashMapOf<String, GlslMacro>()
+    private val includeFiles = hashSetOf<String>()
 
     private var macroExpansion: MacroExpansion? = null
     private var currentMacro: GlslMacro? = null
     private var inPpFuncCall = false
     private var ppFuncCallName = ""
+
+    init {
+        if (currentFileName != null) {
+            includeFiles.add(File(currentFileName).name)
+        }
+    }
 
     /**
      *
@@ -138,8 +146,9 @@ class GlslLexerAdapter(val project: Project?, private val currentFileName: Strin
     private fun resolveInclude() {
         var includePath = peek()
         if (!isValidIncludePath(includePath)) return
-        includePath = includePath.substring(1, includePath.length - 1)
-        if (currentFileName == includePath) return
+        includePath = File(includePath.substring(1, includePath.length - 1)).name
+        if (includeFiles.contains(includePath)) return // Avoids recursion
+        includeFiles.add(includePath)
         val psiFile = GlslUtils.getPsiFileByPath(project, includePath)
         val children = psiFile?.children ?: return
         for (child in children) {

@@ -1,15 +1,21 @@
 # GLSL Plugin Changelog
 
 ## [1.0.8]
-### Added 
-- Better support for preprocessors - #define and #include should expand correctly.  
+### Added
+- Better support for preprocessors - #define and #include should expand correctly.
 - File reference. Both the elements and the file itself can now be referenced from outside the file (with #include)
 ### Updated
 - Important change in grammar. Plugin can differentiate better between user type and variables (may still have issues).
 - Include statements should work better.
 ### Fixed
 - Texture functions bug for texture3D and textureCube
-- Initialization of user-defined types array bug `UserType[i] userType`.  
+- Initialization of user-defined types array bug `UserType[i] userType`.
+
+## [1.0.71]
+### Updated
+- IDE build version.
+### Fixed
+- texture3D and textureCube could not be fetched.
 
 ## [1.0.7]
 ### Fixed

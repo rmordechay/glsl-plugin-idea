@@ -830,7 +830,7 @@ private type_name_list
     ::= variable_identifier (COMMA variable_identifier)*
 
 array_specifier
-    ::= (LEFT_BRACKET expr_no_assignment RIGHT_BRACKET)+
+    ::= (LEFT_BRACKET expr_no_assignment? RIGHT_BRACKET)+
 
 private type_parameter_specifier_list
     ::= unary_expr (COMMA unary_expr)*

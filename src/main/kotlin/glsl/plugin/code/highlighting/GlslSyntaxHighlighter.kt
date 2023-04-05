@@ -30,7 +30,7 @@ import glsl.plugin.language.GlslLexerAdapter
 /**
  *
  */
-class GlslSyntaxHighlighter(val project: Project? = null, val path: String? = null) : SyntaxHighlighterBase() {
+class GlslSyntaxHighlighter(val project: Project? = null, private val path: String? = null) : SyntaxHighlighterBase() {
 
     /**
     *

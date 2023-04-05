@@ -5,7 +5,6 @@ import com.intellij.codeInsight.completion.impl.CamelHumpMatcher;
 import com.intellij.lang.*;
 import com.intellij.lang.impl.PsiBuilderAdapter;
 import com.intellij.lang.impl.PsiBuilderImpl;
-import com.intellij.lexer.Lexer;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Key;
@@ -32,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static com.intellij.openapi.util.text.StringUtil.*;
+import static glsl.GlslTypes.MACRO_EXPANSION;
 import static glsl.GlslTypes.PP_END;
 
 public class GlslParserGenerator {
@@ -67,29 +67,6 @@ public class GlslParserGenerator {
 
     }
 
-    public static final Hook<WhitespacesAndCommentsBinder> LEFT_BINDER =
-            (builder, marker, param) -> {
-                if (marker != null) marker.setCustomEdgeTokenBinders(param, null);
-                return marker;
-            };
-
-    public static final Hook<WhitespacesAndCommentsBinder> RIGHT_BINDER =
-            (builder, marker, param) -> {
-                if (marker != null) marker.setCustomEdgeTokenBinders(null, param);
-                return marker;
-            };
-
-    public static final Hook<WhitespacesAndCommentsBinder[]> WS_BINDERS =
-            (builder, marker, param) -> {
-                if (marker != null) marker.setCustomEdgeTokenBinders(param[0], param[1]);
-                return marker;
-            };
-
-
-    public static boolean eof(PsiBuilder builder, int level) {
-        return builder.eof();
-    }
-
     public static int current_position_(PsiBuilder builder) {
         return builder.rawTokenIndex();
     }
@@ -122,11 +99,6 @@ public class GlslParserGenerator {
 
     public static TokenSet create_token_set_(IElementType... tokenTypes) {
         return TokenSet.create(tokenTypes);
-    }
-
-    public static boolean leftMarkerIs(PsiBuilder builder, IElementType type) {
-        LighterASTNode marker = builder.getLatestDoneMarker();
-        return marker != null && marker.getTokenType() == type;
     }
 
     public static boolean noSpace(PsiBuilder builder, int level) {
@@ -167,16 +139,8 @@ public class GlslParserGenerator {
         return consumeTokens(builder, false, pin, token);
     }
 
-    public static boolean consumeTokensSmart(PsiBuilder builder, int pin, IElementType... token) {
-        return consumeTokens(builder, true, pin, token);
-    }
-
     public static boolean parseTokens(PsiBuilder builder, int pin, IElementType... tokens) {
         return parseTokens(builder, false, pin, tokens);
-    }
-
-    public static boolean parseTokensSmart(PsiBuilder builder, int pin, IElementType... tokens) {
-        return parseTokens(builder, true, pin, tokens);
     }
 
     public static boolean parseTokens(PsiBuilder builder, boolean smart, int pin, IElementType... tokens) {
@@ -196,12 +160,11 @@ public class GlslParserGenerator {
         return consumeTokenFast(builder, token);
     }
 
-    public static boolean consumeTokenSmart(PsiBuilder builder, String token) {
-        addCompletionVariantSmart(builder, token);
-        return consumeTokenFast(builder, token);
-    }
-
     public static boolean consumeToken(PsiBuilder builder, IElementType token) {
+        if (builder.getTokenType() == MACRO_EXPANSION) {
+            builder.advanceLexer();
+            return true;
+        }
         addVariantSmart(builder, token, true);
         if (nextTokenIsFast(builder, token)) {
             builder.advanceLexer();
@@ -211,15 +174,15 @@ public class GlslParserGenerator {
     }
 
     public static boolean consumeTokenFast(PsiBuilder builder, IElementType token) {
+        if (builder.getTokenType() == MACRO_EXPANSION) {
+            builder.advanceLexer();
+            return true;
+        }
         if (nextTokenIsFast(builder, token)) {
             builder.advanceLexer();
             return true;
         }
         return false;
-    }
-
-    public static boolean consumeToken(PsiBuilder builder, String text) {
-        return consumeToken(builder, text, ErrorState.get(builder).caseSensitive);
     }
 
     public static boolean consumeToken(PsiBuilder builder, String text, boolean caseSensitive) {
@@ -232,31 +195,8 @@ public class GlslParserGenerator {
         return false;
     }
 
-    public static boolean consumeTokenFast(PsiBuilder builder, String text) {
-        int count = nextTokenIsFast(builder, text, ErrorState.get(builder).caseSensitive);
-        if (count > 0) {
-            while (count-- > 0) builder.advanceLexer();
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean consumeToken(PsiBuilder builder, TokenSet tokens) {
-        addVariantSmart(builder, tokens.getTypes(), true);
-        return consumeTokenFast(builder, tokens);
-    }
-
-    public static boolean consumeTokenSmart(PsiBuilder builder, TokenSet tokens) {
-        addCompletionVariantSmart(builder, tokens.getTypes());
-        return consumeTokenFast(builder, tokens);
-    }
-
-    public static boolean consumeTokenFast(PsiBuilder builder, TokenSet tokens) {
-        if (nextTokenIsFast(builder, tokens)) {
-            builder.advanceLexer();
-            return true;
-        }
-        return false;
+    public static boolean consumeToken(PsiBuilder builder, String text) {
+        return consumeToken(builder, text, ErrorState.get(builder).caseSensitive);
     }
 
     public static boolean nextTokenIsFast(PsiBuilder builder, IElementType token) {
@@ -266,18 +206,6 @@ public class GlslParserGenerator {
     public static boolean nextTokenIsFast(PsiBuilder builder, IElementType... tokens) {
         IElementType tokenType = builder.getTokenType();
         return ArrayUtil.indexOfIdentity(tokens, tokenType) != -1;
-    }
-
-    public static boolean nextTokenIsFast(PsiBuilder builder, TokenSet tokens) {
-        return tokens.contains(builder.getTokenType());
-    }
-
-    public static boolean nextTokenIsSmart(PsiBuilder builder, IElementType token) {
-        return nextTokenIsFast(builder, token) || ErrorState.get(builder).completionState != null;
-    }
-
-    public static boolean nextTokenIsSmart(PsiBuilder builder, IElementType... tokens) {
-        return nextTokenIsFast(builder, tokens) || ErrorState.get(builder).completionState != null;
     }
 
     public static boolean nextTokenIs(PsiBuilder builder, String frameName, IElementType... tokens) {
@@ -305,15 +233,6 @@ public class GlslParserGenerator {
     public static boolean nextTokenIs(PsiBuilder builder, IElementType token) {
         if (!addVariantSmart(builder, token, false)) return true;
         return nextTokenIsFast(builder, token);
-    }
-
-    public static boolean nextTokenIs(PsiBuilder builder, String tokenText) {
-        if (!addVariantSmart(builder, tokenText, false)) return true;
-        return nextTokenIsFast(builder, tokenText, ErrorState.get(builder).caseSensitive) > 0;
-    }
-
-    public static boolean nextTokenIsFast(PsiBuilder builder, String tokenText) {
-        return nextTokenIsFast(builder, tokenText, ErrorState.get(builder).caseSensitive) > 0;
     }
 
     public static int nextTokenIsFast(PsiBuilder builder, String tokenText, boolean caseSensitive) {
@@ -506,17 +425,6 @@ public class GlslParserGenerator {
         run_hooks_impl_(builder, state, pinned || result ? elementType : null);
         state.FRAMES.recycle(frame);
         state.level--;
-    }
-
-    public static <T> void register_hook_(PsiBuilder builder, Hook<T> hook, T param) {
-        ErrorState state = ErrorState.get(builder);
-        state.hooks = Hooks.concat(hook, param, state.level, state.hooks);
-    }
-
-    @SafeVarargs
-    public static <T> void register_hook_(PsiBuilder builder, Hook<T[]> hook, T... param) {
-        ErrorState state = ErrorState.get(builder);
-        state.hooks = Hooks.concat(hook, param, state.level, state.hooks);
     }
 
     private static void run_hooks_impl_(PsiBuilder builder, ErrorState state, @Nullable IElementType elementType) {
@@ -895,11 +803,6 @@ public class GlslParserGenerator {
         }
 
         @NotNull
-        public Lexer getLexer() {
-            return ((PsiBuilderImpl)myDelegate).getLexer();
-        }
-
-        @NotNull
         public List<PsiBuilderImpl.ProductionMarker> getProductions() {
             return ((PsiBuilderImpl)myDelegate).getProductions();
         }
@@ -907,10 +810,6 @@ public class GlslParserGenerator {
         public boolean isExtensibleMarkerType(@NotNull IElementType type) {
             return true;
         }
-    }
-
-    public static PsiBuilder adapt_builder_(IElementType root, PsiBuilder builder, PsiParser parser) {
-        return adapt_builder_(root, builder, parser, null);
     }
 
     public static PsiBuilder adapt_builder_(IElementType root, PsiBuilder builder, PsiParser parser, TokenSet[] extendsSets) {
@@ -998,11 +897,6 @@ public class GlslParserGenerator {
                 sb.replace(idx, idx + 1, " " + AnalysisBundle.message("parsing.error.or"));
             }
             return sb.toString();
-        }
-
-        public void clearVariants(Frame frame) {
-            clearVariants(true, frame == null ? 0 : frame.variantCount);
-            if (frame != null) frame.lastVariantAt = -1;
         }
 
         void clearVariants(boolean expected, int start) {

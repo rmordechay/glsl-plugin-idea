@@ -24,7 +24,7 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
     private var tokenEnd = 0
     private var bufferEnd = 0
     private val macrosTable = hashMapOf<String, MutableList<IElementType>>()
-    private val includeFiles = hashSetOf<String>()
+    private val includeFilesNames = hashSetOf<String>()
 
     private var macroExpansion: MacroExpansion? = null
     private var currentMacro: Pair<String, MutableList<IElementType>>? = null
@@ -33,7 +33,7 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
 
     init {
         if (currentFileName != null) {
-            includeFiles.add(File(currentFileName).name)
+            includeFilesNames.add(File(currentFileName).name)
         }
     }
 
@@ -145,11 +145,11 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
      *
      */
     private fun resolveInclude() {
-        var includePath = peek()
+        val includePath = peek()
         if (!isValidIncludePath(includePath)) return
-        includePath = File(includePath.substring(1, includePath.length - 1)).name
-        if (includeFiles.contains(includePath)) return // Avoids recursion
-        includeFiles.add(includePath)
+        val fileName = File(includePath.substring(1, includePath.length - 1)).name
+        if (includeFilesNames.contains(fileName)) return // Avoids recursion
+        includeFilesNames.add(fileName)
         val psiFile = GlslUtils.getPsiFileByPath(project, includePath)
         val children = psiFile?.children ?: return
         for (child in children) {

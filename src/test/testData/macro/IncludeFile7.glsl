@@ -1,2 +1,3 @@
 #include "IncludeFile8.glsl"
-int b = 10;
+
+int a = <caret>b;

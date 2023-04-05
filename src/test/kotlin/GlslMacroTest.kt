@@ -4,10 +4,10 @@ import glsl.psi.interfaces.GlslSingleDeclaration
 import glsl.psi.interfaces.GlslStructSpecifier
 import org.junit.Test
 
-class GlslIncludeTest : BasePlatformTestCase() {
+class GlslMacroTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {
-        return "src/test/testData/include"
+        return "src/test/testData/macro"
     }
 
     @Test
@@ -42,5 +42,11 @@ class GlslIncludeTest : BasePlatformTestCase() {
     fun testIncludeFile5() {
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile10.glsl")
         assertNull(reference?.resolve())
+    }
+
+    @Test
+    fun testDefineFile1() {
+        val reference = myFixture.getReferenceAtCaretPosition("testDefineFile1.glsl")
+        myFixture.checkHighlighting()
     }
 }

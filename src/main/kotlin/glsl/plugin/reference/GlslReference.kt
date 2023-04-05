@@ -39,7 +39,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
 
     private var currentFilterType = EQUALS
     private val resolvedReferences = arrayListOf<GlslNamedElement>()
-    private val includePaths = hashSetOf<String>() // Collects include path to avoid recursion
 
     private val cacheResolver = AbstractResolver<GlslReference, GlslNamedElement> { reference, _ ->
         reference.doResolve()
@@ -77,8 +76,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         try {
             if (!shouldResolve()) return
             resolvedReferences.clear()
-            includePaths.clear()
-            includePaths.add(element.containingFile.name)
             currentFilterType = filterType
             lookupInPostfixStructMember()
             lookupInBuiltin()
@@ -321,10 +318,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private fun lookupInPpIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
         if (ppIncludeDeclaration == null) return
         val glslInclude = ppIncludeDeclaration.ppIncludePath as GlslInclude
-        // Avoids recursion by checking the includes files that where already found
-        val includePath = glslInclude.getPath() ?: return
-        if (includePaths.contains(includePath)) return
-        includePaths.add(includePath)
         val reference = glslInclude.reference as FileReference
         val externalDeclarations = reference.resolve()?.children ?: return
         for (externalDeclaration in externalDeclarations) {

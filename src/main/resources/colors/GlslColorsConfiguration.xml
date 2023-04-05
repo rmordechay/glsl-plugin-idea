@@ -57,7 +57,7 @@
     </option>
     <option name="GLSL_FUNCTION_PARAM">
         <value>
-            <option name="FOREGROUND" value="FA8A7A"/>
+            <option name="FOREGROUND" value="97706F"/>
         </value>
     </option>
     <option name="GLSL_DIRECTIVE">
@@ -72,7 +72,7 @@
     </option>
     <option name="GLSL_PP_DEFINE_FUNC_PARAM">
         <value>
-            <option name="FOREGROUND" value="FA8A7A"/>
+            <option name="FOREGROUND" value="97706F"/>
         </value>
     </option>
     <option name="GLSL_LINE_COMMENT">

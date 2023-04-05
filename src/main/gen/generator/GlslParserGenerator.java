@@ -61,10 +61,113 @@ public class GlslParserGenerator {
     public static final Parser TRUE_CONDITION = (builder, level) -> true;
 
     public interface Hook<T> {
-
         @Contract("_,null,_->null")
         PsiBuilder.Marker run(PsiBuilder builder, PsiBuilder.Marker marker, T param);
 
+    }
+
+
+    public static boolean consumeToken(PsiBuilder builder, IElementType token) {
+        if (builder.getTokenType() == MACRO_EXPANSION) {
+            builder.advanceLexer();
+        }
+        addVariantSmart(builder, token, true);
+        if (nextTokenIsFast(builder, token)) {
+            builder.advanceLexer();
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean consumeTokenFast(PsiBuilder builder, IElementType token) {
+        if (builder.getTokenType() == MACRO_EXPANSION) {
+            builder.advanceLexer();
+        }
+        if (nextTokenIsFast(builder, token)) {
+            builder.advanceLexer();
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean consumeTokenSmart(PsiBuilder builder, IElementType token) {
+        addCompletionVariantSmart(builder, token);
+        return consumeTokenFast(builder, token);
+    }
+
+    public static boolean consumeToken(PsiBuilder builder, String text, boolean caseSensitive) {
+        addVariantSmart(builder, text, true);
+        int count = nextTokenIsFast(builder, text, caseSensitive);
+        if (count > 0) {
+            while (count-- > 0) builder.advanceLexer();
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean consumeToken(PsiBuilder builder, String text) {
+        return consumeToken(builder, text, ErrorState.get(builder).caseSensitive);
+    }
+
+    public static boolean nextTokenIsFast(PsiBuilder builder, IElementType token) {
+        return builder.getTokenType() == token;
+    }
+
+    public static boolean nextTokenIsFast(PsiBuilder builder, IElementType... tokens) {
+        IElementType tokenType = builder.getTokenType();
+        return ArrayUtil.indexOfIdentity(tokens, tokenType) != -1;
+    }
+
+    public static boolean nextTokenIs(PsiBuilder builder, String frameName, IElementType... tokens) {
+        ErrorState state = ErrorState.get(builder);
+        if (state.completionState != null) return true;
+        boolean track = !state.suppressErrors && state.predicateCount < 2 && state.predicateSign;
+        return !track ? nextTokenIsFast(builder, tokens) : nextTokenIsSlow(builder, frameName, tokens);
+    }
+
+    public static boolean nextTokenIsSlow(PsiBuilder builder, String frameName, IElementType... tokens) {
+        if (builder.getTokenType() == MACRO_EXPANSION) {
+            builder.advanceLexer();
+        }
+        ErrorState state = ErrorState.get(builder);
+        IElementType tokenType = builder.getTokenType();
+        if (isNotEmpty(frameName)) {
+            addVariantInner(state, state.currentFrame, builder.rawTokenIndex(), frameName);
+        }
+        else {
+            for (IElementType token : tokens) {
+                addVariant(builder, state, token);
+            }
+        }
+        if (tokenType == null) return false;
+        return ArrayUtil.indexOfIdentity(tokens, tokenType) != -1;
+    }
+
+    public static boolean nextTokenIs(PsiBuilder builder, IElementType token) {
+        if (!addVariantSmart(builder, token, false)) return true;
+        return nextTokenIsFast(builder, token);
+    }
+
+    public static int nextTokenIsFast(PsiBuilder builder, String tokenText, boolean caseSensitive) {
+        CharSequence sequence = builder.getOriginalText();
+        int offset = builder.getCurrentOffset();
+        int endOffset = offset + tokenText.length();
+        CharSequence subSequence = sequence.subSequence(offset, Math.min(endOffset, sequence.length()));
+
+        if (!Comparing.equal(subSequence, tokenText, caseSensitive)) return 0;
+
+        int count = 0;
+        while (true) {
+            int nextOffset = builder.rawTokenTypeStart(++count);
+            if (nextOffset > endOffset) {
+                return -count;
+            }
+            else if (nextOffset == endOffset) {
+                break;
+            }
+        }
+        return count;
     }
 
     public static int current_position_(PsiBuilder builder) {
@@ -155,106 +258,6 @@ public class GlslParserGenerator {
         return result;
     }
 
-    public static boolean consumeTokenSmart(PsiBuilder builder, IElementType token) {
-        addCompletionVariantSmart(builder, token);
-        return consumeTokenFast(builder, token);
-    }
-
-    public static boolean consumeToken(PsiBuilder builder, IElementType token) {
-        if (builder.getTokenType() == MACRO_EXPANSION) {
-            builder.advanceLexer();
-            return true;
-        }
-        addVariantSmart(builder, token, true);
-        if (nextTokenIsFast(builder, token)) {
-            builder.advanceLexer();
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean consumeTokenFast(PsiBuilder builder, IElementType token) {
-        if (builder.getTokenType() == MACRO_EXPANSION) {
-            builder.advanceLexer();
-            return true;
-        }
-        if (nextTokenIsFast(builder, token)) {
-            builder.advanceLexer();
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean consumeToken(PsiBuilder builder, String text, boolean caseSensitive) {
-        addVariantSmart(builder, text, true);
-        int count = nextTokenIsFast(builder, text, caseSensitive);
-        if (count > 0) {
-            while (count-- > 0) builder.advanceLexer();
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean consumeToken(PsiBuilder builder, String text) {
-        return consumeToken(builder, text, ErrorState.get(builder).caseSensitive);
-    }
-
-    public static boolean nextTokenIsFast(PsiBuilder builder, IElementType token) {
-        return builder.getTokenType() == token;
-    }
-
-    public static boolean nextTokenIsFast(PsiBuilder builder, IElementType... tokens) {
-        IElementType tokenType = builder.getTokenType();
-        return ArrayUtil.indexOfIdentity(tokens, tokenType) != -1;
-    }
-
-    public static boolean nextTokenIs(PsiBuilder builder, String frameName, IElementType... tokens) {
-        ErrorState state = ErrorState.get(builder);
-        if (state.completionState != null) return true;
-        boolean track = !state.suppressErrors && state.predicateCount < 2 && state.predicateSign;
-        return !track ? nextTokenIsFast(builder, tokens) : nextTokenIsSlow(builder, frameName, tokens);
-    }
-
-    public static boolean nextTokenIsSlow(PsiBuilder builder, String frameName, IElementType... tokens) {
-        ErrorState state = ErrorState.get(builder);
-        IElementType tokenType = builder.getTokenType();
-        if (isNotEmpty(frameName)) {
-            addVariantInner(state, state.currentFrame, builder.rawTokenIndex(), frameName);
-        }
-        else {
-            for (IElementType token : tokens) {
-                addVariant(builder, state, token);
-            }
-        }
-        if (tokenType == null) return false;
-        return ArrayUtil.indexOfIdentity(tokens, tokenType) != -1;
-    }
-
-    public static boolean nextTokenIs(PsiBuilder builder, IElementType token) {
-        if (!addVariantSmart(builder, token, false)) return true;
-        return nextTokenIsFast(builder, token);
-    }
-
-    public static int nextTokenIsFast(PsiBuilder builder, String tokenText, boolean caseSensitive) {
-        CharSequence sequence = builder.getOriginalText();
-        int offset = builder.getCurrentOffset();
-        int endOffset = offset + tokenText.length();
-        CharSequence subSequence = sequence.subSequence(offset, Math.min(endOffset, sequence.length()));
-
-        if (!Comparing.equal(subSequence, tokenText, caseSensitive)) return 0;
-
-        int count = 0;
-        while (true) {
-            int nextOffset = builder.rawTokenTypeStart(++count);
-            if (nextOffset > endOffset) {
-                return -count;
-            }
-            else if (nextOffset == endOffset) {
-                break;
-            }
-        }
-        return count;
-    }
 
     private static void addCompletionVariantSmart(PsiBuilder builder, Object token) {
         ErrorState state = ErrorState.get(builder);

@@ -46,7 +46,7 @@ class GlslMacroTest : BasePlatformTestCase() {
 
     @Test
     fun testDefineFile1() {
-        val reference = myFixture.getReferenceAtCaretPosition("testDefineFile1.glsl")
+        myFixture.configureByFile("DefineFile1.glsl")
         myFixture.checkHighlighting()
     }
 }

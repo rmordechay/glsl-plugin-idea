@@ -163,7 +163,7 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
      *
      */
     private fun startPpExpansion() {
-        if (peek() == "(") {
+        if (peek(false) == "(") {
             inPpFuncCall = true
             ppFuncCallName = tokenText
         } else {
@@ -228,6 +228,7 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
         if (tokenType == RIGHT_PAREN) {
             setMacroExpansion(ppFuncCallName)
             inPpFuncCall = false
+            ppFuncCallName = ""
         }
         tokenType = MACRO_EXPANSION
     }
@@ -250,14 +251,16 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
     /**
      *
      */
-    private fun peek(): String {
+    private fun peek(skipWhiteSpace: Boolean = true): String {
         val currentText = tokenText
         val currentState = state
         val currentTokenType = tokenType
         val currentTokenStart = tokenStart
         val currentTokenEnd = tokenEnd
         advance()
-        if (tokenType == WHITE_SPACE) advance()
+        if (skipWhiteSpace && tokenType == WHITE_SPACE) {
+            advance()
+        }
         val peekText = tokenText.trim()
         tokenText = currentText
         state = currentState

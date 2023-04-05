@@ -44,7 +44,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.create(TokenType.WHITE_SPACE, GlslTypes.BACKSLASH, GlslTypes.MACRO_EXPANSION)
+        return TokenSet.create(TokenType.WHITE_SPACE, GlslTypes.BACKSLASH)
     }
 
     /**

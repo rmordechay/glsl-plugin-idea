@@ -97,6 +97,9 @@ public class GlslParserGenerator {
     }
 
     public static boolean consumeToken(PsiBuilder builder, String text, boolean caseSensitive) {
+        if (builder.getTokenType() == MACRO_EXPANSION) {
+            builder.advanceLexer();
+        }
         addVariantSmart(builder, text, true);
         int count = nextTokenIsFast(builder, text, caseSensitive);
         if (count > 0) {
@@ -115,6 +118,9 @@ public class GlslParserGenerator {
     }
 
     public static boolean nextTokenIsFast(PsiBuilder builder, IElementType... tokens) {
+        if (builder.getTokenType() == MACRO_EXPANSION) {
+            builder.advanceLexer();
+        }
         IElementType tokenType = builder.getTokenType();
         return ArrayUtil.indexOfIdentity(tokens, tokenType) != -1;
     }
@@ -145,6 +151,9 @@ public class GlslParserGenerator {
     }
 
     public static boolean nextTokenIs(PsiBuilder builder, IElementType token) {
+        if (builder.getTokenType() == MACRO_EXPANSION) {
+            builder.advanceLexer();
+        }
         if (!addVariantSmart(builder, token, false)) return true;
         return nextTokenIsFast(builder, token);
     }

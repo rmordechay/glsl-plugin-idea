@@ -9,8 +9,10 @@ import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferen
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.FileReferenceSet
 import com.intellij.util.ProcessingContext
 import glsl.GlslTypes
+import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.psi.GlslIdentifierImpl
 import glsl.plugin.psi.GlslInclude
+import glsl.plugin.psi.GlslMacro
 import glsl.psi.interfaces.GlslPpIncludePath
 
 
@@ -33,11 +35,13 @@ class GlslReferenceContributor : PsiReferenceContributor() {
 
     private val includePattern = psiElement(GlslPpIncludePath::class.java)
 
+    private val macroPattern = psiElement(GlslMacro::class.java)
+
     /**
      *
      */
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        registrar.registerReferenceProvider(or(identifierPattern, includePattern), GlslReferenceProvider())
+        registrar.registerReferenceProvider(or(identifierPattern, includePattern, macroPattern), GlslReferenceProvider())
     }
 
     /**
@@ -50,8 +54,8 @@ class GlslReferenceContributor : PsiReferenceContributor() {
             if (project == null) {
                 project = element.project
             }
-            if (element is GlslIdentifierImpl) {
-                val range = TextRange(0, element.name.length)
+            if (element is GlslIdentifier) {
+                val range = TextRange(0, element.getName().length)
                 return arrayOf(GlslReference(element, range, project))
             } else if (element is GlslInclude) {
                 val includePath = element.getPath() ?: return PsiReference.EMPTY_ARRAY

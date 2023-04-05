@@ -2,6 +2,7 @@ package glsl.plugin.psi
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.project.Project
 import com.intellij.psi.ContributedReferenceHost
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReference
@@ -40,6 +41,11 @@ interface GlslIdentifier: ContributedReferenceHost {
     /**
      *
      */
+    fun isEmpty(): Boolean
+
+    /**
+     *
+     */
     override fun getReference(): GlslReference?
 }
 
@@ -73,21 +79,7 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
     *
     */
     override fun replaceElementName(newName: String?): GlslIdentifier? {
-        if (newName == null ) return this
-        val dummyDeclaration = if (this is GlslVariableIdentifier) {
-            "void $newName;"
-        } else if (this is GlslTypeName) {
-            "struct $newName {int a;};"
-        } else {
-            return this
-        }
-
-        val dummyElement = (PsiFileFactory
-            .getInstance(project)
-            .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
-            .firstChild
-        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslIdentifier::class.java)
-        return if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
+        return replaceName(newName, this, project)
     }
 
     /**
@@ -103,8 +95,32 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
     /**
      *
      */
-    fun isEmpty(): Boolean {
+    override fun isEmpty(): Boolean {
         return node.text == "IntellijIdeaRulezzz"
+    }
+
+    companion object {
+
+        /**
+         *
+         */
+        fun replaceName(newName: String?, identifier: GlslIdentifier, project: Project) : GlslIdentifier? {
+            if (newName == null ) return identifier
+            val dummyDeclaration = if (identifier is GlslVariableIdentifier) {
+                "void $newName;"
+            } else if (identifier is GlslTypeName) {
+                "struct $newName {int a;};"
+            } else {
+                return identifier
+            }
+
+            val dummyElement = (PsiFileFactory
+                .getInstance(project)
+                .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
+                .firstChild
+            val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslIdentifier::class.java)
+            return if (newIdentifierNode != null) identifier.replace(newIdentifierNode) as GlslIdentifier else identifier
+        }
     }
 }
 

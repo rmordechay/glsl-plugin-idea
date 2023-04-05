@@ -963,7 +963,6 @@ pp_statement
     |    pp_line PP_END
     |    macro_literal INTCONSTANT PP_END
 
-
 pp_define_declaration
     ::= PP_DEFINE variable_identifier pp_define_func_header? pp_define_tokens
     {   pin(".*")="PP_DEFINE"   }

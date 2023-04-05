@@ -27,4 +27,11 @@ class GlslRenamingTest : BasePlatformTestCase() {
         myFixture.renameElementAtCaret("NewName")
         myFixture.checkResultByFile("RenamingTypeExpectedFile.glsl")
     }
+
+    @Test
+    fun testRenamingMacroFile() {
+        myFixture.configureByFile("RenamingMacroFile.glsl")
+        myFixture.renameElementAtCaret("NewName")
+        myFixture.checkResultByFile("RenamingMacroExpectedFile.glsl")
+    }
 }

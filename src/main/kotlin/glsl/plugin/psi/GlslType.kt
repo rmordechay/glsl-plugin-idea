@@ -64,7 +64,7 @@ interface GlslType {
                 return userType.structSpecifier
             } else if (userType.typeName != null) {
                 val reference = userType.typeName?.reference as GlslReference
-                return reference?.resolveType()
+                return reference.resolveType()
             }
             return null
         }

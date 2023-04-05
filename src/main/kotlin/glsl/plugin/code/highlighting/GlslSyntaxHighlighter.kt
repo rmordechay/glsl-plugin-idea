@@ -23,6 +23,7 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.LINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MULTILINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.NUMBERS_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.PP_DEFINE_DECLARATION
 import glsl.plugin.code.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
 import glsl.plugin.language.GlslLexerAdapter
 
@@ -55,6 +56,7 @@ class GlslSyntaxHighlighter(val project: Project? = null, private val path: Stri
             GlslTypes.MULTILINE_COMMENT -> MULTILINE_COMMENT_TEXT_ATTR
             GlslTypes.STRING_LITERAL -> STRING_TEXT_ATTR
             GlslTypes.BOOLCONSTANT -> BOOLEAN_TEXT_ATTR
+            GlslTypes.MACRO_EXPANSION -> PP_DEFINE_DECLARATION
             in GlslTokenSets.ALL_OPERATORS -> OPERATORS_TEXT_ATTR
             in GlslTokenSets.DIRECTIVES -> DIRECTIVE_TEXT_ATTR
             in GlslTokenSets.NUMBER_SET -> NUMBERS_TEXT_ATTR

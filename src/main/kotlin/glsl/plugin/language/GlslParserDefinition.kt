@@ -1,5 +1,7 @@
 package glsl.plugin.language
 
+import com.intellij.lang.ASTFactory
+import com.intellij.lang.ASTFactory.DefaultFactoryHolder.DEFAULT
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
@@ -9,15 +11,23 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
+import com.intellij.psi.impl.source.tree.LeafElement
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import glsl.GlslTypes
+import glsl.plugin.psi.GlslMacro
 
 /**
  *
  */
-class GlslParserDefinition : ParserDefinition {
+class GlslParserDefinition : ParserDefinition, ASTFactory() {
     private var currentFileName: String? = null
+
+    override fun createLeaf(type: IElementType, text: CharSequence): LeafElement {
+        if (type == GlslTypes.MACRO_EXPANSION) return GlslMacro(type, text)
+        return DEFAULT.createLeaf(type, text)
+    }
 
     /**
      *

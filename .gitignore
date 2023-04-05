@@ -30,5 +30,5 @@ outTmp/
 /kotlin-native/dist
 kotlin-ide/
 /archive/
-/src/main/gen/
+/src/main/gen/glsl
 /glsl-spec/

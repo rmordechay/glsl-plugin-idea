@@ -53,7 +53,7 @@ generateLexer {
 
 tasks.register('generateGrammarClean') {
     doFirst {
-        delete 'src/main/gen'
+        delete 'src/main/gen/glsl'
     }
     finalizedBy(generateParser)
     finalizedBy(generateLexer)

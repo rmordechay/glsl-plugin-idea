@@ -23,11 +23,11 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
     private var tokenStart = 0
     private var tokenEnd = 0
     private var bufferEnd = 0
-    private val macrosTable = hashMapOf<String, GlslMacro>()
+    private val macrosTable = hashMapOf<String, MutableList<IElementType>>()
     private val includeFiles = hashSetOf<String>()
 
     private var macroExpansion: MacroExpansion? = null
-    private var currentMacro: GlslMacro? = null
+    private var currentMacro: Pair<String, MutableList<IElementType>>? = null
     private var inPpFuncCall = false
     private var ppFuncCallName = ""
 
@@ -154,8 +154,8 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
         val children = psiFile?.children ?: return
         for (child in children) {
             if (child !is GlslExternalDeclaration) continue
-//            val typeSpecifier = child.declaration?.singleDeclaration?.getAssociatedType()?.getTypeText() ?: continue
-//            userTypesTable.add(typeSpecifier)
+            val typeSpecifier = child.declaration?.singleDeclaration?.getAssociatedType()?.getTypeText() ?: continue
+            userTypesTable.add(typeSpecifier)
         }
     }
 
@@ -178,9 +178,9 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
     private fun addTokenToMacro() {
         if (lexer.afterDefine) {
             lexer.afterDefine = false
-            currentMacro = GlslMacro(peek())
+            currentMacro = Pair(peek(), mutableListOf())
         } else {
-            currentMacro?.tokens?.addIfNotNull(tokenType)
+            currentMacro?.second?.addIfNotNull(tokenType)
         }
     }
 
@@ -188,22 +188,23 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
      *
      */
     private fun addCurrentMacroToTable() {
-        val macro = currentMacro ?: return
-        if (macro.tokens.isEmpty()) return
-        if (macro.tokens.first() == WHITE_SPACE) {
-            macro.tokens.removeFirst()
+        val identifier = currentMacro?.first ?: return
+        var macro = currentMacro?.second ?: return
+        if (macro.isEmpty()) return
+        if (macro.first() == WHITE_SPACE) {
+            macro.removeFirst()
         }
-        if (macro.tokens.isEmpty()) return
-        macro.tokens.removeFirst()
-        if (macro.tokens.isEmpty()) return
-        val isMacroFunc = macro.tokens.first() == LEFT_PAREN
+        if (macro.isEmpty()) return
+        macro.removeFirst()
+        if (macro.isEmpty()) return
+        val isMacroFunc = macro.first() == LEFT_PAREN
         if (isMacroFunc) {
-            val rightParenIndex = macro.tokens.lastIndexOf(RIGHT_PAREN)
+            val rightParenIndex = macro.lastIndexOf(RIGHT_PAREN)
             if (rightParenIndex != -1) {
-                macro.tokens = macro.tokens.subList(rightParenIndex + 1, macro.tokens.size)
+                macro = macro.subList(rightParenIndex + 1, macro.size)
             }
         }
-        macrosTable[macro.identifier] = macro
+        macrosTable[identifier] = macro
         currentMacro = null
     }
 
@@ -242,8 +243,8 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
      *
      */
     private fun setMacroExpansion(key: String) {
-        val macro = macrosTable[key] ?: return
-        macroExpansion = MacroExpansion(macro.tokens.iterator())
+        val tokens = macrosTable[key] ?: return
+        macroExpansion = MacroExpansion(tokens.iterator())
     }
 
     /**
@@ -279,10 +280,4 @@ class GlslLexerAdapter(val project: Project?, currentFileName: String? = null) :
         }
     }
 
-    /**
-     *
-     */
-    inner class GlslMacro(val identifier: String) {
-        var tokens = mutableListOf<IElementType>()
-    }
 }

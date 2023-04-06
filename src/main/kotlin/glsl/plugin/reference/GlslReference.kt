@@ -337,7 +337,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (includePath.contains("/")) {
             includePath = includePath.substring(includePath.lastIndexOf('/') + 1)
         }
-        val virtualFile = FilenameIndex.getVirtualFilesByName(project, includePath, GlobalSearchScope.allScope(project))
+        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project))
         if (virtualFile.isEmpty()) return
         val loadText = LoadTextUtil.loadText(virtualFile.first())
         val glslFile = PsiFileFactory.getInstance(project).createFileFromText(includePath, GlslFileType(), loadText) as? GlslFile

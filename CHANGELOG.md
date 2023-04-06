@@ -1,5 +1,11 @@
 # GLSL Plugin Changelog
 
+## [1.0.71]
+### Updated
+- IDE build version.
+### Fixed
+- texture3D and textureCube could not be fetched.
+
 ## [1.0.7]
 ### Fixed
 - Wrong type compatibility warning on array index assignment.

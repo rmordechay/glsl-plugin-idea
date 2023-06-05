@@ -23,7 +23,7 @@ import static glsl.GlslTypes.*;
 %function advance
 %type IElementType
 %unicode
-%state IN_MULITLINE_COMMENT
+%state IN_MULTILINE_COMMENT
 %state PREPROCESSOR_IGNORE
 %state PREPROCESSOR_IGNORE_BACKSLASH
 
@@ -72,7 +72,7 @@ MACRO_VERSION="__VERSION__"
 
 %%
 
-<IN_MULITLINE_COMMENT> {
+<IN_MULTILINE_COMMENT> {
     "*/"                           { yybegin(YYINITIAL); return MULTILINE_COMMENT; }
     [^*\n]+                        { return MULTILINE_COMMENT; }
     "*"                            { return MULTILINE_COMMENT; }
@@ -112,7 +112,7 @@ MACRO_VERSION="__VERSION__"
                                       }
                                       return WHITE_SPACE;
                                    }
-  "/*"                             { yybegin(IN_MULITLINE_COMMENT);  return MULTILINE_COMMENT; }
+  "/*"                             { yybegin(IN_MULTILINE_COMMENT);  return MULTILINE_COMMENT; }
   {LINE_COMMENT}                   { return LINE_COMMENT; }
 
   {PP_VERSION}                     { inPp = true; return PP_VERSION;}

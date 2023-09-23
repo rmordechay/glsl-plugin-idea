@@ -25,8 +25,8 @@
         <!--  Annotators  -->
         <annotator                      language="Glsl"
                                         implementationClass="glsl.plugin.annotator.GlslHighlightingAnnotator"/>
-        <annotator                      language="Glsl"
-                                        implementationClass="glsl.plugin.annotator.GlslCodeAnnotator"/>
+<!--        <annotator                      language="Glsl"-->
+<!--                                        implementationClass="glsl.plugin.annotator.GlslCodeAnnotator"/>-->
         <!--  Syntax highlighting  -->
         <lang.syntaxHighlighterFactory  language="Glsl"
                                         implementationClass="glsl.plugin.code.highlighting.GlslSyntaxHighlightingFactory"/>

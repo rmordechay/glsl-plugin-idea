@@ -1,5 +1,11 @@
 # GLSL Plugin Changelog
 
+## [1.0.72]
+### Updated
+- IDE build version.
+### Changed
+- Disabled code annotation as there are many errors. 
+
 ## [1.0.71]
 ### Updated
 - IDE build version.

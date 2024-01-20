@@ -24,7 +24,7 @@ compileKotlin {
 
 intellij {
 //    version = 'IC-2022.2'
-    version = 'IC-2023.1'
+    version = 'IC-2023.3'
     updateSinceUntilBuild = true
 }
 
@@ -64,7 +64,7 @@ patchPluginXml {
     changeNotes = changelog.get(pluginVersion).toHTML()
     pluginDescription = descriptionHtml
     sinceBuild = '222'
-    untilBuild = '232.*'
+    untilBuild = '233.*'
 }
 
 changelog {

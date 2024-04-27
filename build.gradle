@@ -1,7 +1,7 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version "1.8.0"
-    id 'org.jetbrains.intellij' version "1.13.3"
-    id "org.jetbrains.grammarkit" version "2022.3"
+    id 'org.jetbrains.kotlin.jvm' version "1.9.23"
+    id 'org.jetbrains.intellij' version "1.17.3"
+    id "org.jetbrains.grammarkit" version "2022.3.2.2"
     id 'org.jetbrains.changelog' version "1.3.1"
     id 'java'
 }
@@ -24,7 +24,7 @@ compileKotlin {
 
 intellij {
 //    version = 'IC-2022.2'
-    version = 'IC-2023.3'
+    version = 'IC-2024.1'
     updateSinceUntilBuild = true
 }
 
@@ -63,8 +63,8 @@ patchPluginXml {
     def descriptionHtml = file('plugin-info/description.html').text
     changeNotes = changelog.get(pluginVersion).toHTML()
     pluginDescription = descriptionHtml
-    sinceBuild = '222'
-    untilBuild = '233.*'
+    sinceBuild = '223'
+    untilBuild = '241.*'
 }
 
 changelog {

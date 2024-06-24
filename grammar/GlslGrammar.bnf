@@ -36,6 +36,8 @@
     mixin("struct_declarator")="glsl.plugin.psi.named.GlslNamedStructDeclarator"
     implements("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedIdentifier"
     mixin("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedDeclarationIdentifierWrapper"
+    implements("pp_define_name")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("pp_define_name")="glsl.plugin.psi.named.GlslNamedPpDefineName"
 //    implements("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedIdentifier"
 //    mixin("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedPpSingleDeclaration"
 //    implements("pp_define_function")="glsl.plugin.psi.named.GlslNamedIdentifier"
@@ -1193,9 +1195,12 @@ private pp_conditional
     |   HASH
     {   pin(".*")=1   }
 
-private pp_define_declaration
-    ::= PP_DEFINE PP_DEFINE_BODY*
+pp_define_declaration
+    ::= PP_DEFINE pp_define_name PP_DEFINE_BODY
     {   pin(".*")=1   }
+
+pp_define_name
+    ::= variable_identifier
 
 pp_literal
     ::= PP_PRAGMA

@@ -1,8 +1,3 @@
-#define PI iff
+#define PI 2 + 2
 
-void main() {
-    PI (true) {
-        return 0;
-}
-    return 0;
-}
+int a = PI + 2;

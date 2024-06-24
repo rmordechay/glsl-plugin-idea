@@ -27,6 +27,7 @@ import static glsl.GlslTypes.*;
 %state PREPROCESSOR_IGNORE
 %state PREPROCESSOR_IGNORE_BACKSLASH
 %state PREPROCESSOR_DEFINE
+%state MACRO_DEFINITION
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
@@ -72,6 +73,8 @@ PP_TEXT_DEFINE=.+
 MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
 MACRO_VERSION="__VERSION__"
+FUNC_MACRO=\w+\([^)]*\)
+OBJECT_MACRO=\w+
 
 %%
 
@@ -97,8 +100,14 @@ MACRO_VERSION="__VERSION__"
 <PREPROCESSOR_DEFINE> {
   {BACKSLASH}                      { yybegin(PREPROCESSOR_IGNORE_BACKSLASH); return WHITE_SPACE; }
   {NEW_LINE}                       { yybegin(YYINITIAL); inPp = false; return PP_END; }
-  {PP_TEXT_DEFINE}                 { return PP_DEFINE_BODY; }
   {WHITE_SPACE}                    { return WHITE_SPACE; }
+  {PP_TEXT_DEFINE}                 { return PP_DEFINE_BODY; }
+}
+
+<MACRO_DEFINITION> {
+  {WHITE_SPACE}                    { return WHITE_SPACE; }
+  {OBJECT_MACRO}                   { yybegin(PREPROCESSOR_DEFINE); return IDENTIFIER; }
+  {FUNC_MACRO}                     { yybegin(PREPROCESSOR_DEFINE); return IDENTIFIER; }
 }
 
 <PREPROCESSOR_IGNORE_BACKSLASH> {
@@ -138,7 +147,7 @@ MACRO_VERSION="__VERSION__"
   {MACRO_VERSION}                  { inPp = true; return MACRO_VERSION;}
   {PP_IF}                          { inPp = true; return PP_IF;}
   {PP_ELIF}                        { inPp = true; return PP_ELIF;}
-  {PP_DEFINE}                      { inPp = true; yybegin(PREPROCESSOR_DEFINE); return PP_DEFINE;}
+  {PP_DEFINE}                      { inPp = true; yybegin(MACRO_DEFINITION); return PP_DEFINE;}
   {PP_ERROR}                       { yybegin(PREPROCESSOR_IGNORE); return PP_ERROR;}
   {PP_PRAGMA}                      { yybegin(PREPROCESSOR_IGNORE); return PP_PRAGMA;}
   "#"                              { inPp = true; return HASH; }

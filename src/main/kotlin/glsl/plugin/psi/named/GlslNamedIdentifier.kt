@@ -4,6 +4,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_TEXT_ATTR
@@ -339,123 +340,43 @@ abstract class GlslNamedParameterDeclarator(node: ASTNode) : GlslNamedIdentifier
     }
 }
 
-///**
-// *
-// */
-//abstract class GlslNamedPpSingleDeclaration(node: ASTNode) : GlslNamedIdentifierImpl(node) {
-//
-//    /**
-//     *
-//     */
-//    override fun getSelf(): GlslPpSingleDeclaration {
-//        return this as GlslPpSingleDeclaration
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getNameIdentifier(): GlslVariableIdentifier? {
-//        return getSelf().variableIdentifier
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getAssociatedType(): GlslType? {
-//        return getSelf().expr?.getExprType()
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getLookupIcon(): Icon {
-//        return AllIcons.Nodes.Parameter
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getHighlightTextAttr(): TextAttributesKey {
-//        return VARIABLE_TEXT_ATTR
-//    }
-//}
-///**
-// *
-// */
-//abstract class GlslNamedPpDefineFunction(node: ASTNode) : GlslNamedIdentifierImpl(node) {
-//
-//    /**
-//     *
-//     */
-//    override fun getSelf(): GlslPpDefineFunction {
-//        return this as GlslPpDefineFunction
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getNameIdentifier(): GlslVariableIdentifier? {
-//        return getSelf().variableIdentifier
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getAssociatedType(): GlslType? {
-//        return null
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getLookupIcon(): Icon {
-//        return AllIcons.Nodes.Function
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getHighlightTextAttr(): TextAttributesKey {
-//        return FUNC_TEXT_ATTR
-//    }
-//}
-///**
-// *
-// */
-//abstract class GlslNamedPpDefineParam(node: ASTNode) : GlslNamedIdentifierImpl(node) {
-//
-//    /**
-//     *
-//     */
-//    override fun getSelf(): GlslPpDefineParam {
-//        return this as GlslPpDefineParam
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getNameIdentifier(): GlslVariableIdentifier? {
-//        return getSelf().variableIdentifier
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getAssociatedType(): GlslType? {
-//        return null
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getLookupIcon(): Icon {
-//        return AllIcons.Nodes.Parameter
-//    }
-//
-//    /**
-//     *
-//     */
-//    override fun getHighlightTextAttr(): TextAttributesKey {
-//        return FUNC_PARAM_TEXT_ATTR
-//    }
-//}
+/**
+ *
+ */
+abstract class GlslNamedPpDefineName(node: ASTNode) : GlslNamedIdentifierImpl(node) {
+    /**
+     *
+     */
+    override fun getSelf(): GlslPpDefineName {
+        return this as GlslPpDefineName
+    }
+
+    /**
+     *
+     */
+    override fun getNameIdentifier(): GlslVariableIdentifier? {
+        return getSelf().variableIdentifier
+    }
+
+    /**
+     *
+     */
+    override fun getAssociatedType(): GlslType? {
+        return null
+    }
+
+    /**
+     *
+     */
+    override fun getLookupIcon(): Icon {
+        return AllIcons.Nodes.Variable
+    }
+
+    /**
+     *
+     */
+    override fun getHighlightTextAttr(): TextAttributesKey {
+        return VARIABLE_TEXT_ATTR
+    }
+}
+

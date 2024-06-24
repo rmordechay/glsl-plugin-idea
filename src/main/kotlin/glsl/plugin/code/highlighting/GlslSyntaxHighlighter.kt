@@ -22,6 +22,7 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.LINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MULTILINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.NUMBERS_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.PP_DEFINE_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
 import glsl.plugin.language.GlslLexer
@@ -46,12 +47,16 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
         return pack(mapTokenToTextAttr(tokenType))
     }
 
+    /**
+     *
+     */
     private fun mapTokenToTextAttr(tokenType: IElementType): TextAttributesKey? {
         return when (tokenType) {
             GlslTypes.LINE_COMMENT -> LINE_COMMENT_TEXT_ATTR
             GlslTypes.MULTILINE_COMMENT -> MULTILINE_COMMENT_TEXT_ATTR
             GlslTypes.STRING_LITERAL -> STRING_TEXT_ATTR
             GlslTypes.BOOLCONSTANT -> BOOLEAN_TEXT_ATTR
+            GlslTypes.PP_DEFINE_NAME -> PP_DEFINE_NAME_ATTR
             in GlslTokenSets.ALL_OPERATORS -> OPERATORS_TEXT_ATTR
             in GlslTokenSets.PREPROCESSORS -> PREPROCESSOR_TEXT_ATTR
             in GlslTokenSets.NUMBER_SET -> NUMBERS_TEXT_ATTR
@@ -75,6 +80,7 @@ object GlslTextAttributes {
     val BOOLEAN_TEXT_ATTR = createTextAttributesKey("GLSL_BOOLEAN", KEYWORD)
     val OPERATORS_TEXT_ATTR = createTextAttributesKey("GLSL_OPERATORS", OPERATION_SIGN)
     val PREPROCESSOR_TEXT_ATTR = createTextAttributesKey("GLSL_PREPROCESSOR", KEYWORD)
+    val PP_DEFINE_NAME_ATTR = createTextAttributesKey("GLSL_PP_DEFINE_NAME", KEYWORD)
     val STRUCT_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_STRUCT_IDENTIFIER", CLASS_NAME)
     val NUMBERS_TEXT_ATTR = createTextAttributesKey("GLSL_NUMBER", NUMBER)
     val KEYWORD_TEXT_ATTR = createTextAttributesKey("GLSL_KEYWORD", KEYWORD)
@@ -84,7 +90,6 @@ object GlslTextAttributes {
     val LINE_COMMENT_TEXT_ATTR = createTextAttributesKey("GLSL_LINE_COMMENT", LINE_COMMENT)
     val MULTILINE_COMMENT_TEXT_ATTR = createTextAttributesKey("GLSL_MULTILINE_COMMENT", LINE_COMMENT)
     val BAD_CHARACTER_TEXT_ATTR = createTextAttributesKey("GLSL_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
-    val NO_HIGHLIGHTING_TEXT_ATTR = createTextAttributesKey("NO_HIGHLIGHTING_TEXT", HighlighterColors.NO_HIGHLIGHTING)
 }
 
 /**

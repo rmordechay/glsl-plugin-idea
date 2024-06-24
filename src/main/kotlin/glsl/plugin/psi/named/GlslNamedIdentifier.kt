@@ -8,6 +8,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.PP_DEFINE_NAME_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.VARIABLE_TEXT_ATTR
 import glsl.plugin.psi.GlslType
 import glsl.plugin.utils.GlslUtils
@@ -376,7 +378,7 @@ abstract class GlslNamedPpDefineName(node: ASTNode) : GlslNamedIdentifierImpl(no
      *
      */
     override fun getHighlightTextAttr(): TextAttributesKey {
-        return VARIABLE_TEXT_ATTR
+        return PP_DEFINE_NAME_ATTR
     }
 }
 

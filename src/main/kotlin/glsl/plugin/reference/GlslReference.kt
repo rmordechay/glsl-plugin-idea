@@ -8,10 +8,8 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
-import com.intellij.psi.scope.PsiScopeProcessor
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
@@ -42,7 +40,8 @@ enum class FilterType {
 /**
  *
  */
-class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
+class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRange) :
+    PsiReferenceBase<GlslIdentifier>(element, textRange) {
 
     private var currentFilterType = EQUALS
     private val resolvedReferences = arrayListOf<GlslNamedElement>()
@@ -87,14 +86,13 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
             currentFilterType = filterType
             lookupInPostfixStructMember()
             lookupInBuiltin()
-            lookupInPpParams()
-            val externalDeclaration: GlslExternalDeclaration?
             val statement = getParentOfType(element, GlslStatement::class.java)
-            if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
-                externalDeclaration = lookupInFunctionScope(statement)
-            } else {
-                externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
-            }
+            val externalDeclaration: GlslExternalDeclaration? =
+                if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
+                    lookupInFunctionScope(statement)
+                } else {
+                    getParentOfType(element, GlslExternalDeclaration::class.java)
+                }
             lookupInGlobalScope(externalDeclaration)
         } catch (_: StopLookupException) {
         }
@@ -145,10 +143,10 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      */
     private fun lookupInGlobalScope(externalDeclaration: GlslExternalDeclaration?) {
         if (externalDeclaration == null) return
-        var edPrevSibling = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
-        while (edPrevSibling != null) {
-            lookupInExternalDeclaration(edPrevSibling)
-            edPrevSibling = getPrevSiblingOfType(edPrevSibling, GlslExternalDeclaration::class.java)
+        var prevSibling = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
+        while (prevSibling != null) {
+            lookupInExternalDeclaration(prevSibling)
+            prevSibling = getPrevSiblingOfType(prevSibling, GlslExternalDeclaration::class.java)
         }
     }
 
@@ -318,16 +316,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     /**
      *
      */
-    private fun lookupInPpParams() {
-//        val ppDefineFunction = getParentOfType(element, GlslPpDefineFunction::class.java) ?: return
-//        for (ppParam in ppDefineFunction.ppDefineParamList) {
-//            findReferenceInElement(ppParam)
-//        }
-    }
-
-    /**
-     *
-     */
     private fun lookupInPpIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
         if (ppIncludeDeclaration == null) return
         val project = GlslUtils.getProject()
@@ -341,10 +329,11 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (includePath.contains("/")) {
             includePath = includePath.substring(includePath.lastIndexOf('/') + 1)
         }
-        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project!!))
+        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project))
         if (virtualFile.isEmpty()) return
         val loadText = LoadTextUtil.loadText(virtualFile.first())
-        val glslFile = PsiFileFactory.getInstance(project).createFileFromText(includePath, GlslFileType(), loadText) as? GlslFile
+        val glslFile =
+            PsiFileFactory.getInstance(project).createFileFromText(includePath, GlslFileType(), loadText) as? GlslFile
         val externalDeclarations = PsiTreeUtil.findChildrenOfType(glslFile, GlslExternalDeclaration::class.java)
         for (externalDeclaration in externalDeclarations) {
             lookupInExternalDeclaration(externalDeclaration)

@@ -45,6 +45,11 @@
             <option name="FOREGROUND" value="F92674"/>
         </value>
     </option>
+    <option name="GLSL_PP_DEFINE_NAME">
+        <value>
+            <option name="FOREGROUND" value="B5B21C"/>
+        </value>
+    </option>
     <option name="GLSL_OPERATORS">
         <value>
             <option name="FOREGROUND" value="A9B7C6"/>

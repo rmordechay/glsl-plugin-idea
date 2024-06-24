@@ -19,6 +19,9 @@ class GlslLexer : LexerBase() {
     private val macrosDefines = hashMapOf<String, List<IElementType>>()
     private var expansionTokens: Iterator<IElementType>? = null
 
+    /**
+     *
+     */
     override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
         lexer.reset(buffer, startOffset, endOffset, initialState)
         myText = buffer
@@ -26,10 +29,16 @@ class GlslLexer : LexerBase() {
         myTokenType = lexer.advance()
     }
 
+    /**
+     *
+     */
     override fun getState(): Int {
         return lexer.yystate()
     }
 
+    /**
+     *
+     */
     override fun getTokenType(): IElementType? {
         if (expansionTokens != null && expansionTokens?.hasNext() == true) {
             myTokenType = expansionTokens?.next()
@@ -41,25 +50,40 @@ class GlslLexer : LexerBase() {
         return myTokenType
     }
 
+    /**
+     *
+     */
     override fun getTokenStart(): Int {
         return lexer.tokenStart
     }
 
+    /**
+     *
+     */
     override fun getTokenEnd(): Int {
         if (expansionTokens != null) return lexer.tokenStart
         return lexer.tokenEnd
     }
 
+    /**
+     *
+     */
     override fun advance() {
         if (expansionTokens != null) return
-        if (myTokenType == PP_DEFINE) cacheDefineDefinition()
+        if (myTokenType == PP_DEFINE) setDefineMacro()
         myTokenType = lexer.advance()
     }
 
+    /**
+     *
+     */
     override fun getBufferSequence(): CharSequence {
         return myText
     }
 
+    /**
+     *
+     */
     override fun getBufferEnd(): Int {
         return myEndOffset
     }
@@ -67,7 +91,10 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
-    private fun cacheDefineDefinition() {
+    private fun setDefineMacro() {
+        val helperLexer = _GlslLexer(null)
+        val elements = arrayListOf<IElementType>()
+        // Get macro name and body
         val lastEnd = tokenEnd
         val lastState = state
         lexer.advance() // White space
@@ -75,22 +102,15 @@ class GlslLexer : LexerBase() {
         val defineIdentifier = lexer.yytext().toString()
         lexer.advance()
         val defineBodyString = lexer.yytext().toString().trim()
-        addDefineMacro(defineIdentifier, defineBodyString)
-        lexer.reset(bufferSequence, lastEnd, myEndOffset, lastState)
-    }
-
-    /**
-     *
-     */
-    private fun addDefineMacro(identifier: String, defineBodyString: String) {
-        val helperLexer = _GlslLexer(null)
-        val elements = arrayListOf<IElementType>()
         helperLexer.reset(defineBodyString, 0, defineBodyString.length, 0)
+        // Lex the body
         while (true) {
             val nextToken = helperLexer.advance() ?: break
             if (nextToken == WHITE_SPACE) continue
             elements.add(nextToken)
         }
-        macrosDefines[identifier] = elements
+        macrosDefines[defineIdentifier] = elements
+
+        lexer.reset(bufferSequence, lastEnd, myEndOffset, lastState)
     }
 }

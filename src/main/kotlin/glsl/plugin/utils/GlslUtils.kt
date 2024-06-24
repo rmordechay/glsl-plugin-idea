@@ -178,7 +178,7 @@ class GlslElementManipulator : AbstractElementManipulator<GlslIdentifier>() {
     }
 }
 
-class GlslContext : TemplateContextType("GLSL", "GLSL") {
+class GlslContext : TemplateContextType( "GLSL") {
     override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
         return templateActionContext.file is GlslFile
     }

@@ -1,1 +1,3 @@
-#define func(x) <caret>x + 2
+#define PI 2
+
+int n = <caret>PI + 2;

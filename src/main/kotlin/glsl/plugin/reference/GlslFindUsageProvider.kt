@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
 import glsl.GlslTypes
 import glsl.plugin.language.GlslLexer
-import glsl.plugin.language.GlslLexerAdapter
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.utils.GlslBuiltinUtils
 import glsl.psi.interfaces.GlslStructSpecifier

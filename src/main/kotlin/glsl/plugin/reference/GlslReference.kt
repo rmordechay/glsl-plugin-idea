@@ -8,8 +8,10 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
+import com.intellij.psi.scope.PsiScopeProcessor
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
@@ -78,6 +80,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      *
      */
     private fun doResolve(filterType: FilterType = EQUALS) {
+
         try {
             if (!shouldResolve()) return
             resolvedReferences.clear()
@@ -307,18 +310,18 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private fun lookupInPpStatement(ppStatement: GlslPpStatement?) {
         if (ppStatement == null) return
         lookupInPpIncludeDeclaration(ppStatement.ppIncludeDeclaration)
-        findReferenceInElement(ppStatement.ppSingleDeclaration)
-        findReferenceInElement(ppStatement.ppDefineFunction)
+//        findReferenceInElement(ppStatement.ppSingleDeclaration)
+//        findReferenceInElement(ppStatement.ppDefineFunction)
     }
 
     /**
      *
      */
     private fun lookupInPpParams() {
-        val ppDefineFunction = getParentOfType(element, GlslPpDefineFunction::class.java) ?: return
-        for (ppParam in ppDefineFunction.ppDefineParamList) {
-            findReferenceInElement(ppParam)
-        }
+//        val ppDefineFunction = getParentOfType(element, GlslPpDefineFunction::class.java) ?: return
+//        for (ppParam in ppDefineFunction.ppDefineParamList) {
+//            findReferenceInElement(ppParam)
+//        }
     }
 
     /**
@@ -337,7 +340,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (includePath.contains("/")) {
             includePath = includePath.substring(includePath.lastIndexOf('/') + 1)
         }
-        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project))
+        val virtualFile = FilenameIndex.getVirtualFilesByName(includePath, GlobalSearchScope.allScope(project!!))
         if (virtualFile.isEmpty()) return
         val loadText = LoadTextUtil.loadText(virtualFile.first())
         val glslFile = PsiFileFactory.getInstance(project).createFileFromText(includePath, GlslFileType(), loadText) as? GlslFile

@@ -12,6 +12,7 @@
                                         language="Glsl"
                                         extensions="glsl;vert;vsh;tesc;tese;geom;gsh;frag;fsh;comp;"/>
 
+<!--        <lang.fileViewProviderFactory language="Glsl" implementationClass="glsl.plugin.language.GlslViewProviderFactory"/>-->
         <!--  Language  -->
         <lang.parserDefinition          language="Glsl"
                                         implementationClass="glsl.plugin.language.GlslParserDefinition"/>
@@ -63,7 +64,7 @@
 
         <!--  Live Template  -->
         <defaultLiveTemplates           file="/live-templates/glsl-live-template.xml"/>
-        <liveTemplateContext            implementation="glsl.plugin.utils.GlslContext"/>
+        <liveTemplateContext implementation="glsl.plugin.utils.GlslContext" contextId="Glsl"/>
     </extensions>
 
     <actions>

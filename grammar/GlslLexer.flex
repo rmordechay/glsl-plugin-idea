@@ -26,6 +26,7 @@ import static glsl.GlslTypes.*;
 %state IN_MULITLINE_COMMENT
 %state PREPROCESSOR_IGNORE
 %state PREPROCESSOR_IGNORE_BACKSLASH
+%state PREPROCESSOR_DEFINE
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
@@ -48,6 +49,7 @@ FRACTIONAL2={DIGITS}{EXPONENT}
 FLOATCONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_FLOAT}?
 DOUBLECONSTANT=({FRACTIONAL}|{FRACTIONAL2}){FLOATING_SUFFIX_DOUBLE}?
 
+BACKSLASH="\\"
 BOOLCONSTANT=false|true
 STRING_LITERAL=(\"([^\"\\]|\\.)*\")
 IDENTIFIER=[a-zA-Z_]+\w*
@@ -65,7 +67,8 @@ PP_PRAGMA="#pragma"
 PP_EXTENSION="#extension"
 PP_INCLUDE="#include"
 PP_LINE="#line"
-PP_TEXT=[^\\\n]*
+PP_TEXT=[^\s\\]+
+PP_TEXT_DEFINE=.+
 MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
 MACRO_VERSION="__VERSION__"
@@ -80,7 +83,7 @@ MACRO_VERSION="__VERSION__"
 }
 
 <PREPROCESSOR_IGNORE> {
-  "\\"                             { yybegin(PREPROCESSOR_IGNORE_BACKSLASH); return WHITE_SPACE;}
+  {BACKSLASH}                      { yybegin(PREPROCESSOR_IGNORE_BACKSLASH); return WHITE_SPACE; }
   {NEW_LINE}                       { yybegin(YYINITIAL); return WHITE_SPACE; }
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {FLOATCONSTANT}                  { return FLOATCONSTANT; }
@@ -91,8 +94,15 @@ MACRO_VERSION="__VERSION__"
   {PP_TEXT}                        { return PP_TEXT;}
 }
 
+<PREPROCESSOR_DEFINE> {
+  {BACKSLASH}                      { yybegin(PREPROCESSOR_IGNORE_BACKSLASH); return WHITE_SPACE; }
+  {NEW_LINE}                       { yybegin(YYINITIAL); inPp = false; return PP_END; }
+  {PP_TEXT_DEFINE}                 { return PP_DEFINE_BODY; }
+  {WHITE_SPACE}                    { return WHITE_SPACE; }
+}
+
 <PREPROCESSOR_IGNORE_BACKSLASH> {
-    {NEW_LINE}                     { yybegin(PREPROCESSOR_IGNORE); return WHITE_SPACE; }
+  {NEW_LINE}                       { yybegin(PREPROCESSOR_IGNORE); return WHITE_SPACE; }
 }
 
 <YYINITIAL> {
@@ -106,7 +116,7 @@ MACRO_VERSION="__VERSION__"
                                       afterBackslash = false;
                                       return WHITE_SPACE;
                                    }
-  "\\"                             {
+  {BACKSLASH}                      {
                                       if (inPp) {
                                           afterBackslash = true;
                                       }
@@ -114,7 +124,6 @@ MACRO_VERSION="__VERSION__"
                                    }
   "/*"                             { yybegin(IN_MULITLINE_COMMENT);  return MULTILINE_COMMENT; }
   {LINE_COMMENT}                   { return LINE_COMMENT; }
-
   {PP_VERSION}                     { inPp = true; return PP_VERSION;}
   {PP_UNDEF}                       { inPp = true; return PP_UNDEF;}
   {PP_IFDEF}                       { inPp = true; return PP_IFDEF;}
@@ -127,9 +136,9 @@ MACRO_VERSION="__VERSION__"
   {MACRO_LINE}                     { inPp = true; return MACRO_LINE;}
   {MACRO_FILE}                     { inPp = true; return MACRO_FILE;}
   {MACRO_VERSION}                  { inPp = true; return MACRO_VERSION;}
-  {PP_DEFINE}                      { inPp = true; return PP_DEFINE;}
   {PP_IF}                          { inPp = true; return PP_IF;}
   {PP_ELIF}                        { inPp = true; return PP_ELIF;}
+  {PP_DEFINE}                      { inPp = true; yybegin(PREPROCESSOR_DEFINE); return PP_DEFINE;}
   {PP_ERROR}                       { yybegin(PREPROCESSOR_IGNORE); return PP_ERROR;}
   {PP_PRAGMA}                      { yybegin(PREPROCESSOR_IGNORE); return PP_PRAGMA;}
   "#"                              { inPp = true; return HASH; }

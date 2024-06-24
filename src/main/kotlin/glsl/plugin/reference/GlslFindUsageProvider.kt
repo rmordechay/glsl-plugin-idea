@@ -6,6 +6,7 @@ import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
 import glsl.GlslTypes
+import glsl.plugin.language.GlslLexer
 import glsl.plugin.language.GlslLexerAdapter
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.utils.GlslBuiltinUtils
@@ -21,7 +22,7 @@ class GlslFindUsageProvider : FindUsagesProvider {
     */
     override fun getWordsScanner(): WordsScanner {
         return DefaultWordsScanner(
-            GlslLexerAdapter(),
+            GlslLexer(),
             TokenSet.create(GlslTypes.IDENTIFIER),
             TokenSet.create(GlslTypes.LINE_COMMENT, GlslTypes.MULTILINE_COMMENT),
             TokenSet.EMPTY

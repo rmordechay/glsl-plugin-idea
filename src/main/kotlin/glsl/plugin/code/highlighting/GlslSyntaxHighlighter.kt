@@ -24,7 +24,7 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.NUMBERS_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
-import glsl.plugin.language.GlslLexerAdapter
+import glsl.plugin.language.GlslLexer
 
 
 /**
@@ -36,7 +36,7 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
     *
     */
     override fun getHighlightingLexer(): Lexer {
-        return GlslLexerAdapter()
+        return GlslLexer()
     }
 
     /**

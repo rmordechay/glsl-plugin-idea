@@ -8,6 +8,7 @@ import com.intellij.codeInsight.template.TemplateContextType
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.project.getOpenedProjects
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.PsiElement
@@ -23,17 +24,13 @@ import javax.swing.Icon
  *
  */
 object GlslUtils {
-    private lateinit var project: Project
 
     /**
      *
      */
     fun getProject(): Project {
-        if (::project.isInitialized) {
-            return project
-        }
-        project = ProjectManager.getInstance().openProjects.first()
-        return project
+        val openProjects = ProjectManager.getInstance().openProjects.first()
+        return openProjects
     }
 
     /**

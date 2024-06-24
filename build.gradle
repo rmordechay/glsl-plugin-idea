@@ -38,8 +38,8 @@ generateParser {
     doFirst {
         delete 'src/main/gen/psi'
     }
-    source = 'grammar/GlslGrammar.bnf'
-    targetRoot = 'src/main/gen'
+    sourceFile = file('grammar/GlslGrammar.bnf')
+    targetRootOutputDir = file('src/main/gen')
     pathToParser = '_GlslParser.java'
     pathToPsiRoot = 'psi'
 }
@@ -49,6 +49,8 @@ generateLexer {
     source = 'grammar/GlslLexer.flex'
     targetDir = 'src/main/gen/glsl'
     targetClass = '_GlslLexer.java'
+    targetOutputDir = file('src/main/gen')
+    sourceFile = file('grammar/GlslLexer.flex')
 }
 
 tasks.register('generateGrammarClean') {

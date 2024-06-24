@@ -18,13 +18,16 @@ import glsl.GlslTypes
 import glsl.GlslTypes.Factory
 import glsl._GlslLexer
 import glsl._GlslParser
+import glsl.plugin.language.GlslLanguage.Companion.MACRO_CALL
+
 
 /**
  *
  */
 class GlslLanguage : Language("Glsl") {
     companion object {
-        val INSTANCE =  GlslLanguage()
+        val INSTANCE = GlslLanguage()
+        val MACRO_CALL: IElementType = GlslTokenType("MACRO_CALL")
     }
 }
 
@@ -43,66 +46,67 @@ class GlslElementType(debugName: String) : IElementType(debugName, GlslLanguage.
  */
 class GlslLexerAdapter : FlexAdapter(_GlslLexer(null))
 
+
+
 /**
  *
  */
 class GlslParserDefinition : ParserDefinition {
 
     /**
-    *
-    */
+     *
+     */
     override fun createLexer(project: Project?): Lexer {
-        return GlslLexerAdapter()
+        return GlslLexer()
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun createParser(project: Project?): PsiParser {
         return _GlslParser()
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun getFileNodeType(): IFileElementType {
-        return IFileElementType( GlslLanguage.INSTANCE)
+        return IFileElementType(GlslLanguage.INSTANCE)
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.create(TokenType.WHITE_SPACE)
+        return TokenSet.create(TokenType.WHITE_SPACE, MACRO_CALL)
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun getCommentTokens(): TokenSet {
         return TokenSet.create(GlslTypes.LINE_COMMENT, GlslTypes.MULTILINE_COMMENT)
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun getStringLiteralElements(): TokenSet {
         return TokenSet.create(GlslTypes.STRING_LITERAL)
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun createElement(node: ASTNode?): PsiElement {
         return Factory.createElement(node)
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return GlslFile(viewProvider)
     }
 
 }
-

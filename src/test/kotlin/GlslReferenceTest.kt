@@ -211,26 +211,26 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertEquals("a", (resolve as GlslSingleDeclaration).name)
     }
 
-    fun testReferenceFile30() {
-        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile30.glsl")
-        val resolve = reference?.resolve()
-        assertInstanceOf(resolve, GlslPpDefineParam::class.java)
-        assertEquals("x", (resolve as GlslPpDefineParam).name)
-    }
-
-    fun testReferenceFile31() {
-        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile31.glsl")
-        val resolve = reference?.resolve()
-        assertInstanceOf(resolve, GlslPpDefineFunction::class.java)
-        assertEquals("func", (resolve as GlslPpDefineFunction).name)
-    }
-
-    fun testReferenceFile32() {
-        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile32.glsl")
-        val resolve = reference?.resolve()
-        assertInstanceOf(resolve, GlslPpSingleDeclaration::class.java)
-        assertEquals("VAR", (resolve as GlslPpSingleDeclaration).name)
-    }
+//    fun testReferenceFile30() {
+//        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile30.glsl")
+//        val resolve = reference?.resolve()
+//        assertInstanceOf(resolve, GlslPpDefineParam::class.java)
+//        assertEquals("x", (resolve as GlslPpDefineParam).name)
+//    }
+//
+//    fun testReferenceFile31() {
+//        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile31.glsl")
+//        val resolve = reference?.resolve()
+//        assertInstanceOf(resolve, GlslPpDefineFunction::class.java)
+//        assertEquals("func", (resolve as GlslPpDefineFunction).name)
+//    }
+//
+//    fun testReferenceFile32() {
+//        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile32.glsl")
+//        val resolve = reference?.resolve()
+//        assertInstanceOf(resolve, GlslPpSingleDeclaration::class.java)
+//        assertEquals("VAR", (resolve as GlslPpSingleDeclaration).name)
+//    }
 
     fun testFindUsageFile1() {
 //        val testFindUsages = myFixture.testFindUsages("FindUsageFile1.glsl")

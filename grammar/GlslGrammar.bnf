@@ -36,12 +36,12 @@
     mixin("struct_declarator")="glsl.plugin.psi.named.GlslNamedStructDeclarator"
     implements("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedIdentifier"
     mixin("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedDeclarationIdentifierWrapper"
-    implements("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedIdentifier"
-    mixin("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedPpSingleDeclaration"
-    implements("pp_define_function")="glsl.plugin.psi.named.GlslNamedIdentifier"
-    mixin("pp_define_function")="glsl.plugin.psi.named.GlslNamedPpDefineFunction"
-    implements("pp_define_param")="glsl.plugin.psi.named.GlslNamedIdentifier"
-    mixin("pp_define_param")="glsl.plugin.psi.named.GlslNamedPpDefineParam"
+//    implements("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedIdentifier"
+//    mixin("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedPpSingleDeclaration"
+//    implements("pp_define_function")="glsl.plugin.psi.named.GlslNamedIdentifier"
+//    mixin("pp_define_function")="glsl.plugin.psi.named.GlslNamedPpDefineFunction"
+//    implements("pp_define_param")="glsl.plugin.psi.named.GlslNamedIdentifier"
+//    mixin("pp_define_param")="glsl.plugin.psi.named.GlslNamedPpDefineParam"
 
 
     extends("expr_no_assignment|assignment_expr")=expr
@@ -537,9 +537,9 @@ private translation_unit
     ::= external_declaration
 
 external_declaration
-    ::= pp_statement
-    |   function_definition
+    ::= function_definition
     |   declaration
+    |   pp_statement
     |   SEMICOLON
 
 // *******************
@@ -1194,24 +1194,8 @@ private pp_conditional
     {   pin(".*")=1   }
 
 private pp_define_declaration
-    ::= PP_DEFINE (pp_define_function|pp_single_declaration)
+    ::= PP_DEFINE PP_DEFINE_BODY*
     {   pin(".*")=1   }
-
-private recover_pp_define_function ::= !(RIGHT_PAREN|PP_END)
-
-pp_single_declaration
-    ::= variable_identifier expr?
-
-pp_define_function
-    ::= variable_identifier LEFT_PAREN pp_define_params RIGHT_PAREN expr
-    {   pin=2 }
-
-private pp_define_params
-    ::= pp_define_param  (COMMA pp_define_param)*
-    {   pin=1 recoverWhile=recover_pp_define_function   }
-
-pp_define_param
-    ::= variable_identifier
 
 pp_literal
     ::= PP_PRAGMA

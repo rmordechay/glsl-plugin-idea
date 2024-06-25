@@ -24,6 +24,7 @@ import static glsl.GlslTypes.*;
 %state MULITLINE_COMMENT_STATE
 %state MACRO_BODY_STATE
 %state MACRO_IDENTIFIER_STATE
+%state MACRO_FUNC_PARAM_STATE
 %state PP_STATE
 
 MACRO_BODY_ROW=[^\n\r\\]+
@@ -71,9 +72,8 @@ MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
 MACRO_VERSION="__VERSION__"
 
-FUNC_MACRO=\w+\([^)]*\)
+FUNC_MACRO=\w+(\([^)]*\))
 OBJECT_MACRO=\w+
-MACRO_IDENTIFIER={FUNC_MACRO}|{OBJECT_MACRO}
 
 
 %%
@@ -85,16 +85,24 @@ MACRO_IDENTIFIER={FUNC_MACRO}|{OBJECT_MACRO}
   {NEW_LINE}                       { return MULTILINE_COMMENT; }
 }
 
+<MACRO_IDENTIFIER_STATE> {
+  {WHITE_SPACE}                    { return WHITE_SPACE; }
+  {IDENTIFIER}                     { return IDENTIFIER; }
+}
+
 <MACRO_BODY_STATE> {
   {BACKSLASH}                      { return WHITE_SPACE; }
-  {WHITE_SPACE}                    { return WHITE_SPACE; }
   {NEW_LINE}                       { yybegin(YYINITIAL); return PP_END; }
+  {WHITE_SPACE}                    { return WHITE_SPACE; }
   {MACRO_BODY_ROW}                 { return MACRO_BODY_ROW; }
 }
 
-<MACRO_IDENTIFIER_STATE> {
+<MACRO_FUNC_PARAM_STATE> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
-  {MACRO_IDENTIFIER}               { yybegin(MACRO_BODY_STATE); return IDENTIFIER; }
+  {IDENTIFIER}                     { return MACRO_FUNC_PARAM; }
+  "("                              { return LEFT_PAREN; }
+  ")"                              { yybegin(MACRO_BODY_STATE); return RIGHT_PAREN; }
+  ","                              { return COMMA; }
 }
 
 <YYINITIAL, PP_STATE> {

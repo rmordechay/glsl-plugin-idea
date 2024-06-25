@@ -1,4 +1,2 @@
-#define PI 3.14 \
-+ a
-
-int b = PI;
+#define PI aoaid akjsd
+int bla = aoaid akjsd;

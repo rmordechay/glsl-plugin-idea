@@ -5,11 +5,8 @@ import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes.*
 import glsl._GlslLexer
-import glsl._GlslLexer.MACRO_BODY_STATE
+import glsl._GlslLexer.*
 import glsl.data.GlslDefinitions.BACKSLASH
-
-
-const val RECURSION_LIMIT = 100_000
 
 /**
  *
@@ -22,7 +19,6 @@ class GlslLexer : LexerBase() {
     private val macrosDefines = hashMapOf<String, List<IElementType>>()
     private var expansionTokens: Iterator<IElementType>? = null
     private val helperLexer = _GlslLexer(null)
-    private var recursionGuard = 0
 
 
     /**
@@ -33,7 +29,6 @@ class GlslLexer : LexerBase() {
         myText = buffer
         myEndOffset = endOffset
         myTokenType = lexer.advance()
-        recursionGuard = 0
     }
 
     /**
@@ -49,7 +44,9 @@ class GlslLexer : LexerBase() {
     override fun getTokenType(): IElementType? {
         if (shouldExpandMacro()) {
             val expansionToken = expansionTokens?.next()
-            if (!expansionTokens!!.hasNext()) expansionTokens = null
+            if (expansionTokens?.hasNext() == false) {
+                expansionTokens = null
+            }
             return expansionToken
         } else if (isMacroCall()) {
             expansionTokens = macrosDefines[lexer.yytext()]?.iterator()
@@ -69,7 +66,7 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenEnd(): Int {
-        if (expansionTokens == null || recursionGuard++ >= RECURSION_LIMIT) {
+        if (expansionTokens == null) {
             return lexer.tokenEnd
         }
         return lexer.tokenStart
@@ -81,6 +78,9 @@ class GlslLexer : LexerBase() {
     override fun advance() {
         if (expansionTokens != null) return
         if (myTokenType == PP_DEFINE) setDefineMacro()
+        if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
+            determineMacroType()
+        }
         myTokenType = lexer.advance()
     }
 
@@ -102,18 +102,21 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun setDefineMacro() {
-        helperLexer.reset(bufferSequence, 0, bufferEnd, 0)
+        helperLexer.reset(bufferSequence, tokenEnd, bufferEnd, 0)
         // Get macro name and body
         helperLexer.advance() // White space
         helperLexer.advance()
         val defineIdentifier = helperLexer.yytext().toString()
+        helperLexer.yybegin(MACRO_BODY_STATE)
         var defineBodyString = ""
         // Collects all rows of define. More than one row is possible with backslash
         while (true) {
             val nextToken = helperLexer.advance()
             if (nextToken == null || nextToken == PP_END) break
             if (helperLexer.yytext() != BACKSLASH) {
-                defineBodyString += helperLexer.yytext().toString().trim() + " "
+                defineBodyString += helperLexer.yytext()
+            } else {
+                defineBodyString += " "
             }
         }
         // Lex the body
@@ -131,6 +134,18 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
+    private fun determineMacroType() {
+        helperLexer.reset(bufferSequence, tokenEnd, bufferEnd, 0)
+        if (helperLexer.advance() == LEFT_PAREN) {
+            lexer.yybegin(MACRO_FUNC_PARAM_STATE)
+        } else {
+            lexer.yybegin(MACRO_BODY_STATE)
+        }
+    }
+
+    /**
+     *
+     */
     private fun shouldExpandMacro(): Boolean {
         return expansionTokens != null && expansionTokens?.hasNext() == true
     }
@@ -139,6 +154,6 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun isMacroCall(): Boolean {
-        return state != MACRO_BODY_STATE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines
+        return state != MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines
     }
 }

@@ -1,3 +1,3 @@
-#define PI(a, b) a
+#define PI(a, b) c + b + 2 + d
 
 int bla = PI;

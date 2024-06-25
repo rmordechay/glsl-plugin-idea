@@ -27,7 +27,6 @@ import static glsl.GlslTypes.*;
 %state MACRO_FUNC_PARAM_STATE
 %state PP_STATE
 
-MACRO_BODY_ROW=[^\n\r\\]+
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
 BACKSLASH=\\{WHITE_SPACE}*{NEW_LINE}
@@ -71,9 +70,7 @@ PP_LINE="#line"
 MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
 MACRO_VERSION="__VERSION__"
-
-FUNC_MACRO=\w+(\([^)]*\))
-OBJECT_MACRO=\w+
+MACRO_TOKEN=[^\s]+
 
 
 %%
@@ -94,7 +91,16 @@ OBJECT_MACRO=\w+
   {BACKSLASH}                      { return WHITE_SPACE; }
   {NEW_LINE}                       { yybegin(YYINITIAL); return PP_END; }
   {WHITE_SPACE}                    { return WHITE_SPACE; }
-  {MACRO_BODY_ROW}                 { return MACRO_BODY_ROW; }
+
+  {FLOATCONSTANT}                  { return FLOATCONSTANT; }
+  {DOUBLECONSTANT}                 { return DOUBLECONSTANT; }
+  {INTCONSTANT}                    { return INTCONSTANT; }
+  {UINTCONSTANT}                   { return UINTCONSTANT; }
+  {BOOLCONSTANT}                   { return BOOLCONSTANT; }
+  {STRING_LITERAL}                 { return STRING_LITERAL; }
+  {IDENTIFIER}                     { return IDENTIFIER; }
+
+  {MACRO_TOKEN}                    { return MACRO_TOKEN; }
 }
 
 <MACRO_FUNC_PARAM_STATE> {

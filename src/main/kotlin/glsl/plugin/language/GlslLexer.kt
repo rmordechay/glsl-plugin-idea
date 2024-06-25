@@ -1,12 +1,16 @@
 package glsl.plugin.language
 
 import com.intellij.lexer.LexerBase
+import com.intellij.openapi.util.RecursionManager
+import com.intellij.openapi.util.RecursionManager.*
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.PREPROCESSOR_DEFINE
 import glsl.plugin.language.GlslLanguage.Companion.MACRO_CALL
+
+const val RECURSION_LIMIT = 100_000
 
 /**
  *
@@ -18,6 +22,8 @@ class GlslLexer : LexerBase() {
     private val lexer = _GlslLexer(null)
     private val macrosDefines = hashMapOf<String, List<IElementType>>()
     private var expansionTokens: Iterator<IElementType>? = null
+    private var recursionGuard = 0
+
 
     /**
      *
@@ -27,6 +33,7 @@ class GlslLexer : LexerBase() {
         myText = buffer
         myEndOffset = endOffset
         myTokenType = lexer.advance()
+        recursionGuard = 0
     }
 
     /**
@@ -41,8 +48,9 @@ class GlslLexer : LexerBase() {
      */
     override fun getTokenType(): IElementType? {
         if (expansionTokens != null && expansionTokens?.hasNext() == true) {
-            myTokenType = expansionTokens?.next()
+            val expansionToken = expansionTokens?.next()
             if (!expansionTokens!!.hasNext()) expansionTokens = null
+            return expansionToken
         } else if (state != PREPROCESSOR_DEFINE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines) {
             expansionTokens = macrosDefines[lexer.yytext()]?.iterator()
             myTokenType = MACRO_CALL
@@ -61,8 +69,10 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenEnd(): Int {
-        if (expansionTokens != null) return lexer.tokenStart
-        return lexer.tokenEnd
+        if (expansionTokens == null || recursionGuard++ >= RECURSION_LIMIT) {
+            return lexer.tokenEnd
+        }
+        return lexer.tokenStart
     }
 
     /**

@@ -1189,8 +1189,18 @@ private pp_conditional
 
 meta dummy_rule ::= MACRO_CALL
 
+macro_body_token
+    ::= MACRO_TOKEN
+    |   DOUBLECONSTANT
+    |   INTCONSTANT
+    |   UINTCONSTANT
+    |   BOOLCONSTANT
+    |   STRING_LITERAL
+    |   IDENTIFIER
+    |   FLOATCONSTANT
+
 pp_define_declaration
-    ::= PP_DEFINE pp_define_name MACRO_BODY_ROW*
+    ::= PP_DEFINE pp_define_name macro_body_token*
     {   pin(".*")=1   }
 
 pp_define_name

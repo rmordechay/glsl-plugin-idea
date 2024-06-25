@@ -6,6 +6,7 @@ import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.MACRO_BODY_STATE
+import glsl.data.GlslDefinitions.BACKSLASH
 
 
 const val RECURSION_LIMIT = 100_000
@@ -111,7 +112,7 @@ class GlslLexer : LexerBase() {
         while (true) {
             val nextToken = helperLexer.advance()
             if (nextToken == null || nextToken == PP_END) break
-            if (helperLexer.yytext() != "\\") {
+            if (helperLexer.yytext() != BACKSLASH) {
                 defineBodyString += helperLexer.yytext().toString().trim() + " "
             }
         }

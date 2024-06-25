@@ -6,6 +6,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.tree.IFileElementType
 import glsl.GlslTypes.*
+import glsl.data.GlslDefinitions.BACKSLASH
 import glsl.psi.interfaces.GlslExprNoAssignment
 
 val COMPOUND_STATEMENTS = listOf(
@@ -62,7 +63,7 @@ class GlslBlock(
         val newAlignment = Alignment.createAlignment()
         var childNode = node.firstChildNode
         while (childNode != null) {
-            if (childNode.elementType != TokenType.WHITE_SPACE || childNode.text.contains("\\")) {
+            if (childNode.elementType != TokenType.WHITE_SPACE || childNode.text.contains(BACKSLASH)) {
                 blocks.add(getChildBlock(childNode, newAlignment, Alignment.createAlignment()))
             }
             childNode = childNode.treeNext
@@ -105,15 +106,15 @@ class GlslBlock(
      */
     private fun getCommentBlock(child: ASTNode, newAlignment: Alignment): GlslBlock {
         val parentType = node.elementType
-        when (parentType) {
+        return when (parentType) {
             is IFileElementType -> {
-                return GlslBlock(child, wrap, newAlignment, mySpacing, Indent.getNoneIndent())
+                GlslBlock(child, wrap, newAlignment, mySpacing, Indent.getNoneIndent())
             }
             in COMPOUND_STATEMENTS -> {
-                return GlslBlock(child, wrap, newAlignment, mySpacing, Indent.getNormalIndent())
+                GlslBlock(child, wrap, newAlignment, mySpacing, Indent.getNormalIndent())
             }
             else -> {
-                return GlslBlock(child, wrap, null, mySpacing, Indent.getNoneIndent())
+                GlslBlock(child, wrap, null, mySpacing, Indent.getNoneIndent())
             }
         }
     }

@@ -7,9 +7,17 @@ import glsl.GlslTypes.*
 
 object GlslDefinitions {
 
+    /**
+     *
+     */
     enum class ShaderType {
         GLSL, VERT, TESC, TESE, GEOM, FRAG, COMP
     }
+
+    /**
+     *
+     */
+    const val BACKSLASH = "\\"
 
     /**
      *

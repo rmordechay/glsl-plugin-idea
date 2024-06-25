@@ -20,6 +20,7 @@ class GlslLexer : LexerBase() {
     private val lexer = _GlslLexer(null)
     private val macrosDefines = hashMapOf<String, List<IElementType>>()
     private var expansionTokens: Iterator<IElementType>? = null
+    private val helperLexer = _GlslLexer(null)
     private var recursionGuard = 0
 
 
@@ -100,26 +101,30 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun setDefineMacro() {
-        val helperLexer = _GlslLexer(null)
-        val elements = arrayListOf<IElementType>()
+        helperLexer.reset(bufferSequence, 0, bufferEnd, 0)
         // Get macro name and body
-        val lastEnd = tokenEnd
-        val lastState = state
-        lexer.advance() // White space
-        lexer.advance()
-        val defineIdentifier = lexer.yytext().toString()
-        lexer.advance()
-        val defineBodyString = lexer.yytext().toString().trim()
-        helperLexer.reset(defineBodyString, 0, defineBodyString.length, 0)
+        helperLexer.advance() // White space
+        helperLexer.advance()
+        val defineIdentifier = helperLexer.yytext().toString()
+        var defineBodyString = ""
+        // Collects all rows of define. More than one row is possible with backslash
+        while (true) {
+            val nextToken = helperLexer.advance()
+            if (nextToken == null || nextToken == PP_END) break
+            if (helperLexer.yytext() != "\\") {
+                defineBodyString += helperLexer.yytext().toString().trim() + " "
+            }
+        }
         // Lex the body
+        val elements = arrayListOf<IElementType>()
+        helperLexer.reset(defineBodyString, 0, defineBodyString.length, 0)
         while (true) {
             val nextToken = helperLexer.advance() ?: break
             if (nextToken == WHITE_SPACE) continue
             elements.add(nextToken)
         }
+        // Save the final results
         macrosDefines[defineIdentifier] = elements
-
-        lexer.reset(bufferSequence, lastEnd, myEndOffset, lastState)
     }
 
     /**

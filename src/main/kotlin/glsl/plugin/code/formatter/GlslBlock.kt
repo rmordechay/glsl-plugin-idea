@@ -62,7 +62,7 @@ class GlslBlock(
         val newAlignment = Alignment.createAlignment()
         var childNode = node.firstChildNode
         while (childNode != null) {
-            if (childNode.elementType != TokenType.WHITE_SPACE || childNode.text == "\\\n") {
+            if (childNode.elementType != TokenType.WHITE_SPACE || childNode.text.contains("\\")) {
                 blocks.add(getChildBlock(childNode, newAlignment, Alignment.createAlignment()))
             }
             childNode = childNode.treeNext

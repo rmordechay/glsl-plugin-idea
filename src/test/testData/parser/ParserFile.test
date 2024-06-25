@@ -9,9 +9,9 @@
 #include <shader>
 #include "file.h"
 
-#define a 10
-#define a(x) x + 1
-#define a(x, y, z) x * y * z
+#define A 10
+#define A(x) x + 1
+#define A(x, y, z) x * y * z
 
 
 ;;;
@@ -29,7 +29,7 @@
 #define A a + 2 \
 + 2 / 2
 
-#define a(a, b) a + \
+#define A(a, b) a + \
 1 + 1 + (x + 2) - (x * 2) \
 + 1 + (x + 2) - (x * 2) \
 + 1 + (x + 2) - (x * 2)
@@ -61,7 +61,7 @@ int a;
 #define BB 10
 #endif
 
-#define a 10
+#define A 10
 #if VARIABLE > 5
 int a = 2;
 #elif VARIABLE < 2
@@ -105,16 +105,16 @@ struct DummyStruct {
 
 struct DummyStruct {
     int struct_declarator1;
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct AB {int a;} struct_declarator4, struct_declarator5;
 } dummyStruct[4];
 
 in DummyBlock {
     int struct_declarator1;
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct AB {int a;} struct_declarator4, struct_declarator5;
 } dummyStruct;
 
 in DummyBlock {
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct AB {int a;} struct_declarator4, struct_declarator5;
 };
 
 in DummyBlock {
@@ -123,7 +123,7 @@ in DummyBlock {
     int struct_declarator3;
     int struct_declarator4, struct_declarator5;
     int struct_declarator4, struct_declarator5;
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct AB {int a;} struct_declarator4, struct_declarator5;
 } dummyStruct[];
 
 in UserType {
@@ -132,10 +132,10 @@ in UserType {
     int struct_declarator3;
     int struct_declarator4, struct_declarator5;
     int struct_declarator4, struct_declarator5;
-    struct A {int a;} struct_declarator4, struct_declarator5;
+    struct AB {int a;} struct_declarator4, struct_declarator5;
 } dummyStruct[4];
 
-struct A {
+struct AB {
     int a;
 };
 const float CONSTANT_DECLRATION = 0.2;
@@ -232,7 +232,7 @@ layout (location = 2) in vec2 layout_declration;
 layout (location = 1, max_vertices) in vec4 layout_declration;
 layout (location = 1, max_vertices = func_call()) in vec4 layout_declration;
 layout (location = 1, max_vertices = 2 > a) in vec4 layout_declration;
-layout (location = 1, max_vertices = 2) in struct A {int a;} layout_declration;
+layout (location = 1, max_vertices = 2) in struct AB {int a;} layout_declration;
 layout (location = 3) centroid out float layout_declration;
 layout (location) uniform UniformType {
     mat3 a;

@@ -1,13 +1,12 @@
 package glsl.plugin.language
 
 import com.intellij.lexer.LexerBase
-import com.intellij.openapi.util.RecursionManager
-import com.intellij.openapi.util.RecursionManager.*
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
-import glsl.GlslTypes.*
+import glsl.GlslTypes.IDENTIFIER
+import glsl.GlslTypes.PP_DEFINE
 import glsl._GlslLexer
-import glsl._GlslLexer.PREPROCESSOR_DEFINE
+import glsl._GlslLexer.MACRO_BODY_STATE
 import glsl.plugin.language.GlslLanguage.Companion.MACRO_CALL
 
 const val RECURSION_LIMIT = 100_000
@@ -47,11 +46,11 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenType(): IElementType? {
-        if (expansionTokens != null && expansionTokens?.hasNext() == true) {
+        if (shouldExpandMacro()) {
             val expansionToken = expansionTokens?.next()
             if (!expansionTokens!!.hasNext()) expansionTokens = null
             return expansionToken
-        } else if (state != PREPROCESSOR_DEFINE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines) {
+        } else if (isMacroCall()) {
             expansionTokens = macrosDefines[lexer.yytext()]?.iterator()
             myTokenType = MACRO_CALL
         }
@@ -122,5 +121,19 @@ class GlslLexer : LexerBase() {
         macrosDefines[defineIdentifier] = elements
 
         lexer.reset(bufferSequence, lastEnd, myEndOffset, lastState)
+    }
+
+    /**
+     *
+     */
+    private fun shouldExpandMacro(): Boolean {
+        return expansionTokens != null && expansionTokens?.hasNext() == true
+    }
+
+    /**
+     *
+     */
+    private fun isMacroCall(): Boolean {
+        return state != MACRO_BODY_STATE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines
     }
 }

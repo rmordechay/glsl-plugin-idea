@@ -10,8 +10,6 @@ import static glsl.GlslTypes.*;
 %%
 
 %{
-  boolean inPp = false;
-  boolean afterBackslash = false;
   public _GlslLexer() {
     this((java.io.Reader)null);
   }
@@ -23,11 +21,9 @@ import static glsl.GlslTypes.*;
 %function advance
 %type IElementType
 %unicode
-%state IN_MULITLINE_COMMENT
-%state PREPROCESSOR_IGNORE
-%state PREPROCESSOR_IGNORE_BACKSLASH
-%state PREPROCESSOR_DEFINE
-%state MACRO_DEFINITION
+%state MULITLINE_COMMENT_STATE
+%state MACRO_BODY_STATE
+%state MACRO_IDENTIFIER_STATE
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
@@ -68,89 +64,59 @@ PP_PRAGMA="#pragma"
 PP_EXTENSION="#extension"
 PP_INCLUDE="#include"
 PP_LINE="#line"
-PP_TEXT=[^\s\\]+
 PP_TEXT_DEFINE=.+
 MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
 MACRO_VERSION="__VERSION__"
 FUNC_MACRO=\w+\([^)]*\)
 OBJECT_MACRO=\w+
+MACRO_IDENTIFIER={FUNC_MACRO}|{OBJECT_MACRO}
 
 %%
 
-<IN_MULITLINE_COMMENT> {
+<MULITLINE_COMMENT_STATE> {
     "*/"                           { yybegin(YYINITIAL); return MULTILINE_COMMENT; }
     [^*\n]+                        { return MULTILINE_COMMENT; }
     "*"                            { return MULTILINE_COMMENT; }
     {NEW_LINE}                     { return MULTILINE_COMMENT; }
 }
 
-<PREPROCESSOR_IGNORE> {
-  {BACKSLASH}                      { yybegin(PREPROCESSOR_IGNORE_BACKSLASH); return WHITE_SPACE; }
-  {NEW_LINE}                       { yybegin(YYINITIAL); return WHITE_SPACE; }
-  {WHITE_SPACE}                    { return WHITE_SPACE; }
-  {FLOATCONSTANT}                  { return FLOATCONSTANT; }
-  {DOUBLECONSTANT}                 { return DOUBLECONSTANT; }
-  {INTCONSTANT}                    { return INTCONSTANT; }
-  {BOOLCONSTANT}                   { return BOOLCONSTANT; }
-  {STRING_LITERAL}                 { return STRING_LITERAL; }
-  {PP_TEXT}                        { return PP_TEXT;}
-}
-
-<PREPROCESSOR_DEFINE> {
-  {BACKSLASH}                      { yybegin(PREPROCESSOR_IGNORE_BACKSLASH); return WHITE_SPACE; }
-  {NEW_LINE}                       { yybegin(YYINITIAL); inPp = false; return PP_END; }
+<MACRO_BODY_STATE> {
+  {BACKSLASH}                      { return WHITE_SPACE; }
+  {NEW_LINE}                       { yybegin(YYINITIAL); return PP_END; }
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {PP_TEXT_DEFINE}                 { return PP_DEFINE_BODY; }
 }
 
-<MACRO_DEFINITION> {
+<MACRO_IDENTIFIER_STATE> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
-  {OBJECT_MACRO}                   { yybegin(PREPROCESSOR_DEFINE); return IDENTIFIER; }
-  {FUNC_MACRO}                     { yybegin(PREPROCESSOR_DEFINE); return IDENTIFIER; }
-}
-
-<PREPROCESSOR_IGNORE_BACKSLASH> {
-  {NEW_LINE}                       { yybegin(PREPROCESSOR_IGNORE); return WHITE_SPACE; }
+  {MACRO_IDENTIFIER}               { yybegin(MACRO_BODY_STATE); return IDENTIFIER; }
 }
 
 <YYINITIAL> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
-  {NEW_LINE}                       {
-                                      if (inPp && !afterBackslash) {
-                                          afterBackslash = false;
-                                          inPp = false;
-                                          return PP_END;
-                                      }
-                                      afterBackslash = false;
-                                      return WHITE_SPACE;
-                                   }
-  {BACKSLASH}                      {
-                                      if (inPp) {
-                                          afterBackslash = true;
-                                      }
-                                      return WHITE_SPACE;
-                                   }
-  "/*"                             { yybegin(IN_MULITLINE_COMMENT);  return MULTILINE_COMMENT; }
+  {NEW_LINE}                       { return WHITE_SPACE; }
+  {BACKSLASH}                      { return WHITE_SPACE; }
+  "/*"                             { yybegin(MULITLINE_COMMENT_STATE);  return MULTILINE_COMMENT; }
   {LINE_COMMENT}                   { return LINE_COMMENT; }
-  {PP_VERSION}                     { inPp = true; return PP_VERSION;}
-  {PP_UNDEF}                       { inPp = true; return PP_UNDEF;}
-  {PP_IFDEF}                       { inPp = true; return PP_IFDEF;}
-  {PP_IFNDEF}                      { inPp = true; return PP_IFNDEF;}
-  {PP_ELSE}                        { inPp = true; return PP_ELSE;}
-  {PP_ENDIF}                       { inPp = true; return PP_ENDIF;}
-  {PP_INCLUDE}                     { inPp = true; return PP_INCLUDE;}
-  {PP_EXTENSION}                   { inPp = true; return PP_EXTENSION;}
-  {PP_LINE}                        { inPp = true; return PP_LINE;}
-  {MACRO_LINE}                     { inPp = true; return MACRO_LINE;}
-  {MACRO_FILE}                     { inPp = true; return MACRO_FILE;}
-  {MACRO_VERSION}                  { inPp = true; return MACRO_VERSION;}
-  {PP_IF}                          { inPp = true; return PP_IF;}
-  {PP_ELIF}                        { inPp = true; return PP_ELIF;}
-  {PP_DEFINE}                      { inPp = true; yybegin(MACRO_DEFINITION); return PP_DEFINE;}
-  {PP_ERROR}                       { yybegin(PREPROCESSOR_IGNORE); return PP_ERROR;}
-  {PP_PRAGMA}                      { yybegin(PREPROCESSOR_IGNORE); return PP_PRAGMA;}
-  "#"                              { inPp = true; return HASH; }
+  {PP_VERSION}                     { return PP_VERSION;}
+  {PP_UNDEF}                       { return PP_UNDEF;}
+  {PP_IFDEF}                       { return PP_IFDEF;}
+  {PP_IFNDEF}                      { return PP_IFNDEF;}
+  {PP_ELSE}                        { return PP_ELSE;}
+  {PP_ENDIF}                       { return PP_ENDIF;}
+  {PP_INCLUDE}                     { return PP_INCLUDE;}
+  {PP_EXTENSION}                   { return PP_EXTENSION;}
+  {PP_LINE}                        { return PP_LINE;}
+  {MACRO_LINE}                     { return MACRO_LINE;}
+  {MACRO_FILE}                     { return MACRO_FILE;}
+  {MACRO_VERSION}                  { return MACRO_VERSION;}
+  {PP_IF}                          { return PP_IF;}
+  {PP_ELIF}                        { return PP_ELIF;}
+  {PP_DEFINE}                      { yybegin(MACRO_IDENTIFIER_STATE); return PP_DEFINE;}
+  {PP_ERROR}                       { yybegin(MACRO_IDENTIFIER_STATE); return PP_ERROR;}
+  {PP_PRAGMA}                      { yybegin(MACRO_IDENTIFIER_STATE); return PP_PRAGMA;}
+  "#"                              { return HASH; }
 
 
   ";"                              { return SEMICOLON; }
@@ -585,8 +551,8 @@ OBJECT_MACRO=\w+
   "icoopmatNV"                     { return ICOOPMATNV; }
   "ucoopmatNV"                     { return UCOOPMATNV; }
 
-
   {FLOATCONSTANT}                  { return FLOATCONSTANT; }
+  {DOUBLECONSTANT}                 { return DOUBLECONSTANT; }
   {INTCONSTANT}                    { return INTCONSTANT; }
   {UINTCONSTANT}                   { return UINTCONSTANT; }
   {BOOLCONSTANT}                   { return BOOLCONSTANT; }

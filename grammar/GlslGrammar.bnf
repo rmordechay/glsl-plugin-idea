@@ -38,12 +38,6 @@
     mixin("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedDeclarationIdentifierWrapper"
     implements("pp_define_name")="glsl.plugin.psi.named.GlslNamedIdentifier"
     mixin("pp_define_name")="glsl.plugin.psi.named.GlslNamedPpDefineName"
-//    implements("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedIdentifier"
-//    mixin("pp_single_declaration")="glsl.plugin.psi.named.GlslNamedPpSingleDeclaration"
-//    implements("pp_define_function")="glsl.plugin.psi.named.GlslNamedIdentifier"
-//    mixin("pp_define_function")="glsl.plugin.psi.named.GlslNamedPpDefineFunction"
-//    implements("pp_define_param")="glsl.plugin.psi.named.GlslNamedIdentifier"
-//    mixin("pp_define_param")="glsl.plugin.psi.named.GlslNamedPpDefineParam"
 
 
     extends("expr_no_assignment|assignment_expr")=expr

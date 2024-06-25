@@ -17,6 +17,7 @@ import glsl.data.GlslTokenSets
 import glsl.plugin.code.highlighting.GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.BOOLEAN_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.KEYWORD_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.LINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MULTILINE_COMMENT_TEXT_ATTR
@@ -34,15 +35,15 @@ import glsl.plugin.language.GlslLexer
 class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
 
     /**
-    *
-    */
+     *
+     */
     override fun getHighlightingLexer(): Lexer {
         return GlslLexer()
     }
 
     /**
-    *
-    */
+     *
+     */
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
         return pack(mapTokenToTextAttr(tokenType))
     }
@@ -57,6 +58,7 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
             GlslTypes.STRING_LITERAL -> STRING_TEXT_ATTR
             GlslTypes.BOOLCONSTANT -> BOOLEAN_TEXT_ATTR
             GlslTypes.PP_DEFINE_NAME -> PP_DEFINE_NAME_ATTR
+            GlslTypes.MACRO_FUNC_PARAM -> FUNC_PARAM_TEXT_ATTR
             in GlslTokenSets.ALL_OPERATORS -> OPERATORS_TEXT_ATTR
             in GlslTokenSets.PREPROCESSORS -> PREPROCESSOR_TEXT_ATTR
             in GlslTokenSets.NUMBER_SET -> NUMBERS_TEXT_ATTR
@@ -97,8 +99,8 @@ object GlslTextAttributes {
  */
 class GlslSyntaxHighlightingFactory : SyntaxHighlighterFactory() {
     /**
-    *
-    */
+     *
+     */
     override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
         return GlslSyntaxHighlighter()
     }

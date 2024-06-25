@@ -1,6 +1,5 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.psi.interfaces.*
-import org.junit.Test
 
 class GlslReferenceTest : BasePlatformTestCase() {
 

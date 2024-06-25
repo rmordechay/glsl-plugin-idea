@@ -1,2 +1,3 @@
-#define PI aoaid akjsd
-int bla = aoaid akjsd;
+#define PI(a, b) a
+
+int bla = PI;

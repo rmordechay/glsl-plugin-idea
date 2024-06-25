@@ -3,7 +3,6 @@ package glsl.plugin.language
 import com.intellij.lexer.LexerBase
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
-import com.intellij.util.containers.addIfNotNull
 import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.*
@@ -44,12 +43,12 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenType(): IElementType? {
-        if (shouldExpandMacro()) {
-            val expansionToken = expansionTokens?.next()
-            if (expansionTokens?.hasNext() == false) {
+        if (expansionTokens != null) {
+            if (expansionTokens!!.hasNext()) {
+                return expansionTokens!!.next()
+            } else {
                 expansionTokens = null
             }
-            return expansionToken
         } else if (isMacroCall()) {
             expansionTokens = macrosDefines[lexer.yytext()]?.iterator()
             myTokenType = MACRO_CALL
@@ -134,13 +133,6 @@ class GlslLexer : LexerBase() {
             elements.add(nextToken)
         }
         return elements
-    }
-
-    /**
-     *
-     */
-    private fun shouldExpandMacro(): Boolean {
-        return expansionTokens != null && expansionTokens?.hasNext() == true
     }
 
     /**

@@ -4,7 +4,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.lang.Language
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
-import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
@@ -14,11 +13,8 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
-import glsl.GlslTypes
-import glsl.GlslTypes.Factory
-import glsl._GlslLexer
+import glsl.GlslTypes.*
 import glsl._GlslParser
-import glsl.plugin.language.GlslLanguage.Companion.MACRO_CALL
 
 
 /**
@@ -27,7 +23,6 @@ import glsl.plugin.language.GlslLanguage.Companion.MACRO_CALL
 class GlslLanguage : Language("Glsl") {
     companion object {
         val INSTANCE = GlslLanguage()
-        val MACRO_CALL: IElementType = GlslTokenType("MACRO_CALL")
     }
 }
 
@@ -40,11 +35,6 @@ class GlslTokenType(debugName: String) : IElementType(debugName, GlslLanguage.IN
  *
  */
 class GlslElementType(debugName: String) : IElementType(debugName, GlslLanguage.INSTANCE)
-
-/**
- *
- */
-class GlslLexerAdapter : FlexAdapter(_GlslLexer(null))
 
 
 
@@ -85,14 +75,14 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.create(GlslTypes.LINE_COMMENT, GlslTypes.MULTILINE_COMMENT)
+        return TokenSet.create(LINE_COMMENT, MULTILINE_COMMENT)
     }
 
     /**
      *
      */
     override fun getStringLiteralElements(): TokenSet {
-        return TokenSet.create(GlslTypes.STRING_LITERAL)
+        return TokenSet.create(STRING_LITERAL)
     }
 
     /**

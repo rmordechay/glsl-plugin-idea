@@ -60,7 +60,6 @@
         PP_UNDEF="#undef"
         PP_IF="#if"
         PP_IFDEF="#ifdef"
-        BACKSLASH="\\"
         PP_IFNDEF="#ifndef"
         PP_ELSE="#else"
         PP_ELIF="#elif"
@@ -87,7 +86,6 @@
         PLUS="+"
         STAR="*"
         SLASH="/"
-        BACKSLASH="\\"
         PERCENT="%"
         LEFT_ANGLE="<"
         RIGHT_ANGLE=">"
@@ -1189,8 +1187,10 @@ private pp_conditional
     |   HASH
     {   pin(".*")=1   }
 
+meta dummy_rule ::= MACRO_CALL
+
 pp_define_declaration
-    ::= PP_DEFINE pp_define_name PP_DEFINE_BODY
+    ::= PP_DEFINE pp_define_name MACRO_BODY_ROW*
     {   pin(".*")=1   }
 
 pp_define_name

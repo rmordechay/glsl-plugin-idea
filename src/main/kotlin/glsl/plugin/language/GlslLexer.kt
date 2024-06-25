@@ -3,11 +3,10 @@ package glsl.plugin.language
 import com.intellij.lexer.LexerBase
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
-import glsl.GlslTypes.IDENTIFIER
-import glsl.GlslTypes.PP_DEFINE
+import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.MACRO_BODY_STATE
-import glsl.plugin.language.GlslLanguage.Companion.MACRO_CALL
+
 
 const val RECURSION_LIMIT = 100_000
 

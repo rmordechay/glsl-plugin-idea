@@ -1,16 +1,21 @@
 package glsl.plugin.utils
 
 import com.intellij.lang.PsiBuilder
-import com.intellij.lang.parser.GeneratedParserUtilBase
-import com.intellij.psi.TokenType.WHITE_SPACE
 import glsl.GlslTypes
 import glsl.plugin.psi.GlslIdentifierImpl
 import glsl.psi.interfaces.*
+import utils.GeneratedParserUtil
 
 
-object GlslPsiUtils : GeneratedParserUtilBase() {
+object GlslPsiUtils : GeneratedParserUtil() {
 
 
+    /**
+     *  This method differentiates between a type and a variable. If we have 2
+     *  identifiers one after the other we know the first one is the type and the
+     *  second one is the variable. Without this check it's impossible to detect
+     *  when IDENTIFIER is a type and when is a variable.
+     */
     @JvmStatic
     fun primaryExprVariable(builder: PsiBuilder, level: Int): Boolean {
         val isCurrentIdentifier = builder.tokenType == GlslTypes.IDENTIFIER
@@ -22,13 +27,13 @@ object GlslPsiUtils : GeneratedParserUtilBase() {
         return false
     }
 
-    @JvmStatic
-    fun noSpace(builder: PsiBuilder, level: Int): Boolean {
-        var b = builder.lookAhead(0)
-        b = builder.lookAhead(1)
-        b = builder.lookAhead(2)
-        return builder.lookAhead(1) == WHITE_SPACE
-    }
+//    @JvmStatic
+//    fun noSpace(builder: PsiBuilder, level: Int): Boolean {
+//        var b = builder.lookAhead(0)
+//        b = builder.lookAhead(1)
+//        b = builder.lookAhead(2)
+//        return builder.lookAhead(1) == WHITE_SPACE
+//    }
 
     /**
      *

@@ -35,8 +35,20 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
-    override fun getState(): Int {
-        return lexer.yystate()
+    override fun advance() {
+        if (expansionTokens != null) return
+        if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
+            macroDefineId = lexer.yytext().toString()
+            macroDefineBody = ""
+            determineMacroType()
+        } else if (state == MACRO_BODY_STATE && macroDefineId != null && myTokenType != RIGHT_PAREN) {
+            macroDefineBody += lexer.yytext().toString()
+        } else if (myTokenType == PP_END && macroDefineId != null) {
+            macrosDefines[macroDefineId!!] = lexMacroBody()
+            macroDefineId = null
+            macroDefineBody = null
+        }
+        myTokenType = lexer.advance()
     }
 
     /**
@@ -59,6 +71,13 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
+    override fun getState(): Int {
+        return lexer.yystate()
+    }
+
+    /**
+     *
+     */
     override fun getTokenStart(): Int {
         return lexer.tokenStart
     }
@@ -67,31 +86,8 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenEnd(): Int {
-        if (expansionTokens == null) {
-            return lexer.tokenEnd
-        }
-        return lexer.tokenStart
-    }
-
-    /**
-     *
-     */
-    override fun advance() {
-        if (expansionTokens != null) return
-        if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
-            macroDefineId = lexer.yytext().toString()
-            macroDefineBody = ""
-            determineMacroType()
-        }
-        if (state == MACRO_BODY_STATE && macroDefineId != null && myTokenType != RIGHT_PAREN) {
-            macroDefineBody += lexer.yytext().toString()
-        }
-        if (myTokenType == PP_END) {
-            macrosDefines[macroDefineId!!] = lexMacroBody()
-            macroDefineId = null
-            macroDefineBody = null
-        }
-        myTokenType = lexer.advance()
+        if (expansionTokens != null) return lexer.tokenStart
+        return lexer.tokenEnd
     }
 
     /**

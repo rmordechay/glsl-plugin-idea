@@ -1,5 +1,6 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.psi.interfaces.*
+import org.junit.Test
 
 class GlslReferenceTest : BasePlatformTestCase() {
 
@@ -210,26 +211,25 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertEquals("a", (resolve as GlslSingleDeclaration).name)
     }
 
+    @Test
     fun testReferenceFile30() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile30.glsl")
         val resolve = reference?.resolve()
         assertInstanceOf(resolve, GlslPpDefineName::class.java)
         assertEquals("PI", (resolve as GlslPpDefineName).name)
     }
-//
-//    fun testReferenceFile31() {
-//        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile31.glsl")
-//        val resolve = reference?.resolve()
-//        assertInstanceOf(resolve, GlslPpDefineFunction::class.java)
-//        assertEquals("func", (resolve as GlslPpDefineFunction).name)
-//    }
-//
-//    fun testReferenceFile32() {
-//        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile32.glsl")
-//        val resolve = reference?.resolve()
-//        assertInstanceOf(resolve, GlslPpSingleDeclaration::class.java)
-//        assertEquals("VAR", (resolve as GlslPpSingleDeclaration).name)
-//    }
+
+    @Test
+    fun testReferenceFile31() {
+        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile31.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslPpDefineName::class.java)
+        assertEquals("PI", (resolve as GlslPpDefineName).name)
+    }
+
+    fun testReferenceFile32() {
+
+    }
 
     fun testFindUsageFile1() {
         val testFindUsages = myFixture.testFindUsages("FindUsageFile1.glsl")

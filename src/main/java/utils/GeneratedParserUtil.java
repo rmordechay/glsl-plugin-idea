@@ -62,33 +62,9 @@ public class GeneratedParserUtil {
     public static final Parser TRUE_CONDITION = (builder, level) -> true;
 
     public interface Hook<T> {
-
         @Contract("_,null,_->null")
         PsiBuilder.Marker run(PsiBuilder builder, PsiBuilder.Marker marker, T param);
 
-    }
-
-    public static final Hook<WhitespacesAndCommentsBinder> LEFT_BINDER =
-            (builder, marker, param) -> {
-                if (marker != null) marker.setCustomEdgeTokenBinders(param, null);
-                return marker;
-            };
-
-    public static final Hook<WhitespacesAndCommentsBinder> RIGHT_BINDER =
-            (builder, marker, param) -> {
-                if (marker != null) marker.setCustomEdgeTokenBinders(null, param);
-                return marker;
-            };
-
-    public static final Hook<WhitespacesAndCommentsBinder[]> WS_BINDERS =
-            (builder, marker, param) -> {
-                if (marker != null) marker.setCustomEdgeTokenBinders(param[0], param[1]);
-                return marker;
-            };
-
-
-    public static boolean eof(PsiBuilder builder, int level) {
-        return builder.eof();
     }
 
     public static int current_position_(PsiBuilder builder) {
@@ -125,11 +101,6 @@ public class GeneratedParserUtil {
         return TokenSet.create(tokenTypes);
     }
 
-    public static boolean leftMarkerIs(PsiBuilder builder, IElementType type) {
-        LighterASTNode marker = builder.getLatestDoneMarker();
-        return marker != null && marker.getTokenType() == type;
-    }
-
     private static boolean consumeTokens(PsiBuilder builder, boolean smart, int pin, IElementType... tokens) {
         ErrorState state = ErrorState.get(builder);
         if (state.completionState != null && state.predicateSign) {
@@ -158,16 +129,8 @@ public class GeneratedParserUtil {
         return consumeTokens(builder, false, pin, token);
     }
 
-    public static boolean consumeTokensSmart(PsiBuilder builder, int pin, IElementType... token) {
-        return consumeTokens(builder, true, pin, token);
-    }
-
     public static boolean parseTokens(PsiBuilder builder, int pin, IElementType... tokens) {
         return parseTokens(builder, false, pin, tokens);
-    }
-
-    public static boolean parseTokensSmart(PsiBuilder builder, int pin, IElementType... tokens) {
-        return parseTokens(builder, true, pin, tokens);
     }
 
     public static boolean parseTokens(PsiBuilder builder, boolean smart, int pin, IElementType... tokens) {
@@ -182,11 +145,6 @@ public class GeneratedParserUtil {
     }
 
     public static boolean consumeTokenSmart(PsiBuilder builder, IElementType token) {
-        addCompletionVariantSmart(builder, token);
-        return consumeTokenFast(builder, token);
-    }
-
-    public static boolean consumeTokenSmart(PsiBuilder builder, String token) {
         addCompletionVariantSmart(builder, token);
         return consumeTokenFast(builder, token);
     }
@@ -223,32 +181,6 @@ public class GeneratedParserUtil {
         return false;
     }
 
-    public static boolean consumeTokenFast(PsiBuilder builder, String text) {
-        int count = nextTokenIsFast(builder, text, ErrorState.get(builder).caseSensitive);
-        if (count > 0) {
-            while (count-- > 0) builder.advanceLexer();
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean consumeToken(PsiBuilder builder, TokenSet tokens) {
-        addVariantSmart(builder, tokens.getTypes(), true);
-        return consumeTokenFast(builder, tokens);
-    }
-
-    public static boolean consumeTokenSmart(PsiBuilder builder, TokenSet tokens) {
-        addCompletionVariantSmart(builder, tokens.getTypes());
-        return consumeTokenFast(builder, tokens);
-    }
-
-    public static boolean consumeTokenFast(PsiBuilder builder, TokenSet tokens) {
-        if (nextTokenIsFast(builder, tokens)) {
-            builder.advanceLexer();
-            return true;
-        }
-        return false;
-    }
 
     public static boolean nextTokenIsFast(PsiBuilder builder, IElementType token) {
         return builder.getTokenType() == token;
@@ -257,18 +189,6 @@ public class GeneratedParserUtil {
     public static boolean nextTokenIsFast(PsiBuilder builder, IElementType... tokens) {
         IElementType tokenType = builder.getTokenType();
         return ArrayUtil.indexOfIdentity(tokens, tokenType) != -1;
-    }
-
-    public static boolean nextTokenIsFast(PsiBuilder builder, TokenSet tokens) {
-        return tokens.contains(builder.getTokenType());
-    }
-
-    public static boolean nextTokenIsSmart(PsiBuilder builder, IElementType token) {
-        return nextTokenIsFast(builder, token) || ErrorState.get(builder).completionState != null;
-    }
-
-    public static boolean nextTokenIsSmart(PsiBuilder builder, IElementType... tokens) {
-        return nextTokenIsFast(builder, tokens) || ErrorState.get(builder).completionState != null;
     }
 
     public static boolean nextTokenIs(PsiBuilder builder, String frameName, IElementType... tokens) {
@@ -295,15 +215,6 @@ public class GeneratedParserUtil {
     public static boolean nextTokenIs(PsiBuilder builder, IElementType token) {
         if (!addVariantSmart(builder, token, false)) return true;
         return nextTokenIsFast(builder, token);
-    }
-
-    public static boolean nextTokenIs(PsiBuilder builder, String tokenText) {
-        if (!addVariantSmart(builder, tokenText, false)) return true;
-        return nextTokenIsFast(builder, tokenText, ErrorState.get(builder).caseSensitive) > 0;
-    }
-
-    public static boolean nextTokenIsFast(PsiBuilder builder, String tokenText) {
-        return nextTokenIsFast(builder, tokenText, ErrorState.get(builder).caseSensitive) > 0;
     }
 
     public static int nextTokenIsFast(PsiBuilder builder, String tokenText, boolean caseSensitive) {
@@ -493,17 +404,6 @@ public class GeneratedParserUtil {
         run_hooks_impl_(builder, state, pinned || result ? elementType : null);
         state.FRAMES.recycle(frame);
         state.level--;
-    }
-
-    public static <T> void register_hook_(PsiBuilder builder, Hook<T> hook, T param) {
-        ErrorState state = ErrorState.get(builder);
-        state.hooks = Hooks.concat(hook, param, state.level, state.hooks);
-    }
-
-    @SafeVarargs
-    public static <T> void register_hook_(PsiBuilder builder, Hook<T[]> hook, T... param) {
-        ErrorState state = ErrorState.get(builder);
-        state.hooks = Hooks.concat(hook, param, state.level, state.hooks);
     }
 
     private static void run_hooks_impl_(PsiBuilder builder, ErrorState state, @Nullable IElementType elementType) {
@@ -856,17 +756,9 @@ public class GeneratedParserUtil {
             parser = parser_;
         }
 
-        public @NotNull Lexer getLexer() {
-            return ((PsiBuilderImpl) myDelegate).getLexer();
-        }
-
         public @NotNull List<PsiBuilderImpl.ProductionMarker> getProductions() {
             return ((PsiBuilderImpl) myDelegate).getProductions();
         }
-    }
-
-    public static PsiBuilder adapt_builder_(IElementType root, PsiBuilder builder, PsiParser parser) {
-        return adapt_builder_(root, builder, parser, null);
     }
 
     public static PsiBuilder adapt_builder_(IElementType root, PsiBuilder builder, PsiParser parser, TokenSet[] extendsSets) {
@@ -936,7 +828,7 @@ public class GeneratedParserUtil {
             Arrays.sort(strings);
             count = 0;
             for (String s : strings) {
-                if (s.length() == 0) continue;
+                if (s.isEmpty()) continue;
                 if (count++ > 0) {
                     if (count > MAX_VARIANTS_TO_DISPLAY) {
                         sb.append(" ").append(AnalysisBundle.message("parsing.error.and.ellipsis"));
@@ -954,11 +846,6 @@ public class GeneratedParserUtil {
                 sb.replace(idx, idx + 1, " " + AnalysisBundle.message("parsing.error.or"));
             }
             return sb.toString();
-        }
-
-        public void clearVariants(Frame frame) {
-            clearVariants(true, frame == null ? 0 : frame.variantCount);
-            if (frame != null) frame.lastVariantAt = -1;
         }
 
         void clearVariants(boolean expected, int start) {

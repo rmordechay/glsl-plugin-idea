@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.impl.CamelHumpMatcher;
 import com.intellij.lang.*;
 import com.intellij.lang.impl.PsiBuilderAdapter;
 import com.intellij.lang.impl.PsiBuilderImpl;
-import com.intellij.lexer.Lexer;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Key;
@@ -101,6 +100,21 @@ public class GeneratedParserUtil {
         return TokenSet.create(tokenTypes);
     }
 
+    public static boolean parseTokens(PsiBuilder builder, int pin, IElementType... tokens) {
+        return parseTokens(builder, false, pin, tokens);
+    }
+
+    public static boolean parseTokens(PsiBuilder builder, boolean smart, int pin, IElementType... tokens) {
+        PsiBuilder.Marker marker = builder.mark();
+        boolean result = consumeTokens(builder, smart, pin, tokens);
+        if (!result) {
+            marker.rollbackTo();
+        } else {
+            marker.drop();
+        }
+        return result;
+    }
+
     private static boolean consumeTokens(PsiBuilder builder, boolean smart, int pin, IElementType... tokens) {
         ErrorState state = ErrorState.get(builder);
         if (state.completionState != null && state.predicateSign) {
@@ -129,19 +143,24 @@ public class GeneratedParserUtil {
         return consumeTokens(builder, false, pin, token);
     }
 
-    public static boolean parseTokens(PsiBuilder builder, int pin, IElementType... tokens) {
-        return parseTokens(builder, false, pin, tokens);
+    public static boolean consumeToken(PsiBuilder builder, String text, boolean caseSensitive) {
+        addVariantSmart(builder, text, true);
+        int count = nextTokenIsFast(builder, text, caseSensitive);
+        if (count > 0) {
+            while (count-- > 0) builder.advanceLexer();
+            return true;
+        }
+        return false;
     }
 
-    public static boolean parseTokens(PsiBuilder builder, boolean smart, int pin, IElementType... tokens) {
-        PsiBuilder.Marker marker = builder.mark();
-        boolean result = consumeTokens(builder, smart, pin, tokens);
-        if (!result) {
-            marker.rollbackTo();
-        } else {
-            marker.drop();
-        }
-        return result;
+    @Contract(mutates = "param1")
+    public static boolean consumeToken(PsiBuilder builder, IElementType token) {
+        addVariantSmart(builder, token, true);
+        return consumeTokenFast(builder, token);
+    }
+
+    public static boolean consumeToken(PsiBuilder builder, String text) {
+        return consumeToken(builder, text, ErrorState.get(builder).caseSensitive);
     }
 
     public static boolean consumeTokenSmart(PsiBuilder builder, IElementType token) {
@@ -149,33 +168,9 @@ public class GeneratedParserUtil {
         return consumeTokenFast(builder, token);
     }
 
-    @Contract(mutates = "param1")
-    public static boolean consumeToken(PsiBuilder builder, IElementType token) {
-        addVariantSmart(builder, token, true);
-        if (nextTokenIsFast(builder, token)) {
-            builder.advanceLexer();
-            return true;
-        }
-        return false;
-    }
-
     public static boolean consumeTokenFast(PsiBuilder builder, IElementType token) {
         if (nextTokenIsFast(builder, token)) {
             builder.advanceLexer();
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean consumeToken(PsiBuilder builder, String text) {
-        return consumeToken(builder, text, ErrorState.get(builder).caseSensitive);
-    }
-
-    public static boolean consumeToken(PsiBuilder builder, String text, boolean caseSensitive) {
-        addVariantSmart(builder, text, true);
-        int count = nextTokenIsFast(builder, text, caseSensitive);
-        if (count > 0) {
-            while (count-- > 0) builder.advanceLexer();
             return true;
         }
         return false;
@@ -291,7 +286,7 @@ public class GeneratedParserUtil {
         add = add && length > 1 && !(text.charAt(0) == '<' && text.charAt(length - 1) == '>') &&
                 !(text.charAt(0) == '\'' && text.charAt(length - 1) == '\'' && length < 5);
         if (add) {
-            completionState.addItem(builder, text);
+            completionState.addItem(text);
         }
     }
 
@@ -705,7 +700,7 @@ public class GeneratedParserUtil {
             return convertItem(o);
         }
 
-        public void addItem(@NotNull PsiBuilder builder, @NotNull String text) {
+        public void addItem(@NotNull String text) {
             items.add(text);
         }
 

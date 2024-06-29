@@ -9,6 +9,11 @@ __LINE__ 10
 
 #include < shaders / func.frag >
 
+#define f(a, b) a + \
+b
+
+int dummy = f  (  1,  2   ) ;
+
 // One line comment
     struct  DummyStruct     {
                 // One line comment

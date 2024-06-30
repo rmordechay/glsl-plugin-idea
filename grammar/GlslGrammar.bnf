@@ -853,7 +853,7 @@ private recover_func_header_with_params ::= !(RIGHT_PAREN)
 
 func_header_with_params
     ::= parameter_declaration (COMMA parameter_declaration)*
-    {   recoverWhile=recover_func_header_with_params    }
+//    {   recoverWhile=recover_func_header_with_params    }
 
 private parameter_declaration
     ::= type_qualifier? (parameter_declarator | parameter_type_specifier)
@@ -881,7 +881,7 @@ private recover_function_call_header_with_parameters ::= !(RIGHT_PAREN)
 
 private function_call_header_with_parameters
     ::= function_call_header expr_no_assignment (COMMA expr_no_assignment)*
-    {   recoverWhile=recover_function_call_header_with_parameters   }
+//    {   recoverWhile=recover_function_call_header_with_parameters   }
 
 private function_call_header
     ::= function_identifier LEFT_PAREN

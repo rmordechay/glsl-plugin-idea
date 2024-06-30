@@ -57,8 +57,9 @@ class GlslLexer : LexerBase() {
     override fun getTokenType(): IElementType? {
         if (expansionTokens != null) {
             if (expansionTokens!!.hasNext()) {
-                return expansionTokens!!.next()
-            } else {
+                myTokenType = expansionTokens!!.next()
+            }
+            if (!expansionTokens!!.hasNext()) {
                 expansionTokens = null
             }
         } else if (isMacroCall()) {

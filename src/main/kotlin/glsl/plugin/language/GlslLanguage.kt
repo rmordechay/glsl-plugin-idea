@@ -1,9 +1,6 @@
 package glsl.plugin.language
 
-import com.intellij.lang.ASTNode
-import com.intellij.lang.Language
-import com.intellij.lang.ParserDefinition
-import com.intellij.lang.PsiParser
+import com.intellij.lang.*
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
@@ -15,6 +12,7 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import glsl.GlslTypes.*
 import glsl._GlslParser
+import utils.GeneratedParserUtil.*
 
 
 /**
@@ -36,6 +34,56 @@ class GlslTokenType(debugName: String) : IElementType(debugName, GlslLanguage.IN
  */
 class GlslElementType(debugName: String) : IElementType(debugName, GlslLanguage.INSTANCE)
 
+/**
+ *
+ */
+class GlslPsiBuilder(builder: PsiBuilder, state: ErrorState, parser: _GlslParser) : Builder(builder, state, parser) {
+    override fun advanceLexer() {
+        super.advanceLexer()
+        macroCallWrapper()
+    }
+
+    override fun getTokenType(): IElementType? {
+        return super.getTokenType()
+    }
+
+    override fun eof(): Boolean {
+        return super.eof()
+    }
+
+    override fun getCurrentOffset(): Int {
+        return super.getCurrentOffset()
+    }
+
+    override fun getTokenText(): String? {
+        return super.getTokenText()
+    }
+
+    /**
+     *
+     */
+    private fun macroCallWrapper(): Boolean {
+        if (!nextTokenIsFast(this, MACRO_CALL)) return false
+        val marker = enter_section_(this)
+        super.advanceLexer()
+        exit_section_(this, marker, MACRO_CALL_WRAPPER, true)
+        return true
+    }
+}
+
+/**
+ *
+ */
+class GlslParserAdapter : _GlslParser() {
+    override fun parseLight(root: IElementType, originalBuilder: PsiBuilder) {
+        val state = ErrorState()
+        ErrorState.initState(state, originalBuilder, root.language, EXTENDS_SETS_)
+        val builder = GlslPsiBuilder(originalBuilder, state, this)
+        val marker = enter_section_(builder, 0, _COLLAPSE_, null)
+        val result = parse_root_(root, builder)
+        exit_section_(builder, 0, marker, root, result, true, TRUE_CONDITION)
+    }
+}
 
 
 /**
@@ -54,7 +102,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun createParser(project: Project?): PsiParser {
-        return _GlslParser()
+        return GlslParserAdapter()
     }
 
     /**
@@ -68,7 +116,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.create(WHITE_SPACE, MACRO_CALL)
+        return TokenSet.create(WHITE_SPACE)
     }
 
     /**
@@ -98,5 +146,4 @@ class GlslParserDefinition : ParserDefinition {
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return GlslFile(viewProvider)
     }
-
 }

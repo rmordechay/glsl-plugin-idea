@@ -34,7 +34,10 @@ class GlslFormattingModelBuilder : FormattingModelBuilder {
         )
         return FormattingModelProvider.createFormattingModelForPsiFile(formattingContext.containingFile, glslBlock, codeStyleSettings)
     }
-    
+
+    /**
+     *
+     */
     private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
         val commonSettings = settings.getCommonSettings(GlslLanguage.INSTANCE.id)
         commonSettings.SPACE_BEFORE_COLON = false

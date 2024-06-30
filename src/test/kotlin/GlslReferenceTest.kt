@@ -211,12 +211,13 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertEquals("a", (resolve as GlslSingleDeclaration).name)
     }
 
-//    fun testReferenceFile30() {
-//        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile30.glsl")
-//        val resolve = reference?.resolve()
-//        assertInstanceOf(resolve, GlslPpDefineName::class.java)
-//        assertEquals("PI", (resolve as GlslPpDefineName).name)
-//    }
+    @Test
+    fun testReferenceFile30() {
+        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile30.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslPpDefineName::class.java)
+        assertEquals("PI", (resolve as GlslPpDefineName).name)
+    }
 //
 //    fun testReferenceFile31() {
 //        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile31.glsl")

@@ -91,14 +91,15 @@ MACRO_TOKEN=[^\s]+
   {BACKSLASH}                      { return WHITE_SPACE; }
   {NEW_LINE}                       { yybegin(YYINITIAL); return PP_END; }
   {WHITE_SPACE}                    { return WHITE_SPACE; }
+  {LINE_COMMENT}                   { return LINE_COMMENT; }
 
+  {IDENTIFIER}                     { return IDENTIFIER; }
   {FLOATCONSTANT}                  { return FLOATCONSTANT; }
   {DOUBLECONSTANT}                 { return DOUBLECONSTANT; }
   {INTCONSTANT}                    { return INTCONSTANT; }
   {UINTCONSTANT}                   { return UINTCONSTANT; }
   {BOOLCONSTANT}                   { return BOOLCONSTANT; }
   {STRING_LITERAL}                 { return STRING_LITERAL; }
-  {IDENTIFIER}                     { return IDENTIFIER; }
 
   {MACRO_TOKEN}                    { return MACRO_TOKEN; }
 }

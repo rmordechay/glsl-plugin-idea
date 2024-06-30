@@ -58,13 +58,13 @@ class GlslLexer : LexerBase() {
         if (expansionTokens != null) {
             if (expansionTokens!!.hasNext()) {
                 myTokenType = expansionTokens!!.next()
-            }
-            if (!expansionTokens!!.hasNext()) {
+            } else {
                 expansionTokens = null
+                myTokenType = MACRO_CALL
             }
         } else if (isMacroCall()) {
             expansionTokens = macrosDefines[lexer.yytext()]?.iterator()
-            myTokenType = MACRO_CALL
+            myTokenType = expansionTokens!!.next()
         }
         return myTokenType
     }
@@ -87,7 +87,9 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenEnd(): Int {
-        if (expansionTokens != null) return lexer.tokenStart
+        if (expansionTokens != null) {
+            return lexer.tokenStart
+        }
         return lexer.tokenEnd
     }
 

@@ -37,43 +37,6 @@ class GlslElementType(debugName: String) : IElementType(debugName, GlslLanguage.
 /**
  *
  */
-class GlslPsiBuilder(builder: PsiBuilder, state: ErrorState, parser: _GlslParser) : Builder(builder, state, parser) {
-    override fun advanceLexer() {
-        super.advanceLexer()
-        macroCallWrapper()
-    }
-
-    override fun getTokenType(): IElementType? {
-        return super.getTokenType()
-    }
-
-    override fun eof(): Boolean {
-        return super.eof()
-    }
-
-    override fun getCurrentOffset(): Int {
-        return super.getCurrentOffset()
-    }
-
-    override fun getTokenText(): String? {
-        return super.getTokenText()
-    }
-
-    /**
-     *
-     */
-    private fun macroCallWrapper(): Boolean {
-        if (!nextTokenIsFast(this, MACRO_CALL)) return false
-        val marker = enter_section_(this)
-        super.advanceLexer()
-        exit_section_(this, marker, MACRO_CALL_WRAPPER, true)
-        return true
-    }
-}
-
-/**
- *
- */
 class GlslParserAdapter : _GlslParser() {
     override fun parseLight(root: IElementType, originalBuilder: PsiBuilder) {
         val state = ErrorState()

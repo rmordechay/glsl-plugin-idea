@@ -4,12 +4,10 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.PP_DEFINE_NAME_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_OBJECT_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.VARIABLE_TEXT_ATTR
 import glsl.plugin.psi.GlslType
 import glsl.plugin.utils.GlslUtils
@@ -378,7 +376,7 @@ abstract class GlslNamedPpDefineName(node: ASTNode) : GlslNamedIdentifierImpl(no
      *
      */
     override fun getHighlightTextAttr(): TextAttributesKey {
-        return PP_DEFINE_NAME_ATTR
+        return MACRO_OBJECT_NAME_ATTR
     }
 }
 

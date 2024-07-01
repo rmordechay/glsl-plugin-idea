@@ -2,7 +2,9 @@
 layout (<v>location</v> = 0) in vec3 <v>aPos</v>;
 out vec3 <v>v_uv</v>;
 
-<pp>#define</pp> a 10
+<pp>#define</pp> <mf>add</mf>(x, y) x + y
+<pp>#define</pp> <mo>PI</mo> 3.14
+
 uniform mat4 <v>model</v>;
 uniform mat4 <v>view</v>;
 uniform mat4 <v>projection</v>;

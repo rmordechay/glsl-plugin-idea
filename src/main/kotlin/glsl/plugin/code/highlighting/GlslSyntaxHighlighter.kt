@@ -23,7 +23,7 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.LINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MULTILINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.NUMBERS_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.PP_DEFINE_NAME_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_OBJECT_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
 import glsl.plugin.language.GlslLexer
@@ -57,7 +57,7 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
             GlslTypes.MULTILINE_COMMENT -> MULTILINE_COMMENT_TEXT_ATTR
             GlslTypes.STRING_LITERAL -> STRING_TEXT_ATTR
             GlslTypes.BOOLCONSTANT -> BOOLEAN_TEXT_ATTR
-            GlslTypes.PP_DEFINE_NAME -> PP_DEFINE_NAME_ATTR
+            GlslTypes.PP_DEFINE_NAME -> MACRO_OBJECT_NAME_ATTR
             GlslTypes.MACRO_FUNC_PARAM -> FUNC_PARAM_TEXT_ATTR
             in GlslTokenSets.ALL_OPERATORS -> OPERATORS_TEXT_ATTR
             in GlslTokenSets.PREPROCESSORS -> PREPROCESSOR_TEXT_ATTR
@@ -82,7 +82,8 @@ object GlslTextAttributes {
     val BOOLEAN_TEXT_ATTR = createTextAttributesKey("GLSL_BOOLEAN", KEYWORD)
     val OPERATORS_TEXT_ATTR = createTextAttributesKey("GLSL_OPERATORS", OPERATION_SIGN)
     val PREPROCESSOR_TEXT_ATTR = createTextAttributesKey("GLSL_PREPROCESSOR", KEYWORD)
-    val PP_DEFINE_NAME_ATTR = createTextAttributesKey("GLSL_PP_DEFINE_NAME", KEYWORD)
+    val MACRO_OBJECT_NAME_ATTR = createTextAttributesKey("GLSL_MACRO_OBJECT_NAME", KEYWORD)
+    val MACRO_FUNC_NAME_ATTR = createTextAttributesKey("GLSL_MACRO_FUNC_NAME", KEYWORD)
     val STRUCT_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_STRUCT_IDENTIFIER", CLASS_NAME)
     val NUMBERS_TEXT_ATTR = createTextAttributesKey("GLSL_NUMBER", NUMBER)
     val KEYWORD_TEXT_ATTR = createTextAttributesKey("GLSL_KEYWORD", KEYWORD)

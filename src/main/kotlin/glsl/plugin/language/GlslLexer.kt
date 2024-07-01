@@ -140,7 +140,11 @@ class GlslLexer : LexerBase() {
      */
     private fun lookAhead(): IElementType {
         helperLexer.reset(bufferSequence, tokenEnd, bufferEnd, state)
-        return helperLexer.advance()
+        while (true) {
+            val nextToken = helperLexer.advance()
+            if (nextToken == WHITE_SPACE) continue
+            return nextToken
+        }
     }
 
     /**

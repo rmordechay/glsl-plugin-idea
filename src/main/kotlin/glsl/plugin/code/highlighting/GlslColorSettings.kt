@@ -22,7 +22,9 @@ private val DESCRIPTORS = arrayOf(
     AttributesDescriptor("Function // Function call and declaration", GlslTextAttributes.FUNC_TEXT_ATTR),
     AttributesDescriptor("Function // Function parameter", GlslTextAttributes.FUNC_PARAM_TEXT_ATTR),
     AttributesDescriptor("Builtin type", GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR),
-    AttributesDescriptor("Preprocessor name", GlslTextAttributes.PREPROCESSOR_TEXT_ATTR),
+    AttributesDescriptor("Preprocessor directive", GlslTextAttributes.PREPROCESSOR_TEXT_ATTR),
+    AttributesDescriptor("Macro // Object name", GlslTextAttributes.MACRO_OBJECT_NAME_ATTR),
+    AttributesDescriptor("Macro // Function name", GlslTextAttributes.MACRO_FUNC_NAME_ATTR),
     AttributesDescriptor("Operators", GlslTextAttributes.OPERATORS_TEXT_ATTR),
     AttributesDescriptor("Bad character", GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR),
 )
@@ -35,6 +37,8 @@ private val ADDITIONAL_DESCRIPTORS = mutableMapOf(
     "si" to GlslTextAttributes.STRUCT_TYPE_TEXT_ATTR,
     "udt" to GlslTextAttributes.USER_DEFINED_TYPE_TEXT_ATTR,
     "pp" to GlslTextAttributes.PREPROCESSOR_TEXT_ATTR,
+    "mo" to GlslTextAttributes.MACRO_OBJECT_NAME_ATTR,
+    "mf" to GlslTextAttributes.MACRO_FUNC_NAME_ATTR,
 )
 
 

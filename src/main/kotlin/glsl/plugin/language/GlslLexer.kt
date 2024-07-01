@@ -15,11 +15,12 @@ class GlslLexer : LexerBase() {
     private var myEndOffset = 0
     private var myTokenType: IElementType? = null
     private val lexer = _GlslLexer(null)
+    private val helperLexer = _GlslLexer(null)
     private val macrosDefines = hashMapOf<String, List<IElementType>>()
     private var macroDefineId: String? = null
     private var macroDefineBody: String? = null
+    private var inMacroFuncCall = false
     private var expansionTokens: Iterator<IElementType>? = null
-    private val helperLexer = _GlslLexer(null)
 
 
     /**
@@ -41,7 +42,7 @@ class GlslLexer : LexerBase() {
             macroDefineId = lexer.yytext().toString()
             macroDefineBody = ""
             determineMacroType()
-        } else if (state == MACRO_BODY_STATE && macroDefineId != null && myTokenType != RIGHT_PAREN) {
+        } else if (state == MACRO_BODY_STATE && macroDefineId != null) {
             macroDefineBody += lexer.yytext().toString()
         } else if (myTokenType == PP_END && macroDefineId != null) {
             macrosDefines[macroDefineId!!] = lexMacroBody()
@@ -62,7 +63,7 @@ class GlslLexer : LexerBase() {
                 expansionTokens = null
                 myTokenType = MACRO_CALL
             }
-        } else if (isMacroCall()) {
+        } else if (shouldExpendMacro()) {
             expansionTokens = macrosDefines[lexer.yytext()]?.iterator()
             myTokenType = expansionTokens!!.next()
         }
@@ -113,7 +114,7 @@ class GlslLexer : LexerBase() {
     private fun determineMacroType() {
         helperLexer.reset(bufferSequence, tokenEnd, bufferEnd, 0)
         if (helperLexer.advance() == LEFT_PAREN) {
-            lexer.yybegin(MACRO_FUNC_PARAM_STATE)
+            lexer.yybegin(MACRO_FUNC_DEFINITION_STATE)
         } else {
             lexer.yybegin(MACRO_BODY_STATE)
         }
@@ -137,7 +138,24 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
-    private fun isMacroCall(): Boolean {
-        return state != MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines
+    private fun lookAhead(): IElementType {
+        helperLexer.reset(bufferSequence, tokenEnd, bufferEnd, state)
+        return helperLexer.advance()
+    }
+
+    /**
+     *
+     */
+    private fun shouldExpendMacro(): Boolean {
+        val isMacroName = state != MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines
+        if (isMacroName) {
+            inMacroFuncCall = lookAhead() == LEFT_PAREN
+            return !inMacroFuncCall
+        } else if (inMacroFuncCall) {
+            if (myTokenType == RIGHT_PAREN) {
+                inMacroFuncCall = false
+            }
+        }
+        return false
     }
 }

@@ -1,2 +1,2 @@
-#define PI 3.14
-int n = PI;
+#define f(a) a + 2
+int b = f(2);

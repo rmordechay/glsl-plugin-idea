@@ -1191,14 +1191,14 @@ meta macro_call_wrapper
     ::= MACRO_CALL
 
 macro_body_token
-    ::= MACRO_TOKEN
+    ::= INTCONSTANT
+    |   FLOATCONSTANT
     |   DOUBLECONSTANT
-    |   INTCONSTANT
     |   UINTCONSTANT
     |   BOOLCONSTANT
     |   STRING_LITERAL
-    |   IDENTIFIER
-    |   FLOATCONSTANT
+    |   variable_identifier
+    |   MACRO_TOKEN
 
 pp_define_declaration
     ::= PP_DEFINE pp_define_name macro_body_token*

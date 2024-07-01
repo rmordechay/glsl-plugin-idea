@@ -24,7 +24,7 @@ import static glsl.GlslTypes.*;
 %state MULITLINE_COMMENT_STATE
 %state MACRO_BODY_STATE
 %state MACRO_IDENTIFIER_STATE
-%state MACRO_FUNC_PARAM_STATE
+%state MACRO_FUNC_DEFINITION_STATE
 %state PP_STATE
 
 WHITE_SPACE=[ \t\f]+
@@ -104,7 +104,7 @@ MACRO_TOKEN=[^\s]+
   {MACRO_TOKEN}                    { return MACRO_TOKEN; }
 }
 
-<MACRO_FUNC_PARAM_STATE> {
+<MACRO_FUNC_DEFINITION_STATE> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {IDENTIFIER}                     { return MACRO_FUNC_PARAM; }
   "("                              { return LEFT_PAREN; }

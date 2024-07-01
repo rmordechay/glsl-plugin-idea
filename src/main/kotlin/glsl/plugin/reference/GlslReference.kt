@@ -308,7 +308,8 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private fun lookupInPpStatement(ppStatement: GlslPpStatement?) {
         if (ppStatement == null) return
         lookupInPpIncludeDeclaration(ppStatement.ppIncludeDeclaration)
-        findReferenceInElement(ppStatement.ppDefineDeclaration?.ppDefineName)
+        findReferenceInElement(ppStatement.ppDefineDeclaration?.ppDefineName?.ppMacroFuncName)
+        findReferenceInElement(ppStatement.ppDefineDeclaration?.ppDefineName?.ppMacroFuncName)
 //        findReferenceInElement(ppStatement.ppSingleDeclaration)
 //        findReferenceInElement(ppStatement.ppDefineFunction)
     }

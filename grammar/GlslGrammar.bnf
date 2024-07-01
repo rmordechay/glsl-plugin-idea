@@ -36,8 +36,10 @@
     mixin("struct_declarator")="glsl.plugin.psi.named.GlslNamedStructDeclarator"
     implements("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedIdentifier"
     mixin("declaration_identifier_wrapper")="glsl.plugin.psi.named.GlslNamedDeclarationIdentifierWrapper"
-    implements("pp_define_name")="glsl.plugin.psi.named.GlslNamedIdentifier"
-    mixin("pp_define_name")="glsl.plugin.psi.named.GlslNamedPpDefineName"
+    implements("pp_macro_object_name")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("pp_macro_object_name")="glsl.plugin.psi.named.GlslNamedPpObjectDefineName"
+    implements("pp_macro_func_name")="glsl.plugin.psi.named.GlslNamedIdentifier"
+    mixin("pp_macro_func_name")="glsl.plugin.psi.named.GlslNamedPpFuncDefineName"
 
 
     extends("expr_no_assignment|assignment_expr")=expr
@@ -1205,8 +1207,14 @@ pp_define_declaration
     {   pin(".*")=1   }
 
 pp_define_name
-    ::= variable_identifier <<noSpace>> LEFT_PAREN MACRO_FUNC_PARAM (COMMA MACRO_FUNC_PARAM)* RIGHT_PAREN
-    |   variable_identifier
+    ::= pp_macro_func_name <<noSpace>> LEFT_PAREN MACRO_FUNC_PARAM (COMMA MACRO_FUNC_PARAM)* RIGHT_PAREN
+    |   pp_macro_object_name
+
+pp_macro_object_name
+    ::= variable_identifier
+
+pp_macro_func_name
+    ::= variable_identifier
 
 pp_literal
     ::= PP_PRAGMA

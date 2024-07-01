@@ -20,6 +20,7 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.KEYWORD_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.LINE_COMMENT_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_FUNC_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MULTILINE_COMMENT_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.NUMBERS_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
@@ -57,7 +58,8 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
             GlslTypes.MULTILINE_COMMENT -> MULTILINE_COMMENT_TEXT_ATTR
             GlslTypes.STRING_LITERAL -> STRING_TEXT_ATTR
             GlslTypes.BOOLCONSTANT -> BOOLEAN_TEXT_ATTR
-            GlslTypes.PP_DEFINE_NAME -> MACRO_OBJECT_NAME_ATTR
+            GlslTypes.PP_MACRO_OBJECT_NAME -> MACRO_OBJECT_NAME_ATTR
+            GlslTypes.PP_MACRO_FUNC_NAME -> MACRO_FUNC_NAME_ATTR
             GlslTypes.MACRO_FUNC_PARAM -> FUNC_PARAM_TEXT_ATTR
             in GlslTokenSets.ALL_OPERATORS -> OPERATORS_TEXT_ATTR
             in GlslTokenSets.PREPROCESSORS -> PREPROCESSOR_TEXT_ATTR

@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.util.parentOfType
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_TEXT_ATTR
+import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_FUNC_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_OBJECT_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.VARIABLE_TEXT_ATTR
 import glsl.plugin.psi.GlslType
@@ -343,12 +344,12 @@ abstract class GlslNamedParameterDeclarator(node: ASTNode) : GlslNamedIdentifier
 /**
  *
  */
-abstract class GlslNamedPpDefineName(node: ASTNode) : GlslNamedIdentifierImpl(node) {
+abstract class GlslNamedPpObjectDefineName(node: ASTNode) : GlslNamedIdentifierImpl(node) {
     /**
      *
      */
-    override fun getSelf(): GlslPpDefineName {
-        return this as GlslPpDefineName
+    override fun getSelf(): GlslPpMacroObjectName {
+        return this as GlslPpMacroObjectName
     }
 
     /**
@@ -377,6 +378,46 @@ abstract class GlslNamedPpDefineName(node: ASTNode) : GlslNamedIdentifierImpl(no
      */
     override fun getHighlightTextAttr(): TextAttributesKey {
         return MACRO_OBJECT_NAME_ATTR
+    }
+}
+
+/**
+ *
+ */
+abstract class GlslNamedPpFuncDefineName(node: ASTNode) : GlslNamedIdentifierImpl(node) {
+    /**
+     *
+     */
+    override fun getSelf(): GlslPpMacroFuncName {
+        return this as GlslPpMacroFuncName
+    }
+
+    /**
+     *
+     */
+    override fun getNameIdentifier(): GlslVariableIdentifier? {
+        return getSelf().variableIdentifier
+    }
+
+    /**
+     *
+     */
+    override fun getAssociatedType(): GlslType? {
+        return null
+    }
+
+    /**
+     *
+     */
+    override fun getLookupIcon(): Icon {
+        return AllIcons.Nodes.Function
+    }
+
+    /**
+     *
+     */
+    override fun getHighlightTextAttr(): TextAttributesKey {
+        return MACRO_FUNC_NAME_ATTR
     }
 }
 

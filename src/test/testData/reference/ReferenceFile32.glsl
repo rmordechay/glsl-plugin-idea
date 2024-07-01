@@ -1,2 +1,5 @@
 #define VAR 10
-int a = <caret>VAR + 10;
+
+void main() {
+    int a = <caret>VAR + 10;
+}

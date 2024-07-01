@@ -1205,7 +1205,7 @@ pp_define_declaration
     {   pin(".*")=1   }
 
 pp_define_name
-    ::= variable_identifier LEFT_PAREN MACRO_FUNC_PARAM (COMMA MACRO_FUNC_PARAM)* RIGHT_PAREN
+    ::= variable_identifier <<noSpace>> LEFT_PAREN MACRO_FUNC_PARAM (COMMA MACRO_FUNC_PARAM)* RIGHT_PAREN
     |   variable_identifier
 
 pp_literal

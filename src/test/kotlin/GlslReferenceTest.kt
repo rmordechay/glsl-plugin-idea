@@ -225,9 +225,15 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertEquals("f", (resolve as GlslPpDefineName).name)
     }
 
-    @Test
     fun testReferenceFile32() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile32.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslPpDefineName::class.java)
+        assertEquals("VAR", (resolve as GlslPpDefineName).name)
+    }
+
+    fun testReferenceFile33() {
+        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile33.glsl")
         val resolve = reference?.resolve()
         assertInstanceOf(resolve, GlslPpDefineName::class.java)
         assertEquals("VAR", (resolve as GlslPpDefineName).name)
@@ -245,5 +251,10 @@ class GlslReferenceTest : BasePlatformTestCase() {
     fun testFindUsageFile3() {
         val testFindUsages = myFixture.testFindUsages("FindUsageFile3.glsl")
         assertEquals(3, testFindUsages.size)
+    }
+
+    fun testFindUsageFile4() {
+        val testFindUsages = myFixture.testFindUsages("FindUsageFile4.glsl")
+        assertEquals(2, testFindUsages.size)
     }
 }

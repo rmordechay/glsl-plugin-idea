@@ -12,6 +12,7 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import glsl.GlslTypes.*
 import glsl._GlslParser
+import glsl.plugin.language.GlslLanguage.Companion.DUMMY_ELEMENT
 import utils.GeneratedParserUtil.*
 
 
@@ -21,6 +22,8 @@ import utils.GeneratedParserUtil.*
 class GlslLanguage : Language("Glsl") {
     companion object {
         val INSTANCE = GlslLanguage()
+        val MACRO_CALL = GlslTokenType("MACRO_CALL")
+        val DUMMY_ELEMENT = GlslTokenType("DUMMY_ELEMENT")
     }
 }
 
@@ -79,7 +82,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun getWhitespaceTokens(): TokenSet {
-        return TokenSet.create(WHITE_SPACE)
+        return TokenSet.create(WHITE_SPACE, DUMMY_ELEMENT)
     }
 
     /**

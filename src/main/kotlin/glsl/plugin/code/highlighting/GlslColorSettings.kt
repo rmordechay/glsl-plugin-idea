@@ -28,6 +28,7 @@ private val DESCRIPTORS = arrayOf(
     AttributesDescriptor("Operators", GlslTextAttributes.OPERATORS_TEXT_ATTR),
     AttributesDescriptor("Bad character", GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR),
 )
+
 private val ADDITIONAL_DESCRIPTORS = mutableMapOf(
     "fn" to GlslTextAttributes.FUNC_TEXT_ATTR,
     "fp" to GlslTextAttributes.FUNC_PARAM_TEXT_ATTR,

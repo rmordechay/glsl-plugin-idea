@@ -3,11 +3,14 @@ package glsl.plugin.code.highlighting
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors
+import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
-import com.intellij.openapi.fileTypes.SyntaxHighlighter
-import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
-import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
+import com.intellij.openapi.editor.ex.util.LexerEditorHighlighter
+import com.intellij.openapi.editor.highlighter.EditorHighlighter
+import com.intellij.openapi.editor.highlighter.HighlighterClient
+import com.intellij.openapi.editor.highlighter.HighlighterIterator
+import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.TokenType
@@ -84,8 +87,8 @@ object GlslTextAttributes {
     val BOOLEAN_TEXT_ATTR = createTextAttributesKey("GLSL_BOOLEAN", KEYWORD)
     val OPERATORS_TEXT_ATTR = createTextAttributesKey("GLSL_OPERATORS", OPERATION_SIGN)
     val PREPROCESSOR_TEXT_ATTR = createTextAttributesKey("GLSL_PREPROCESSOR", KEYWORD)
-    val MACRO_OBJECT_NAME_ATTR = createTextAttributesKey("GLSL_MACRO_OBJECT_NAME", KEYWORD)
-    val MACRO_FUNC_NAME_ATTR = createTextAttributesKey("GLSL_MACRO_FUNC_NAME", KEYWORD)
+    val MACRO_OBJECT_NAME_ATTR = createTextAttributesKey("GLSL_MACRO_OBJECT_NAME", IDENTIFIER)
+    val MACRO_FUNC_NAME_ATTR = createTextAttributesKey("GLSL_MACRO_FUNC_NAME", FUNCTION_CALL)
     val STRUCT_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_STRUCT_IDENTIFIER", CLASS_NAME)
     val NUMBERS_TEXT_ATTR = createTextAttributesKey("GLSL_NUMBER", NUMBER)
     val KEYWORD_TEXT_ATTR = createTextAttributesKey("GLSL_KEYWORD", KEYWORD)

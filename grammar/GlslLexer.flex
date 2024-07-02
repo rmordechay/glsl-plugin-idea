@@ -26,6 +26,7 @@ import static glsl.GlslTypes.*;
 %state MACRO_IDENTIFIER_STATE
 %state MACRO_FUNC_DEFINITION_STATE
 %state PP_STATE
+%state DUMMY_STATE
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
@@ -108,7 +109,7 @@ MACRO_TOKEN=[^\s]+
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {IDENTIFIER}                     { return MACRO_FUNC_PARAM; }
   "("                              { return LEFT_PAREN; }
-  ")"                              { yybegin(MACRO_BODY_STATE); return RIGHT_PAREN; }
+  ")"                              { return RIGHT_PAREN; }
   ","                              { return COMMA; }
 }
 

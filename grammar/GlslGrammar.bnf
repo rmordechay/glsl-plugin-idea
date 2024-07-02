@@ -1189,9 +1189,6 @@ private pp_conditional
     |   HASH
     {   pin(".*")=1   }
 
-meta macro_call_wrapper
-    ::= MACRO_CALL
-
 macro_body_token
     ::= INTCONSTANT
     |   FLOATCONSTANT

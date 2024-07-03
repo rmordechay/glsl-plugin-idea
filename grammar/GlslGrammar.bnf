@@ -556,6 +556,9 @@ function_definition
 
 variable_identifier
     ::= IDENTIFIER
+    |   MACRO_IDENTIFIER
+    |   MACRO_CALL_OBJECT
+    |   MACRO_CALL_FUNCTION
 
 private init_declarator_list
     ::= single_declaration (COMMA init_declarator_variable array_specifier? (EQUAL initializer)?)*
@@ -1204,7 +1207,7 @@ pp_define_declaration
     {   pin(".*")=1   }
 
 pp_define_name
-    ::= pp_macro_func_name <<noSpace>> LEFT_PAREN MACRO_FUNC_PARAM (COMMA MACRO_FUNC_PARAM)* RIGHT_PAREN
+    ::= pp_macro_func_name <<noSpace>> LEFT_PAREN MACRO_FUNC_PARAM (COMMA MACRO_FUNC_PARAM)* RIGHT_PAREN_MACRO
     |   pp_macro_object_name
 
 pp_macro_object_name

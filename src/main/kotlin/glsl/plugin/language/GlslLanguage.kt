@@ -22,7 +22,6 @@ import utils.GeneratedParserUtil.*
 class GlslLanguage : Language("Glsl") {
     companion object {
         val INSTANCE = GlslLanguage()
-        val MACRO_CALL = GlslTokenType("MACRO_CALL")
         val DUMMY_ELEMENT = GlslTokenType("DUMMY_ELEMENT")
     }
 }

@@ -85,7 +85,7 @@ MACRO_TOKEN=[^\s]+
 
 <MACRO_IDENTIFIER_STATE> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
-  {IDENTIFIER}                     { return IDENTIFIER; }
+  {IDENTIFIER}                     { return MACRO_IDENTIFIER; }
 }
 
 <MACRO_BODY_STATE> {
@@ -109,7 +109,7 @@ MACRO_TOKEN=[^\s]+
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {IDENTIFIER}                     { return MACRO_FUNC_PARAM; }
   "("                              { return LEFT_PAREN; }
-  ")"                              { return RIGHT_PAREN; }
+  ")"                              { yybegin(MACRO_BODY_STATE); return RIGHT_PAREN_MACRO; }
   ","                              { return COMMA; }
 }
 

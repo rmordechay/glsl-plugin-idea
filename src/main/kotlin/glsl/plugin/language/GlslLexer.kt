@@ -6,7 +6,12 @@ import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.*
-import glsl.plugin.language.GlslLanguage.Companion.MACRO_CALL
+
+
+class MacroDefine(val macroDefineName: String, val macroDefineType: IElementType) {
+    val elements = mutableListOf<IElementType>()
+    var macroDefineBody: String = ""
+}
 
 /**
  *
@@ -19,14 +24,10 @@ class GlslLexer : LexerBase() {
     private val lexer = _GlslLexer(null)
     private val helperLexer = _GlslLexer(null)
 
-    private var macroDefineId: String? = null
-    private var macroDefineBody: String? = null
-    private val macrosDefines = hashMapOf<String, List<IElementType>>()
-
-    private var macroCallName: CharSequence? = ""
-    private var inMacroFuncCall = false
+    private var macroDefine: MacroDefine? = null
+    private val macrosDefines = hashMapOf<String, MacroDefine>()
     private var macroExpansionTokens: Iterator<IElementType>? = null
-
+    private var prevMacroExpansionToken: IElementType? = null
 
     /**
      *
@@ -43,21 +44,17 @@ class GlslLexer : LexerBase() {
      */
     override fun advance() {
         if (macroExpansionTokens != null) return
-        if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
-            macroDefineId = lexer.yytext().toString()
-            macroDefineBody = ""
-            determineMacroType()
-        } else if (state == MACRO_BODY_STATE) {
-            macroDefineBody += lexer.yytext().toString()
-        } else if (myTokenType == PP_END && macroDefineId != null) {
-            macrosDefines[macroDefineId!!] = lexMacroBody()
-            macroDefineId = null
-            macroDefineBody = null
+        if (myTokenType == MACRO_IDENTIFIER) {
+            setMacroDefine()
+        } else if (myTokenType == PP_END && macroDefine != null) {
+            macroDefine?.elements?.clear()
+            macroDefine?.elements?.addAll(lexMacroBody())
+            macrosDefines[macroDefine?.macroDefineName!!] = macroDefine!!
+            macroDefine = null
+        } else if (state == MACRO_BODY_STATE && myTokenType != RIGHT_PAREN_MACRO) {
+            macroDefine?.macroDefineBody += lexer.yytext().toString()
         }
         prevState = state
-        if (state == MACRO_FUNC_DEFINITION_STATE && myTokenType == RIGHT_PAREN) {
-            lexer.yybegin(MACRO_BODY_STATE)
-        }
         myTokenType = lexer.advance()
     }
 
@@ -65,23 +62,20 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenType(): IElementType? {
-        if (macroExpansionTokens != null) {
+        if (myTokenType == IDENTIFIER && lexer.yytext().toString() in macrosDefines) {
+            val macroName = lexer.yytext().toString()
+            macroExpansionTokens = macrosDefines[macroName]?.elements?.iterator()
+            myTokenType = macrosDefines[macroName]?.macroDefineType
+            return macroExpansionTokens!!.next()
+        } else if (macroExpansionTokens != null) {
             if (macroExpansionTokens!!.hasNext()) {
                 val nextToken = macroExpansionTokens!!.next()
-                if (state == DUMMY_STATE) {
-                    lexer.yybegin(prevState)
-                } else if (nextToken == myTokenType) {
-                    lexer.yybegin(DUMMY_STATE)
-                }
-                myTokenType = nextToken
+                maybeSwitchStateToDummy(nextToken)
+                prevMacroExpansionToken = nextToken
+                return nextToken
             } else {
                 macroExpansionTokens = null
-                macroCallName = null
-                myTokenType = MACRO_CALL
             }
-        } else if (shouldStartExpendingMacro()) {
-            macroExpansionTokens = macrosDefines[macroCallName]?.iterator()
-//            myTokenType = expansionTokens!!.next()
         }
         return myTokenType
     }
@@ -127,21 +121,24 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
-    private fun determineMacroType() {
+    private fun setMacroDefine() {
+        val macroDefineType: IElementType
         if (lookAhead() == LEFT_PAREN) {
+            macroDefineType = MACRO_CALL_FUNCTION
             lexer.yybegin(MACRO_FUNC_DEFINITION_STATE)
         } else {
+            macroDefineType = MACRO_CALL_OBJECT
             lexer.yybegin(MACRO_BODY_STATE)
         }
+        macroDefine = MacroDefine(lexer.yytext().toString(), macroDefineType)
     }
-
 
     /**
      *
      */
     private fun lexMacroBody(): List<IElementType> {
         val elements = arrayListOf<IElementType>()
-        helperLexer.reset(macroDefineBody, 0, macroDefineBody?.length ?: 0, 0)
+        helperLexer.reset(macroDefine?.macroDefineBody, 0, macroDefine?.macroDefineBody?.length ?: 0, 0)
         while (true) {
             val nextToken = helperLexer.advance() ?: break
             if (nextToken == WHITE_SPACE) continue
@@ -149,6 +146,7 @@ class GlslLexer : LexerBase() {
         }
         return elements
     }
+
 
     /**
      *
@@ -165,19 +163,11 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
-    private fun shouldStartExpendingMacro(): Boolean {
-        val tokenText = lexer.yytext()
-        val isMacroName = state != MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER && tokenText in macrosDefines
-        if (isMacroName) {
-            macroCallName = tokenText
-            inMacroFuncCall = lookAhead() == LEFT_PAREN
-            return !inMacroFuncCall
-        } else if (inMacroFuncCall) {
-            if (myTokenType == RIGHT_PAREN) {
-                inMacroFuncCall = false
-                return true
-            }
+    private fun maybeSwitchStateToDummy(nextToken: IElementType) {
+        if (state == DUMMY_STATE) {
+            lexer.yybegin(prevState)
+        } else if (nextToken == prevMacroExpansionToken) {
+            lexer.yybegin(DUMMY_STATE)
         }
-        return false
     }
 }

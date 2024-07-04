@@ -27,8 +27,6 @@ class GlslLexer : LexerBase() {
     private var macroDefine: MacroDefine? = null
     private val macrosDefines = hashMapOf<String, MacroDefine>()
     private var macroExpansionTokens: Iterator<IElementType>? = null
-    private var prevMacroExpansionToken: IElementType? = null
-    private var inMacroCallFunc = false
 
     /**
      *
@@ -66,12 +64,10 @@ class GlslLexer : LexerBase() {
         if (myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines) {
             macroExpansionTokens = macrosDefines[lexer.yytext()]?.elements?.iterator()
             myTokenType = macrosDefines[lexer.yytext()]?.macroDefineType
-            return macroExpansionTokens!!.next()
+            if (macroExpansionTokens!!.hasNext()) return macroExpansionTokens!!.next()
         } else if (macroExpansionTokens != null) {
             if (macroExpansionTokens!!.hasNext()) {
-                val nextToken = macroExpansionTokens!!.next()
-                maybeSwitchStateToDummy(nextToken)
-                return nextToken
+                return macroExpansionTokens!!.next()
             } else {
                 macroExpansionTokens = null
             }
@@ -152,22 +148,6 @@ class GlslLexer : LexerBase() {
      */
     private fun lookAhead(): IElementType? {
         helperLexer.reset(bufferSequence, tokenEnd, bufferEnd, YYINITIAL)
-        while (true) {
-            val nextToken = helperLexer.advance()
-            if (nextToken == WHITE_SPACE) continue
-            return nextToken
-        }
-    }
-
-    /**
-     *
-     */
-    private fun maybeSwitchStateToDummy(nextToken: IElementType) {
-        if (state == DUMMY_STATE) {
-            lexer.yybegin(prevState)
-        } else if (nextToken == prevMacroExpansionToken) {
-            lexer.yybegin(DUMMY_STATE)
-        }
-        prevMacroExpansionToken = nextToken
+        return helperLexer.advance()
     }
 }

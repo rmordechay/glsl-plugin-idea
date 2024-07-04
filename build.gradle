@@ -1,3 +1,5 @@
+import org.jetbrains.grammarkit.tasks.GenerateLexerTask
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version "1.9.23"
     id 'org.jetbrains.intellij' version "1.17.3"
@@ -44,21 +46,24 @@ generateParser {
     pathToPsiRoot = 'psi'
 }
 
-generateLexer {
-    dependsOn(generateParser)
-    source = 'grammar/GlslLexer.flex'
-    targetDir = 'src/main/gen/glsl'
-    targetClass = '_GlslLexer.java'
-    targetOutputDir = file('src/main/gen')
-    sourceFile = file('grammar/GlslLexer.flex')
+def generateLexer(String fileName) {
+    return generateLexer {
+        source = 'grammar/' + fileName
+        targetDir = 'src/main/gen/glsl'
+        targetOutputDir = file('src/main/gen')
+        sourceFile = file('grammar/' + fileName)
+    }
 }
 
 tasks.register('generateGrammarClean') {
     doFirst {
         delete 'src/main/gen'
     }
-    finalizedBy(generateParser)
-    finalizedBy(generateLexer)
+    doLast {
+        generateParser.exec()
+        generateLexer("GlslHighlightLexer.flex").exec()
+        generateLexer("GlslLexer.flex").exec()
+    }
 }
 
 patchPluginXml {

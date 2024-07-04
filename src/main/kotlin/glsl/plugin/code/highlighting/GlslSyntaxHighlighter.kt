@@ -1,21 +1,18 @@
 package glsl.plugin.code.highlighting
 
+import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors
-import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
-import com.intellij.openapi.editor.ex.util.LexerEditorHighlighter
-import com.intellij.openapi.editor.highlighter.EditorHighlighter
-import com.intellij.openapi.editor.highlighter.HighlighterClient
-import com.intellij.openapi.editor.highlighter.HighlighterIterator
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
+import glsl._GlslHighlightLexer
 import glsl.data.GlslTokenSets
 import glsl.plugin.code.highlighting.GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.BOOLEAN_TEXT_ATTR
@@ -30,8 +27,11 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_OBJECT_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
-import glsl.plugin.language.GlslLexer
 
+/**
+ *
+ */
+class GlslLexerAdapter : FlexAdapter(_GlslHighlightLexer(null))
 
 /**
  *
@@ -42,7 +42,7 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
      *
      */
     override fun getHighlightingLexer(): Lexer {
-        return GlslLexer()
+        return GlslLexerAdapter()
     }
 
     /**

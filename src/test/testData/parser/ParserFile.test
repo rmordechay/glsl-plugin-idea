@@ -13,6 +13,10 @@
 #define A(x) x + 1
 #define A(x, y, z) x * y * z
 
+#extension GL_ARB_gpu_shader_fp64 : enable
+#pragma optionNV(fastmath off)
+#pragma optionNV(fastprecision off)
+
 #define BINDLESS_SET 1
 #define BINDLESS_TEX_BINDING 0
 #define BINDLESS_TEX_COUNT 1024

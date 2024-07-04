@@ -32,13 +32,13 @@ class GlslPsiBuilder(builder: PsiBuilder, state: GeneratedParserUtil.ErrorState,
             super.advanceLexer()
             GeneratedParserUtil.exit_section_(this, marker, VARIABLE_IDENTIFIER, true)
 
-            var parenCount = 1
+            var nestingLevel = 1
             super.advanceLexer() // Opening paren
             marker = GeneratedParserUtil.enter_section_(this)
-            while (parenCount > 0) {
+            while (nestingLevel > 0) {
                 super.advanceLexer()
-                if (tokenType == LEFT_PAREN) parenCount++
-                else if (tokenType == RIGHT_PAREN) parenCount--
+                if (tokenType == LEFT_PAREN) nestingLevel++
+                else if (tokenType == RIGHT_PAREN) nestingLevel--
                 else if (tokenType == null) break
             }
             super.advanceLexer()

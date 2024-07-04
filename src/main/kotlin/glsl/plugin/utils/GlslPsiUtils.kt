@@ -3,6 +3,7 @@ package glsl.plugin.utils
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.TokenType.WHITE_SPACE
 import glsl.GlslTypes
+import glsl.GlslTypes.PP_END
 import glsl.plugin.psi.GlslIdentifierImpl
 import glsl.psi.interfaces.*
 import utils.GeneratedParserUtil
@@ -28,9 +29,25 @@ object GlslPsiUtils : GeneratedParserUtil() {
         return false
     }
 
+    /**
+     *
+     */
     @JvmStatic
     fun noSpace(builder: PsiBuilder, level: Int): Boolean {
         return builder.lookAhead(0) != WHITE_SPACE
+    }
+
+    /**
+     *
+     */
+    @JvmStatic
+    fun macroBodyToken(builder: PsiBuilder, level: Int): Boolean {
+        val isPpEndOrNull = builder.tokenType == PP_END || builder.tokenType == null
+        if (isPpEndOrNull) {
+            return false
+        }
+        builder.advanceLexer()
+        return true
     }
 
     /**

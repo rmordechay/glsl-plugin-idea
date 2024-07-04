@@ -22,12 +22,12 @@ class GlslPsiBuilder(builder: PsiBuilder, state: GeneratedParserUtil.ErrorState,
      *
      */
     private fun macroCallWrapper(): Boolean {
-        if (tokenType == MACRO_CALL_OBJECT) {
+        if (tokenType == MACRO_OBJECT) {
             val marker = GeneratedParserUtil.enter_section_(this)
             super.advanceLexer()
             GeneratedParserUtil.exit_section_(this, marker, VARIABLE_IDENTIFIER, true)
             return true
-        } else if (tokenType == MACRO_CALL_FUNCTION) {
+        } else if (tokenType == MACRO_FUNCTION) {
             var marker = GeneratedParserUtil.enter_section_(this)
             super.advanceLexer()
             GeneratedParserUtil.exit_section_(this, marker, VARIABLE_IDENTIFIER, true)

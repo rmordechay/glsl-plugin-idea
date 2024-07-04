@@ -556,9 +556,8 @@ function_definition
 
 variable_identifier
     ::= IDENTIFIER
-    |   MACRO_IDENTIFIER
-    |   MACRO_CALL_OBJECT
-    |   MACRO_CALL_FUNCTION
+    |   MACRO_OBJECT
+    |   MACRO_FUNCTION
 
 private init_declarator_list
     ::= single_declaration (COMMA init_declarator_variable array_specifier? (EQUAL initializer)?)*
@@ -1192,18 +1191,8 @@ private pp_conditional
     |   HASH
     {   pin(".*")=1   }
 
-macro_body_token
-    ::= INTCONSTANT
-    |   FLOATCONSTANT
-    |   DOUBLECONSTANT
-    |   UINTCONSTANT
-    |   BOOLCONSTANT
-    |   STRING_LITERAL
-    |   variable_identifier
-    |   MACRO_TOKEN
-
 pp_define_declaration
-    ::= PP_DEFINE pp_define_name macro_body_token*
+    ::= PP_DEFINE pp_define_name <<macroBodyToken>>*
     {   pin(".*")=1   }
 
 pp_define_name

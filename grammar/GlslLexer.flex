@@ -22,11 +22,9 @@ import static glsl.GlslTypes.*;
 %type IElementType
 %unicode
 %state MULITLINE_COMMENT_STATE
-%state MACRO_BODY_STATE
 %state MACRO_IDENTIFIER_STATE
 %state MACRO_FUNC_DEFINITION_STATE
 %state PP_STATE
-%state DUMMY_STATE
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
@@ -71,7 +69,6 @@ PP_LINE="#line"
 MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
 MACRO_VERSION="__VERSION__"
-MACRO_TOKEN=[^\s]+
 
 
 %%
@@ -85,31 +82,14 @@ MACRO_TOKEN=[^\s]+
 
 <MACRO_IDENTIFIER_STATE> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
-  {IDENTIFIER}                     { return MACRO_IDENTIFIER; }
-}
-
-<MACRO_BODY_STATE> {
-  {BACKSLASH}                      { return WHITE_SPACE; }
-  {NEW_LINE}                       { yybegin(YYINITIAL); return PP_END; }
-  {WHITE_SPACE}                    { return WHITE_SPACE; }
-  {LINE_COMMENT}                   { return LINE_COMMENT; }
-
   {IDENTIFIER}                     { return IDENTIFIER; }
-  {FLOATCONSTANT}                  { return FLOATCONSTANT; }
-  {DOUBLECONSTANT}                 { return DOUBLECONSTANT; }
-  {INTCONSTANT}                    { return INTCONSTANT; }
-  {UINTCONSTANT}                   { return UINTCONSTANT; }
-  {BOOLCONSTANT}                   { return BOOLCONSTANT; }
-  {STRING_LITERAL}                 { return STRING_LITERAL; }
-
-  {MACRO_TOKEN}                    { return MACRO_TOKEN; }
 }
 
 <MACRO_FUNC_DEFINITION_STATE> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {IDENTIFIER}                     { return MACRO_FUNC_PARAM; }
   "("                              { return LEFT_PAREN; }
-  ")"                              { yybegin(MACRO_BODY_STATE); return RIGHT_PAREN_MACRO; }
+  ")"                              { yybegin(PP_STATE); return RIGHT_PAREN_MACRO; }
   ","                              { return COMMA; }
 }
 
@@ -139,9 +119,9 @@ MACRO_TOKEN=[^\s]+
   {MACRO_VERSION}                  { yybegin(PP_STATE); return MACRO_VERSION;}
   {PP_IF}                          { yybegin(PP_STATE); return PP_IF;}
   {PP_ELIF}                        { yybegin(PP_STATE); return PP_ELIF;}
+  {PP_ERROR}                       { yybegin(PP_STATE); return PP_ERROR;}
+  {PP_PRAGMA}                      { yybegin(PP_STATE); return PP_PRAGMA;}
   {PP_DEFINE}                      { yybegin(MACRO_IDENTIFIER_STATE); return PP_DEFINE;}
-  {PP_ERROR}                       { yybegin(MACRO_IDENTIFIER_STATE); return PP_ERROR;}
-  {PP_PRAGMA}                      { yybegin(MACRO_IDENTIFIER_STATE); return PP_PRAGMA;}
   "#"                              { return HASH; }
 
 

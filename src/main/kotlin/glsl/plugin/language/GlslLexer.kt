@@ -28,6 +28,7 @@ class GlslLexer : LexerBase() {
     private val macrosDefines = hashMapOf<String, MacroDefine>()
     private var macroExpansionTokens: Iterator<IElementType>? = null
     private var prevMacroExpansionToken: IElementType? = null
+    private var inMacroCallFunc = false
 
     /**
      *
@@ -52,7 +53,7 @@ class GlslLexer : LexerBase() {
             macrosDefines[macroDefine?.macroDefineName!!] = macroDefine!!
             macroDefine = null
         } else if (state == MACRO_BODY_STATE && myTokenType != RIGHT_PAREN_MACRO) {
-            macroDefine?.macroDefineBody += lexer.yytext().toString()
+            macroDefine?.macroDefineBody += lexer.yytext()
         }
         prevState = state
         myTokenType = lexer.advance()
@@ -62,16 +63,14 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenType(): IElementType? {
-        if (myTokenType == IDENTIFIER && lexer.yytext().toString() in macrosDefines) {
-            val macroName = lexer.yytext().toString()
-            macroExpansionTokens = macrosDefines[macroName]?.elements?.iterator()
-            myTokenType = macrosDefines[macroName]?.macroDefineType
+        if (myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines) {
+            macroExpansionTokens = macrosDefines[lexer.yytext()]?.elements?.iterator()
+            myTokenType = macrosDefines[lexer.yytext()]?.macroDefineType
             return macroExpansionTokens!!.next()
         } else if (macroExpansionTokens != null) {
             if (macroExpansionTokens!!.hasNext()) {
                 val nextToken = macroExpansionTokens!!.next()
                 maybeSwitchStateToDummy(nextToken)
-                prevMacroExpansionToken = nextToken
                 return nextToken
             } else {
                 macroExpansionTokens = null
@@ -169,5 +168,6 @@ class GlslLexer : LexerBase() {
         } else if (nextToken == prevMacroExpansionToken) {
             lexer.yybegin(DUMMY_STATE)
         }
+        prevMacroExpansionToken = nextToken
     }
 }

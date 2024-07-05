@@ -1,2 +1,3 @@
-#define DO_LOOP(sname) dsfa
-#define DO_LOOP(name) a
+#define f(a) a
+int x = 1;
+int a = f(int);

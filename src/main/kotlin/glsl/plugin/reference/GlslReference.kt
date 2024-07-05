@@ -55,6 +55,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      *
      */
     override fun resolve(): GlslNamedElement? {
+        if (!shouldResolve()) return null
         val project = GlslUtils.getProject()
         val resolveCache = ResolveCache.getInstance(project)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
@@ -80,7 +81,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      */
     private fun doResolve(filterType: FilterType = EQUALS) {
         try {
-            if (!shouldResolve()) return
             resolvedReferences.clear()
             currentFilterType = filterType
             lookupInPostfixStructMember()

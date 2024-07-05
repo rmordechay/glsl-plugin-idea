@@ -57,7 +57,7 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenType(): IElementType? {
-        if (state != MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines) {
+        if (isMacroCall()) {
             macroExpansionTokens = macrosDefines[lexer.yytext()]?.elements?.iterator()
             myTokenType = macrosDefines[lexer.yytext()]?.macroDefineType
             if (macroExpansionTokens!!.hasNext()) {
@@ -109,6 +109,13 @@ class GlslLexer : LexerBase() {
      */
     override fun getBufferEnd(): Int {
         return myBufferEnd
+    }
+
+    /**
+     *
+     */
+    private fun isMacroCall(): Boolean {
+        return state != MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER && lexer.yytext() in macrosDefines
     }
 
     /**

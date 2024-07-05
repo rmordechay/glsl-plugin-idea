@@ -1,3 +1,4 @@
-#define f(a) a
-int x = 1;
-int a = f(int);
+#define A 2
+#define B A
+#define C B
+int a = C;

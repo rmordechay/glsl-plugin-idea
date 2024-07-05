@@ -9,9 +9,15 @@
 #include <shader>
 #include "file.h"
 
-#define A 10
-#define A(x) x + 1
-#define A(x, y, z) x * y * z
+#define X 2
+#define Y X
+#define Z Y
+int a = Z;
+
+
+#define A1 10
+#define A2(x) x + 1
+#define A3(x, y, z) x * y * z
 
 #extension GL_ARB_gpu_shader_fp64 : enable
 #pragma optionNV(fastmath off)
@@ -39,10 +45,10 @@ BINDLESS_TEX(sampler2D, u_global_textures)
 */
 
 
-#define A a + 2 \
+#define A4 a + 2 \
 + 2 / 2
 
-#define A(a, b) a + \
+#define A5(a, b) a + \
 1 + 1 + (x + 2) - (x * 2) \
 + 1 + (x + 2) - (x * 2) \
 + 1 + (x + 2) - (x * 2)
@@ -56,7 +62,7 @@ BINDLESS_TEX(sampler2D, u_global_textures)
 
 int a;
 
-#define A 10
+#define A6 10
 
 /*
 * Multi line comment
@@ -65,7 +71,7 @@ int a;
 * Multi line comment
 */
 
-#define A 10 + a
+#define A7 10 + a
 #if 10 == 10
 #elif 20 > 19
 #endif
@@ -74,7 +80,7 @@ int a;
 #define BB 10
 #endif
 
-#define A 10
+#define A8 10
 #if VARIABLE > 5
 int a = 2;
 #elif VARIABLE < 2

@@ -5,6 +5,8 @@ import glsl.GlslTypes.*
 import glsl._GlslParser
 import glsl._GlslParser.*
 import utils.GeneratedParserUtil
+import utils.GeneratedParserUtil.enter_section_
+import utils.GeneratedParserUtil.exit_section_
 
 /**
  *
@@ -26,19 +28,19 @@ class GlslPsiBuilder(builder: PsiBuilder, state: GeneratedParserUtil.ErrorState,
         if (tokenType == MACRO_OBJECT) {
             return variable_identifier(this, 1)
         } else if (tokenType == MACRO_FUNCTION) {
-            val marker = GeneratedParserUtil.enter_section_(this)
+            val marker = enter_section_(this)
             super.advanceLexer()
-            GeneratedParserUtil.exit_section_(this, marker, VARIABLE_IDENTIFIER, true)
+            exit_section_(this, marker, VARIABLE_IDENTIFIER, true)
 
             var nestingLevel = 1
             super.advanceLexer() // Opening paren
             while (nestingLevel > 0) {
-                val innerMarker = GeneratedParserUtil.enter_section_(this)
+                val innerMarker = enter_section_(this)
                 super.advanceLexer()
                 if (tokenType == IDENTIFIER) {
-                    GeneratedParserUtil.exit_section_(this, innerMarker, VARIABLE_IDENTIFIER, true)
+                    exit_section_(this, innerMarker, VARIABLE_IDENTIFIER, true)
                 } else {
-                    GeneratedParserUtil.exit_section_(this, innerMarker, EXPR, true)
+                    exit_section_(this, innerMarker, EXPR, true)
                 }
                 if (tokenType == LEFT_PAREN) nestingLevel++
                 else if (tokenType == RIGHT_PAREN) nestingLevel--

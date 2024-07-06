@@ -1,2 +1,8 @@
-#define A 2
-int a = A;
+#define BINDLESS_SET 1
+#define BINDLESS_TEX_BINDING 0
+#define BINDLESS_TEX_COUNT 1024
+#define BINDLESS_TEX \
+    layout (set = BINDLESS_SET, binding = BINDLESS_TEX_BINDING) \
+    uniform sampler2D name[BINDLESS_TEX_COUNT];
+
+BINDLESS_TEX

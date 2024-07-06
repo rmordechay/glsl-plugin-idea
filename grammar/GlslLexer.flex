@@ -97,7 +97,6 @@ MACRO_VERSION="__VERSION__"
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {NEW_LINE}                       {
                                        if (yystate() == MACRO_BODY_STATE) {
-                                          yybegin(YYINITIAL);
                                           return PP_END;
                                        }
                                        return WHITE_SPACE;

@@ -9,8 +9,8 @@ import glsl._GlslLexer.*
 
 
 class GlslMacro(val name: String, val macroDefineType: IElementType) {
-    val elements = arrayListOf<Pair<String, IElementType>>()
-    var expansionIter: Iterator<Pair<String, IElementType>>? = null
+    val elements = arrayListOf<Pair<String?, IElementType?>>()
+    var expansionIter: Iterator<Pair<String?, IElementType?>>? = null
 }
 
 /**
@@ -69,11 +69,11 @@ class GlslLexer : LexerBase() {
             macroDefine = GlslMacro(tokenText, getMacroType())
         } else if (state == MACRO_BODY_STATE) {
             if (myTokenType == PP_END) {
-                lexer.yybegin(YYINITIAL)
+                lexer.yybegin(YYINITIAL);
                 macros[macroDefine!!.name] = macroDefine!!
                 macroDefine = null
             } else if (myTokenType !in listOf(WHITE_SPACE, RIGHT_PAREN_MACRO, LINE_COMMENT, MULTILINE_COMMENT)) {
-                macroDefine!!.elements.add(Pair(myTokenText!!, myTokenType!!))
+                macroDefine!!.elements.add(Pair(myTokenText, myTokenType))
             }
         }
         return myTokenType

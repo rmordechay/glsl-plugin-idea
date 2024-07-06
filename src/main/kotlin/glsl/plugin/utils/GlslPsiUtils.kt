@@ -53,6 +53,17 @@ object GlslPsiUtils : GeneratedParserUtil() {
     /**
      *
      */
+    @JvmStatic
+    fun ppText(builder: PsiBuilder, level: Int): Boolean {
+        while (builder.tokenType != PP_END && builder.tokenType != null) {
+            builder.advanceLexer()
+        }
+        return true
+    }
+
+    /**
+     *
+     */
     fun getPostfixIdentifier(postfixExpr: GlslPostfixExpr?): GlslIdentifierImpl? {
         return when (postfixExpr) {
             is GlslPrimaryExpr -> postfixExpr.variableIdentifier as? GlslIdentifierImpl

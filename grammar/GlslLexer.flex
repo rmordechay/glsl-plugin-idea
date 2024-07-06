@@ -24,7 +24,7 @@ import static glsl.GlslTypes.*;
 %state MULITLINE_COMMENT_STATE
 %state MACRO_IDENTIFIER_STATE
 %state MACRO_FUNC_DEFINITION_STATE
-%state PP_STATE
+%state MACRO_BODY_STATE
 
 WHITE_SPACE=[ \t\f]+
 NEW_LINE=[\n\r]+
@@ -89,38 +89,38 @@ MACRO_VERSION="__VERSION__"
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {IDENTIFIER}                     { return MACRO_FUNC_PARAM; }
   "("                              { return LEFT_PAREN; }
-  ")"                              { yybegin(PP_STATE); return RIGHT_PAREN_MACRO; }
+  ")"                              { yybegin(MACRO_BODY_STATE); return RIGHT_PAREN_MACRO; }
   ","                              { return COMMA; }
 }
 
-<YYINITIAL, PP_STATE> {
+<YYINITIAL, MACRO_BODY_STATE> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
   {NEW_LINE}                       {
-                                     if (yystate() == PP_STATE) {
-                                        yybegin(YYINITIAL);
-                                        return PP_END;
+                                       if (yystate() == MACRO_BODY_STATE) {
+                                          yybegin(YYINITIAL);
+                                          return PP_END;
+                                       }
+                                       return WHITE_SPACE;
                                      }
-                                     return WHITE_SPACE;
-                                   }
   {BACKSLASH}                      { return WHITE_SPACE; }
   "/*"                             { yybegin(MULITLINE_COMMENT_STATE);  return MULTILINE_COMMENT; }
   {LINE_COMMENT}                   { return LINE_COMMENT; }
-  {PP_VERSION}                     { yybegin(PP_STATE); return PP_VERSION;}
-  {PP_UNDEF}                       { yybegin(PP_STATE); return PP_UNDEF;}
-  {PP_IFDEF}                       { yybegin(PP_STATE); return PP_IFDEF;}
-  {PP_IFNDEF}                      { yybegin(PP_STATE); return PP_IFNDEF;}
-  {PP_ELSE}                        { yybegin(PP_STATE); return PP_ELSE;}
-  {PP_ENDIF}                       { yybegin(PP_STATE); return PP_ENDIF;}
-  {PP_INCLUDE}                     { yybegin(PP_STATE); return PP_INCLUDE;}
-  {PP_EXTENSION}                   { yybegin(PP_STATE); return PP_EXTENSION;}
-  {PP_LINE}                        { yybegin(PP_STATE); return PP_LINE;}
-  {MACRO_LINE}                     { yybegin(PP_STATE); return MACRO_LINE;}
-  {MACRO_FILE}                     { yybegin(PP_STATE); return MACRO_FILE;}
-  {MACRO_VERSION}                  { yybegin(PP_STATE); return MACRO_VERSION;}
-  {PP_IF}                          { yybegin(PP_STATE); return PP_IF;}
-  {PP_ELIF}                        { yybegin(PP_STATE); return PP_ELIF;}
-  {PP_ERROR}                       { yybegin(PP_STATE); return PP_ERROR;}
-  {PP_PRAGMA}                      { yybegin(PP_STATE); return PP_PRAGMA;}
+  {PP_VERSION}                     { yybegin(MACRO_BODY_STATE); return PP_VERSION;}
+  {PP_UNDEF}                       { yybegin(MACRO_BODY_STATE); return PP_UNDEF;}
+  {PP_IFDEF}                       { yybegin(MACRO_BODY_STATE); return PP_IFDEF;}
+  {PP_IFNDEF}                      { yybegin(MACRO_BODY_STATE); return PP_IFNDEF;}
+  {PP_ELSE}                        { yybegin(MACRO_BODY_STATE); return PP_ELSE;}
+  {PP_ENDIF}                       { yybegin(MACRO_BODY_STATE); return PP_ENDIF;}
+  {PP_INCLUDE}                     { yybegin(MACRO_BODY_STATE); return PP_INCLUDE;}
+  {PP_EXTENSION}                   { yybegin(MACRO_BODY_STATE); return PP_EXTENSION;}
+  {PP_LINE}                        { yybegin(MACRO_BODY_STATE); return PP_LINE;}
+  {MACRO_LINE}                     { yybegin(MACRO_BODY_STATE); return MACRO_LINE;}
+  {MACRO_FILE}                     { yybegin(MACRO_BODY_STATE); return MACRO_FILE;}
+  {MACRO_VERSION}                  { yybegin(MACRO_BODY_STATE); return MACRO_VERSION;}
+  {PP_IF}                          { yybegin(MACRO_BODY_STATE); return PP_IF;}
+  {PP_ELIF}                        { yybegin(MACRO_BODY_STATE); return PP_ELIF;}
+  {PP_ERROR}                       { yybegin(MACRO_BODY_STATE); return PP_ERROR;}
+  {PP_PRAGMA}                      { yybegin(MACRO_BODY_STATE); return PP_PRAGMA;}
   {PP_DEFINE}                      { yybegin(MACRO_IDENTIFIER_STATE); return PP_DEFINE;}
   "#"                              { return HASH; }
 

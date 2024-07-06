@@ -1190,6 +1190,9 @@ private pp_conditional
     |   HASH
     {   pin(".*")=1   }
 
+dummy_macro_block
+    ::= FUNC_CALL_BLOCK
+
 pp_define_declaration
     ::= PP_DEFINE pp_define_name <<macroBodyToken>>*
     {   pin(".*")=1   }

@@ -1,7 +1,2 @@
-#define VAR void f() { }
-#define VAR2 int b;
-
-VAR
-void main() {
-    VAR2
-}
+#define OP(x) x
+int a = 1 OP(+) 1;

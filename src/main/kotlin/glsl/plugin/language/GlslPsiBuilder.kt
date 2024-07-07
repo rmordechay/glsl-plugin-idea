@@ -36,16 +36,15 @@ class GlslPsiBuilder(builder: PsiBuilder, state: GeneratedParserUtil.ErrorState,
             super.advanceLexer() // Opening paren
             while (nestingLevel > 0) {
                 val innerMarker = enter_section_(this)
-                val prevTokenType = tokenType
-                super.advanceLexer()
-                if (prevTokenType in listOf(IDENTIFIER, MACRO_OBJECT, MACRO_FUNCTION)) {
+                if (tokenType in listOf(IDENTIFIER, MACRO_OBJECT, MACRO_FUNCTION)) {
                     exit_section_(this, innerMarker, VARIABLE_IDENTIFIER, true)
                 } else {
                     exit_section_(this, innerMarker, DUMMY_MACRO_BLOCK, true)
                 }
-                if (prevTokenType == LEFT_PAREN) nestingLevel++
-                else if (prevTokenType == RIGHT_PAREN) nestingLevel--
-                else if (prevTokenType == null) break
+                super.advanceLexer()
+                if (tokenType == LEFT_PAREN) nestingLevel++
+                else if (tokenType == RIGHT_PAREN) nestingLevel--
+                else if (tokenType == null) break
             }
             super.advanceLexer()  // Closing paren
             exit_section_(this, externalMarker, DUMMY_MACRO_BLOCK, true)

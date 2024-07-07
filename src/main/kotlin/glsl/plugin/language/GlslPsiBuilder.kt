@@ -26,8 +26,7 @@ class GlslPsiBuilder(builder: PsiBuilder, state: GeneratedParserUtil.ErrorState,
      */
     private fun macroCallWrapper(): Boolean {
         if (tokenType == MACRO_OBJECT) {
-            super.advanceLexer()
-            return true
+            return variable_identifier(this, 1)
         } else if (tokenType == MACRO_FUNCTION) {
             val result = variable_identifier(this, 1)
             if (!result) return false

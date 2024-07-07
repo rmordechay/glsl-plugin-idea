@@ -28,7 +28,7 @@ import static glsl.GlslTypes.*;
 %state MACRO_IGNORE
 
 WHITE_SPACE=[ \t\f]+
-NEW_LINE=[\n\r]+
+NEW_LINE=[\n\r]
 BACKSLASH=\\{WHITE_SPACE}*{NEW_LINE}
 LINE_COMMENT="//"+.*
 

@@ -43,9 +43,7 @@ object GlslPsiUtils : GeneratedParserUtil() {
     @JvmStatic
     fun macroBodyToken(builder: PsiBuilder, level: Int): Boolean {
         val isPpEndOrNull = builder.tokenType == PP_END || builder.tokenType == null
-        if (isPpEndOrNull) {
-            return false
-        }
+        if (isPpEndOrNull) return false
         builder.advanceLexer()
         return true
     }

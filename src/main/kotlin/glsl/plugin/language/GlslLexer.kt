@@ -3,14 +3,19 @@ package glsl.plugin.language
 import com.intellij.lexer.LexerBase
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
+import com.intellij.util.containers.addIfNotNull
 import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.*
 
-
+/**
+ *
+ */
 class GlslMacro(val name: String, val macroDefineType: IElementType) {
     val elements = arrayListOf<Pair<String?, IElementType?>>()
     var expansionIter: Iterator<Pair<String?, IElementType?>>? = null
+    var params = mutableListOf<String>()
+    var paramExpansionIter: Iterator<IElementType>? = null
 }
 
 /**
@@ -55,26 +60,14 @@ class GlslLexer : LexerBase() {
             macroExpansion!!.expansionIter = macroExpansion?.elements?.iterator()
         }
         if (macroExpansion != null) {
-            if (macroExpansion!!.expansionIter?.hasNext() == true) {
-                val nextMacroToken = macroExpansion!!.expansionIter?.next()
-                myTokenText = nextMacroToken?.first
-                myTokenType = nextMacroToken?.second
-            } else {
-                myTokenText = macroExpansion!!.name
-                myTokenType = macroExpansion!!.macroDefineType
-                macroExpansion = null
-            }
+            handleMacroExpansion()
         }
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
             macroDefine = GlslMacro(tokenText, getMacroType())
+        } else if (state == MACRO_FUNC_DEFINITION_STATE && myTokenType == MACRO_FUNC_PARAM) {
+            macroDefine!!.params.addIfNotNull(myTokenText)
         } else if (state == MACRO_BODY_STATE) {
-            if (myTokenType == PP_END) {
-                lexer.yybegin(YYINITIAL);
-                macros[macroDefine!!.name] = macroDefine!!
-                macroDefine = null
-            } else if (myTokenType !in listOf(WHITE_SPACE, RIGHT_PAREN_MACRO, LINE_COMMENT, MULTILINE_COMMENT)) {
-                macroDefine!!.elements.add(Pair(myTokenText, myTokenType))
-            }
+            handleMacroBody()
         }
         return myTokenType
     }
@@ -119,6 +112,35 @@ class GlslLexer : LexerBase() {
      */
     override fun getBufferEnd(): Int {
         return myBufferEnd
+    }
+
+    /**
+     *
+     */
+    private fun handleMacroExpansion() {
+        val macro = macroExpansion ?: return
+        if (macro.expansionIter?.hasNext() == true) {
+            val nextMacroToken = macro.expansionIter?.next()
+            myTokenText = nextMacroToken?.first
+            myTokenType = nextMacroToken?.second
+        } else {
+            myTokenText = macro.name
+            myTokenType = macro.macroDefineType
+            macroExpansion = null
+        }
+    }
+
+    /**
+     *
+     */
+    private fun handleMacroBody() {
+        if (myTokenType == PP_END) {
+            lexer.yybegin(YYINITIAL);
+            macros[macroDefine!!.name] = macroDefine!!
+            macroDefine = null
+        } else if (myTokenType !in listOf(WHITE_SPACE, RIGHT_PAREN_MACRO, LINE_COMMENT, MULTILINE_COMMENT)) {
+            macroDefine!!.elements.add(Pair(myTokenText, myTokenType))
+        }
     }
 
     /**

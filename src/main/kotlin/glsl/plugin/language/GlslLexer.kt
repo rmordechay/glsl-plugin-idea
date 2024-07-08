@@ -7,6 +7,8 @@ import com.intellij.util.containers.addIfNotNull
 import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.*
+import glsl.plugin.language.GlslLanguage.Companion.LEFT_PAREN_MACRO_CALL
+import glsl.plugin.language.GlslLanguage.Companion.RIGHT_PAREN_MACRO_CALL
 
 /**
  *
@@ -14,7 +16,7 @@ import glsl._GlslLexer.*
 class GlslMacro(val name: String, val macroDefineType: IElementType) {
     val elements = arrayListOf<Pair<String?, IElementType?>>()
     var params = mutableListOf<String>()
-    var endFuncCall = false
+    var macroExpansionIter: Iterator<Pair<String?, IElementType?>>? = null
 }
 
 /**
@@ -26,8 +28,8 @@ class GlslLexer : LexerBase() {
     private var myText: String = ""
     private var myBufferEnd: Int = 0
     private var myTokenType: IElementType? = null
-    private var myTokenStartOffset: Int = 0
-    private var myTokenText: String? = null
+    private var myTokenStart: Int = 0
+    private var myTokenText: String = ""
 
     private var macros = hashMapOf<String, GlslMacro>()
     private var macroDefine: GlslMacro? = null
@@ -36,7 +38,6 @@ class GlslLexer : LexerBase() {
     private var inMacroFuncCall = false
     private var macroFuncCallParams: HashMap<String, MutableList<IElementType>>? = null
     private var paramExpansionIter: Iterator<IElementType>? = null
-    private var macroExpansionIter: Iterator<Pair<String?, IElementType?>>? = null
     private var macroFuncParamIndex: Int = 0
     private var macroParamNestingLevel: Int = 0
     private var macroFunc: GlslMacro? = null
@@ -55,23 +56,17 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun advance() {
-        if (macroExpansion != null) return
-        myTokenType = lexer.advance()
-        myTokenText = lexer.yytext().toString()
-        myTokenStartOffset = lexer.tokenStart
-    }
-
-    /**
-     *
-     */
-    override fun getTokenType(): IElementType? {
+        if (macroExpansion == null) {
+            myTokenType = lexer.advance()
+            myTokenText = lexer.yytext().toString()
+            myTokenStart = lexer.tokenStart
+        }
         if (isMacroCallStart()) {
             setMacroCallData()
         } else if (paramExpansionIter != null) {
             expandMacroParam()
             if (paramExpansionIter == null) expandMacro()
         } else if (macroExpansion != null) {
-            macroExpansion!!.endFuncCall = true
             expandMacro()
         } else if (inMacroFuncCall) {
             addMacroParamToken()
@@ -83,7 +78,27 @@ class GlslLexer : LexerBase() {
         } else if (state == MACRO_BODY_STATE) {
             addMacroBodyToken()
         }
+    }
+
+    /**
+     *
+     */
+    override fun getTokenType(): IElementType? {
         return myTokenType
+    }
+
+    /**
+     *
+     */
+    override fun getTokenStart(): Int {
+        return myTokenStart
+    }
+
+    /**
+     *
+     */
+    override fun getTokenEnd(): Int {
+        return lexer.tokenEnd
     }
 
     /**
@@ -98,21 +113,6 @@ class GlslLexer : LexerBase() {
      */
     override fun getState(): Int {
         return lexer.yystate()
-    }
-
-    /**
-     *
-     */
-    override fun getTokenStart(): Int {
-        if (macroExpansion?.endFuncCall == true) return myTokenStartOffset + 1
-        return myTokenStartOffset
-    }
-
-    /**
-     *
-     */
-    override fun getTokenEnd(): Int {
-        return lexer.tokenEnd
     }
 
     /**
@@ -143,7 +143,7 @@ class GlslLexer : LexerBase() {
             myTokenType = MACRO_FUNCTION
         } else {
             macroExpansion = macro
-            macroExpansionIter = macroExpansion?.elements?.iterator()
+            macroExpansion!!.macroExpansionIter = macroExpansion?.elements?.iterator()
             myTokenType = MACRO_OBJECT
         }
     }
@@ -152,17 +152,22 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun expandMacro() {
-        if (macroExpansionIter?.hasNext() == true) {
-            val nextMacroToken = macroExpansionIter?.next()
-            myTokenText = nextMacroToken?.first
-            myTokenType = nextMacroToken?.second
+        if (state != MACRO_BODY_STATE && myTokenType in listOf(MACRO_OBJECT, RIGHT_PAREN_MACRO_CALL)) {
+            myTokenStart += myTokenText.length
+        }
+        if (macroExpansion!!.macroExpansionIter?.hasNext() == true) {
+            val nextMacroToken = macroExpansion!!.macroExpansionIter?.next() ?: return
+            myTokenText = nextMacroToken.first!!
+            myTokenType = nextMacroToken.second
             if (myTokenText in macroExpansion!!.params) {
-                paramExpansionIter = macroFuncCallParams?.get(myTokenText!!)?.iterator()
+                paramExpansionIter = macroFuncCallParams?.get(myTokenText)?.iterator()
                 myTokenType = paramExpansionIter?.next()
             }
         } else {
             macroExpansion = null
-            advance()
+            myTokenType = lexer.advance()
+            myTokenText = lexer.yytext().toString()
+            myTokenStart = lexer.tokenStart
         }
     }
 
@@ -185,7 +190,7 @@ class GlslLexer : LexerBase() {
             lexer.yybegin(YYINITIAL);
             macros[macroDefine!!.name] = macroDefine!!
             macroDefine = null
-        } else if (myTokenType !in listOf(WHITE_SPACE, RIGHT_PAREN_MACRO, LINE_COMMENT, MULTILINE_COMMENT)) {
+        } else if (myTokenType !in listOf(WHITE_SPACE, RIGHT_PAREN_MACRO, LINE_COMMENT, MULTILINE_COMMENT, MACRO_OBJECT, MACRO_FUNCTION)) {
             macroDefine!!.elements.add(Pair(myTokenText, myTokenType))
         }
     }
@@ -194,24 +199,31 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun addMacroParamToken() {
-        if (myTokenType == LEFT_PAREN) {
+        if (macroParamNestingLevel == 0 && myTokenType == LEFT_PAREN) {
+            myTokenType = LEFT_PAREN_MACRO_CALL
+            macroParamNestingLevel++
+        } else if (myTokenType == LEFT_PAREN) {
             macroParamNestingLevel++
         } else if (myTokenType == RIGHT_PAREN) {
             macroParamNestingLevel--
         } else if (myTokenType == COMMA && macroParamNestingLevel == 1) {
             macroFuncParamIndex++
-        } else {
+        }
+
+        if (macroParamNestingLevel >= 1 && myTokenType != LEFT_PAREN_MACRO_CALL) {
             val params = macroFunc?.params ?: return
             if (params.count() <= macroFuncParamIndex) return
             val paramName = params[macroFuncParamIndex]
             val param = macroFuncCallParams?.getOrPut(paramName) { mutableListOf() }
             param?.addIfNotNull(myTokenType)
         }
+
         if (macroParamNestingLevel == 0) {
             macroExpansion = macroFunc
-            macroExpansionIter = macroExpansion?.elements?.iterator()
+            macroExpansion!!.macroExpansionIter = macroExpansion?.elements?.iterator()
             inMacroFuncCall = false
             macroFunc = null
+            myTokenType = RIGHT_PAREN_MACRO_CALL
         }
     }
 

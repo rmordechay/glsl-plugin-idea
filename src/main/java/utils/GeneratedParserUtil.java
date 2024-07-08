@@ -349,35 +349,27 @@ public class GeneratedParserUtil {
     public static final int _UPPER_ = 0x20;
 
     // simple enter/exit methods pair that doesn't require frame object
-    public static PsiBuilder.Marker enter_section_(PsiBuilder builder) {
+    public static PsiBuilder.Marker enter_section_without_macro(PsiBuilder builder) {
         ErrorState state = ErrorState.get(builder);
         reportFrameError(builder, state);
         state.level++;
         return builder.mark();
     }
 
-    public static void exit_section_(PsiBuilder builder,
-                                     PsiBuilder.Marker marker,
-                                     @Nullable IElementType elementType,
-                                     boolean result) {
-        ErrorState state = ErrorState.get(builder);
-        close_marker_impl_(state.currentFrame, marker, elementType, result);
-        run_hooks_impl_(builder, state, result ? elementType : null);
-        state.level--;
-    }
-
-    // complex enter/exit methods pair with frame object
     public static PsiBuilder.Marker enter_section_(PsiBuilder builder, int level, int modifiers, String frameName) {
-        PsiBuilder.Marker marker = enter_section_(builder, level, modifiers, null, frameName);
-        GlslPsiBuilder glslBuilder = (GlslPsiBuilder) builder;
-        glslBuilder.macroCallWrapper();
-        return marker;
+        return enter_section_(builder, level, modifiers, null, frameName);
+    }
+    public static PsiBuilder.Marker enter_section_(PsiBuilder builder, int level, int modifiers) {
+        return enter_section_(builder, level, modifiers, null, null);
+
     }
 
-    public static PsiBuilder.Marker enter_section_(PsiBuilder builder, int level, int modifiers) {
-        PsiBuilder.Marker marker = enter_section_(builder, level, modifiers, null, null);
-        GlslPsiBuilder glslBuilder = (GlslPsiBuilder) builder;
-        glslBuilder.macroCallWrapper();
+    public static PsiBuilder.Marker enter_section_(PsiBuilder builder) {
+        ErrorState state = ErrorState.get(builder);
+        reportFrameError(builder, state);
+        state.level++;
+        PsiBuilder.Marker marker = builder.mark();
+        ((GlslPsiBuilder) builder).macroCallWrapper();
         return marker;
     }
 
@@ -385,8 +377,7 @@ public class GeneratedParserUtil {
         reportFrameError(builder, ErrorState.get(builder));
         PsiBuilder.Marker marker = builder.mark();
         enter_section_impl_(builder, level, modifiers, elementType, frameName);
-        GlslPsiBuilder glslBuilder = (GlslPsiBuilder) builder;
-        glslBuilder.macroCallWrapper();
+        ((GlslPsiBuilder) builder).macroCallWrapper();
         return marker;
     }
 
@@ -410,6 +401,16 @@ public class GeneratedParserUtil {
             state.predicateSign = state.predicateCount != 0 && !state.predicateSign;
             state.predicateCount++;
         }
+    }
+
+    public static void exit_section_(PsiBuilder builder,
+                                     PsiBuilder.Marker marker,
+                                     @Nullable IElementType elementType,
+                                     boolean result) {
+        ErrorState state = ErrorState.get(builder);
+        close_marker_impl_(state.currentFrame, marker, elementType, result);
+        run_hooks_impl_(builder, state, result ? elementType : null);
+        state.level--;
     }
 
     public static void exit_section_(PsiBuilder builder,

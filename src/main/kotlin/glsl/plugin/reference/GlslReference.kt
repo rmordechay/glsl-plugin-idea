@@ -13,6 +13,9 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
+import com.intellij.psi.util.elementType
+import glsl.GlslTypes.MACRO_FUNCTION
+import glsl.GlslTypes.MACRO_OBJECT
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.GlslIdentifier
@@ -461,14 +464,9 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      *
      */
     private fun shouldResolve(): Boolean {
-        if (currentFilterType == CONTAINS) {
-            if (element.isEmpty()) {
-                return true
-            }
-            return element.parent !is GlslNamedElement
-        } else if (currentFilterType == EQUALS) {
-            return element.parent !is GlslNamedElement
+        if (currentFilterType == CONTAINS && element.isEmpty()) {
+            return true
         }
-        return false
+        return element.parent !is GlslNamedElement || element.firstChild.elementType in listOf(MACRO_OBJECT, MACRO_FUNCTION)
     }
 }

@@ -234,8 +234,12 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertEquals("VAR", (resolve as GlslPpMacroObjectName).name)
     }
 
+    @Test
     fun testReferenceFile33() {
-
+        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile33.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslPpMacroObjectName::class.java)
+        assertEquals("ZZZ", (resolve as GlslPpMacroObjectName).name)
     }
 
     fun testFindUsageFile1() {

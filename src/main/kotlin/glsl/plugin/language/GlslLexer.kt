@@ -14,6 +14,7 @@ import glsl._GlslLexer.*
 class GlslMacro(val name: String, val macroDefineType: IElementType) {
     val elements = arrayListOf<Pair<String?, IElementType?>>()
     var params = mutableListOf<String>()
+    var endFuncCall = false
 }
 
 /**
@@ -25,13 +26,14 @@ class GlslLexer : LexerBase() {
     private var myText: String = ""
     private var myBufferEnd: Int = 0
     private var myTokenType: IElementType? = null
+    private var myTokenStartOffset: Int = 0
     private var myTokenText: String? = null
 
     private var macros = hashMapOf<String, GlslMacro>()
     private var macroDefine: GlslMacro? = null
     private var macroExpansion: GlslMacro? = null
 
-    private var inMacroFuncCall: Boolean = false
+    private var inMacroFuncCall = false
     private var macroFuncCallParams: HashMap<String, MutableList<IElementType>>? = null
     private var paramExpansionIter: Iterator<IElementType>? = null
     private var macroExpansionIter: Iterator<Pair<String?, IElementType?>>? = null
@@ -56,6 +58,7 @@ class GlslLexer : LexerBase() {
         if (macroExpansion != null) return
         myTokenType = lexer.advance()
         myTokenText = lexer.yytext().toString()
+        myTokenStartOffset = lexer.tokenStart
     }
 
     /**
@@ -68,6 +71,7 @@ class GlslLexer : LexerBase() {
             expandMacroParam()
             if (paramExpansionIter == null) expandMacro()
         } else if (macroExpansion != null) {
+            macroExpansion!!.endFuncCall = true
             expandMacro()
         } else if (inMacroFuncCall) {
             addMacroParamToken()
@@ -100,7 +104,8 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenStart(): Int {
-        return lexer.tokenStart
+        if (macroExpansion?.endFuncCall == true) return myTokenStartOffset + 1
+        return myTokenStartOffset
     }
 
     /**
@@ -196,14 +201,17 @@ class GlslLexer : LexerBase() {
         } else if (myTokenType == COMMA && macroParamNestingLevel == 1) {
             macroFuncParamIndex++
         } else {
-            val paramName = macroFunc!!.params[macroFuncParamIndex]
+            val params = macroFunc?.params ?: return
+            if (params.count() <= macroFuncParamIndex) return
+            val paramName = params[macroFuncParamIndex]
             val param = macroFuncCallParams?.getOrPut(paramName) { mutableListOf() }
             param?.addIfNotNull(myTokenType)
         }
         if (macroParamNestingLevel == 0) {
-            inMacroFuncCall = false
             macroExpansion = macroFunc
             macroExpansionIter = macroExpansion?.elements?.iterator()
+            inMacroFuncCall = false
+            macroFunc = null
         }
     }
 

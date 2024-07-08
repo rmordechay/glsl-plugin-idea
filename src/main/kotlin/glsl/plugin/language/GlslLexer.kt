@@ -206,11 +206,10 @@ class GlslLexer : LexerBase() {
             macroParamNestingLevel++
         } else if (myTokenType == RIGHT_PAREN) {
             macroParamNestingLevel--
-        } else if (myTokenType == COMMA && macroParamNestingLevel == 1) {
-            macroFuncParamIndex++
         }
-
-        if (macroParamNestingLevel >= 1 && myTokenType != LEFT_PAREN_MACRO_CALL) {
+        if (myTokenType == COMMA && macroParamNestingLevel == 1) {
+            macroFuncParamIndex++
+        } else if (macroParamNestingLevel >= 1 && myTokenType != LEFT_PAREN_MACRO_CALL) {
             val params = macroFunc?.params ?: return
             if (params.count() <= macroFuncParamIndex) return
             val paramName = params[macroFuncParamIndex]

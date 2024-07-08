@@ -9,6 +9,10 @@
 #include <shader>
 #include "file.h"
 
+#define f(a, b) a + \
+b
+int dummy = f(1, 2);
+
 #define X 2
 #define Y X
 #define Z Y
@@ -358,7 +362,7 @@ int function_definition(DummyBlock x, float y) {
         default:
             return 3;
     }
-    float f();
+    float func();
     #include "some text"
     float g();
     float h();
@@ -368,9 +372,9 @@ int function_definition(DummyBlock x, float y) {
     float declaration_statement;
     float declaration_statement[];
     float declaration_statement[3];
-    float declaration_statement = f(g(h()));
+    float declaration_statement = func(g(h()));
     float declaration_statement[] = { 1, 2, 3 };
-    float declaration_statement[2] = f(g(h(x, y), z));
+    float declaration_statement[2] = func(g(h(x, y), z));
 
     demote;
     return jump_statement;

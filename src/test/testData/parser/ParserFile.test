@@ -13,6 +13,9 @@
 b
 int dummy = f(1, 2);
 
+#define f2(a, b) a + b
+int dummy = f2(g(1, c), h(2, 3));
+
 #define X 2
 #define Y X
 #define Z Y

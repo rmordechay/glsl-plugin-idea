@@ -1,4 +1,8 @@
-#version 330
+#define VAR void a;
+#define VAR2( a  ,  b  ) a  +  b;
+
+int c = VAR2( 1   ,   2 )
+#version    330
 // One line comment
 /*
 * Multi line comment
@@ -8,7 +12,6 @@
  layout (set = BINDLESS_SET, binding = BINDLESS_TEX_BINDING) \
  uniform ty name[BINDLESS_TEX_COUNT];
 
-             BINDLESS_TEX(sampler2D,   u_global_textures   )
 #include "file.h"
 __LINE__ 10
 
@@ -17,7 +20,7 @@ __LINE__ 10
 #define f(a, b) a + \
 b
 
-        int dummy = f  (  1,  2   ) ;
+        int dummy = f(  1,  2   ) ;
 
 // One line comment
     struct  DummyStruct     {
@@ -171,7 +174,7 @@ case 2              :
                                 return 3        ;
     }
 
-    float declaration_statement  [  2  ]    = f(   g   (   h(x, y), z));
+    float declaration_statement  [  2  ]    = func(   g   (   h(x, y), z));
 
         demote ;
       continue  ;

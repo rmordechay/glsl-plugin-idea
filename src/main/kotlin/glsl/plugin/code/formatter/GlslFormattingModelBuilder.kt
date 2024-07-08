@@ -15,6 +15,8 @@ import glsl.data.GlslTokenSets.RELATIONAL_OPERATORS
 import glsl.data.GlslTokenSets.SHIFT_OPERATORS
 import glsl.data.GlslTokenSets.UNARY_OPERATORS
 import glsl.plugin.language.GlslLanguage
+import glsl.plugin.language.GlslLanguage.Companion.LEFT_PAREN_MACRO_CALL
+import glsl.plugin.language.GlslLanguage.Companion.RIGHT_PAREN_MACRO_CALL
 
 
 class GlslFormattingModelBuilder : FormattingModelBuilder {
@@ -46,6 +48,10 @@ class GlslFormattingModelBuilder : FormattingModelBuilder {
             .before(SEMICOLON).spaceIf(commonSettings.SPACE_BEFORE_SEMICOLON)
             .before(LEFT_BRACKET).none()
             .before(ARRAY_SPECIFIER).none()
+            .after(LEFT_PAREN_MACRO_CALL).none()
+            .before(RIGHT_PAREN_MACRO).none()
+            .before(RIGHT_PAREN_MACRO_CALL).none()
+            .between(PP_VERSION, INTCONSTANT).spaces(1)
             .betweenInside(LEFT_ANGLE, PP_INCLUDE_PATH, PP_INCLUDE_BRACKETS).none()
             .betweenInside(PP_INCLUDE_PATH, RIGHT_ANGLE, PP_INCLUDE_BRACKETS).none()
             .betweenInside(SLASH, PP_INCLUDE_PATH, PP_INCLUDE_BRACKETS).none()

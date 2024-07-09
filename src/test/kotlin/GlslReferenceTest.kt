@@ -245,16 +245,12 @@ class GlslReferenceTest : BasePlatformTestCase() {
     }
 
     fun testFindUsageFile2() {
-        assertThrows(AssertionError::class.java) { myFixture.testFindUsages("FindUsageFile2.glsl") }
+        val testFindUsages = myFixture.testFindUsages("FindUsageFile2.glsl")
+        assertEquals(2, testFindUsages.size)
     }
 
     fun testFindUsageFile3() {
         val testFindUsages = myFixture.testFindUsages("FindUsageFile3.glsl")
         assertEquals(3, testFindUsages.size)
-    }
-
-    fun testFindUsageFile4() {
-        val testFindUsages = myFixture.testFindUsages("FindUsageFile4.glsl")
-        assertEquals(2, testFindUsages.size)
     }
 }

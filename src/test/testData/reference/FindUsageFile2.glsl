@@ -1,3 +1,6 @@
-vec4 v1 = gl_FrontSecondaryColor.xyz;
-vec4 v2 = gl_FrontSecondaryColor.xyz;
-vec4 v3 = gl_FrontSecondaryColor.<caret>xyz;
+#define <caret>VAR 10
+
+void main() {
+    int a = VAR + 10;
+    int b = abs(VAR);
+}

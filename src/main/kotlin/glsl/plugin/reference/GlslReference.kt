@@ -59,9 +59,11 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      */
     override fun resolve(): GlslNamedElement? {
         if (!shouldResolve()) return null
-        val project = GlslUtils.getProject()
-        val resolveCache = ResolveCache.getInstance(project)
-        return resolveCache.resolveWithCaching(this, resolver, true, false)
+//        val project = GlslUtils.getProject()
+//        val resolveCache = ResolveCache.getInstance(project)
+        doResolve()
+        return resolvedReferences.firstOrNull()
+//        return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
 
     /**

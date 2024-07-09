@@ -1163,11 +1163,8 @@ pp_statement
 
 
 pp_include_declaration
-    ::= PP_INCLUDE (STRING_LITERAL | pp_include_brackets)
-    {   pin(".*")=1  }
-
-pp_include_brackets
-    ::= LEFT_ANGLE INCLUDE_PATH RIGHT_ANGLE
+    ::= PP_INCLUDE (STRING_LITERAL | (LEFT_ANGLE INCLUDE_PATH RIGHT_ANGLE))
+    {   pin(".*")=1 generateTokenAccessors=true }
 
 private pp_version_declaration
     ::= PP_VERSION INTCONSTANT ('core'|'es'|'compatibility')?

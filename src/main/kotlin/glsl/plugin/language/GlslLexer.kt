@@ -49,7 +49,6 @@ class GlslLexer : LexerBase() {
     private var macroFunc: GlslMacro? = null
 
     private var shouldExpandInclude = false
-    private var includePaths: MutableList<String>? = null
 
     /**
      *
@@ -79,16 +78,17 @@ class GlslLexer : LexerBase() {
             expandMacro()
         } else if (inMacroFuncCall) {
             addMacroParamToken()
-        } else if (state == MACRO_INCLUDE_STATE && myTokenType in listOf(INCLUDE_PATH, STRING_LITERAL)) {
-            setIncludeLexer()
-            return
-        } else if (shouldExpandInclude) {
-            expandInclude()
-            return
-        } else if (myTokenType == END_INCLUDE) {
-            shouldExpandInclude = true
-            return
         }
+//        if (state == MACRO_INCLUDE_STATE && myTokenType in listOf(INCLUDE_PATH, STRING_LITERAL)) {
+//            setIncludeLexer()
+//            return
+//        } else if (shouldExpandInclude) {
+//            expandInclude()
+//            return
+//        } else if (myTokenType == END_INCLUDE) {
+//            shouldExpandInclude = true
+//            return
+//        }
 
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
             macroDefine = GlslMacro(tokenText, getMacroType())

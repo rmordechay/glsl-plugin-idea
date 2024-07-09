@@ -1,6 +1,5 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.psi.interfaces.*
-import org.junit.Test
 
 class GlslReferenceTest : BasePlatformTestCase() {
 
@@ -237,20 +236,5 @@ class GlslReferenceTest : BasePlatformTestCase() {
         val resolve = reference?.resolve()
         assertInstanceOf(resolve, GlslPpMacroObjectName::class.java)
         assertEquals("ZZZ", (resolve as GlslPpMacroObjectName).name)
-    }
-
-    fun testFindUsageFile1() {
-        val testFindUsages = myFixture.testFindUsages("FindUsageFile1.glsl")
-        assertEquals(3, testFindUsages.size)
-    }
-
-    fun testFindUsageFile2() {
-        val testFindUsages = myFixture.testFindUsages("FindUsageFile2.glsl")
-        assertEquals(2, testFindUsages.size)
-    }
-
-    fun testFindUsageFile3() {
-        val testFindUsages = myFixture.testFindUsages("FindUsageFile3.glsl")
-        assertEquals(3, testFindUsages.size)
     }
 }

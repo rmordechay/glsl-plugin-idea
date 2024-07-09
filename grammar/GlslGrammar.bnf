@@ -1153,7 +1153,7 @@ spirv_instruction_qualifier_id
 pp_statement
     ::=  (PP_PRAGMA | PP_ERROR) <<ppText>> PP_END
     |    (PP_UNDEF|PP_IFDEF|PP_IFNDEF) variable_identifier PP_END
-    |    pp_include_declaration PP_END
+    |    pp_include_declaration END_INCLUDE
     |    pp_define_declaration PP_END
     |    pp_conditional PP_END
     |    pp_version_declaration PP_END
@@ -1161,19 +1161,13 @@ pp_statement
     |    pp_line PP_END
     |    macro_literal INTCONSTANT PP_END
 
-private pp_extension
-    ::= PP_EXTENSION variable_identifier COLON ('require'|'enable'|'warn'|'disable')
-    {   pin(".*")=1   }
 
 pp_include_declaration
     ::= PP_INCLUDE (STRING_LITERAL | pp_include_brackets)
     {   pin(".*")=1  }
 
 pp_include_brackets
-    ::= LEFT_ANGLE pp_include_path (SLASH pp_include_path)* RIGHT_ANGLE
-
-pp_include_path
-    ::= variable_identifier (DOT variable_identifier)?
+    ::= LEFT_ANGLE INCLUDE_PATH RIGHT_ANGLE
 
 private pp_version_declaration
     ::= PP_VERSION INTCONSTANT ('core'|'es'|'compatibility')?
@@ -1206,6 +1200,10 @@ pp_macro_object_name
 
 pp_macro_func_name
     ::= variable_identifier
+
+private pp_extension
+    ::= PP_EXTENSION variable_identifier COLON ('require'|'enable'|'warn'|'disable')
+    {   pin(".*")=1   }
 
 macro_literal
     ::= MACRO_LINE

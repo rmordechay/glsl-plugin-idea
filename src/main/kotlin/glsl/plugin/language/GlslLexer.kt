@@ -30,6 +30,7 @@ class GlslLexer : LexerBase() {
     private val lexer = _GlslLexer()
     private val helperLexer = _GlslLexer()
     private var includeLexer: GlslLexer? = null
+
     private var myText: String = ""
     private var myBufferEnd: Int = 0
     private var myTokenType: IElementType? = null
@@ -57,6 +58,7 @@ class GlslLexer : LexerBase() {
         lexer.reset(buffer, startOffset, endOffset, initialState)
         myText = buffer.toString()
         myBufferEnd = endOffset
+        macros.clear()
         advance()
     }
 
@@ -79,6 +81,7 @@ class GlslLexer : LexerBase() {
             addMacroParamToken()
         } else if (state == MACRO_INCLUDE_STATE && myTokenType in listOf(INCLUDE_PATH, STRING_LITERAL)) {
             setIncludeLexer()
+            return
         } else if (shouldExpandInclude) {
             expandInclude()
             return
@@ -263,7 +266,7 @@ class GlslLexer : LexerBase() {
     private fun setIncludeLexer() {
         val pathString = if (tokenType == INCLUDE_PATH) tokenText else tokenText.replace("\"", "")
         val file = getVirtualFilesByName(pathString, GlobalSearchScope.allScope(GlslUtils.getProject()))
-        val fileText = file.first().readText()
+        val fileText = file.firstOrNull()?.readText() ?: return
         includeLexer = GlslLexer()
         includeLexer?.start(fileText, 0, fileText.length, YYINITIAL)
     }

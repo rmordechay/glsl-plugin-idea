@@ -40,6 +40,13 @@ abstract class GlslNamedSingleDeclaration(node: ASTNode) : GlslNamedIdentifierIm
     /**
      *
      */
+    override fun getNameIdentifier(): GlslVariableIdentifier? {
+        return getSelf().variableIdentifier
+    }
+
+    /**
+     *
+     */
     override fun getLookupIcon(): Icon {
         return AllIcons.Nodes.Variable
     }
@@ -49,13 +56,6 @@ abstract class GlslNamedSingleDeclaration(node: ASTNode) : GlslNamedIdentifierIm
      */
     override fun getAssociatedType(): GlslType? {
         return GlslType.getInstance(getSelf().typeSpecifier)
-    }
-
-    /**
-     *
-     */
-    override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
     }
 
     /**

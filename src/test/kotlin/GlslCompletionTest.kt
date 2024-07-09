@@ -8,7 +8,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         return "src/test/testData/completion"
     }
 
-    @Test
     fun testCompletionFile1() {
         myFixture.configureByFiles("CompletionFile1.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -17,7 +16,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, listOf("abs(float x)"))
     }
 
-    @Test
     fun testCompletionFile2() {
         myFixture.configureByFiles("CompletionFile2.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -25,7 +23,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertEquals(lookupElementStrings?.first().toString(), "main()")
     }
 
-    @Test
     fun testCompletionFile3() {
         myFixture.configureByFiles("CompletionFile3.geom")
         myFixture.complete(CompletionType.BASIC)
@@ -34,7 +31,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "EmitVertex()")
     }
 
-    @Test
     fun testCompletionFile4() {
         myFixture.configureByFiles("CompletionFile4.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -43,7 +39,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "while")
     }
 
-    @Test
     fun testCompletionFile5() {
         myFixture.configureByFiles("CompletionFile5.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -52,7 +47,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "switch")
     }
 
-    @Test
     fun testCompletionFile6() {
         myFixture.configureByFiles("CompletionFile6.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -61,7 +55,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertDoesntContain(lookupElementStrings!!, "switch")
     }
 
-    @Test
     fun testCompletionFile7() {
         myFixture.configureByFiles("CompletionFile7.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -70,7 +63,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertDoesntContain(lookupElementStrings!!, "while")
     }
 
-    @Test
     fun testCompletionFile8() {
         myFixture.configureByFiles("CompletionFile8.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -88,7 +80,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
 //        assertContainsElements(lookupElementStrings!!, "110", "330", "450", "460")
 //    }
 
-    @Test
     fun testCompletionFile10() {
         myFixture.configureByFiles("CompletionFile10.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -98,7 +89,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    @Test
     fun testCompletionFile11() {
         myFixture.configureByFiles("CompletionFile11.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -108,7 +98,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    @Test
     fun testCompletionFile12() {
         myFixture.configureByFiles("CompletionFile12.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -118,7 +107,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, expectedComponents)
     }
 
-    @Test
     fun testCompletionFile13() {
         myFixture.configureByFiles("CompletionFile13.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -128,7 +116,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, expectedTypeQualifiers)
     }
 
-    @Test
     fun testCompletionFile14() {
         myFixture.configureByFiles("CompletionFile14.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -138,7 +125,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertSameElements(lookupElementStrings!!, expectedTypes)
     }
 
-    @Test
     fun testCompletionFile15() {
         myFixture.configureByFiles("CompletionFile15.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -146,7 +132,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertNullOrEmpty(lookupElementStrings)
     }
 
-    @Test
     fun testCompletionFile16() {
         myFixture.configureByFiles("CompletionFile16.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -156,7 +141,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertDoesntContain(lookupElementStrings!!, typeQualifiers)
     }
 
-    @Test
     fun testCompletionFile17() {
         myFixture.configureByFiles("CompletionFile17.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -165,7 +149,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "int", "i8vec4", "inout", "invariant")
     }
 
-    @Test
     fun testCompletionFile18() {
         myFixture.configureByFiles("CompletionFile18.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -175,7 +158,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, expectedTypeQualifiers)
     }
 
-    @Test
     fun testCompletionFile19() {
         myFixture.configureByFiles("CompletionFile19.comp")
         myFixture.complete(CompletionType.BASIC)
@@ -184,7 +166,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "gl_MaxAtomicCounterBindings", "gl_MaxAtomicCounterBufferSize", "gl_MaxComputeWorkGroupSize")
     }
 
-    @Test
     fun testCompletionFile20() {
         myFixture.configureByFiles("CompletionFile20.comp")
         myFixture.complete(CompletionType.BASIC)
@@ -194,7 +175,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    @Test
     fun testCompletionFile21() {
         myFixture.configureByFiles("CompletionFile21.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -204,7 +184,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    @Test
     fun testCompletionFile22() {
         myFixture.configureByFiles("CompletionFile22.glsl")
         myFixture.complete(CompletionType.BASIC)
@@ -214,7 +193,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertSameElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    @Test
     fun testCompletionFile23() {
         myFixture.configureByFiles("CompletionFile23.glsl")
         myFixture.complete(CompletionType.BASIC)

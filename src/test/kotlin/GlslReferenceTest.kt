@@ -218,7 +218,6 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertEquals("PI", (resolve as GlslPpMacroObjectName).name)
     }
 
-    @Test
     fun testReferenceFile31() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile31.glsl")
         val resolve = reference?.resolve()
@@ -226,7 +225,6 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertEquals("f", (resolve as GlslPpMacroFuncName).name)
     }
 
-    @Test
     fun testReferenceFile32() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile32.glsl")
         val resolve = reference?.resolve()
@@ -234,7 +232,6 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertEquals("VAR", (resolve as GlslPpMacroObjectName).name)
     }
 
-    @Test
     fun testReferenceFile33() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile33.glsl")
         val resolve = reference?.resolve()

@@ -17,7 +17,6 @@ class GlslParserTest : ParsingTestCase("", "test", GlslParserDefinition()) {
         return true
     }
 
-    @Test
     fun testParserFile() {
         doTest(true)
     }

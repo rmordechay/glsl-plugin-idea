@@ -13,7 +13,6 @@ class GlslDocumentationTest : BasePlatformTestCase() {
         return "src/test/testData/documentation"
     }
 
-    @Test
     fun testDocumentationFile1() {
         myFixture.configureByFile("DocumentationFile1.glsl")
         val originalElement = myFixture.elementAtCaret as GlslSingleDeclaration
@@ -28,7 +27,6 @@ class GlslDocumentationTest : BasePlatformTestCase() {
         assertTrue(doc!!.contains("<div id=\"abs\">"))
     }
 
-    @Test
     fun testDocumentationFile2() {
         myFixture.configureByFile("DocumentationFile2.glsl")
         val originalElement = myFixture.elementAtCaret

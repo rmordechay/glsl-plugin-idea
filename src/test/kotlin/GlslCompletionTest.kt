@@ -71,7 +71,6 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "define")
     }
 
-//    @Test
 //    fun testCompletionFile9() {
 //        myFixture.configureByFiles("CompletionFile9.glsl")
 //        myFixture.complete(CompletionType.BASIC)

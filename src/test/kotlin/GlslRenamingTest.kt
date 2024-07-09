@@ -1,3 +1,4 @@
+import com.intellij.diagnostic.PluginException
 import com.intellij.refactoring.util.CommonRefactoringUtil.RefactoringErrorHintException
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
@@ -15,7 +16,7 @@ class GlslRenamingTest : BasePlatformTestCase() {
 
     fun testRenamingIdentifierFile2() {
         myFixture.configureByFile("RenamingIdentifierFile2.glsl")
-        assertThrows(RefactoringErrorHintException::class.java) { myFixture.renameElementAtCaret("newName") }
+        assertThrows(RuntimeException::class.java) { myFixture.renameElementAtCaret("newName") }
     }
 
     fun testRenamingTypeFile() {

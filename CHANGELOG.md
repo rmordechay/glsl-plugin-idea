@@ -1,5 +1,12 @@
 # GLSL Plugin Changelog
 
+## [1.1.0]
+### Updated
+- Macro #define support changed completely and should work much better now.
+### Deleted
+- #include support didn't work well and was also very risky in case of recursive imports. 
+Disabled for now. Next release should have a better support.
+
 ## [1.0.74]
 ### Updated
 - IDE build version.

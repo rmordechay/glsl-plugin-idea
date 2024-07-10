@@ -54,7 +54,6 @@ class GlslFormattingModelBuilder : FormattingModelBuilder {
             .between(PP_VERSION, INTCONSTANT).spaces(1)
             .afterInside(LEFT_ANGLE, PP_INCLUDE_DECLARATION).none()
             .beforeInside(RIGHT_ANGLE, PP_INCLUDE_DECLARATION).none()
-            .aroundInside(SLASH, PP_INCLUDE_DECLARATION).none()
             .around(TYPE_QUALIFIER).spaces(1)
             .between(RIGHT_PAREN, TYPE_QUALIFIER).spaces(1)
             .between(RIGHT_PAREN, TYPE_QUALIFIER).spaces(1)

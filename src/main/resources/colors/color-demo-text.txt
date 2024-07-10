@@ -1,4 +1,7 @@
 <pp>#version</pp> 330 core
+
+#include "path/to/file.glsl"
+
 layout (<v>location</v> = 0) in vec3 <v>aPos</v>;
 out vec3 <v>v_uv</v>;
 
@@ -8,6 +11,7 @@ out vec3 <v>v_uv</v>;
 uniform mat4 <v>model</v>;
 uniform mat4 <v>view</v>;
 uniform mat4 <v>projection</v>;
+
 
 /**
 * Multi line comment
@@ -24,7 +28,6 @@ struct <udt>VertexInput</udt> {
 
 
 void <fn>main</fn>() {
-    "Strings?!"
     for (int <v>i</v> = 0; 1 >= 0; <v>i</v>++) {
         if (<v>i</v> > 0) {
             float <v>l</v> = 0.0f;

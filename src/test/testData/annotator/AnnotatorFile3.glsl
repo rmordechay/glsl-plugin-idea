@@ -1,3 +1,5 @@
-#define DUP 2
-#define DUP 2
-int a = DUP;
+#define cloud 0.15
+#ifdef cloud
+int t3 = 2;
+#endif
+float D = 2;

@@ -43,6 +43,15 @@ int a = 1 OP(+) 1;
 
 BINDLESS_TEX(sampler2D, u_global_textures)
 
+#define ifdef_dummy 0.15
+#ifdef ifdef_dummy
+int def_dummy = 2;
+#endif
+
+#define ifdef_dummy2 0.15
+#ifdef ifdef_dummy2
+int def_dummy2 = 2;
+#endif
 
 ;;;
 // One line comment

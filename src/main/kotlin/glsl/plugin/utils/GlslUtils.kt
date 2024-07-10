@@ -11,7 +11,10 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.PsiElement
+import com.intellij.psi.search.FilenameIndex.getVirtualFilesByName
+import com.intellij.psi.search.GlobalSearchScope.allScope
 import com.intellij.psi.tree.TokenSet
+import com.intellij.psi.util.PsiUtilCore
 import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.GlslIdentifier
 import glsl.psi.interfaces.GlslFunctionPrototype
@@ -146,6 +149,18 @@ object GlslUtils {
                 EditorModificationUtil.moveCaretRelatively(context.editor, +1)
             }
         }
+    }
+
+    /**
+     *
+     */
+    @JvmStatic
+    fun getPsiFile(path: String, project: Project?): GlslFile? {
+        if (project == null) return null
+        val virtualFilesByName = getVirtualFilesByName(path, allScope(project))
+        if (virtualFilesByName.isEmpty()) return null
+        val psiFile = PsiUtilCore.getPsiFile(project, virtualFilesByName.first()) as GlslFile
+        return psiFile
     }
 
     /**

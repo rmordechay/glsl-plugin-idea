@@ -1,5 +1,9 @@
 # GLSL Plugin Changelog
 
+## [1.1.1]
+### Updated
+- Re-enabled #include support
+
 ## [1.1.0]
 ### Updated
 - Macro #define support changed completely and should work much better now.

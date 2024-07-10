@@ -10,16 +10,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
-import com.intellij.psi.search.FilenameIndex.getVirtualFilesByName
-import com.intellij.psi.search.GlobalSearchScope.allScope
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
-import com.intellij.psi.util.PsiUtilCore.getPsiFile
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
-import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.psi.GlslIdentifierImpl
 import glsl.plugin.psi.GlslType
@@ -31,7 +27,7 @@ import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
 import glsl.plugin.utils.GlslElementManipulator
 import glsl.plugin.utils.GlslPsiUtils.getPostfixIdentifier
-import glsl.plugin.utils.GlslUtils
+import glsl.plugin.utils.GlslUtils.getPsiFile
 import glsl.psi.interfaces.*
 
 
@@ -53,6 +49,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private var currentFilterType = EQUALS
     private val resolvedReferences = arrayListOf<GlslNamedElement>()
     private var includeRecursionLevel = 0
+    private var project: Project? = null
 
     private val resolver = AbstractResolver<GlslReference, GlslNamedElement> { reference, _ ->
         reference.doResolve()
@@ -64,8 +61,8 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      */
     override fun resolve(): GlslNamedElement? {
         if (!shouldResolve()) return null
-        val project = GlslUtils.getProject()
-        val resolveCache = ResolveCache.getInstance(project)
+        if (project == null) project = element.project
+        val resolveCache = ResolveCache.getInstance(project!!)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
 
@@ -327,16 +324,15 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         } else {
             return
         }
-        val project = GlslUtils.getProject()
         if (includeRecursionLevel >= INCLUDE_RECURSION_LIMIT) {
             handleRecursiveInclude(project, path)
         }
-        val virtualFilesByName = getVirtualFilesByName(path, allScope(project))
-        if (virtualFilesByName.isEmpty()) return
-        val psiFile = getPsiFile(project, virtualFilesByName.first()) as GlslFile
-        val externalDeclarations = psiFile.childrenOfType<GlslExternalDeclaration>()
-        for (externalDeclaration in externalDeclarations) {
-            lookupInExternalDeclaration(externalDeclaration)
+        val psiFile = getPsiFile(path, project)
+        val externalDeclarations = psiFile?.childrenOfType<GlslExternalDeclaration>()
+        if (externalDeclarations != null) {
+            for (externalDeclaration in externalDeclarations) {
+                lookupInExternalDeclaration(externalDeclaration)
+            }
         }
         includeRecursionLevel--
     }
@@ -344,7 +340,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     /**
      *
      */
-    private fun handleRecursiveInclude(project: Project, path: String) {
+    private fun handleRecursiveInclude(project: Project?, path: String) {
         val notification = Notification(
             "Find Problems", "Recursive import",
             "Some imports are calling each other in $path", NotificationType.ERROR

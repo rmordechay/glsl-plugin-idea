@@ -1,10 +1,8 @@
 package glsl.plugin.language
 
 import com.intellij.lexer.LexerBase
-import com.intellij.openapi.vfs.readText
+import com.intellij.openapi.project.Project
 import com.intellij.psi.TokenType.WHITE_SPACE
-import com.intellij.psi.search.FilenameIndex.getVirtualFilesByName
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.containers.addIfNotNull
 import glsl.GlslTypes.*
@@ -12,7 +10,6 @@ import glsl._GlslLexer
 import glsl._GlslLexer.*
 import glsl.plugin.language.GlslLanguage.Companion.LEFT_PAREN_MACRO_CALL
 import glsl.plugin.language.GlslLanguage.Companion.RIGHT_PAREN_MACRO_CALL
-import glsl.plugin.utils.GlslUtils
 
 /**
  *
@@ -26,10 +23,9 @@ class GlslMacro(val name: String, val macroDefineType: IElementType) {
 /**
  *
  */
-class GlslLexer : LexerBase() {
+class GlslLexer(private val project: Project?) : LexerBase() {
     private val lexer = _GlslLexer()
     private val helperLexer = _GlslLexer()
-    private var includeLexer: GlslLexer? = null
 
     private var myText: String = ""
     private var myBufferEnd: Int = 0
@@ -79,16 +75,15 @@ class GlslLexer : LexerBase() {
         } else if (inMacroFuncCall) {
             addMacroParamToken()
         }
-//        if (state == MACRO_INCLUDE_STATE && myTokenType in listOf(INCLUDE_PATH, STRING_LITERAL)) {
-//            setIncludeLexer()
-//            return
-//        } else if (shouldExpandInclude) {
-//            expandInclude()
-//            return
-//        } else if (myTokenType == END_INCLUDE) {
-//            shouldExpandInclude = true
-//            return
-//        }
+        if (state == MACRO_INCLUDE_STATE && myTokenType in listOf(INCLUDE_PATH, STRING_LITERAL)) {
+//            val psiFile = getPsiFile(tokenText, project)
+            return
+        } else if (shouldExpandInclude) {
+            return
+        } else if (myTokenType == END_INCLUDE) {
+            shouldExpandInclude = true
+            return
+        }
 
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
             macroDefine = GlslMacro(tokenText, getMacroType())
@@ -257,33 +252,6 @@ class GlslLexer : LexerBase() {
             inMacroFuncCall = false
             macroFunc = null
             myTokenType = RIGHT_PAREN_MACRO_CALL
-        }
-    }
-
-    /**
-     *
-     */
-    private fun setIncludeLexer() {
-        val pathString = if (tokenType == INCLUDE_PATH) tokenText else tokenText.replace("\"", "")
-        val file = getVirtualFilesByName(pathString, GlobalSearchScope.allScope(GlslUtils.getProject()))
-        val fileText = file.firstOrNull()?.readText() ?: return
-        includeLexer = GlslLexer()
-        includeLexer?.start(fileText, 0, fileText.length, YYINITIAL)
-    }
-
-    /**
-     *
-     */
-    private fun expandInclude() {
-        val nextToken = includeLexer?.tokenType
-        if (nextToken == null) {
-            shouldExpandInclude = false
-            includeLexer = null
-            advanceLexer()
-        } else {
-            myTokenType = nextToken
-            myTokenText = includeLexer?.tokenText ?: ""
-            includeLexer?.advance()
         }
     }
 

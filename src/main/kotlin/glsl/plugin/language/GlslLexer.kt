@@ -1,7 +1,6 @@
 package glsl.plugin.language
 
 import com.intellij.lexer.LexerBase
-import com.intellij.openapi.project.Project
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.containers.addIfNotNull
@@ -23,7 +22,7 @@ class GlslMacro(val name: String, val macroDefineType: IElementType) {
 /**
  *
  */
-class GlslLexer(private val project: Project?) : LexerBase() {
+class GlslLexer : LexerBase() {
     private val lexer = _GlslLexer()
     private val helperLexer = _GlslLexer()
 
@@ -74,15 +73,6 @@ class GlslLexer(private val project: Project?) : LexerBase() {
             expandMacro()
         } else if (inMacroFuncCall) {
             addMacroParamToken()
-        }
-        if (state == MACRO_INCLUDE_STATE && myTokenType in listOf(INCLUDE_PATH, STRING_LITERAL)) {
-//            val psiFile = getPsiFile(tokenText, project)
-            return
-        } else if (shouldExpandInclude) {
-            return
-        } else if (myTokenType == END_INCLUDE) {
-            shouldExpandInclude = true
-            return
         }
 
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {

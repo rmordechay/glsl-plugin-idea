@@ -15,7 +15,7 @@ int c = VAR2( 1   ,   2 )
 #include "file.h"
 __LINE__ 10
 
-#include < shaders / func.frag >
+#include < shaders/func.frag >
 
 #define f(a, b) a + \
 b

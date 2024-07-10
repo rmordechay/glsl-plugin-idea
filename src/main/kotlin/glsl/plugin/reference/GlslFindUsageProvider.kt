@@ -21,7 +21,7 @@ class GlslFindUsageProvider : FindUsagesProvider {
     */
     override fun getWordsScanner(): WordsScanner {
         return DefaultWordsScanner(
-            GlslLexer(null),
+            GlslLexer(),
             TokenSet.create(GlslTypes.IDENTIFIER, GlslTypes.MACRO_OBJECT, GlslTypes.MACRO_FUNCTION),
             TokenSet.create(GlslTypes.LINE_COMMENT, GlslTypes.MULTILINE_COMMENT),
             TokenSet.EMPTY

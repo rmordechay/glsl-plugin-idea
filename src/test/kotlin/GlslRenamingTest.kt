@@ -1,5 +1,6 @@
 import com.intellij.diagnostic.PluginException
 import com.intellij.refactoring.util.CommonRefactoringUtil.RefactoringErrorHintException
+import com.intellij.testFramework.UsefulTestCase
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class GlslRenamingTest : BasePlatformTestCase() {

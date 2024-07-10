@@ -9,7 +9,6 @@ class GlslIncludeTest : BasePlatformTestCase() {
         return "src/test/testData/include"
     }
 
-    @Test
     fun testReferenceFile1() {
         myFixture.configureByFiles("IncludeFile2.glsl")
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile1.glsl")
@@ -18,13 +17,11 @@ class GlslIncludeTest : BasePlatformTestCase() {
         assertEquals("b", (resolve as GlslSingleDeclaration).name)
     }
 
-    @Test
     fun testReferenceFile2() {
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile3.glsl")
         assertNoThrowable { reference?.resolve() }
     }
 
-    @Test
     fun testReferenceFile3() {
         myFixture.configureByFiles("IncludeFile4.glsl", "IncludeFile5.glsl")
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile6.glsl")

@@ -1,6 +1,8 @@
 # GLSL Plugin Changelog
 
 ## [1.1.1]
+### Added
+- Language injection to HTML script tag
 ### Updated
 - Re-enabled #include support
 

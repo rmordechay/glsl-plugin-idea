@@ -5,7 +5,6 @@
 
 #include <shaders/func.frag>
 #include <shaders/func>
-#include <shader.glsl>
 #include <shader>
 #include "file.h"
 
@@ -15,6 +14,9 @@ int dummy = f(1, 2);
 
 #define f2(a, b) a + b
 int dummy = f2(g(1, c), h(2, 3));
+
+#define DUP 2
+#define DUP 2
 
 #define X 2
 #define Y X

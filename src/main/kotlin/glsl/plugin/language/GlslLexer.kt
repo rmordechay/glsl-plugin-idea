@@ -249,7 +249,7 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun isMacroCallStart(): Boolean {
-        return myTokenType == IDENTIFIER && myTokenText in macros
+        return state != MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER && myTokenText in macros
     }
 
     /**

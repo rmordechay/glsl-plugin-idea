@@ -1,5 +1,6 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.psi.interfaces.GlslSingleDeclaration
+import glsl.psi.interfaces.GlslStructDeclarator
 import org.junit.Test
 
 class GlslLanguageInjectionTest : BasePlatformTestCase() {
@@ -12,6 +13,6 @@ class GlslLanguageInjectionTest : BasePlatformTestCase() {
         val reference = myFixture.getReferenceAtCaretPosition("LanguageInjectionFile1.html")
         val resolve = reference?.resolve()
         assertInstanceOf(resolve, GlslSingleDeclaration::class.java)
-        assertEquals("projMatrix", resolve?.text)
+        assertEquals("projMatrix", (resolve as GlslSingleDeclaration).name)
     }
 }

@@ -15,6 +15,10 @@ int dummy = f(1, 2);
 #define f2(a, b) a + b
 int dummy = f2(g(1, c), h(2, 3));
 
+#define PI 3.14
+#define func_macro_with_param(a, b) a + b
+int ab = func_macro_with_param(c, PI);
+
 #define DUP 2
 #define DUP 2
 

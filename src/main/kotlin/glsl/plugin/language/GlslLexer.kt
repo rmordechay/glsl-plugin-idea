@@ -71,6 +71,7 @@ class GlslLexer : LexerBase() {
             if (paramExpansionIter == null) expandMacro()
         } else if (macroExpansion != null) {
             expandMacro()
+            if (inMacroFuncCall) addMacroParamToken()
         } else if (inMacroFuncCall) {
             addMacroParamToken()
         }

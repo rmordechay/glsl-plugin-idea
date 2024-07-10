@@ -5,6 +5,9 @@
 - Language injection to HTML script tag
 ### Updated
 - Re-enabled #include support
+### Fixed
+- #ifdef directive lexing bug
+- Macro define already exists threw an error
 
 ## [1.1.0]
 ### Updated

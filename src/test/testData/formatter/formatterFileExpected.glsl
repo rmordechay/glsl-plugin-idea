@@ -8,6 +8,10 @@ int c = VAR2(1, 2)
 * Multi line comment
 */
 
+#define mouse vec2(-iTime)
+int mouse2 = vec2(-iTime / 148., cos(iTime) / 24.);
+int mouse3 = vec2(-iTime);
+
 #define BINDLESS_TEX(ty, name) \
  layout (set = BINDLESS_SET, binding = BINDLESS_TEX_BINDING) \
  uniform ty name[BINDLESS_TEX_COUNT];

@@ -1,5 +1,6 @@
 package glsl.plugin.utils
 
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil.findChildOfType
 import com.intellij.psi.util.PsiTreeUtil.findChildrenOfType
@@ -8,6 +9,7 @@ import glsl.data.GlslDefinitions.ShaderType.*
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.utils.GlslUtils.getResourceFileAsString
 import glsl.psi.interfaces.*
 import java.util.*
 
@@ -23,8 +25,8 @@ object GlslBuiltinUtils {
      *
      */
     private fun getBuiltinFile(fileName: String): GlslFile? {
-        val project = GlslUtils.getProject()
-        val funcsString = GlslUtils.getResourceFileAsString("builtin-objects/$fileName.glsl") ?: return null
+        val project = ProjectManager.getInstance().defaultProject
+        val funcsString = getResourceFileAsString("builtin-objects/$fileName.glsl") ?: return null
         val glslFile = PsiFileFactory.getInstance(project)
             .createFileFromText(fileName, GlslFileType(), funcsString) as? GlslFile
         glslFile?.viewProvider?.virtualFile?.isWritable = false

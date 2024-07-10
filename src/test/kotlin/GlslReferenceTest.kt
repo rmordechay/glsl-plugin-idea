@@ -1,10 +1,27 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.psi.interfaces.*
+import org.junit.Test
 
 class GlslReferenceTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {
         return "src/test/testData/reference"
+    }
+
+    fun testFindUsageFile1() {
+        val testFindUsages = myFixture.testFindUsages("FindUsageFile1.glsl")
+        assertEquals(3, testFindUsages.size)
+    }
+
+    fun testFindUsageFile2() {
+        val testFindUsages = myFixture.testFindUsages("FindUsageFile2.glsl")
+        assertEquals(2, testFindUsages.size)
+    }
+
+    @Test
+    fun testFindUsageFile3() {
+        val testFindUsages = myFixture.testFindUsages("FindUsageFile3.glsl")
+        assertEquals(3, testFindUsages.size)
     }
 
     fun testReferenceFile1() {

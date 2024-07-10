@@ -30,14 +30,6 @@ object GlslUtils {
     /**
      *
      */
-    fun getProject(): Project {
-        val openProjects = ProjectManager.getInstance().openProjects.first()
-        return openProjects
-    }
-
-    /**
-     *
-     */
     @JvmStatic
     fun getResourceFileAsString(path: String): String? {
         val file = GlslUtils::class.java.classLoader.getResourceAsStream(path)

@@ -8,6 +8,7 @@
 ### Fixed
 - #ifdef directive lexing bug
 - Macro define already exists threw an error
+- Macro function call with param that are themselves macros threw an error 
 
 ## [1.1.0]
 ### Updated

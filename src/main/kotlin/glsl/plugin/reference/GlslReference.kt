@@ -325,7 +325,8 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
             return
         }
         if (includeRecursionLevel >= INCLUDE_RECURSION_LIMIT) {
-            handleRecursiveInclude(project, path)
+            includeRecursionLevel = 0
+            throw StopLookupException()
         }
         val psiFile = getPsiFile(path, project)
         val externalDeclarations = psiFile?.childrenOfType<GlslExternalDeclaration>()
@@ -335,19 +336,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
             }
         }
         includeRecursionLevel--
-    }
-
-    /**
-     *
-     */
-    private fun handleRecursiveInclude(project: Project?, path: String) {
-        val notification = Notification(
-            "Find Problems", "Recursive import",
-            "Some imports are calling each other in $path", NotificationType.ERROR
-        )
-        Notifications.Bus.notify(notification, project)
-        includeRecursionLevel = 0
-        throw StopLookupException()
     }
 
     /**

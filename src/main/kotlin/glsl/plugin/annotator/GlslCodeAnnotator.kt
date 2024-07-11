@@ -21,9 +21,6 @@ class GlslCodeAnnotator : Annotator {
      */
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
-            is GlslVariableIdentifier -> {
-
-            }
             is GlslSingleDeclaration -> {
 
             }
@@ -36,7 +33,7 @@ class GlslCodeAnnotator : Annotator {
     /**
      *
      */
-    private fun annotateFunctionCall(element: GlslFunctionCall, holder: AnnotationHolder) {
+    private fun annotateIncorrectParamCount(element: GlslFunctionCall, holder: AnnotationHolder) {
         val funcReference = element.variableIdentifier?.reference ?: return
         funcReference.resolve()
         if (funcReference.resolvedReferences.isEmpty()) return
@@ -51,6 +48,13 @@ class GlslCodeAnnotator : Annotator {
         }
         val textRange = TextRange(actualParamsExprs.first().startOffset, actualParamsExprs.last().endOffset)
         setHighlightingError(textRange, holder, "Incorrect number of parameters")
+    }
+
+    /**
+     *
+     */
+    private fun annotateFunctionCall(element: GlslFunctionCall, holder: AnnotationHolder) {
+        annotateIncorrectParamCount(element, holder)
     }
 
     /**

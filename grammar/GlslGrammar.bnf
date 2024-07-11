@@ -869,6 +869,7 @@ private parameter_type_specifier
 
 function_call
     ::= function_call_or_method
+    {   generateTokenAccessors=true    }
 
 private function_call_or_method
     ::= function_call_generic

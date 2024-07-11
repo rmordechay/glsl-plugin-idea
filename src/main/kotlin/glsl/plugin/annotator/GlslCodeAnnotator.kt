@@ -11,7 +11,6 @@ import com.intellij.refactoring.suggested.startOffset
 import glsl.plugin.psi.named.GlslNamedFunctionHeader
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslSingleDeclaration
-import glsl.psi.interfaces.GlslVariableIdentifier
 
 
 class GlslCodeAnnotator : Annotator {
@@ -46,7 +45,12 @@ class GlslCodeAnnotator : Annotator {
                 return
             }
         }
-        val textRange = TextRange(actualParamsExprs.first().startOffset, actualParamsExprs.last().endOffset)
+        val textRange: TextRange
+        if (actualParamsExprs.isNotEmpty()) {
+            textRange = TextRange(actualParamsExprs.first().startOffset, actualParamsExprs.last().endOffset)
+        } else {
+            textRange = TextRange(element.leftParen.startOffset, element.rightParen.startOffset)
+        }
         setHighlightingError(textRange, holder, "Incorrect number of parameters")
     }
 

@@ -10,6 +10,7 @@
 - Macro define already exists threw an error
 - Macro function call with param that are themselves macros threw an error
 - Builtin shader variables coloring didn't work
+- Live template of for loops didn't automatically
 
 ## [1.1.0]
 ### Updated

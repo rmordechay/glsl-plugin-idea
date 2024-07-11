@@ -1,8 +1,8 @@
 <templateSet group="GLSL">
-    <template name="for" value="for (int $INDEX$ = 0; $COPY_INDEX$ &lt; $UPPER_BOUND$; $COPY_INDEX$++) {&#10;   $END$&#10;}" description="" toReformat="false" toShortenFQNames="false">
+    <template name="for" value="for ($INDEX$; $UPPER_BOUND$; $COPY_INDEX$++) {&#10;   $END$&#10;}" description="for (int variable; condition; variable++)" toReformat="false" toShortenFQNames="false">
         <variable name="INDEX" expression="" defaultValue="" alwaysStopAt="true"/>
-        <variable name="COPY_INDEX" expression="" defaultValue="" alwaysStopAt="true"/>
         <variable name="UPPER_BOUND" expression="" defaultValue="" alwaysStopAt="true"/>
+        <variable name="COPY_INDEX" expression="" defaultValue="" alwaysStopAt="true"/>
         <context>
             <option name="GLSL" value="true"/>
         </context>

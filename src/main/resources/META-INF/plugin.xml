@@ -62,7 +62,7 @@
 
         <!--  Live Template  -->
         <defaultLiveTemplates           file="/live-templates/glsl-live-template.xml"/>
-        <liveTemplateContext            implementation="glsl.plugin.utils.GlslContext" contextId="Glsl"/>
+        <liveTemplateContext            implementation="glsl.plugin.utils.GlslTemplateContext" contextId="GLSL"/>
 
         <!--  Language Injection  -->
         <multiHostInjector              implementation="glsl.plugin.features.GlslMultiHostInjector"/>

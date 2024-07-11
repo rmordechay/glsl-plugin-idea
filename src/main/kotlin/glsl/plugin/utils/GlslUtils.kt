@@ -3,20 +3,15 @@ package glsl.plugin.utils
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.codeInsight.template.TemplateActionContext
-import com.intellij.codeInsight.template.TemplateContextType
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.FilenameIndex.getVirtualFilesByName
 import com.intellij.psi.search.GlobalSearchScope.allScope
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiUtilCore
 import glsl.plugin.language.GlslFile
-import glsl.plugin.psi.GlslIdentifier
 import glsl.psi.interfaces.GlslFunctionPrototype
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -172,20 +167,3 @@ object GlslUtils {
     }
 }
 
-/**
- *
- */
-class GlslElementManipulator : AbstractElementManipulator<GlslIdentifier>() {
-    /**
-    *
-    */
-    override fun handleContentChange(element: GlslIdentifier, range: TextRange, newContent: String?): GlslIdentifier {
-        return element.replaceElementName(newContent) ?: element
-    }
-}
-
-class GlslContext : TemplateContextType( "GLSL") {
-    override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
-        return templateActionContext.file is GlslFile
-    }
-}

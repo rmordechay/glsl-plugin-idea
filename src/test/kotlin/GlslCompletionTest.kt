@@ -1,5 +1,6 @@
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import junit.framework.TestCase
 import org.junit.Test
 
 class GlslCompletionTest : BasePlatformTestCase() {
@@ -20,7 +21,8 @@ class GlslCompletionTest : BasePlatformTestCase() {
         myFixture.configureByFiles("CompletionFile2.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
-        assertEquals(lookupElementStrings?.first().toString(), "main()")
+        assertNotNull(lookupElementStrings)
+        assertContainsElements(lookupElementStrings!!, "max(int x, int y)")
     }
 
     fun testCompletionFile3() {

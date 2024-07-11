@@ -6,6 +6,7 @@
 ### Updated
 - Re-enabled #include support
 ### Fixed
+- CRITICAL - lexer broke after renaming
 - #ifdef directive lexing bug
 - Macro define already exists threw an error
 - Macro function call with param that are themselves macros threw an error

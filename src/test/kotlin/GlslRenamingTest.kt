@@ -31,7 +31,7 @@ class GlslRenamingTest : BasePlatformTestCase() {
 
     fun testRenamingIdentifier5() {
         myFixture.configureByFile("RenamingIdentifierFile5.glsl")
-        myFixture.renameElementAtCaret("f_updated")
+        myFixture.renameElementAtCaret("NewName")
         myFixture.checkResultByFile("RenamingIdentifierFile5Expected.glsl")
     }
 

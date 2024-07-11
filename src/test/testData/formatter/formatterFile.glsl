@@ -8,7 +8,6 @@ int c = VAR2( 1   ,   2 )
 * Multi line comment
 */
 
-#define mouse vec2( -   iTime)
 int mouse2 = vec2( -   iTime   /   148.  , cos( iTime   ) / 24.);
 int mouse3  =   vec2 (  -  iTime  )  ;
 

@@ -23,10 +23,10 @@ compileKotlin {
 }
 
 intellij {
-//    version = 'IC-2022.3'
+//    version = 'IC-2024.1.4'
     version = 'IU-2024.1.4'
     updateSinceUntilBuild = true
-    plugins = ['JavaScript']
+//    plugins = ['JavaScript']
 }
 
 runIde {

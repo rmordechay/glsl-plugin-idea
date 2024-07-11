@@ -6,8 +6,10 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
+import glsl.GlslTypes.IDENTIFIER
 import glsl.plugin.psi.named.GlslNamedFunctionHeader
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslSingleDeclaration
@@ -34,8 +36,9 @@ class GlslCodeAnnotator : Annotator {
      *
      */
     private fun annotateIncorrectParamCount(element: GlslFunctionCall, holder: AnnotationHolder) {
-
-        val funcReference = element.variableIdentifier?.reference ?: return
+        val variableIdentifier = element.variableIdentifier
+        if (variableIdentifier?.firstChild.elementType != IDENTIFIER) return
+        val funcReference = variableIdentifier?.reference ?: return
         funcReference.resolve()
         if (funcReference.resolvedReferences.isEmpty()) return
         val actualParamsExprs = element.exprNoAssignmentList

@@ -14,6 +14,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import glsl.GlslTypes.*
+import glsl.data.GlslTokenSets.COMMENTS
 
 
 /**
@@ -75,7 +76,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun getCommentTokens(): TokenSet {
-        return TokenSet.create(LINE_COMMENT, MULTILINE_COMMENT)
+        return COMMENTS
     }
 
     /**

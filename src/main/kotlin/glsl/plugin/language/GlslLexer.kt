@@ -80,6 +80,8 @@ class GlslLexer : LexerBase() {
             addMacroParamToken()
         }
 
+//        if (state == MACRO_IDENTIFIER_STATE) {
+//            if (myTokenType !in listOf(IDENTIFIER, WHITE_SPACE)) lexer.yybegin(MACRO_BODY_STATE)
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
             val macroType = getMacroType() ?: return
             macroDefine = GlslMacro(tokenText, macroType)

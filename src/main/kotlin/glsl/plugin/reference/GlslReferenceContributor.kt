@@ -36,9 +36,8 @@ class GlslReferenceContributor : PsiReferenceContributor() {
      *
      */
     inner class GlslReferenceProvider : PsiReferenceProvider() {
-
         override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-            element as GlslIdentifierImpl
+            if (element !is GlslIdentifierImpl) return emptyArray()
             val range = TextRange(0, element.name.length)
             return arrayOf(GlslReference(element, range))
         }

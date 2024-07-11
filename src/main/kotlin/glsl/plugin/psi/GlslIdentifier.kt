@@ -64,7 +64,11 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
     *
     */
     override fun getName(): String {
-        return node.text.replace("IntellijIdeaRulezzz", "")
+        val text = node.text
+        if (text == "IntellijIdeaRulezzz") {
+            return text.replace("IntellijIdeaRulezzz", "")
+        }
+        return text
     }
 
     /**

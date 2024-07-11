@@ -1,3 +1,7 @@
-#define PI 3.14
-#define f(a, b) a + b
-int ab = f(c, PI);
+int roi(int a) {
+    return a;
+}
+
+void main() {
+    int a = normalize(2, 3);
+}

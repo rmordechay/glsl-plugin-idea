@@ -1,9 +1,6 @@
 package glsl.plugin.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -43,9 +40,7 @@ private const val INCLUDE_RECURSION_LIMIT = 1000
 /**
  *
  */
-class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRange) :
-    PsiReferenceBase<GlslIdentifier>(element, textRange) {
-
+class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
     private var currentFilterType = EQUALS
     private val resolvedReferences = arrayListOf<GlslNamedElement>()
     private var includeRecursionLevel = 0
@@ -61,7 +56,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
      */
     override fun resolve(): GlslNamedElement? {
         if (!shouldResolve()) return null
-        if (project == null) project = element.project
+        project = element.project
         val resolveCache = ResolveCache.getInstance(project!!)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
@@ -199,35 +194,10 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (funcCall !is GlslFunctionCall) return
         val elementName = element.name
         val builtinFuncs = getBuiltinFuncs()
-        if (builtinFuncs.containsKey(elementName)) {
-            lookupInBuiltinFuncs(builtinFuncs[elementName]!!, funcCall)
-        }
-    }
-
-    /**
-     *
-     */
-    private fun lookupInBuiltinFuncs(funcs: List<GlslFunctionPrototype>, funcCall: GlslFunctionCall) {
-        val exprList = funcCall.exprNoAssignmentList
-        for (func in funcs) {
-            val paramsDeclarators = func.funcHeaderWithParams?.parameterDeclaratorList ?: emptyList()
-            if (paramsDeclarators.isEmpty() && exprList.isEmpty()) {
-                findReferenceInElement(func.functionHeader)
-                return
-            }
-            if (paramsDeclarators.size != exprList.size) continue
-            var matchedArgs = 0
-            paramsDeclarators.zip(exprList).forEach { (paramDeclarator, expr) ->
-                val callerType = expr.getExprType()
-                val definitionType = paramDeclarator.getAssociatedType() ?: return@forEach
-                if (callerType?.getTypeText() == definitionType.getTypeText()) {
-                    matchedArgs += 1
-                } else {
-                    return@forEach
-                }
-            }
-            if (matchedArgs == paramsDeclarators.size) {
-                findReferenceInElement(func.functionHeader)
+        if (!builtinFuncs.containsKey(elementName)) return
+        for (func in builtinFuncs) {
+            for (f in func.value) {
+                findReferenceInElement(f.functionHeader)
             }
         }
     }

@@ -28,7 +28,7 @@ class GlslCodeAnnotator : Annotator {
 
             }
             is GlslFunctionCall -> {
-
+                annotateFunctionCall(element, holder)
             }
         }
     }
@@ -37,20 +37,26 @@ class GlslCodeAnnotator : Annotator {
      *
      */
     private fun annotateFunctionCall(element: GlslFunctionCall, holder: AnnotationHolder) {
-        val resolvedFunction = element.variableIdentifier?.reference?.resolve() ?: return
-        val functionHeader = resolvedFunction as? GlslNamedFunctionHeader ?: return
-        val parameterDeclarators = functionHeader.getParameterDeclarators()
-        val paramExprList = element.exprNoAssignmentList
-        if (parameterDeclarators.count() != paramExprList.count()) {
-            val textRange = TextRange(paramExprList.first().startOffset, paramExprList.last().endOffset)
-            setHighlightingError(textRange, holder, "Incorrect number of parameters")
+        val funcReference = element.variableIdentifier?.reference ?: return
+        funcReference.resolve()
+        if (funcReference.resolvedReferences.isEmpty()) return
+        val actualParamsExprs = element.exprNoAssignmentList
+        val actualParamCount = actualParamsExprs.count()
+        for (reference in funcReference.resolvedReferences) {
+            val functionHeader = reference as? GlslNamedFunctionHeader ?: continue
+            val parameterDeclarators = functionHeader.getParameterDeclarators()
+            if (parameterDeclarators.count() == actualParamCount) {
+                return
+            }
         }
+        val textRange = TextRange(actualParamsExprs.first().startOffset, actualParamsExprs.last().endOffset)
+        setHighlightingError(textRange, holder, "Incorrect number of parameters")
     }
 
     /**
      *
      */
-    fun setHighlightingError(element: PsiElement?, holder: AnnotationHolder, message: String) {
+    private fun setHighlightingError(element: PsiElement?, holder: AnnotationHolder, message: String) {
         if (element == null) return
         holder.newAnnotation(HighlightSeverity.ERROR, message)
             .highlightType(ProblemHighlightType.GENERIC_ERROR)
@@ -61,7 +67,7 @@ class GlslCodeAnnotator : Annotator {
     /**
      *
      */
-    fun setHighlightingError(range: TextRange, holder: AnnotationHolder, message: String) {
+    private fun setHighlightingError(range: TextRange, holder: AnnotationHolder, message: String) {
         holder.newAnnotation(HighlightSeverity.ERROR, message)
             .highlightType(ProblemHighlightType.GENERIC_ERROR)
             .range(range)

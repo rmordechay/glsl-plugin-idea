@@ -1,6 +1,3 @@
-import com.intellij.diagnostic.PluginException
-import com.intellij.refactoring.util.CommonRefactoringUtil.RefactoringErrorHintException
-import com.intellij.testFramework.UsefulTestCase
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class GlslRenamingTest : BasePlatformTestCase() {
@@ -9,32 +6,44 @@ class GlslRenamingTest : BasePlatformTestCase() {
         return "src/test/testData/renaming"
     }
 
-    fun testRenamingIdentifierFile1() {
+    fun testRenamingIdentifier1() {
         myFixture.configureByFile("RenamingIdentifierFile1.glsl")
         myFixture.renameElementAtCaret("newName")
-        myFixture.checkResultByFile("RenamingIdentifierExpectedFile1.glsl")
+        myFixture.checkResultByFile("RenamingIdentifierFile1Expected.glsl")
     }
 
-    fun testRenamingIdentifierFile2() {
+    fun testRenamingIdentifier2() {
         myFixture.configureByFile("RenamingIdentifierFile2.glsl")
         assertThrows(RuntimeException::class.java) { myFixture.renameElementAtCaret("newName") }
     }
 
-    fun testRenamingTypeFile() {
-        myFixture.configureByFile("RenamingTypeFile.glsl")
-        myFixture.renameElementAtCaret("NewName")
-        myFixture.checkResultByFile("RenamingTypeExpectedFile.glsl")
-    }
-
-    fun testRenamingMacroObjectFile() {
-        myFixture.configureByFile("RenamingMacroObjectFile.glsl")
-        myFixture.renameElementAtCaret("VAR_UPDATED")
-        myFixture.checkResultByFile("RenamingMacroObjectExpectedFile.glsl")
-    }
-
-    fun testRenamingMacroFuncFile() {
-        myFixture.configureByFile("RenamingMacroFuncFile.glsl")
+    fun testRenamingIdentifier3() {
+        myFixture.configureByFile("RenamingIdentifierFile3.glsl")
         myFixture.renameElementAtCaret("f_updated")
-        myFixture.checkResultByFile("RenamingMacroFuncExpectedFile.glsl")
+        myFixture.checkResultByFile("RenamingIdentifierFile3Expected.glsl")
+    }
+
+    fun testRenamingIdentifier4() {
+        myFixture.configureByFile("RenamingIdentifierFile4.glsl")
+        myFixture.renameElementAtCaret("VAR_UPDATED")
+        myFixture.checkResultByFile("RenamingIdentifierFile4Expected.glsl")
+    }
+
+    fun testRenamingIdentifier5() {
+        myFixture.configureByFile("RenamingIdentifierFile5.glsl")
+        myFixture.renameElementAtCaret("f_updated")
+        myFixture.checkResultByFile("RenamingIdentifierFile5Expected.glsl")
+    }
+
+    fun testRenamingIdentifier6() {
+        myFixture.configureByFile("RenamingIdentifierFile6.glsl")
+        myFixture.renameElementAtCaret("TexCoordUpdated")
+        myFixture.checkResultByFile("RenamingIdentifierFile6Expected.glsl")
+    }
+
+    fun testRenamingIdentifier7() {
+        myFixture.configureByFile("RenamingIdentifierFile7.glsl")
+        myFixture.renameElementAtCaret("func_updated")
+        myFixture.checkResultByFile("RenamingIdentifierFile7Expected.glsl")
     }
 }

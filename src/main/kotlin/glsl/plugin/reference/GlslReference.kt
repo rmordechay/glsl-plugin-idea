@@ -22,7 +22,6 @@ import glsl.plugin.reference.FilterType.EQUALS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
-import glsl.plugin.utils.GlslElementManipulator
 import glsl.plugin.utils.GlslPsiUtils.getPostfixIdentifier
 import glsl.plugin.utils.GlslUtils.getPsiFile
 import glsl.psi.interfaces.*
@@ -72,8 +71,8 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     /**
      *
      */
-    override fun handleElementRename(newElementName: String): PsiElement {
-        return GlslElementManipulator().handleContentChange(myElement, rangeInElement, newElementName)
+    override fun handleElementRename(newElementName: String): PsiElement? {
+        return element.replaceElementName(newElementName)
     }
 
     /**

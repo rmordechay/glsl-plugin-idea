@@ -76,19 +76,18 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
     */
     override fun replaceElementName(newName: String?): GlslIdentifier? {
         if (newName == null ) return this
-        val dummyDeclaration = if (this is GlslVariableIdentifier) {
-            "void $newName;"
-        } else if (this is GlslTypeName) {
-            "$newName;"
-        } else {
-            return this
+        val dummyDeclaration = when (this) {
+            is GlslVariableIdentifier -> "void $newName;"
+            is GlslTypeName -> "$newName;"
+            else -> return this
         }
         val dummyElement = (PsiFileFactory
             .getInstance(project)
             .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
             .firstChild
         val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslIdentifier::class.java)
-        return if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
+        val glslIdentifier: GlslIdentifier = if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
+        return glslIdentifier
     }
 
     /**

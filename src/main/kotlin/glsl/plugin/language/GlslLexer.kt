@@ -19,6 +19,8 @@ class GlslMacro(val name: String, val macroDefineType: IElementType) {
     var macroExpansionIter: Iterator<Pair<String?, IElementType?>>? = null
 }
 
+private const val RECURSION_LEVEL_LIMIT = 50000
+
 /**
  *
  */
@@ -44,6 +46,8 @@ class GlslLexer : LexerBase() {
     private var macroFunc: GlslMacro? = null
 
     private var shouldExpandInclude = false
+
+    private var recursionLevel = 0
 
     /**
      *
@@ -77,7 +81,8 @@ class GlslLexer : LexerBase() {
         }
 
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
-            macroDefine = GlslMacro(tokenText, getMacroType())
+            val macroType = getMacroType() ?: return
+            macroDefine = GlslMacro(tokenText, macroType)
         } else if (state == MACRO_FUNC_DEFINITION_STATE && myTokenType == MACRO_FUNC_PARAM) {
             macroDefine!!.params.addIfNotNull(myTokenText)
         } else if (state == MACRO_BODY_STATE) {
@@ -89,6 +94,7 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun getTokenType(): IElementType? {
+        if (inEndlessRecursion()) return null
         return myTokenType
     }
 
@@ -256,14 +262,42 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
-    private fun getMacroType(): IElementType {
+    private fun inEndlessRecursion(): Boolean {
+        if (recursionLevel++ < RECURSION_LEVEL_LIMIT) return false
+        recursionLevel = 0
+        clearAllData()
+        return true
+    }
+
+    /**
+     *
+     */
+    private fun clearAllData() {
+        macros.clear()
+        macroDefine = null
+        macroExpansion = null
+        inMacroFuncCall = false
+        macroFuncCallParams = null
+        paramExpansionIter = null
+        macroFuncParamIndex = 0
+        macroParamNestingLevel = 0
+        macroFunc = null
+        advanceLexer()
+    }
+
+    /**
+     *
+     */
+    private fun getMacroType(): IElementType? {
         helperLexer.reset(myText, tokenEnd, bufferEnd, YYINITIAL)
         val nextToken = helperLexer.advance()
         if (nextToken == LEFT_PAREN) {
             lexer.yybegin(MACRO_FUNC_DEFINITION_STATE)
             return MACRO_FUNCTION
+        } else if (nextToken == WHITE_SPACE) {
+            lexer.yybegin(MACRO_BODY_STATE)
+            return MACRO_OBJECT
         }
-        lexer.yybegin(MACRO_BODY_STATE)
-        return MACRO_OBJECT
+        return null
     }
 }

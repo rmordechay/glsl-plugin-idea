@@ -31,7 +31,7 @@ intellij {
 
 runIde {
     buildSearchableOptions.enabled = false
-    maxHeapSize = "4g"
+    maxHeapSize = "6g"
 }
 
 

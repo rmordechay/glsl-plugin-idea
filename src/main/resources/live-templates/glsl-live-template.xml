@@ -7,7 +7,7 @@
             <option name="GLSL" value="true"/>
         </context>
     </template>
-    <template name="fori" value="for (int i = 0; i &lt; $UPPER_BOUND$; i++) {&#10;   $END$&#10;}" description="(int i = 0; i < condition; i++)" toReformat="false" toShortenFQNames="false">
+    <template name="fori" value="for (int i = 0; i &lt; $UPPER_BOUND$; i++) {&#10;   $END$&#10;}" description="(int i = 0; i &lt; condition; i++)" toReformat="false" toShortenFQNames="false">
         <variable name="UPPER_BOUND" expression="" defaultValue="" alwaysStopAt="true"/>
         <context>
             <option name="GLSL" value="true"/>

@@ -13,6 +13,7 @@ import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslSingleDeclaration
 
 
+
 class GlslCodeAnnotator : Annotator {
 
     /**
@@ -24,7 +25,7 @@ class GlslCodeAnnotator : Annotator {
 
             }
             is GlslFunctionCall -> {
-                annotateFunctionCall(element, holder)
+                annotateIncorrectParamCount(element, holder)
             }
         }
     }
@@ -33,6 +34,7 @@ class GlslCodeAnnotator : Annotator {
      *
      */
     private fun annotateIncorrectParamCount(element: GlslFunctionCall, holder: AnnotationHolder) {
+
         val funcReference = element.variableIdentifier?.reference ?: return
         funcReference.resolve()
         if (funcReference.resolvedReferences.isEmpty()) return
@@ -52,13 +54,6 @@ class GlslCodeAnnotator : Annotator {
             textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
         }
         setHighlightingError(textRange, holder, "Incorrect number of parameters")
-    }
-
-    /**
-     *
-     */
-    private fun annotateFunctionCall(element: GlslFunctionCall, holder: AnnotationHolder) {
-        annotateIncorrectParamCount(element, holder)
     }
 
     /**

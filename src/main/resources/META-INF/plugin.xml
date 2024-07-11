@@ -4,6 +4,7 @@
     <vendor>Walt Grace</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>JavaScript</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!--  File  -->

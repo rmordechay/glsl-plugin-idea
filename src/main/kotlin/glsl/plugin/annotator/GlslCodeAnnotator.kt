@@ -49,7 +49,7 @@ class GlslCodeAnnotator : Annotator {
         if (actualParamsExprs.isNotEmpty()) {
             textRange = TextRange(actualParamsExprs.first().startOffset, actualParamsExprs.last().endOffset)
         } else {
-            textRange = TextRange(element.leftParen.startOffset, element.rightParen.startOffset)
+            textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
         }
         setHighlightingError(textRange, holder, "Incorrect number of parameters")
     }

@@ -1,7 +1,5 @@
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
-import org.junit.Test
 
 class GlslCompletionTest : BasePlatformTestCase() {
 

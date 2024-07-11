@@ -1,6 +1,6 @@
 #version 330 core
 #define PI 3.14
-#define <caret>func(a, b) if (a > b) { int num = 2; }
+#define func(a, b) if (a > b) { int num = 2; }
 #include "different/file.glsl"
 
 precision mediump float;
@@ -17,7 +17,7 @@ uniform mat4 projection2;
 *
 */
 int addd2(int a, int b) {
-    func(1, 2)
+    <caret>func(1, 2)
     float v = normalize(a * PI);
     return a + b;
 }

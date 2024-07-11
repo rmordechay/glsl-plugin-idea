@@ -11,6 +11,7 @@ import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.*
 import glsl.plugin.reference.GlslReference
+import glsl.plugin.utils.GlslUtils.isShaderFile
 import glsl.psi.interfaces.GlslTypeName
 import glsl.psi.interfaces.GlslVariableIdentifier
 
@@ -71,6 +72,7 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
     *
     */
     override fun replaceElementName(newName: String?): GlslIdentifier? {
+        if (!isShaderFile(this)) return this
         if (newName == null ) return this
         val dummyDeclaration = when (this) {
             is GlslVariableIdentifier -> "void $newName;"

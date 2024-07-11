@@ -4,8 +4,8 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil.findChildOfType
 import com.intellij.psi.util.PsiTreeUtil.findChildrenOfType
-import glsl.data.GlslDefinitions
-import glsl.data.GlslDefinitions.ShaderType.*
+import glsl.data.ShaderType
+import glsl.data.ShaderType.*
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.GlslNamedElement
@@ -18,7 +18,7 @@ object GlslBuiltinUtils {
     private lateinit var vecStructs: Map<String, Map<String, GlslNamedElement>>
     private lateinit var builtinConstants: Map<String, GlslNamedElement>
     private lateinit var defaultShaderVariables: Map<String, GlslNamedElement>
-    private lateinit var shaderVariables: EnumMap<GlslDefinitions.ShaderType, Map<String, GlslNamedElement>>
+    private lateinit var shaderVariables: EnumMap<ShaderType, Map<String, GlslNamedElement>>
     private lateinit var builtinFuncs: Map<String, List<GlslFunctionPrototype>>
 
     /**
@@ -157,7 +157,7 @@ object GlslBuiltinUtils {
         val shaderVariablesFile = getBuiltinFile("glsl-shader-variables")
         val structSpecifiers = findChildrenOfType(shaderVariablesFile, GlslStructSpecifier::class.java).toList()
         // Initializes map with ShaderType enum
-        shaderVariables = EnumMap(GlslDefinitions.ShaderType::class.java)
+        shaderVariables = EnumMap(ShaderType::class.java)
         val allShaderVariables = hashMapOf<String, GlslNamedElement>()
         for (structSpecifier in structSpecifiers) {
             val structDeclarators = hashMapOf<String, GlslNamedElement>()
@@ -197,7 +197,7 @@ object GlslBuiltinUtils {
     /**
      *
      */
-    private fun getShaderType(fileExtension: String?): GlslDefinitions.ShaderType {
+    private fun getShaderType(fileExtension: String?): ShaderType {
         if (fileExtension == null) return GLSL
         return try {
             valueOf(fileExtension.lowercase())

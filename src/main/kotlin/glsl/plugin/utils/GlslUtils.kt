@@ -11,6 +11,7 @@ import com.intellij.psi.search.FilenameIndex.getVirtualFilesByName
 import com.intellij.psi.search.GlobalSearchScope.allScope
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiUtilCore
+import glsl.data.ShaderType
 import glsl.plugin.language.GlslFile
 import glsl.psi.interfaces.GlslFunctionPrototype
 import java.io.BufferedReader
@@ -164,6 +165,15 @@ object GlslUtils {
     @JvmStatic
     fun removeArgsFromFuncText(funcText: String): String {
         return funcText.replace("\\(.*\\)".toRegex(), "")
+    }
+
+    /**
+     *
+     */
+    @JvmStatic
+    fun isShaderFile(element: PsiElement): Boolean {
+        val extension = element.containingFile.virtualFile.extension
+        return enumValues<ShaderType>().any { extension?.lowercase() == it.name.lowercase() }
     }
 }
 

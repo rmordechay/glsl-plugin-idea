@@ -64,7 +64,8 @@ class GlslBlock(
         var childNode = node.firstChildNode
         while (childNode != null) {
             if (childNode.elementType != TokenType.WHITE_SPACE || childNode.text.contains(BACKSLASH)) {
-                blocks.add(getChildBlock(childNode, newAlignment, Alignment.createAlignment()))
+                val childBlock = getChildBlock(childNode, newAlignment, Alignment.createAlignment())
+                blocks.add(childBlock)
             }
             childNode = childNode.treeNext
         }
@@ -75,17 +76,17 @@ class GlslBlock(
      *
      */
     private fun getChildBlock(child: ASTNode, newAlignment: Alignment, switchStatementAlignment: Alignment): Block {
-        val parentElementType = node.elementType
+        val currentElementType = node.elementType
         val childElementType = child.elementType
         val wrap = Wrap.createWrap(WrapType.NONE, false)
         when {
-            parentElementType == SWITCH_STATEMENT -> {
+            currentElementType == SWITCH_STATEMENT -> {
                 return getSwitchStatementBlock(child, newAlignment, switchStatementAlignment)
             }
-            parentElementType == ITERATION_STATEMENT && node.firstChildNode.elementType == DO -> {
+            currentElementType == ITERATION_STATEMENT && node.firstChildNode.elementType == DO -> {
                 return getDoWhileStatementBlock(child, newAlignment)
             }
-            parentElementType == FUNCTION_CALL && child.psi is GlslExprNoAssignment -> {
+            currentElementType == FUNCTION_CALL && child.psi is GlslExprNoAssignment -> {
                 return GlslBlock(child, wrap, newAlignment, mySpacing, Indent.getNormalIndent())
             }
             childElementType in listOf(STATEMENT, STRUCT_DECLARATION, PARAMETER_DECLARATOR) -> {

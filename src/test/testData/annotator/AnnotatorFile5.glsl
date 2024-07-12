@@ -1,6 +1,7 @@
-#define f(a, b) a + \
-b
-int dummy = f(1, 2);
+#define func_updated(a, b) if (a > b) { int num = 2; }
 
-#define f2(a, b) a + b
-int dummy = f2(g(1, c), h(2, 3));
+int addd2(int a, int b) {
+    func_updated(1, 2)
+    float v = normalize(a * PI);
+    return a + b;
+}

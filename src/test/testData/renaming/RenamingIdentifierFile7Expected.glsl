@@ -17,7 +17,7 @@ uniform mat4 projection2;
 *
 */
 int addd2(int a, int b) {
-func_updated(1, 2)
+    func_updated(1, 2)
     float v = normalize(a * PI);
     return a + b;
 }

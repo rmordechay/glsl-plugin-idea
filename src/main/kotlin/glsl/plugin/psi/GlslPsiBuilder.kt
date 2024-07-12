@@ -1,6 +1,7 @@
-package glsl.plugin.language
+package glsl.plugin.psi
 
 import com.intellij.lang.PsiBuilder
+import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes.*
 import glsl._GlslParser
 import glsl.plugin.language.GlslLanguage.Companion.RIGHT_PAREN_MACRO_CALL
@@ -14,7 +15,8 @@ class GlslPsiBuilder(builder: PsiBuilder, state: ErrorState, parser: _GlslParser
     /**
      *
      */
-    fun macroCallWrapper() {
+    fun macroCallWrapper(modifier: Int?, elementType: IElementType?, frameName: String?) {
+        if (frameName == null && modifier != _LEFT_) return
         if (tokenType == MACRO_OBJECT) {
             val marker = enter_section_without_macro(this)
             super.advanceLexer()

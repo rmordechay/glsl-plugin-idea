@@ -3,6 +3,7 @@ package glsl.plugin.language
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import glsl._GlslParser
+import glsl.plugin.psi.GlslPsiBuilder
 import utils.GeneratedParserUtil
 
 /**

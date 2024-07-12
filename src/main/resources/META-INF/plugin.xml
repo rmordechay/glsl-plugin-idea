@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin require-restart="true"> <!-- Even though the plugin can be dynamically loaded, it's safer to require restart. -->
     <id>OpenGL-Plugin</id>
     <name>GLSL</name>
     <vendor>Walt Grace</vendor>

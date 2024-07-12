@@ -10,3 +10,7 @@ int <info descr="null">a7</info> = <info descr="null">f2</info>(<error descr="In
 int <info descr="null">a8</info> = <info descr="null">f2</info>(1);
 #define <info descr="null">A</info> 0.70
 int <info descr="null">a9</info> = vec3(1.0, <info descr="null">A</info>, 1.0);
+float <info descr="null">f</info>();
+float <info descr="null">g</info>();
+float <info descr="null">h</info>();
+float <info descr="null">a10</info> = <info descr="null">f</info>(<error descr="Incorrect number of parameters"><info descr="null">g</info>(<error descr="Incorrect number of parameters"><info descr="null">h</info>()</error>)</error>);

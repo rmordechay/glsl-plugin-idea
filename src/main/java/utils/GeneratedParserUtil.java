@@ -25,7 +25,7 @@ import com.intellij.util.Function;
 import com.intellij.util.PairProcessor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.LimitedPool;
-import glsl.plugin.language.GlslPsiBuilder;
+import glsl.plugin.psi.GlslPsiBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -348,20 +348,21 @@ public class GeneratedParserUtil {
     public static final int _NOT_ = 0x10;
     public static final int _UPPER_ = 0x20;
 
-    // simple enter/exit methods pair that doesn't require frame object
-    public static PsiBuilder.Marker enter_section_without_macro(PsiBuilder builder) {
-        ErrorState state = ErrorState.get(builder);
-        reportFrameError(builder, state);
-        state.level++;
-        return builder.mark();
-    }
-
     public static PsiBuilder.Marker enter_section_(PsiBuilder builder, int level, int modifiers, String frameName) {
         return enter_section_(builder, level, modifiers, null, frameName);
     }
+
     public static PsiBuilder.Marker enter_section_(PsiBuilder builder, int level, int modifiers) {
         return enter_section_(builder, level, modifiers, null, null);
 
+    }
+
+    public static PsiBuilder.Marker enter_section_(PsiBuilder builder, int level, int modifiers, IElementType elementType, String frameName) {
+        reportFrameError(builder, ErrorState.get(builder));
+        PsiBuilder.Marker marker = builder.mark();
+        enter_section_impl_(builder, level, modifiers, elementType, frameName);
+        ((GlslPsiBuilder) builder).macroCallWrapper(modifiers, elementType, frameName);
+        return marker;
     }
 
     public static PsiBuilder.Marker enter_section_(PsiBuilder builder) {
@@ -369,16 +370,15 @@ public class GeneratedParserUtil {
         reportFrameError(builder, state);
         state.level++;
         PsiBuilder.Marker marker = builder.mark();
-        ((GlslPsiBuilder) builder).macroCallWrapper();
+        ((GlslPsiBuilder) builder).macroCallWrapper(null, null, null);
         return marker;
     }
 
-    public static PsiBuilder.Marker enter_section_(PsiBuilder builder, int level, int modifiers, IElementType elementType, String frameName) {
-        reportFrameError(builder, ErrorState.get(builder));
-        PsiBuilder.Marker marker = builder.mark();
-        enter_section_impl_(builder, level, modifiers, elementType, frameName);
-        ((GlslPsiBuilder) builder).macroCallWrapper();
-        return marker;
+    public static PsiBuilder.Marker enter_section_without_macro(PsiBuilder builder) {
+        ErrorState state = ErrorState.get(builder);
+        reportFrameError(builder, state);
+        state.level++;
+        return builder.mark();
     }
 
     private static void enter_section_impl_(PsiBuilder builder, int level, int modifiers, IElementType elementType, String frameName) {

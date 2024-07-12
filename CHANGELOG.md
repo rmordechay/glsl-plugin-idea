@@ -1,5 +1,9 @@
 # GLSL Plugin Changelog
 
+## [1.1.2]
+### Fixed
+- Formatting of macros didn't work correctly
+
 ## [1.1.1]
 ### Added
 - Language injection to HTML script tag

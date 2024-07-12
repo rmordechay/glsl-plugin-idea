@@ -215,7 +215,7 @@ float a = 000.0000f;
 float a = 111.0000f;
 float a = ((((12))));
 float a = ((((12) / a) + 2) * 2);
-float _a = a(b(c.x * d.x));
+float _a = a__(b__(c.x * d.x));
 float _a = { 1, 2, 3, 4 };
 float _a = { 1.0, 2.0, 3.0, 4.0 };
 float _a = { 1.0 + 2, 2.0 * 2, 3.0 / 2, 4.0 - 2.0 };
@@ -226,21 +226,21 @@ UserType[] a = UserType[](1, 2, 3);
 UserType[] a = UserType[3](1, 2, 3);
 
 
-int a = a();
-int a = a;
-int a = a++;
-int a = a.b;
-int a = a().b;
-int a = a++.b;
-int a = a[1].b;
-int a = a.b.c;
-int a = a().b.c;
-int a = a++.b.c;
-int a = a[1].b.c;
-int a = a == true ? a + a : a;
-int a = a >= 5 ? a + a : a * 2;
-int a = a == 0 ? a + a : a + 1;
-int a = true ? b : a;
+int a = a__();
+int a1 = a__;
+int a2 = a__++;
+int a3 = a__.b;
+int a4 = a__().b;
+int a5 = a__++.b;
+int a6 = a__[1].b;
+int a7 = a__.b.c;
+int a8 = a__().b.c;
+int a9 = a__++.b.c;
+int a10 = a__[1].b.c;
+int a11 = a__ == true ? a + a : a;
+int a12 = a__ >= 5 ? a + a : a * 2;
+int a13 = a__ == 0 ? a + a : a + 1;
+int a14 = true ? b : a;
 
 layout (location) in vec2 layout_declration;
 layout (location = 0) in vec3 layout_declration;
@@ -353,19 +353,19 @@ int function_definition(DummyBlock x, float y) {
         default:
             return 3;
     }
-    float func();
     #include "some text"
-    float g();
-    float h();
+    float func(float i);
+    float g(float i);
+    float h(float i, float j);
 
     UserType a;
     UserType a = a;
     float declaration_statement;
     float declaration_statement[];
     float declaration_statement[3];
-    float declaration_statement = func(g(h()));
+    float declaration_statement = func(g(1));
     float declaration_statement[] = { 1, 2, 3 };
-    float declaration_statement[2] = func(g(h(x, y), z));
+    float declaration_statement[2] = func(g(h(x, y)));
 
     demote;
     return jump_statement;

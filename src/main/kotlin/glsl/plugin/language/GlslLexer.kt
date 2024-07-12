@@ -82,10 +82,6 @@ class GlslLexer : LexerBase() {
         }
 
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
-            if (myTokenType !in listOf(IDENTIFIER, WHITE_SPACE)) {
-                lexer.yybegin(MACRO_BODY_STATE)
-                return
-            }
             val macroType = getMacroType() ?: return
             macroDefine = GlslMacro(tokenText, macroType)
         } else if (state == MACRO_FUNC_DEFINITION_STATE && myTokenType == MACRO_FUNC_PARAM) {

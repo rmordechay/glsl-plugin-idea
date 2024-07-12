@@ -24,7 +24,7 @@ compileKotlin {
 
 intellij {
 //    version = 'IC-2024.1.4'
-    version = 'IU-2024.1.4'
+    version = 'CL-2024.1.4'
     updateSinceUntilBuild = true
 //    plugins = ['JavaScript']
 }

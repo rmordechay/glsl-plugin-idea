@@ -26,4 +26,9 @@ class GlslAnnotatorTest : BasePlatformTestCase() {
         myFixture.configureByFiles("AnnotatorFile4.glsl")
         myFixture.checkHighlighting(false, false, false)
     }
+
+    fun testAnnotatorFile5() {
+        myFixture.configureByFiles("AnnotatorFile5.glsl")
+        myFixture.checkHighlighting(false, false, false)
+    }
 }

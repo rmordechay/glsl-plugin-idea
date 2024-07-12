@@ -60,15 +60,6 @@ int def_dummy2 = 2;
 ;;;
 // One line comment
 
-
-/*
-* Multi line comment
-* Multi line comment
-* Multi line comment
-* Multi line comment
-*/
-
-
 #define A4 a + 2 \
  + 2 / 2
 
@@ -76,24 +67,6 @@ int def_dummy2 = 2;
 1 + 1 + (x + 2) - (x * 2) \
  + 1 + (x + 2) - (x * 2) \
  + 1 + (x + 2) - (x * 2)
-
-/*
-* Multi line comment
-* Multi line comment
-* Multi line comment
-* Multi line comment
-*/
-
-int a;
-
-#define A6 10
-
-/*
-* Multi line comment
-* Multi line comment
-* Multi line comment
-* Multi line comment
-*/
 
 #define A7 10 + a
 #if 10 == 10

@@ -1,2 +1,2 @@
-#define <info A</info> 0.70
-int <info descr="null">a9</info> = vec3(1.0, <info descr="null">A</info>, 1.0);
+#define<error descr="<pp define name> expected, got '<'"> </error><info A</info> 0.70
+int a9 = vec3(1.0, A, 1.0);

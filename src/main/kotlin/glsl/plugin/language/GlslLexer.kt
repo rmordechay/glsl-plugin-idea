@@ -81,9 +81,8 @@ class GlslLexer : LexerBase() {
             addMacroParamToken()
         }
 
-        if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
-//        if (state == MACRO_IDENTIFIER_STATE) {
-//            if (myTokenType !in listOf(IDENTIFIER, WHITE_SPACE)) lexer.yybegin(MACRO_BODY_STATE)
+        if (state == MACRO_IDENTIFIER_STATE) {
+            if (myTokenType !in listOf(IDENTIFIER, WHITE_SPACE)) lexer.yybegin(MACRO_BODY_STATE)
             val macroType = getMacroType() ?: return
             macroDefine = GlslMacro(tokenText, macroType)
         } else if (state == MACRO_FUNC_DEFINITION_STATE && myTokenType == MACRO_FUNC_PARAM) {
@@ -165,9 +164,9 @@ class GlslLexer : LexerBase() {
             macroFunc = macro
             myTokenType = MACRO_FUNCTION
         } else {
+            myTokenType = MACRO_OBJECT
             macroExpansion = macro
             macroExpansion!!.macroExpansionIter = macroExpansion?.elements?.iterator()
-            myTokenType = MACRO_OBJECT
         }
     }
 
@@ -207,12 +206,13 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun addMacroBodyToken() {
+        if (macroDefine == null) return
         if (myTokenType == PP_END) {
             lexer.yybegin(YYINITIAL);
             macros[macroDefine!!.name] = macroDefine!!
             macroDefine = null
-        } else if (myTokenType !in IGNORE_MACRO_BODY_TOKEN) {
-            macroDefine!!.elements.add(Pair(myTokenText, myTokenType))
+        } else if (myTokenType !in IGNORE_MACRO_BODY_TOKEN && myTokenText != macroDefine?.name) {
+            macroDefine?.elements?.add(Pair(myTokenText, myTokenType))
         }
     }
 
@@ -251,11 +251,10 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun isMacroCallStart(): Boolean {
-        var isMacroCall = state !in (listOf(MACRO_IDENTIFIER_STATE, MACRO_IGNORE_STATE))
-        isMacroCall = isMacroCall && myTokenType == IDENTIFIER
-        isMacroCall = isMacroCall && myTokenText in macros
-        isMacroCall = isMacroCall && !(macroExpansion != null && macroExpansion!!.name == myTokenText)
-        return isMacroCall
+        return myTokenType == IDENTIFIER &&
+                myTokenText in macros &&
+                state !in (listOf(MACRO_IDENTIFIER_STATE, MACRO_IGNORE_STATE)) &&
+                !(macroExpansion != null && macroExpansion!!.name == myTokenText)
     }
 
     /**

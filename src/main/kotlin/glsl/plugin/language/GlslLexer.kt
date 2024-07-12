@@ -20,6 +20,7 @@ class GlslMacro(val name: String, val macroDefineType: IElementType) {
 }
 
 private const val RECURSION_LEVEL_LIMIT = 50000
+private val IGNORE_MACRO_BODY_TOKEN = listOf(WHITE_SPACE, RIGHT_PAREN_MACRO, LINE_COMMENT, MULTILINE_COMMENT, MACRO_OBJECT, MACRO_FUNCTION)
 
 /**
  *
@@ -69,7 +70,7 @@ class GlslLexer : LexerBase() {
         }
 
         if (isMacroCallStart()) {
-            setMacroCallData()
+            initializeMacroCall()
         } else if (paramExpansionIter != null) {
             expandMacroParam()
             if (paramExpansionIter == null) expandMacro()
@@ -80,9 +81,9 @@ class GlslLexer : LexerBase() {
             addMacroParamToken()
         }
 
+        if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
 //        if (state == MACRO_IDENTIFIER_STATE) {
 //            if (myTokenType !in listOf(IDENTIFIER, WHITE_SPACE)) lexer.yybegin(MACRO_BODY_STATE)
-        if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
             val macroType = getMacroType() ?: return
             macroDefine = GlslMacro(tokenText, macroType)
         } else if (state == MACRO_FUNC_DEFINITION_STATE && myTokenType == MACRO_FUNC_PARAM) {
@@ -154,7 +155,7 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
-    private fun setMacroCallData() {
+    private fun initializeMacroCall() {
         val macro = macros[tokenText] ?: return
         if (macro.macroDefineType == MACRO_FUNCTION) {
             inMacroFuncCall = true
@@ -210,15 +211,7 @@ class GlslLexer : LexerBase() {
             lexer.yybegin(YYINITIAL);
             macros[macroDefine!!.name] = macroDefine!!
             macroDefine = null
-        } else if (myTokenType !in listOf(
-                WHITE_SPACE,
-                RIGHT_PAREN_MACRO,
-                LINE_COMMENT,
-                MULTILINE_COMMENT,
-                MACRO_OBJECT,
-                MACRO_FUNCTION
-            )
-        ) {
+        } else if (myTokenType !in IGNORE_MACRO_BODY_TOKEN) {
             macroDefine!!.elements.add(Pair(myTokenText, myTokenType))
         }
     }
@@ -258,7 +251,11 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun isMacroCallStart(): Boolean {
-        return state !in listOf(MACRO_IDENTIFIER_STATE, MACRO_IGNORE_STATE) && myTokenType == IDENTIFIER && myTokenText in macros
+        var isMacroCall = state !in (listOf(MACRO_IDENTIFIER_STATE, MACRO_IGNORE_STATE))
+        isMacroCall = isMacroCall && myTokenType == IDENTIFIER
+        isMacroCall = isMacroCall && myTokenText in macros
+        isMacroCall = isMacroCall && !(macroExpansion != null && macroExpansion!!.name == myTokenText)
+        return isMacroCall
     }
 
     /**

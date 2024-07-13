@@ -33,18 +33,13 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
 /**
  *
  */
-class GlslLexerAdapter : FlexAdapter(_GlslHighlightLexer(null))
-
-/**
- *
- */
 class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
 
     /**
      *
      */
     override fun getHighlightingLexer(): Lexer {
-        return GlslLexerAdapter()
+        return FlexAdapter(_GlslHighlightLexer(null))
     }
 
     /**
@@ -63,8 +58,8 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
             GlslTypes.MULTILINE_COMMENT -> MULTILINE_COMMENT_TEXT_ATTR
             GlslTypes.STRING_LITERAL -> STRING_TEXT_ATTR
             GlslTypes.BOOLCONSTANT -> BOOLEAN_TEXT_ATTR
-            GlslTypes.PP_MACRO_OBJECT_NAME -> MACRO_OBJECT_NAME_ATTR
-            GlslTypes.PP_MACRO_FUNC_NAME -> MACRO_FUNC_NAME_ATTR
+            GlslTypes.PP_DEFINE_OBJECT -> MACRO_OBJECT_NAME_ATTR
+            GlslTypes.PP_DEFINE_FUNCTION -> MACRO_FUNC_NAME_ATTR
             GlslTypes.MACRO_FUNC_PARAM -> FUNC_PARAM_TEXT_ATTR
             in GlslTokenSets.ALL_OPERATORS -> OPERATORS_TEXT_ATTR
             in GlslTokenSets.PREPROCESSORS -> PREPROCESSOR_TEXT_ATTR

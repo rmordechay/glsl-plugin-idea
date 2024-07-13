@@ -83,23 +83,23 @@ MACRO_VERSION="__VERSION__"
   {BACKSLASH}                      { return WHITE_SPACE; }
   "/*"                             { yybegin(MULITLINE_COMMENT_STATE);  return MULTILINE_COMMENT; }
   {LINE_COMMENT}                   { return LINE_COMMENT; }
-  {PP_VERSION}                     { return PP_VERSION;}
-  {PP_UNDEF}                       { return PP_UNDEF;}
-  {PP_IFDEF}                       { return PP_IFDEF;}
-  {PP_IFNDEF}                      { return PP_IFNDEF;}
-  {PP_ELSE}                        { return PP_ELSE;}
-  {PP_ENDIF}                       { return PP_ENDIF;}
-  {PP_INCLUDE}                     { return PP_INCLUDE;}
-  {PP_EXTENSION}                   { return PP_EXTENSION;}
-  {PP_LINE}                        { return PP_LINE;}
-  {MACRO_LINE}                     { return MACRO_LINE;}
-  {MACRO_FILE}                     { return MACRO_FILE;}
-  {MACRO_VERSION}                  { return MACRO_VERSION;}
-  {PP_IF}                          { return PP_IF;}
-  {PP_ELIF}                        { return PP_ELIF;}
-  {PP_DEFINE}                      { return PP_DEFINE;}
-  {PP_ERROR}                       { return PP_ERROR;}
-  {PP_PRAGMA}                      { return PP_PRAGMA;}
+  {PP_VERSION}                     { return PP_VERSION; }
+  {PP_UNDEF}                       { return PP_UNDEF; }
+  {PP_IFDEF}                       { return PP_IFDEF; }
+  {PP_IFNDEF}                      { return PP_IFNDEF; }
+  {PP_ELSE}                        { return PP_ELSE; }
+  {PP_ENDIF}                       { return PP_ENDIF; }
+  {PP_INCLUDE}                     { return PP_INCLUDE; }
+  {PP_EXTENSION}                   { return PP_EXTENSION; }
+  {PP_LINE}                        { return PP_LINE; }
+  {MACRO_LINE}                     { return MACRO_LINE; }
+  {MACRO_FILE}                     { return MACRO_FILE; }
+  {MACRO_VERSION}                  { return MACRO_VERSION; }
+  {PP_IF}                          { return PP_IF; }
+  {PP_ELIF}                        { return PP_ELIF; }
+  {PP_DEFINE}                      { return PP_DEFINE; }
+  {PP_ERROR}                       { return PP_ERROR; }
+  {PP_PRAGMA}                      { return PP_PRAGMA; }
   "#"                              { return HASH; }
 
 

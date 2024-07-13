@@ -1,4 +1,4 @@
-#define DEF void f();
+#define DEF() void f();
 void main() {
-    DEF
+    DEF()
 }

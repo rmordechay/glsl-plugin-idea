@@ -226,28 +226,28 @@ class GlslReferenceTest : BasePlatformTestCase() {
     fun testReferenceFile30() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile30.glsl")
         val resolve = reference?.resolve()
-        assertInstanceOf(resolve, GlslPpMacroObjectName::class.java)
-        assertEquals("PI", (resolve as GlslPpMacroObjectName).name)
+        assertInstanceOf(resolve, GlslPpDefineObject::class.java)
+        assertEquals("PI", (resolve as GlslPpDefineObject).name)
     }
 
     fun testReferenceFile31() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile31.glsl")
         val resolve = reference?.resolve()
-        assertInstanceOf(resolve, GlslPpMacroFuncName::class.java)
-        assertEquals("f", (resolve as GlslPpMacroFuncName).name)
+        assertInstanceOf(resolve, GlslPpDefineFunction::class.java)
+        assertEquals("f", (resolve as GlslPpDefineFunction).name)
     }
 
     fun testReferenceFile32() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile32.glsl")
         val resolve = reference?.resolve()
-        assertInstanceOf(resolve, GlslPpMacroObjectName::class.java)
-        assertEquals("VAR", (resolve as GlslPpMacroObjectName).name)
+        assertInstanceOf(resolve, GlslPpDefineObject::class.java)
+        assertEquals("VAR", (resolve as GlslPpDefineObject).name)
     }
 
     fun testReferenceFile33() {
         val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile33.glsl")
         val resolve = reference?.resolve()
-        assertInstanceOf(resolve, GlslPpMacroObjectName::class.java)
-        assertEquals("ZZZ", (resolve as GlslPpMacroObjectName).name)
+        assertInstanceOf(resolve, GlslPpDefineObject::class.java)
+        assertEquals("ZZZ", (resolve as GlslPpDefineObject).name)
     }
 }

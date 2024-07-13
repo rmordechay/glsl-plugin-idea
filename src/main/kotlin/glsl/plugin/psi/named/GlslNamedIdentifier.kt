@@ -344,12 +344,12 @@ abstract class GlslNamedParameterDeclarator(node: ASTNode) : GlslNamedIdentifier
 /**
  *
  */
-abstract class GlslNamedPpObjectDefineName(node: ASTNode) : GlslNamedIdentifierImpl(node) {
+abstract class GlslNamedPpDefineObject(node: ASTNode) : GlslNamedIdentifierImpl(node) {
     /**
      *
      */
-    override fun getSelf(): GlslPpMacroObjectName {
-        return this as GlslPpMacroObjectName
+    override fun getSelf(): GlslPpDefineObject {
+        return this as GlslPpDefineObject
     }
 
     /**
@@ -384,19 +384,19 @@ abstract class GlslNamedPpObjectDefineName(node: ASTNode) : GlslNamedIdentifierI
 /**
  *
  */
-abstract class GlslNamedPpFuncDefineName(node: ASTNode) : GlslNamedIdentifierImpl(node) {
+abstract class GlslNamedPpDefineFunction(node: ASTNode) : GlslNamedIdentifierImpl(node) {
     /**
      *
      */
-    override fun getSelf(): GlslPpMacroFuncName {
-        return this as GlslPpMacroFuncName
+    override fun getSelf(): GlslPpDefineFunction {
+        return this as GlslPpDefineFunction
     }
 
     /**
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getSelf().ppDefineFunctionHeader?.variableIdentifier
     }
 
     /**

@@ -361,20 +361,10 @@ public class GeneratedParserUtil {
         reportFrameError(builder, ErrorState.get(builder));
         PsiBuilder.Marker marker = builder.mark();
         enter_section_impl_(builder, level, modifiers, elementType, frameName);
-        ((GlslPsiBuilder) builder).macroCallWrapper(modifiers, elementType, frameName);
         return marker;
     }
 
     public static PsiBuilder.Marker enter_section_(PsiBuilder builder) {
-        ErrorState state = ErrorState.get(builder);
-        reportFrameError(builder, state);
-        state.level++;
-        PsiBuilder.Marker marker = builder.mark();
-        ((GlslPsiBuilder) builder).macroCallWrapper(null, null, null);
-        return marker;
-    }
-
-    public static PsiBuilder.Marker enter_section_without_macro(PsiBuilder builder) {
         ErrorState state = ErrorState.get(builder);
         reportFrameError(builder, state);
         state.level++;

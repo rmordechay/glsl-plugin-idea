@@ -11,6 +11,16 @@ int c = VAR2( 1   ,   2 )
 int mouse2 = vec2( -   iTime   /   148.  , cos( iTime   ) / 24.);
 int mouse3  =   vec2 (  -  iTime  )  ;
 
+#define FUN(a, b) a + b;
+#define DEF int a = 2;
+#define PI 3.14
+
+void   main(  )   {
+DEF
+   FUN(1, 2)
+    float a = normalize(  a  *   PI  );
+}
+
         #define BINDLESS_TEX(ty, name) \
  layout (set = BINDLESS_SET, binding = BINDLESS_TEX_BINDING) \
  uniform ty name[BINDLESS_TEX_COUNT];

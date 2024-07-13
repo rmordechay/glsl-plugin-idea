@@ -1,6 +1,7 @@
 package glsl.plugin.code.formatter
 
 import com.intellij.formatting.*
+import com.intellij.formatting.FormattingModelProvider.createFormattingModelForPsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
 import glsl.GlslTypes.*
@@ -23,8 +24,8 @@ class GlslFormattingModelBuilder : FormattingModelBuilder {
 
 
     /**
-    *
-    */
+     *
+     */
     override fun createModel(formattingContext: FormattingContext): FormattingModel {
         val codeStyleSettings = formattingContext.codeStyleSettings
         val glslBlock = GlslBlock(
@@ -34,7 +35,7 @@ class GlslFormattingModelBuilder : FormattingModelBuilder {
             createSpaceBuilder(codeStyleSettings),
             Indent.getNoneIndent()
         )
-        return FormattingModelProvider.createFormattingModelForPsiFile(formattingContext.containingFile, glslBlock, codeStyleSettings)
+        return createFormattingModelForPsiFile(formattingContext.containingFile, glslBlock, codeStyleSettings)
     }
 
     /**

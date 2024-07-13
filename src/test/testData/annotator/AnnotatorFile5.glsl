@@ -1,7 +1,6 @@
-#define func_updated(a, b) if (a > b) { int num = 2; }
-
-int addd2(int a, int b) {
-    func_updated(1, 2)
-    float v = normalize(a * PI);
-    return a + b;
+#define DEF void f(int aa, float a)
+#define DEF2(roi, roi2) void f(int roi, float roi2)
+void main() {
+    DEF;
+    DEF2(a, b);
 }

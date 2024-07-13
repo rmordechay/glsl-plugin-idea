@@ -13,7 +13,7 @@ class GlslFormatterTest : BasePlatformTestCase() {
         myFixture.configureByFile("FormatterFile.glsl")
         WriteCommandAction.writeCommandAction(project).run<RuntimeException> {
             val codeStyleManager = CodeStyleManager.getInstance(project)
-            codeStyleManager.reformatText(myFixture.file, ContainerUtil.newArrayList(myFixture.file.textRange))
+            codeStyleManager.reformatText(myFixture.file, listOf(myFixture.file.textRange))
         }
         myFixture.checkResultByFile("FormatterFileExpected.glsl")
     }
@@ -22,7 +22,7 @@ class GlslFormatterTest : BasePlatformTestCase() {
         myFixture.configureByFile("FormatterFile2.glsl")
         WriteCommandAction.writeCommandAction(project).run<RuntimeException> {
             val codeStyleManager = CodeStyleManager.getInstance(project)
-            codeStyleManager.reformatText(myFixture.file, ContainerUtil.newArrayList(myFixture.file.textRange))
+            codeStyleManager.reformatText(myFixture.file, listOf(myFixture.file.textRange))
         }
         myFixture.checkResultByFile("FormatterFileExpected2.glsl")
     }

@@ -17,7 +17,7 @@ val COMPOUND_STATEMENTS = listOf(
 )
 
 class GlslBlock(
-    node: ASTNode,
+    private val node: ASTNode,
     wrap: Wrap?,
     myAlignment: Alignment?,
     private val mySpacing: SpacingBuilder,
@@ -35,6 +35,7 @@ class GlslBlock(
      *
      */
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
+        if ((child1 as? GlslBlock)?.node?.textLength == 0) return null
         return mySpacing.getSpacing(this, child1, child2)
     }
 

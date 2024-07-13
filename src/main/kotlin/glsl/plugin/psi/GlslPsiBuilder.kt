@@ -39,6 +39,7 @@ class GlslPsiBuilder(builder: PsiBuilder, state: ErrorState, parser: _GlslParser
         } else if (myTokenType == MACRO_FUNCTION) {
             val marker = enter_section_(this)
             super.advanceLexer()
+            myTokenType = super.getTokenType()
             exit_section_(this, marker, VARIABLE_IDENTIFIER, true)
             while (true) {
                 if (myTokenType == null || myTokenType == RIGHT_PAREN_MACRO_CALL) break

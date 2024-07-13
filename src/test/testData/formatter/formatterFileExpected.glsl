@@ -11,8 +11,18 @@ int c = VAR2(1, 2)
 int mouse2 = vec2(-iTime / 148., cos(iTime) / 24.);
 int mouse3 = vec2(-iTime);
 
+#define DEF void f(int aa, float a);
+#define DEF2(roi, roi2) void f(int roi, float roi2);
+#define DEF3 if (a > 2) { a = 2; a = 2; a = 2; }
+void main() {
+    DEF
+    DEF2(a, b)
+    DEF3
+}
+
+
 #define FUN(a, b) a + b;
-#define DEF int a = 2;
+#define DEF4 int a = 2;
 #define PI 3.14
 
 void main() {

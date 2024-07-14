@@ -92,8 +92,38 @@ class GlslBuiltinTypesCompletion : GlslCompletionProvider() {
      *
      */
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, resultSet: CompletionResultSet) {
-        val builtinTypes = createLookupElements(tokens.toList(), null)
+        val builtinTypes = createLookupElements(tokens.toList())
         resultSet.addAllElements(builtinTypes)
+    }
+}
+
+/**
+ *
+ */
+class GlslIncludeStatementCompletion : GlslCompletionProvider() {
+    private val insertHandler = InsertHandler<LookupElement> { context, lookupElement ->
+        val s = lookupElement.lookupString
+        context.document.replaceString(context.startOffset, context.selectionEndOffset, s)
+        context.editor.caretModel.moveToOffset(context.startOffset + s.length)
+    }
+
+    /**
+     *
+     */
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, resultSet: CompletionResultSet) {
+        val virtualFile = parameters.originalFile.virtualFile
+        val parentDir = virtualFile.parent ?: return
+        val lookupElements = mutableListOf<LookupElement>()
+        for (siblingFile in parentDir.children) {
+            val siblingFileName = siblingFile.name
+            if (siblingFileName == virtualFile.name) continue
+            if (siblingFile.isDirectory) {
+                lookupElements.add(createLookupElement("$siblingFileName/", insertHandler))
+            } else {
+                lookupElements.add(createLookupElement(siblingFileName))
+            }
+        }
+        resultSet.addAllElements(lookupElements)
     }
 }
 

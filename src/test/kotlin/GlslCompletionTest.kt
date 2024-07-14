@@ -7,7 +7,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         return "src/test/testData/completion"
     }
 
-    fun testCompletionFile1() {
+    fun testCompletion1() {
         myFixture.configureByFiles("CompletionFile1.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -15,7 +15,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, listOf("abs(float x)"))
     }
 
-    fun testCompletionFile2() {
+    fun testCompletion2() {
         myFixture.configureByFiles("CompletionFile2.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -23,7 +23,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "max(int x, int y)")
     }
 
-    fun testCompletionFile3() {
+    fun testCompletion3() {
         myFixture.configureByFiles("CompletionFile3.geom")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -31,7 +31,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "EmitVertex()")
     }
 
-    fun testCompletionFile4() {
+    fun testCompletion4() {
         myFixture.configureByFiles("CompletionFile4.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -39,7 +39,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "while")
     }
 
-    fun testCompletionFile5() {
+    fun testCompletion5() {
         myFixture.configureByFiles("CompletionFile5.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -47,7 +47,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "switch")
     }
 
-    fun testCompletionFile6() {
+    fun testCompletion6() {
         myFixture.configureByFiles("CompletionFile6.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -55,7 +55,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertDoesntContain(lookupElementStrings!!, "switch")
     }
 
-    fun testCompletionFile7() {
+    fun testCompletion7() {
         myFixture.configureByFiles("CompletionFile7.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -63,7 +63,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertDoesntContain(lookupElementStrings!!, "while")
     }
 
-    fun testCompletionFile8() {
+    fun testCompletion8() {
         myFixture.configureByFiles("CompletionFile8.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -71,7 +71,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "define")
     }
 
-//    fun testCompletionFile9() {
+//    fun testCompletion9() {
 //        myFixture.configureByFiles("CompletionFile9.glsl")
 //        myFixture.complete(CompletionType.BASIC)
 //        val lookupElementStrings = myFixture.lookupElementStrings
@@ -79,7 +79,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
 //        assertContainsElements(lookupElementStrings!!, "110", "330", "450", "460")
 //    }
 
-    fun testCompletionFile10() {
+    fun testCompletion10() {
         myFixture.configureByFiles("CompletionFile10.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -88,7 +88,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    fun testCompletionFile11() {
+    fun testCompletion11() {
         myFixture.configureByFiles("CompletionFile11.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -97,7 +97,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    fun testCompletionFile12() {
+    fun testCompletion12() {
         myFixture.configureByFiles("CompletionFile12.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -106,7 +106,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, expectedComponents)
     }
 
-    fun testCompletionFile13() {
+    fun testCompletion13() {
         myFixture.configureByFiles("CompletionFile13.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -115,7 +115,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, expectedTypeQualifiers)
     }
 
-    fun testCompletionFile14() {
+    fun testCompletion14() {
         myFixture.configureByFiles("CompletionFile14.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -124,14 +124,14 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertSameElements(lookupElementStrings!!, expectedTypes)
     }
 
-    fun testCompletionFile15() {
+    fun testCompletion15() {
         myFixture.configureByFiles("CompletionFile15.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
         assertNullOrEmpty(lookupElementStrings)
     }
 
-    fun testCompletionFile16() {
+    fun testCompletion16() {
         myFixture.configureByFiles("CompletionFile16.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -140,7 +140,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertDoesntContain(lookupElementStrings!!, typeQualifiers)
     }
 
-    fun testCompletionFile17() {
+    fun testCompletion17() {
         myFixture.configureByFiles("CompletionFile17.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -148,7 +148,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "int", "i8vec4", "inout", "invariant")
     }
 
-    fun testCompletionFile18() {
+    fun testCompletion18() {
         myFixture.configureByFiles("CompletionFile18.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -157,7 +157,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, expectedTypeQualifiers)
     }
 
-    fun testCompletionFile19() {
+    fun testCompletion19() {
         myFixture.configureByFiles("CompletionFile19.comp")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -165,7 +165,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!, "gl_MaxAtomicCounterBindings", "gl_MaxAtomicCounterBufferSize", "gl_MaxComputeWorkGroupSize")
     }
 
-    fun testCompletionFile20() {
+    fun testCompletion20() {
         myFixture.configureByFiles("CompletionFile20.comp")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -174,7 +174,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    fun testCompletionFile21() {
+    fun testCompletion21() {
         myFixture.configureByFiles("CompletionFile21.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -183,7 +183,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertContainsElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    fun testCompletionFile22() {
+    fun testCompletion22() {
         myFixture.configureByFiles("CompletionFile22.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
@@ -192,11 +192,19 @@ class GlslCompletionTest : BasePlatformTestCase() {
         assertSameElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 
-    fun testCompletionFile23() {
+    fun testCompletion23() {
         myFixture.configureByFiles("CompletionFile23.glsl")
         myFixture.complete(CompletionType.BASIC)
         val lookupElementStrings = myFixture.lookupElementStrings
-        println(lookupElementStrings)
         assertEquals(0, lookupElementStrings?.size)
+    }
+
+    fun testCompletion24() {
+        myFixture.configureByFiles("CompletionFile24a.glsl", "include-test/include-test2/CompletionFile24b.glsl", "include-test/include-test3/CompletionFile24c.glsl")
+        myFixture.complete(CompletionType.BASIC)
+        val expectedComponents = listOf("include-test")
+        val lookupElementStrings = myFixture.lookupElementStrings
+        assertEquals(1, lookupElementStrings?.size)
+        assertSameElements(lookupElementStrings!!.toList(), expectedComponents)
     }
 }

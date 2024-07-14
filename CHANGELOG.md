@@ -1,8 +1,11 @@
 # GLSL Plugin Changelog
 
 ## [1.1.2]
+### Added
+- Autocompletion for include statement (not complete)
 ### Fixed
 - Formatting of macros didn't work correctly
+- Macro functions without params were recognized as macro object
 
 ## [1.1.1]
 ### Added

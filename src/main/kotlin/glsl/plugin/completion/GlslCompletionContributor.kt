@@ -73,12 +73,16 @@ class GlslCompletionContributor : CompletionContributor() {
         paramBeginning
     )
 
+    private val insideInclude = psiElement(STRING_LITERAL)
+        .inside(GlslPpIncludeDeclaration::class.java)
+
     init {
         extend(CompletionType.BASIC, typeQualifiersPattern, GlslGenericCompletion(*typeQualifiers))
         extend(CompletionType.BASIC, statementBeginning, GlslGenericCompletion(*selectionKeywords, *iterationKeywords, *funcJumpsKeywords))
         extend(CompletionType.BASIC, insideIteration, GlslGenericCompletion(*iterationJumpsKeywords))
         extend(CompletionType.BASIC, afterPpLiteral, GlslPpCompletion())
         extend(CompletionType.BASIC, afterVersion, GlslGenericCompletion(*GlslDefinitions.VERSIONS))
+        extend(CompletionType.BASIC, insideInclude, GlslIncludeStatementCompletion())
         // Builtin objects
         extend(CompletionType.BASIC, insideTypeSpecifier, GlslBuiltinTypesCompletion())
         extend(CompletionType.BASIC, insideExpression, GlslBuiltinFuncCompletion())

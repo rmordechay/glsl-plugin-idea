@@ -39,8 +39,11 @@ class GlslPsiBuilder(builder: PsiBuilder, state: ErrorState, parser: _GlslParser
         } else if (myTokenType == MACRO_FUNCTION_CALL) {
             var marker = enter_section_(this)
             super.advanceLexer()
-            myTokenType = super.getTokenType()
             exit_section_(this, marker, VARIABLE_IDENTIFIER, true)
+
+            myTokenType = super.getTokenType()
+            if (myTokenType != LEFT_PAREN_MACRO_CALL) return
+
             marker = enter_section_(this)
             while (true) {
                 if (myTokenType == null || myTokenType == RIGHT_PAREN_MACRO_CALL) break

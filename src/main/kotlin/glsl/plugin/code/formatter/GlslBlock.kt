@@ -35,7 +35,11 @@ class GlslBlock(
      *
      */
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
-        if ((child1 as? GlslBlock)?.node?.textLength == 0) return null
+        val glslBlock = (child1 as? GlslBlock)?.node
+        if (glslBlock?.textLength == 0) return null
+        if (glslBlock?.findLeafElementAt(0)?.elementType in listOf(MACRO_FUNCTION, MACRO_OBJECT)) {
+            return null
+        }
         return mySpacing.getSpacing(this, child1, child2)
     }
 

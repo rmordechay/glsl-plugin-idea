@@ -1,9 +1,11 @@
 package glsl.plugin.utils
 
 import com.intellij.lang.PsiBuilder
-import com.intellij.psi.TokenType.WHITE_SPACE
 import glsl.GlslTypes
+import glsl.GlslTypes.MACRO_FUNCTION
+import glsl.GlslTypes.MACRO_OBJECT
 import glsl.GlslTypes.PP_END
+import glsl.GlslTypes.VARIABLE_IDENTIFIER
 import glsl.plugin.psi.GlslIdentifierImpl
 import glsl.psi.interfaces.*
 import utils.GeneratedParserUtil
@@ -20,6 +22,7 @@ object GlslPsiUtils : GeneratedParserUtil() {
      */
     @JvmStatic
     fun primaryExprVariable(builder: PsiBuilder, level: Int): Boolean {
+        if (!recursion_guard_(builder, level, "primary_expr_variable")) return false
         val isCurrentTokenIdentifier = builder.tokenType == GlslTypes.IDENTIFIER
         val isNextTokenIdentifier = builder.lookAhead(1) == GlslTypes.IDENTIFIER
         if (isCurrentTokenIdentifier && !isNextTokenIdentifier) {
@@ -33,8 +36,24 @@ object GlslPsiUtils : GeneratedParserUtil() {
      *
      */
     @JvmStatic
-    fun noSpace(builder: PsiBuilder, level: Int): Boolean {
-        return builder.lookAhead(0) != WHITE_SPACE
+    fun macroIdentifierObject(builder: PsiBuilder, level: Int): Boolean {
+        if (!recursion_guard_(builder, level, "macro_identifier_object")) return false
+        val marker = enter_section_(builder, level, _NONE_, VARIABLE_IDENTIFIER, "<variable identifier>")
+        val result = consumeToken(builder, MACRO_OBJECT)
+        exit_section_(builder, level, marker, result, false, null)
+        return result
+    }
+
+    /**
+     *
+     */
+    @JvmStatic
+    fun macroIdentifierFunction(builder: PsiBuilder, level: Int): Boolean {
+        if (!recursion_guard_(builder, level, "macro_identifier_function")) return false
+        val marker = enter_section_(builder, level, _NONE_, VARIABLE_IDENTIFIER, "<variable identifier>")
+        val result = consumeToken(builder, MACRO_FUNCTION)
+        exit_section_(builder, level, marker, result, false, null)
+        return result
     }
 
     /**
@@ -42,6 +61,7 @@ object GlslPsiUtils : GeneratedParserUtil() {
      */
     @JvmStatic
     fun macroBodyToken(builder: PsiBuilder, level: Int): Boolean {
+        if (!recursion_guard_(builder, level, "macro_body_token")) return false
         val isPpEndOrNull = builder.tokenType == PP_END || builder.tokenType == null
         if (isPpEndOrNull) return false
         builder.advanceLexer()
@@ -53,6 +73,7 @@ object GlslPsiUtils : GeneratedParserUtil() {
      */
     @JvmStatic
     fun ppText(builder: PsiBuilder, level: Int): Boolean {
+        if (!recursion_guard_(builder, level, "pp_text")) return false
         while (builder.tokenType != PP_END && builder.tokenType != null) {
             builder.advanceLexer()
         }

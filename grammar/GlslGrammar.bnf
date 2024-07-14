@@ -856,7 +856,7 @@ private recover_func_header_with_params ::= !(RIGHT_PAREN)
 
 func_header_with_params
     ::= parameter_declaration (COMMA parameter_declaration)*
-//    {   recoverWhile=recover_func_header_with_params    }
+    {   recoverWhile=recover_func_header_with_params    }
 
 private parameter_declaration
     ::= type_qualifier? (parameter_declarator | parameter_type_specifier)
@@ -885,7 +885,7 @@ private recover_function_call_header_with_parameters ::= !(RIGHT_PAREN)
 
 private function_call_header_with_parameters
     ::= function_call_header expr_no_assignment (COMMA expr_no_assignment)*
-//    {   recoverWhile=recover_function_call_header_with_parameters   }
+    {   recoverWhile=recover_function_call_header_with_parameters   }
 
 private function_call_header
     ::= function_identifier LEFT_PAREN
@@ -1155,8 +1155,8 @@ pp_statement
     ::=  (PP_PRAGMA | PP_ERROR) <<ppText>> PP_END
     |    (PP_UNDEF|PP_IFDEF|PP_IFNDEF) variable_identifier PP_END
     |    pp_include_declaration END_INCLUDE
-    |    pp_define_object PP_END
     |    pp_define_function PP_END
+    |    pp_define_object PP_END
     |    pp_conditional PP_END
     |    pp_version_declaration PP_END
     |    pp_extension PP_END
@@ -1183,19 +1183,23 @@ private pp_conditional
     |   HASH
     {   pin(".*")=1   }
 
-dummy_macro_block
-    ::= FUNC_CALL_BLOCK
+meta macro_func_call_params_block
+    ::= MACRO_FUNC_PARAMS_BLOCK
+
+meta macro_call
+    ::= MACRO_OBJECT_CALL
+    |   MACRO_FUNCTION_CALL
 
 pp_define_object
-    ::= PP_DEFINE variable_identifier <<macroBodyToken>>*
-    {   pin(".*")=1   }
+    ::= PP_DEFINE <<macroIdentifierObject>> <<macroBodyToken>>*
+    {   pin=2   }
 
 pp_define_function
-    ::= PP_DEFINE pp_define_function_header <<macroBodyToken>>*
-    {   pin(".*")=1   }
+    ::= PP_DEFINE <<macroIdentifierFunction>> LEFT_PAREN pp_define_function_params? RIGHT_PAREN_MACRO <<macroBodyToken>>*
+    {   pin=2   }
 
-pp_define_function_header
-    ::= variable_identifier <<noSpace>> LEFT_PAREN MACRO_FUNC_PARAM (COMMA MACRO_FUNC_PARAM)* RIGHT_PAREN_MACRO
+private pp_define_function_params
+    ::= MACRO_FUNC_PARAM (COMMA MACRO_FUNC_PARAM)*
 
 private pp_extension
     ::= PP_EXTENSION variable_identifier COLON ('require'|'enable'|'warn'|'disable')

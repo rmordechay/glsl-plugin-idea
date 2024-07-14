@@ -4,7 +4,9 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.psi.util.parentOfType
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.*
+import glsl.GlslTypes.MACRO_OBJECT
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_FUNC_NAME_ATTR
@@ -12,6 +14,7 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_OBJECT_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.VARIABLE_TEXT_ATTR
 import glsl.plugin.psi.GlslType
 import glsl.plugin.utils.GlslUtils
+import glsl.psi.impl.GlslVariableIdentifierImpl
 import glsl.psi.interfaces.*
 import javax.swing.Icon
 
@@ -356,7 +359,7 @@ abstract class GlslNamedPpDefineObject(node: ASTNode) : GlslNamedIdentifierImpl(
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getSelf().childrenOfType<GlslVariableIdentifier>().firstOrNull()
     }
 
     /**
@@ -396,7 +399,7 @@ abstract class GlslNamedPpDefineFunction(node: ASTNode) : GlslNamedIdentifierImp
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().ppDefineFunctionHeader?.variableIdentifier
+        return getSelf().childrenOfType<GlslVariableIdentifier>().firstOrNull()
     }
 
     /**

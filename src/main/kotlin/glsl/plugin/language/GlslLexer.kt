@@ -7,6 +7,7 @@ import com.intellij.util.containers.addIfNotNull
 import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.*
+import glsl.data.GlslTokenSets.IGNORE_MACRO_BODY_TOKEN
 import glsl.plugin.language.GlslLanguage.Companion.LEFT_PAREN_MACRO_CALL
 import glsl.plugin.language.GlslLanguage.Companion.RIGHT_PAREN_MACRO_CALL
 
@@ -20,7 +21,6 @@ class GlslMacro(val name: String, val macroDefineType: IElementType) {
 }
 
 private const val RECURSION_LEVEL_LIMIT = 50000
-private val IGNORE_MACRO_BODY_TOKEN = listOf(WHITE_SPACE, RIGHT_PAREN_MACRO, LINE_COMMENT, MULTILINE_COMMENT, MACRO_OBJECT, MACRO_FUNCTION)
 
 /**
  *
@@ -82,8 +82,8 @@ class GlslLexer : LexerBase() {
         }
 
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
-            val macroType = getMacroType() ?: return
-            macroDefine = GlslMacro(tokenText, macroType)
+            myTokenType = getMacroType() ?: return
+            macroDefine = GlslMacro(tokenText, myTokenType!!)
         } else if (state == MACRO_FUNC_DEFINITION_STATE && myTokenType == MACRO_FUNC_PARAM) {
             macroDefine!!.params.addIfNotNull(myTokenText)
         } else if (state == MACRO_BODY_STATE) {
@@ -161,9 +161,9 @@ class GlslLexer : LexerBase() {
             macroFuncParamIndex = 0
             macroFuncCallParams = hashMapOf()
             macroFunc = macro
-            myTokenType = MACRO_FUNCTION
-        } else {
-            myTokenType = MACRO_OBJECT
+            myTokenType = MACRO_FUNCTION_CALL
+        } else if (macro.macroDefineType == MACRO_OBJECT) {
+            myTokenType = MACRO_OBJECT_CALL
             macroExpansion = macro
             macroExpansion!!.macroExpansionIter = macroExpansion?.elements?.iterator()
         }
@@ -173,7 +173,7 @@ class GlslLexer : LexerBase() {
      *
      */
     private fun expandMacro() {
-        if (state != MACRO_BODY_STATE && myTokenType in listOf(MACRO_OBJECT, RIGHT_PAREN_MACRO_CALL)) {
+        if (state != MACRO_BODY_STATE && myTokenType in listOf(MACRO_OBJECT_CALL, RIGHT_PAREN_MACRO_CALL)) {
             myTokenStart += myTokenText.length
         }
         if (macroExpansion!!.macroExpansionIter?.hasNext() == true) {

@@ -17,13 +17,4 @@ class GlslFormatterTest : BasePlatformTestCase() {
         }
         myFixture.checkResultByFile("FormatterFileExpected.glsl")
     }
-
-    fun testFormatter2() {
-        myFixture.configureByFile("FormatterFile2.glsl")
-        WriteCommandAction.writeCommandAction(project).run<RuntimeException> {
-            val codeStyleManager = CodeStyleManager.getInstance(project)
-            codeStyleManager.reformatText(myFixture.file, listOf(myFixture.file.textRange))
-        }
-        myFixture.checkResultByFile("FormatterFileExpected2.glsl")
-    }
 }

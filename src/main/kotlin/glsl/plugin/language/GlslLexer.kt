@@ -8,8 +8,6 @@ import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.*
 import glsl.data.GlslTokenSets.IGNORE_MACRO_BODY_TOKEN
-import glsl.plugin.language.GlslLanguage.Companion.LEFT_PAREN_MACRO_CALL
-import glsl.plugin.language.GlslLanguage.Companion.RIGHT_PAREN_MACRO_CALL
 
 /**
  *

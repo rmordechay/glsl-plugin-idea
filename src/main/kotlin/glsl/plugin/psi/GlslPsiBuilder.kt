@@ -5,7 +5,6 @@ import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes.*
 import glsl._GlslParser
 import glsl.data.GlslTokenSets.IDENTIFIERS
-import glsl.plugin.language.GlslLanguage.Companion.RIGHT_PAREN_MACRO_CALL
 import utils.GeneratedParserUtil.*
 
 /**

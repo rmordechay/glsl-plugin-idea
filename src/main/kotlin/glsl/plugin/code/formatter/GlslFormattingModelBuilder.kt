@@ -16,8 +16,6 @@ import glsl.data.GlslTokenSets.RELATIONAL_OPERATORS
 import glsl.data.GlslTokenSets.SHIFT_OPERATORS
 import glsl.data.GlslTokenSets.UNARY_OPERATORS
 import glsl.plugin.language.GlslLanguage
-import glsl.plugin.language.GlslLanguage.Companion.LEFT_PAREN_MACRO_CALL
-import glsl.plugin.language.GlslLanguage.Companion.RIGHT_PAREN_MACRO_CALL
 
 
 class GlslFormattingModelBuilder : FormattingModelBuilder {

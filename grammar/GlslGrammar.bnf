@@ -1189,6 +1189,8 @@ meta macro_func_call_params_block
 meta macro_call
     ::= MACRO_OBJECT_CALL
     |   MACRO_FUNCTION_CALL
+    |   RIGHT_PAREN_MACRO_CALL
+    |   LEFT_PAREN_MACRO_CALL
 
 pp_define_object
     ::= PP_DEFINE <<macroIdentifierObject>> <<macroBodyToken>>*

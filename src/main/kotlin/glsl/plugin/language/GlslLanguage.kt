@@ -10,8 +10,6 @@ import com.intellij.psi.tree.IElementType
 class GlslLanguage : Language("Glsl") {
     companion object {
         val INSTANCE = GlslLanguage()
-        val RIGHT_PAREN_MACRO_CALL = GlslTokenType("RIGHT_PAREN_MACRO_CALL")
-        val LEFT_PAREN_MACRO_CALL = GlslTokenType("LEFT_PAREN_MACRO_CALL")
     }
 }
 

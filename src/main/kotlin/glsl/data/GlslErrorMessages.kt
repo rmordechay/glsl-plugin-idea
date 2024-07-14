@@ -3,10 +3,12 @@ package glsl.data
 class GlslErrorMessages {
     companion object {
         const val UNDECLARED_IDENTIFIER = "Use of undeclared identifier."
+        const val VERSION_REQUIRED = "#version required and missing."
+        const val NO_DEFINITION_MAIN = "No definition of main in shader."
         const val REDECLARED_IDENTIFIER = "Regular non-array variable '%s' may not be redeclared."
         const val MISSING_RETURN_FUNCTION = "Missing return for function '%s'."
         const val MAIN_MUST_RETURN_VOID = "main() must return void."
-        const val INCOMPATIBLE_TYPES_IN_INIT = "Incompatible types in initialization (and no available implicit conversion)."
+        const val INCOMPATIBLE_TYPES_IN_INIT = "Incompatible types in initialization (and no available implicit conversion).  Required: %s; Found: %s."
         const val INCOMPATIBLE_TYPES_IN_ASSIGNMENT = "Incompatible types (%s and %s) in assignment (and no available implicit conversion)."
         const val CANT_ACCESS_ARRAY_OF_TYPE = "Can't access array element of type '%s'."
         const val NO_MATCHING_FUNCTION_CALL = "No matching function for call to %s(%s)."

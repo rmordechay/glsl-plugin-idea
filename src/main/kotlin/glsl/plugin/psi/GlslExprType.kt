@@ -22,7 +22,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
         val expr = node.psi ?: return null
         when (expr) {
             is GlslUnaryExpr -> return getPostfixType(expr.postfixExpr)
-            is GlslConditionalExpr -> return expr.exprNoAssignmentList[1].getExprType()
+            is GlslConditionalExpr -> return expr.exprNoAssignmentList.getOrNull(1)?.getExprType()
             is GlslRelationalExpr,
             is GlslEqualityExpr -> return GlslScalar("bool")
             is GlslMulExpr,
@@ -33,12 +33,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
             is GlslShiftExpr,
             is GlslLogicalAndExpr,
             is GlslLogicalXorExpr,
-            is GlslLogicalOrExpr -> {
-                val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
-                val leftExpr = exprList.first().getExprType()
-                val rightExpr = exprList.last().getExprType() ?: return null
-                return leftExpr?.getBinaryExprType(rightExpr, expr)
-            }
+            is GlslLogicalOrExpr -> return getBinaryExprType(expr)
         }
         return null
     }
@@ -49,39 +44,72 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     private fun getPostfixType(postfixExpr: GlslPostfixExpr?): GlslType? {
         when (postfixExpr) {
             is GlslPrimaryExpr -> {
-                if (postfixExpr.variableIdentifier != null) {
-                    return postfixExpr.variableIdentifier?.reference?.resolve()?.getAssociatedType()
-                } else if (postfixExpr.expr != null) {
-                    return postfixExpr.expr!!.getExprType()
-                } else {
-                    if (postfixExpr.intconstant != null) return GlslScalar("int")
-                    else if (postfixExpr.uintconstant != null) return GlslScalar("uint")
-                    else if (postfixExpr.boolconstant != null) return GlslScalar("bool")
-                    else if (postfixExpr.floatconstant != null) return GlslScalar("float")
-                    else if (postfixExpr.stringLiteral != null) return GlslScalar("string")
-                }
+                getPrimaryExprType(postfixExpr)
             }
             is GlslFunctionCall -> {
-                if (postfixExpr.variableIdentifier != null) {
-                    return postfixExpr.variableIdentifier?.reference?.resolve()?.getAssociatedType()
-                } else if (postfixExpr.typeSpecifier != null) {
-                    return GlslType.getInstance(postfixExpr.typeSpecifier)
-                }
+                getFunctionCallType(postfixExpr)
             }
             is GlslPostfixFieldSelection -> {
                 val lastExpr = postfixExpr.postfixStructMemberList.map { it.variableIdentifier }.last()
                 return lastExpr?.reference?.resolve()?.getAssociatedType()
             }
             is GlslPostfixArrayIndex -> {
-                val postfixType = getPostfixType(postfixExpr.postfixExpr)
-                if (postfixType is GlslMatrix) {
-                    return postfixType.getChildType(postfixExpr.exprList)
-                } else if (postfixType is GlslVector) {
-                    return postfixType.getChildType(postfixExpr.exprList)
-                }
-                return postfixType
+                return getPostfixArrayType(postfixExpr)
             }
             is GlslPostfixInc -> return getPostfixType(postfixExpr.postfixExpr)
+        }
+        return null
+    }
+
+    /**
+     *
+     */
+    private fun getPostfixArrayType(postfixExpr: GlslPostfixArrayIndex): GlslType? {
+        val postfixType = getPostfixType(postfixExpr.postfixExpr)
+        if (postfixType is GlslMatrix) {
+            return postfixType.getChildType(postfixExpr.exprList)
+        } else if (postfixType is GlslVector) {
+            return postfixType.getChildType(postfixExpr.exprList)
+        }
+        return postfixType
+    }
+
+    /**
+     *
+     */
+    private fun getFunctionCallType(postfixExpr: GlslFunctionCall): GlslType? {
+        if (postfixExpr.variableIdentifier != null) {
+            return postfixExpr.variableIdentifier?.reference?.resolve()?.getAssociatedType()
+        } else if (postfixExpr.typeSpecifier != null) {
+            return GlslType.getInstance(postfixExpr.typeSpecifier)
+        }
+        return null
+    }
+
+    /**
+     *
+     */
+    private fun getBinaryExprType(expr: PsiElement): GlslType? {
+        val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
+        val leftExpr = exprList.first().getExprType()
+        val rightExpr = exprList.last().getExprType() ?: return null
+        return leftExpr?.getBinaryExprType(rightExpr, expr)
+    }
+
+    /**
+     *
+     */
+    private fun getPrimaryExprType(postfixExpr: GlslPrimaryExpr): GlslType? {
+        if (postfixExpr.variableIdentifier != null) {
+            return postfixExpr.variableIdentifier?.reference?.resolve()?.getAssociatedType()
+        } else if (postfixExpr.expr != null) {
+            return postfixExpr.expr!!.getExprType()
+        } else {
+            if (postfixExpr.intconstant != null) return GlslScalar("int")
+            else if (postfixExpr.uintconstant != null) return GlslScalar("uint")
+            else if (postfixExpr.boolconstant != null) return GlslScalar("bool")
+            else if (postfixExpr.floatconstant != null) return GlslScalar("float")
+            else if (postfixExpr.stringLiteral != null) return GlslScalar("string")
         }
         return null
     }

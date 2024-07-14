@@ -1,0 +1,1 @@
+int a = <caret>normalize(2);

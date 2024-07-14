@@ -41,7 +41,7 @@ private const val INCLUDE_RECURSION_LIMIT = 1000
  */
 class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
     private var currentFilterType = EQUALS
-    val resolvedReferences = arrayListOf<GlslNamedElement>()
+    private val resolvedReferences = arrayListOf<GlslNamedElement>()
     private var includeRecursionLevel = 0
     private var project: Project? = null
 
@@ -93,6 +93,17 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
                 }
             lookupInGlobalScope(externalDeclaration)
         } catch (_: StopLookupException) { }
+    }
+
+    /**
+     *
+     */
+    fun resolveMany(): List<GlslNamedElement>? {
+        if (!shouldResolve()) return null
+        project = element.project
+        val resolveCache = ResolveCache.getInstance(project!!)
+        resolveCache.resolveWithCaching(this, resolver, true, false)
+        return resolvedReferences
     }
 
     /**

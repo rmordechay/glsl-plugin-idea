@@ -202,7 +202,7 @@ class GlslCompletionTest : BasePlatformTestCase() {
     fun testCompletion24() {
         myFixture.configureByFiles("CompletionFile24a.glsl", "include-test/include-test2/CompletionFile24b.glsl", "include-test/include-test3/CompletionFile24c.glsl")
         myFixture.complete(CompletionType.BASIC)
-        val expectedComponents = listOf("include-test")
+        val expectedComponents = listOf("include-test/")
         val lookupElementStrings = myFixture.lookupElementStrings
         assertEquals(1, lookupElementStrings?.size)
         assertSameElements(lookupElementStrings!!.toList(), expectedComponents)

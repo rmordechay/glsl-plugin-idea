@@ -56,32 +56,32 @@ class GlslCodeAnnotator : Annotator {
      *
      */
     private fun annotateNoMatchingFunction(element: GlslFunctionCall, holder: AnnotationHolder) {
-        val variableIdentifier = element.variableIdentifier
-        if (variableIdentifier?.firstChild.elementType != IDENTIFIER) return
-        val funcReference = variableIdentifier?.reference ?: return
-        val resolvedReferences = funcReference.resolveMany() ?: return
-        if (resolvedReferences.isEmpty()) return
-        val actualParamsExprs = element.exprNoAssignmentList
-        val actualParamCount = actualParamsExprs.count()
-        for (reference in resolvedReferences) {
-            if (reference is GlslNamedFunctionHeader) {
-                val parameterDeclarators = reference.getParameterDeclarators()
-                if (parameterDeclarators.count() == actualParamCount) {
-                    return
-                }
-            } else if (reference is GlslStructSpecifier) {
-//                val structMembers = reference.getAssociatedType()?.getStructMembers() ?: return
-//                if (structMembers.count() == actualParamCount) {
+//        val variableIdentifier = element.variableIdentifier
+//        if (variableIdentifier?.firstChild.elementType != IDENTIFIER) return
+//        val funcReference = variableIdentifier?.reference ?: return
+//        val resolvedReferences = funcReference.resolveMany() ?: return
+//        if (resolvedReferences.isEmpty()) return
+//        val actualParamsExprs = element.exprNoAssignmentList
+//        val actualParamCount = actualParamsExprs.count()
+//        for (reference in resolvedReferences) {
+//            if (reference is GlslNamedFunctionHeader) {
+//                val parameterDeclarators = reference.getParameterDeclarators()
+//                if (parameterDeclarators.count() == actualParamCount) {
 //                    return
 //                }
-            }
-        }
-        val textRange: TextRange
-        if (actualParamsExprs.isNotEmpty()) {
-            textRange = TextRange(actualParamsExprs.first().startOffset, actualParamsExprs.last().endOffset)
-        } else {
-            textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
-        }
+//            } else if (reference is GlslStructSpecifier) {
+////                val structMembers = reference.getAssociatedType()?.getStructMembers() ?: return
+////                if (structMembers.count() == actualParamCount) {
+////                    return
+////                }
+//            }
+//        }
+//        val textRange: TextRange
+//        if (actualParamsExprs.isNotEmpty()) {
+//            textRange = TextRange(actualParamsExprs.first().startOffset, actualParamsExprs.last().endOffset)
+//        } else {
+//            textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
+//        }
 //        val actualTypes = actualParamsExprs.mapNotNull { it.getExprType()?.getTypeText() }.joinToString(", ")
 //        val msg = NO_MATCHING_FUNCTION_CALL.format(variableIdentifier.getName(), actualTypes)
 //        setHighlightingError(textRange, holder, msg)

@@ -85,15 +85,6 @@ abstract class GlslVariable(node: ASTNode) : ASTWrapperPsiElement(node), GlslIde
         return glslIdentifier
     }
 
-//    /**
-
-//    *
-//    */
-//    override fun getAsNamedElement(): GlslNamedElementImpl? {
-//        if (parent is GlslNamedVariable) return parent as GlslNamedVariableImpl
-//        if (parent is GlslTypeName) return parent as GlslNamedTypeImpl
-//        return null
-//    }
     /**
      *
      */

@@ -1,8 +1,10 @@
 package glsl.plugin.psi.named
 
+import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
+import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.psi.interfaces.*
 import javax.swing.Icon
 
@@ -56,14 +58,14 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node)
      *
      */
     override fun getHighlightTextAttr(): TextAttributesKey {
-        TODO("Not yet implemented")
+        return GlslTextAttributes.USER_DEFINED_TYPE_TEXT_ATTR
     }
 
     /**
      *
      */
     override fun getLookupIcon(): Icon? {
-        TODO("Not yet implemented")
+        return AllIcons.Nodes.Type
     }
 
     /**
@@ -139,14 +141,14 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node) 
      *
      */
     override fun getHighlightTextAttr(): TextAttributesKey {
-        TODO("Not yet implemented")
+        return GlslTextAttributes.USER_DEFINED_TYPE_TEXT_ATTR
     }
 
     /**
      *
      */
     override fun getLookupIcon(): Icon? {
-        TODO("Not yet implemented")
+        return AllIcons.Nodes.Type
     }
 
     /**

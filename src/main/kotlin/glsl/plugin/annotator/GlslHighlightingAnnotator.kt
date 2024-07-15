@@ -24,7 +24,7 @@ class GlslHighlightingAnnotator : Annotator {
      *
      */
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is GlslVariable) return
+        if (element !is GlslIdentifier) return
         val extension = holder.currentAnnotationSession.file.virtualFile.extension
         val elementName = element.getName()
         if (isBuiltinFunction(elementName) || isBuiltinShaderVariable(elementName, extension)) {

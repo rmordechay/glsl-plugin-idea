@@ -6,7 +6,7 @@ import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import glsl.GlslTypes
-import glsl.plugin.psi.GlslIdentifierImpl
+import glsl.plugin.psi.GlslVariable
 
 
 /**
@@ -24,11 +24,7 @@ class GlslReferenceContributor : PsiReferenceContributor() {
     *
     */
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        val identifierPattern = psiElement(GlslIdentifierImpl::class.java)
-            .andNot(psiElement().afterSibling(psiElement(GlslTypes.TYPE_QUALIFIER)))
-            .andNot(psiElement().afterSibling(psiElement(GlslTypes.TYPE_SPECIFIER)))
-            .andNot(psiElement().afterLeaf("struct"))
-            .andNot(psiElement().afterLeaf(numeric))
+        val identifierPattern = psiElement(GlslVariable::class.java)
         registrar.registerReferenceProvider(identifierPattern, GlslReferenceProvider())
     }
 
@@ -37,7 +33,7 @@ class GlslReferenceContributor : PsiReferenceContributor() {
      */
     inner class GlslReferenceProvider : PsiReferenceProvider() {
         override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-            if (element !is GlslIdentifierImpl) return emptyArray()
+            if (element !is GlslVariable) return emptyArray()
             val range = TextRange(0, element.name.length)
             return arrayOf(GlslReference(element, range))
         }

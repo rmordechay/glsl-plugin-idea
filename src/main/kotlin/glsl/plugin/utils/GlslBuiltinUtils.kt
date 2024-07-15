@@ -9,6 +9,7 @@ import glsl.data.ShaderType.*
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslUtils.getResourceFileAsString
 import glsl.psi.interfaces.*
 import java.util.*
@@ -16,9 +17,9 @@ import java.util.*
 object GlslBuiltinUtils {
 
     private lateinit var vecStructs: Map<String, Map<String, GlslNamedElement>>
-    private lateinit var builtinConstants: Map<String, GlslNamedElement>
-    private lateinit var defaultShaderVariables: Map<String, GlslNamedElement>
-    private lateinit var shaderVariables: EnumMap<ShaderType, Map<String, GlslNamedElement>>
+    private lateinit var builtinConstants: Map<String, GlslNamedVariable>
+    private lateinit var defaultShaderVariables: Map<String, GlslNamedVariable>
+    private lateinit var shaderVariables: EnumMap<ShaderType, Map<String, GlslNamedVariable>>
     private lateinit var builtinFuncs: Map<String, List<GlslFunctionPrototype>>
 
     /**
@@ -76,13 +77,13 @@ object GlslBuiltinUtils {
     /**
      *
      */
-    fun getBuiltinConstants(): Map<String, GlslNamedElement> {
+    fun getBuiltinConstants(): Map<String, GlslNamedVariable> {
         if (::builtinConstants.isInitialized) {
             return builtinConstants
         }
         val builtinFile = getBuiltinFile("glsl-builtin-constants")
         val singleDeclarations = findChildrenOfType(builtinFile, GlslSingleDeclaration::class.java).toList()
-        val constants = hashMapOf<String, GlslNamedElement>()
+        val constants = hashMapOf<String, GlslNamedVariable>()
         for (child in singleDeclarations) {
             val childName = child.name
             if (childName != null) {
@@ -93,7 +94,7 @@ object GlslBuiltinUtils {
         return constants
     }
 
-    fun getShaderVariables(fileExtension: String? = null): Map<String, GlslNamedElement> {
+    fun getShaderVariables(fileExtension: String? = null): Map<String, GlslNamedVariable> {
         if (!::defaultShaderVariables.isInitialized || !::shaderVariables.isInitialized) {
             setShaderVariables()
         }
@@ -122,9 +123,9 @@ object GlslBuiltinUtils {
         val structSpecifiers = findChildrenOfType(shaderVariablesFile, GlslStructSpecifier::class.java).toList()
         // Initializes map with ShaderType enum
         shaderVariables = EnumMap(ShaderType::class.java)
-        val allShaderVariables = hashMapOf<String, GlslNamedElement>()
+        val allShaderVariables = hashMapOf<String, GlslNamedVariable>()
         for (structSpecifier in structSpecifiers) {
-            val structDeclarators = hashMapOf<String, GlslNamedElement>()
+            val structDeclarators = hashMapOf<String, GlslNamedVariable>()
             for (structMember in structSpecifier.getStructMembers()) {
                 val memberName = structMember.name ?: continue
                 structDeclarators[memberName] = structMember

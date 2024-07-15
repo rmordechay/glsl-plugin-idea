@@ -24,7 +24,7 @@ interface GlslIdentifier: ContributedReferenceHost {
     /**
      *
      */
-    fun getAsNamedElement(): GlslNamedElement?
+    override fun getReference(): GlslReference?
 
     /**
      *
@@ -39,14 +39,15 @@ interface GlslIdentifier: ContributedReferenceHost {
     /**
      *
      */
-    override fun getReference(): GlslReference?
+    fun isNamedElement(): Boolean {
+        return parent is GlslNamedElement
+    }
 }
 
 /**
  *
  */
-abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentifier {
-
+abstract class GlslVariable(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentifier {
     /**
     *
     */
@@ -74,11 +75,7 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
     override fun replaceElementName(newName: String?): GlslIdentifier? {
         if (!isShaderFile(this)) return this
         if (newName == null ) return this
-        val dummyDeclaration = when (this) {
-            is GlslVariableIdentifier -> "void $newName;"
-            is GlslTypeName -> "$newName;"
-            else -> return this
-        }
+        val dummyDeclaration = "void $newName;"
         val dummyElement = (PsiFileFactory
             .getInstance(project)
             .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
@@ -88,14 +85,74 @@ abstract class GlslIdentifierImpl(node: ASTNode) : ASTWrapperPsiElement(node), G
         return glslIdentifier
     }
 
+//    /**
+
+//    *
+//    */
+//    override fun getAsNamedElement(): GlslNamedElementImpl? {
+//        if (parent is GlslNamedVariable) return parent as GlslNamedVariableImpl
+//        if (parent is GlslTypeName) return parent as GlslNamedTypeImpl
+//        return null
+//    }
     /**
-    *
-    */
-    override fun getAsNamedElement(): GlslNamedElementImpl? {
-        if (parent is GlslNamedIdentifier) return parent as GlslNamedIdentifierImpl
-        if (parent is GlslNamedUserType) return parent as GlslNamedUserTypeImpl
-        return null
+     *
+     */
+    fun isEmpty(): Boolean {
+        return node.text == "IntellijIdeaRulezzz"
     }
+
+}
+
+/**
+ *
+ */
+abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentifier {
+
+    /**
+     *
+     */
+    override fun getReferences(): Array<out PsiReference?> {
+        return PsiReferenceService.getService().getContributedReferences(this)
+    }
+
+    /**
+     *
+     */
+    override fun getReference(): GlslReference? {
+        return references.firstOrNull() as? GlslReference
+    }
+
+    /**
+     *
+     */
+    override fun getName(): String {
+        return node.text.replace("IntellijIdeaRulezzz", "")
+    }
+
+    /**
+     *
+     */
+    override fun replaceElementName(newName: String?): GlslIdentifier? {
+        if (!isShaderFile(this)) return this
+        if (newName == null ) return this
+        val dummyDeclaration = "$newName;"
+        val dummyElement = (PsiFileFactory
+            .getInstance(project)
+            .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
+            .firstChild
+        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslIdentifier::class.java)
+        val glslIdentifier: GlslIdentifier = if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
+        return glslIdentifier
+    }
+
+//    /**
+//    *
+//    */
+//    override fun getAsNamedElement(): GlslNamedElementImpl? {
+//        if (parent is GlslNamedVariable) return parent as GlslNamedVariableImpl
+//        if (parent is GlslTypeName) return parent as GlslNamedTypeImpl
+//        return null
+//    }
 
     /**
      *

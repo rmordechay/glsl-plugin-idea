@@ -70,10 +70,10 @@ class GlslCodeAnnotator : Annotator {
                     return
                 }
             } else if (reference is GlslStructSpecifier) {
-                val structMembers = reference.getAssociatedType()?.getStructMembers() ?: return
-                if (structMembers.count() == actualParamCount) {
-                    return
-                }
+//                val structMembers = reference.getAssociatedType()?.getStructMembers() ?: return
+//                if (structMembers.count() == actualParamCount) {
+//                    return
+//                }
             }
         }
         val textRange: TextRange
@@ -82,9 +82,9 @@ class GlslCodeAnnotator : Annotator {
         } else {
             textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
         }
-        val actualTypes = actualParamsExprs.mapNotNull { it.getExprType()?.getTypeText() }.joinToString(", ")
-        val msg = NO_MATCHING_FUNCTION_CALL.format(variableIdentifier.getName(), actualTypes)
-        setHighlightingError(textRange, holder, msg)
+//        val actualTypes = actualParamsExprs.mapNotNull { it.getExprType()?.getTypeText() }.joinToString(", ")
+//        val msg = NO_MATCHING_FUNCTION_CALL.format(variableIdentifier.getName(), actualTypes)
+//        setHighlightingError(textRange, holder, msg)
     }
 
     /**

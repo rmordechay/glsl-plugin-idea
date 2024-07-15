@@ -1,151 +1,165 @@
 package glsl.plugin.psi.named
 
-import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
-import glsl.plugin.code.highlighting.GlslTextAttributes
-import glsl.plugin.psi.GlslType
-import glsl.psi.interfaces.GlslBlockStructure
-import glsl.psi.interfaces.GlslStructDeclarator
-import glsl.psi.interfaces.GlslStructSpecifier
-import glsl.psi.interfaces.GlslTypeName
+import glsl.psi.interfaces.*
 import javax.swing.Icon
 
 /**
  *
  */
-interface GlslNamedUserType : GlslNamedElement, GlslType
+interface GlslNamedType : GlslNamedElement {
+    fun getStructMembers(): List<GlslNamedVariable>
+    fun getStructMember(memberName: String): GlslNamedVariable?
+    fun isConvertible(other: String): Boolean
+    fun getDimension(): Int
+    fun getBinaryExprType(rightExprType: GlslNamedType?, expr: PsiElement? = null): GlslNamedType?
 
+    /**
+     *
+     */
+    fun isEqual(other: GlslNamedType?): Boolean {
+        if (other == null) return false
+        val otherTypeText = other.name ?: return false
+        return name == otherTypeText || isConvertible(otherTypeText)
+    }
+
+    /**
+     *
+     */
+    fun isEqual(other: String?): Boolean {
+        if (other == null) return false
+        return name == other || isConvertible(other)
+    }
+}
 
 /**
  *
  */
-abstract class GlslNamedUserTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), GlslNamedUserType {
+abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), GlslNamedType
+
+
+/**
+ * type_specifier
+ */
+abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node) {
 
     /**
-    *
-    */
-    override fun getAssociatedType(): GlslType? {
-        return this
+     *
+     */
+    override fun getSelf(): GlslStructSpecifier {
+        return this as GlslStructSpecifier
     }
 
     /**
-    *
-    */
-    override fun getLookupIcon(): Icon? {
-        return AllIcons.Nodes.Type
-    }
-
-    /**
-    *
-    */
+     *
+     */
     override fun getHighlightTextAttr(): TextAttributesKey {
-        return GlslTextAttributes.USER_DEFINED_TYPE_TEXT_ATTR
+        TODO("Not yet implemented")
     }
 
     /**
-    *
-    */
-    override fun getTypeText(): String? {
-        return name
+     *
+     */
+    override fun getLookupIcon(): Icon? {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
+    override fun getNameIdentifier(): GlslTypeName? {
+        return getSelf().typeName
+    }
+
+    /**
+     *
+     */
+    override fun getStructMembers(): List<GlslNamedVariable> {
+        val structDeclarationList = getSelf().structDeclarationList
+        val structDeclarators = mutableListOf<GlslStructDeclarator>()
+        for (structDeclaration in structDeclarationList) {
+            for (structDeclarator in structDeclaration.structDeclaratorList) {
+                structDeclarators.add(structDeclarator)
+            }
+        }
+        return structDeclarators
+    }
+
+    /**
+     *
+     */
+    override fun getStructMember(memberName: String): GlslNamedVariable? {
+        val structDeclarationList = getSelf().structDeclarationList
+        for (structDeclaration in structDeclarationList) {
+            for (structDeclarator in structDeclaration.structDeclaratorList) {
+                if (structDeclarator.name != memberName) continue
+                return structDeclarator
+            }
+        }
+        return null
     }
 
     /**
      *
      */
     override fun isConvertible(other: String): Boolean {
-        return false
+        TODO("Not yet implemented")
     }
 
     /**
      *
      */
     override fun getDimension(): Int {
-        return 1
-    }
-
-
-    /**
-    *
-    */
-    override fun getBinaryExprType(rightExprType: GlslType, expr: PsiElement?): GlslType? {
-        return null
-    }
-
-}
-
-/**
- * type_specifier
- */
-abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedUserTypeImpl(node) {
-
-    /**
-    *
-    */
-    override fun getSelf(): GlslStructSpecifier {
-        return this as GlslStructSpecifier
+        TODO("Not yet implemented")
     }
 
     /**
-    *
-    */
-    override fun getNameIdentifier(): GlslTypeName? {
-        return getSelf().typeName
-    }
-
-    /**
-    *
-    */
-    override fun getStructMembers(): List<GlslNamedElement> {
-        val structDeclarationList = getSelf().structDeclarationList
-        val structDeclarators = mutableListOf<GlslStructDeclarator>()
-        for (structDeclaration in structDeclarationList) {
-            for (structDeclarator in structDeclaration.structDeclaratorList) {
-                structDeclarators.add(structDeclarator)
-            }
-        }
-        return structDeclarators
-    }
-
-    /**
-    *
-    */
-    override fun getStructMember(memberName: String): GlslNamedElement? {
-        val structDeclarationList = getSelf().structDeclarationList
-        for (structDeclaration in structDeclarationList) {
-            for (structDeclarator in structDeclaration.structDeclaratorList) {
-                if (structDeclarator.name != memberName) continue
-                return structDeclarator
-            }
-        }
-        return null
+     *
+     */
+    override fun getBinaryExprType(rightExprType: GlslNamedType?, expr: PsiElement?): GlslNamedType? {
+        TODO("Not yet implemented")
     }
 }
 
 /**
  * block_structure
  */
-abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedUserTypeImpl(node) {
+abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node) {
 
     /**
-    *
-    */
+     *
+     */
     override fun getSelf(): GlslBlockStructure {
         return this as GlslBlockStructure
     }
 
     /**
-    *
-    */
+     *
+     */
+    override fun getHighlightTextAttr(): TextAttributesKey {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
+    override fun getLookupIcon(): Icon? {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
     override fun getNameIdentifier(): GlslTypeName {
         return getSelf().typeName
     }
 
     /**
-    *
-    */
-    override fun getStructMembers(): List<GlslNamedElement> {
+     *
+     */
+    override fun getStructMembers(): List<GlslNamedVariable> {
         val structDeclarationList = getSelf().structDeclarationList
         val structDeclarators = mutableListOf<GlslStructDeclarator>()
         for (structDeclaration in structDeclarationList) {
@@ -157,9 +171,9 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedUserTypeImpl(no
     }
 
     /**
-    *
-    */
-    override fun getStructMember(memberName: String): GlslNamedElement? {
+     *
+     */
+    override fun getStructMember(memberName: String): GlslNamedVariable? {
         val structDeclarationList = getSelf().structDeclarationList
         for (structDeclaration in structDeclarationList) {
             for (structDeclarator in structDeclaration.structDeclaratorList) {
@@ -168,5 +182,26 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedUserTypeImpl(no
             }
         }
         return null
+    }
+
+    /**
+     *
+     */
+    override fun isConvertible(other: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
+    override fun getDimension(): Int {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
+    override fun getBinaryExprType(rightExprType: GlslNamedType?, expr: PsiElement?): GlslNamedType? {
+        TODO("Not yet implemented")
     }
 }

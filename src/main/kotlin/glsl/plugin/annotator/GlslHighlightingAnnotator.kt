@@ -6,7 +6,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import glsl.plugin.code.highlighting.GlslTextAttributes
-import glsl.plugin.psi.GlslIdentifierImpl
+import glsl.plugin.psi.GlslIdentifier
+import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinConstant
 import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinFunction
@@ -23,9 +24,9 @@ class GlslHighlightingAnnotator : Annotator {
      *
      */
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is GlslIdentifierImpl) return
+        if (element !is GlslVariable) return
         val extension = holder.currentAnnotationSession.file.virtualFile.extension
-        val elementName = element.name
+        val elementName = element.getName()
         if (isBuiltinFunction(elementName) || isBuiltinShaderVariable(elementName, extension)) {
             createAnnotation(holder, GlslTextAttributes.BUILTIN_NAME_TEXT_ATTR)
         } else if (isBuiltinConstant(elementName)) {
@@ -54,11 +55,11 @@ class GlslHighlightingAnnotator : Annotator {
     /**
      *
      */
-    private fun setDeclarationHighlighting(element: GlslIdentifierImpl, holder: AnnotationHolder) {
+    private fun setDeclarationHighlighting(element: GlslIdentifier, holder: AnnotationHolder) {
         if (element.parent is GlslLayoutQualifierId) {
             createAnnotation(holder, GlslTextAttributes.VARIABLE_TEXT_ATTR)
-        } else if (element.getAsNamedElement() != null) {
-            createAnnotation(holder, element.getAsNamedElement()!!.getHighlightTextAttr())
+        } else if (element.isNamedElement()) {
+            createAnnotation(holder, (element.parent as GlslNamedElement).getHighlightTextAttr())
         }
     }
 

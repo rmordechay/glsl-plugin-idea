@@ -25,7 +25,6 @@ import com.intellij.util.Function;
 import com.intellij.util.PairProcessor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.LimitedPool;
-import glsl.plugin.psi.GlslPsiBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;

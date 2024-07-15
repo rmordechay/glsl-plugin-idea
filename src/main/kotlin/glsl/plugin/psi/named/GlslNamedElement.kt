@@ -7,7 +7,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import glsl.plugin.psi.GlslIdentifier
-import glsl.plugin.psi.GlslType
 import glsl.plugin.utils.GlslUtils
 import glsl.plugin.utils.GlslUtils.isShaderFile
 import javax.swing.Icon
@@ -19,11 +18,6 @@ interface GlslNamedElement : PsiNameIdentifierOwner {
      * in order to avoid method-injection, which can be confusing.
      */
     fun getSelf(): GlslNamedElement
-
-    /**
-     *
-     */
-    fun getAssociatedType(): GlslType?
 
     /**
      * Syntax highlighting color.

@@ -93,7 +93,7 @@ class GlslReferenceTest : BasePlatformTestCase() {
         val resolve = reference?.resolve()
         assertInstanceOf(resolve, GlslParameterDeclarator::class.java)
         assertEquals("param1", (resolve as GlslParameterDeclarator).name)
-        assertEquals("int", resolve.getAssociatedType()?.getTypeText())
+        assertEquals("int", resolve.getAssociatedType()?.name)
     }
 
     fun testReferenceFile12() {
@@ -102,7 +102,7 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertInstanceOf(resolve, GlslParameterDeclarator::class.java)
         assertEquals("param1", (resolve as GlslParameterDeclarator).name)
         assertNotNull(resolve.getAssociatedType())
-        assertEquals("int", resolve.getAssociatedType()?.getTypeText())
+        assertEquals("int", resolve.getAssociatedType()?.name)
     }
 
     fun testReferenceFile13() {
@@ -119,8 +119,8 @@ class GlslReferenceTest : BasePlatformTestCase() {
         val variableType2 = parameterDeclarator?.getAssociatedType()
         assertNotNull(variableType1)
         assertNotNull(variableType2)
-        assertEquals("int", variableType1?.getTypeText())
-        assertEquals("int", variableType2?.getTypeText())
+        assertEquals("int", variableType1?.name)
+        assertEquals("int", variableType2?.name)
     }
 
     fun testReferenceFile15() {

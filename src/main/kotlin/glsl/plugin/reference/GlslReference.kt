@@ -14,9 +14,8 @@ import com.intellij.psi.util.elementType
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
 import glsl.plugin.psi.GlslIdentifier
-import glsl.plugin.psi.GlslIdentifierImpl
-import glsl.plugin.psi.GlslType
-import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.GlslVariable
+import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.reference.FilterType.EQUALS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
@@ -39,13 +38,13 @@ private const val INCLUDE_RECURSION_LIMIT = 1000
 /**
  *
  */
-class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
+class GlslReference(private val element: GlslVariable, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
     private var currentFilterType = EQUALS
-    private val resolvedReferences = arrayListOf<GlslNamedElement>()
+    private val resolvedReferences = arrayListOf<GlslNamedVariable>()
     private var includeRecursionLevel = 0
     private var project: Project? = null
 
-    private val resolver = AbstractResolver<GlslReference, GlslNamedElement> { reference, _ ->
+    private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
         reference.doResolve()
         reference.resolvedReferences.firstOrNull()
     }
@@ -53,7 +52,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     /**
      *
      */
-    override fun resolve(): GlslNamedElement? {
+    override fun resolve(): GlslNamedVariable? {
         if (!shouldResolve()) return null
         project = element.project
         val resolveCache = ResolveCache.getInstance(project!!)
@@ -98,7 +97,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     /**
      *
      */
-    fun resolveMany(): List<GlslNamedElement>? {
+    fun resolveMany(): List<GlslNamedVariable>? {
         if (!shouldResolve()) return null
         project = element.project
         val resolveCache = ResolveCache.getInstance(project!!)
@@ -106,41 +105,41 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         return resolvedReferences
     }
 
-    /**
-     *
-     */
-    fun resolveType(): GlslType? {
-        try {
-            var statementPrevSibling = getParentOfType(element, GlslStatement::class.java)
-            while (statementPrevSibling != null) {
-                resolveDeclarationType(statementPrevSibling.declaration)
-                statementPrevSibling = getPrevSiblingOfType(statementPrevSibling, GlslStatement::class.java)
-            }
-            var externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
-            while (externalDeclaration != null) {
-                externalDeclaration = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
-                val declaration = externalDeclaration?.declaration
-                resolveDeclarationType(declaration)
-            }
-            return null
-        } catch (_: StopLookupException) {
-            return resolvedReferences.firstOrNull()?.getAssociatedType()
-        }
-    }
-
-    /**
-     *
-     */
-    private fun resolveDeclarationType(declaration: GlslDeclaration?) {
-        if (declaration != null) {
-            val structSpecifier = declaration.singleDeclaration?.typeSpecifier?.typeSpecifierUser?.structSpecifier
-            if (structSpecifier != null) {
-                findReferenceInElement(structSpecifier)
-            } else if (declaration.blockStructureWrapper != null) {
-                findReferenceInElement(declaration.blockStructureWrapper?.blockStructure)
-            }
-        }
-    }
+//    /**
+//     *
+//     */
+//    fun resolveType(): GlslType? {
+//        try {
+//            var statementPrevSibling = getParentOfType(element, GlslStatement::class.java)
+//            while (statementPrevSibling != null) {
+//                resolveDeclarationType(statementPrevSibling.declaration)
+//                statementPrevSibling = getPrevSiblingOfType(statementPrevSibling, GlslStatement::class.java)
+//            }
+//            var externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
+//            while (externalDeclaration != null) {
+//                externalDeclaration = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
+//                val declaration = externalDeclaration?.declaration
+//                resolveDeclarationType(declaration)
+//            }
+//            return null
+//        } catch (_: StopLookupException) {
+//            return resolvedReferences.firstOrNull()?.getAssociatedType()
+//        }
+//    }
+//
+//    /**
+//     *
+//     */
+//    private fun resolveDeclarationType(declaration: GlslDeclaration?) {
+//        if (declaration != null) {
+//            val structSpecifier = declaration.singleDeclaration?.typeSpecifier?.typeSpecifierUser?.structSpecifier
+//            if (structSpecifier != null) {
+//                findReferenceInElement(structSpecifier)
+//            } else if (declaration.blockStructureWrapper != null) {
+//                findReferenceInElement(declaration.blockStructureWrapper?.blockStructure)
+//            }
+//        }
+//    }
 
     /**
      *
@@ -253,8 +252,8 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (singleDeclaration.variableIdentifier != null) {
             findReferenceInElement(singleDeclaration)
         }
-        val structSpecifier = singleDeclaration.typeSpecifier.typeSpecifierUser?.structSpecifier
-        findReferenceInElement(structSpecifier)
+//        val structSpecifier = singleDeclaration.typeSpecifier.typeSpecifierUser?.structSpecifier
+//        findReferenceInElement(structSpecifier)
     }
 
     /**
@@ -266,7 +265,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (blockStructureWrapper == null) return
         findReferenceInElement(blockStructureWrapper)
         if (blockStructureWrapper.variableIdentifier == null) {
-            val structMembers = blockStructureWrapper.blockStructure.getAssociatedType()?.getStructMembers()
+            val structMembers = blockStructureWrapper.blockStructure.getStructMembers()
             findReferenceInElementList(structMembers)
         }
     }
@@ -329,7 +328,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     private fun lookupInPostfixFieldSelection(postfixFieldSelection: GlslPostfixFieldSelection?) {
         if (postfixFieldSelection == null) return
         val rootExpr = getPostfixIdentifier(postfixFieldSelection.postfixExpr) ?: return
-        val resolvedRootExpr = rootExpr.getAsNamedElement() ?: rootExpr.reference?.resolve()
+        val resolvedRootExpr = (rootExpr.parent as? GlslNamedVariable) ?: rootExpr.reference?.resolve()
         var nextMemberType = resolvedRootExpr?.getAssociatedType()
 
         val identifierList = postfixFieldSelection.postfixStructMemberList.map {
@@ -394,7 +393,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     /**
      *
      */
-    private fun findReferenceInElement(namedElement: GlslNamedElement?) {
+    private fun findReferenceInElement(namedElement: GlslNamedVariable?) {
         val namedElementName = namedElement?.name ?: return
         val elementName = element.name
         if (currentFilterType == EQUALS) {
@@ -409,7 +408,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     /**
      *
      */
-    private fun findReferenceInElementList(namedElementsList: List<GlslNamedElement>?, addAll: Boolean = false) {
+    private fun findReferenceInElementList(namedElementsList: List<GlslNamedVariable>?, addAll: Boolean = false) {
         if (namedElementsList == null) return
         if (addAll) {
             resolvedReferences.addAll(namedElementsList)
@@ -423,7 +422,7 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
     /**
      *
      */
-    private fun findReferenceInElementMap(namedElementsMap: Map<String, GlslNamedElement>) {
+    private fun findReferenceInElementMap(namedElementsMap: Map<String, GlslNamedVariable>) {
         if (namedElementsMap.isEmpty()) return
         val elementName = element.name
         if (currentFilterType == EQUALS) {
@@ -446,6 +445,6 @@ class GlslReference(private val element: GlslIdentifierImpl, textRange: TextRang
         if (currentFilterType == CONTAINS && element.isEmpty()) {
             return true
         }
-        return element.parent !is GlslNamedElement || element.firstChild.elementType in listOf(MACRO_OBJECT, MACRO_FUNCTION)
+        return element.parent !is GlslNamedVariable || element.firstChild.elementType in listOf(MACRO_OBJECT, MACRO_FUNCTION)
     }
 }

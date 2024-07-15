@@ -82,7 +82,7 @@ object GlslUtils {
         if (typeQualifierStr.contains(" ")) {
             typeQualifierStr = typeQualifierStr.substring(0, typeQualifierStr.indexOf(' '))
         }
-        val typeSpecifierStr = functionHeader.getAssociatedType()?.getTypeText() ?: ""
+        val typeSpecifierStr = functionHeader.getAssociatedType()?.name ?: ""
         val fullySpecifiedType = "$typeQualifierStr $typeSpecifierStr".trim()
         val funcName = functionHeader.variableIdentifier.text
         var funcHeader = "$funcName("

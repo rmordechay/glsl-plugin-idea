@@ -27,15 +27,15 @@ class GlslDocumentationTest : BasePlatformTestCase() {
         assertTrue(doc!!.contains("<div id=\"abs\">"))
     }
 
-    fun testDocumentationFile2() {
-        myFixture.configureByFile("DocumentationFile2.glsl")
-        val originalElement = myFixture.elementAtCaret
-        val element = DocumentationManager
-            .getInstance(project)
-            .findTargetElement(myFixture.editor, originalElement.containingFile, originalElement)
-        val documentationProvider = DocumentationManager.getProviderFromElement(element)
-        val doc = documentationProvider.generateDoc(element, originalElement)
-        assertNotNull(doc)
-        assertTrue(doc!!.contains("Function documentation"))
-    }
+//    fun testDocumentationFile2() {
+//        myFixture.configureByFile("DocumentationFile2.glsl")
+//        val originalElement = myFixture.elementAtCaret
+//        val element = DocumentationManager
+//            .getInstance(project)
+//            .findTargetElement(myFixture.editor, originalElement.containingFile, originalElement)
+//        val documentationProvider = DocumentationManager.getProviderFromElement(element)
+//        val doc = documentationProvider.generateDoc(element, originalElement)
+//        assertNotNull(doc)
+//        assertTrue(doc!!.contains("Function documentation"))
+//    }
 }

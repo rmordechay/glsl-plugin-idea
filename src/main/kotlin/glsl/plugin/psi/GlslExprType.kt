@@ -4,10 +4,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import glsl.plugin.psi.builtins.GlslScalar
 import glsl.plugin.psi.named.GlslNamedType
-import glsl.plugin.psi.named.GlslNamedTypeImpl
-import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.psi.interfaces.*
 
 interface GlslExprType : PsiElement {
@@ -51,7 +48,9 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
                 getFunctionCallType(postfixExpr)
             }
             is GlslPostfixFieldSelection -> {
-                val lastExpr = postfixExpr.postfixStructMemberList.map { it.variableIdentifier }.last()
+                val variableIdentifiers = postfixExpr.postfixStructMemberList.mapNotNull { it.variableIdentifier }
+                if (variableIdentifiers.isEmpty()) return null
+                val lastExpr = variableIdentifiers.last() as? GlslVariable
                 return lastExpr?.reference?.resolve()?.getAssociatedType()
             }
             is GlslPostfixArrayIndex -> {
@@ -80,7 +79,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      */
     private fun getFunctionCallType(postfixExpr: GlslFunctionCall): GlslNamedType? {
         if (postfixExpr.variableIdentifier != null) {
-            return postfixExpr.variableIdentifier?.reference?.resolve()?.getAssociatedType()
+//            return postfixExpr.variableIdentifier?.reference?.resolve()?.getAssociatedType()
         } else if (postfixExpr.typeSpecifier != null) {
             return null
         }

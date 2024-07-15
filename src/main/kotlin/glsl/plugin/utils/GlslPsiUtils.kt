@@ -3,7 +3,7 @@ package glsl.plugin.utils
 import com.intellij.lang.PsiBuilder
 import glsl.GlslTypes
 import glsl.GlslTypes.*
-import glsl.plugin.psi.GlslIdentifier
+import glsl.plugin.psi.GlslVariable
 import glsl.psi.interfaces.*
 import utils.GeneratedParserUtil
 
@@ -80,10 +80,10 @@ object GlslPsiUtils : GeneratedParserUtil() {
     /**
      *
      */
-    fun getPostfixIdentifier(postfixExpr: GlslPostfixExpr?): GlslIdentifier? {
+    fun getPostfixIdentifier(postfixExpr: GlslPostfixExpr?): GlslVariable? {
         return when (postfixExpr) {
-            is GlslPrimaryExpr -> postfixExpr.variableIdentifier
-            is GlslFunctionCall -> postfixExpr.variableIdentifier
+            is GlslPrimaryExpr -> postfixExpr.variableIdentifier as? GlslVariable
+            is GlslFunctionCall -> postfixExpr.variableIdentifier as? GlslVariable
             is GlslPostfixArrayIndex -> getPostfixIdentifier(postfixExpr.postfixExpr)
             is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
             else -> null

@@ -1,8 +1,9 @@
 package glsl.plugin.reference
-
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.resolve.ResolveCache
+import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
 import com.intellij.psi.util.childrenOfType
@@ -10,9 +11,9 @@ import com.intellij.psi.util.elementType
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
 import glsl.plugin.psi.GlslVariable
+import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.FilterType.CONTAINS
-import glsl.plugin.reference.FilterType.EQUALS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
@@ -23,6 +24,31 @@ import glsl.psi.interfaces.*
 private const val INCLUDE_RECURSION_LIMIT = 1000
 
 class GlslVariableReference(private val element: GlslVariable, textRange: TextRange) : GlslReference(element, textRange) {
+    private var includeRecursionLevel = 0
+
+    private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
+        reference.doResolve()
+        reference.resolvedReferences.firstOrNull() as? GlslNamedVariable
+    }
+
+    /**
+     *
+     */
+    override fun resolve(): GlslNamedVariable? {
+        if (!shouldResolve()) return null
+        project = element.project
+        val resolveCache = ResolveCache.getInstance(project!!)
+        return resolveCache.resolveWithCaching(this, resolver, true, false)
+    }
+
+    /**
+     *
+     */
+    override fun getVariants(): Array<LookupElement> {
+        doResolve(CONTAINS)
+        return resolvedReferences.mapNotNull { it.getLookupElement() }.toTypedArray()
+    }
+
     /**
      *
      */
@@ -56,7 +82,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    fun resolveMany(): List<GlslNamedVariable>? {
+    fun resolveMany(): List<GlslNamedElement>? {
         if (!shouldResolve()) return null
         project = element.project
         val resolveCache = ResolveCache.getInstance(project!!)
@@ -288,8 +314,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     private fun lookupInPostfixFieldSelection(postfixFieldSelection: GlslPostfixFieldSelection?) {
         if (postfixFieldSelection == null) return
         val rootExpr = getPostfixIdentifier(postfixFieldSelection.postfixExpr) ?: return
-        val resolvedRootExpr = (rootExpr.parent as? GlslNamedVariable) ?: rootExpr.reference?.resolve()
-        var nextMemberType = resolvedRootExpr?.getAssociatedType()
+        var nextMemberType = rootExpr.reference?.resolve()?.getAssociatedType()
 
         val identifierList = postfixFieldSelection.postfixStructMemberList.map {
             if (it.functionCall != null) it.functionCall!!.variableIdentifier
@@ -328,73 +353,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (postfixStructMember != null) {
             lookupInPostfixFieldSelection(postfixStructMember.parent as? GlslPostfixFieldSelection)
             throw StopLookupException()
-        }
-    }
-
-    /**
-     *  Gets the parent scope inside a function by traversing up the tree. A new scope is
-     *  reached once a GlslStatement is encountered, otherwise returns GlslFunctionDefinition
-     *  meaning the end of the function scope. GlslFunctionDefinition must be encountered
-     *  sooner or later since statement must be a child of function_definition.
-     *
-     *  @return GlslStatement or GlslFunctionDefinition
-     */
-    private fun getParentScope(glslStatement: GlslStatement?): PsiElement? {
-        var elementParent = glslStatement?.parent
-        while (elementParent != null && elementParent !is GlslStatement) {
-            elementParent = elementParent.parent
-            if (elementParent is GlslFunctionDefinition) {
-                return elementParent
-            }
-        }
-        return elementParent
-    }
-
-    /**
-     *
-     */
-    private fun findReferenceInElement(namedElement: GlslNamedVariable?) {
-        val namedElementName = namedElement?.name ?: return
-        val elementName = element.name
-        if (currentFilterType == EQUALS) {
-            if (namedElementName != elementName) return
-            resolvedReferences.add(namedElement)
-            throw StopLookupException()
-        } else if (currentFilterType == CONTAINS && namedElementName.contains(elementName)) {
-            resolvedReferences.add(namedElement)
-        }
-    }
-
-    /**
-     *
-     */
-    private fun findReferenceInElementList(namedElementsList: List<GlslNamedVariable>?, addAll: Boolean = false) {
-        if (namedElementsList == null) return
-        if (addAll) {
-            resolvedReferences.addAll(namedElementsList)
-            return
-        }
-        for (namedElement in namedElementsList) {
-            findReferenceInElement(namedElement)
-        }
-    }
-
-    /**
-     *
-     */
-    private fun findReferenceInElementMap(namedElementsMap: Map<String, GlslNamedVariable>) {
-        if (namedElementsMap.isEmpty()) return
-        val elementName = element.name
-        if (currentFilterType == EQUALS) {
-            if (namedElementsMap.containsKey(element.name)) {
-                findReferenceInElement(namedElementsMap[elementName])
-            }
-        } else if (currentFilterType == CONTAINS) {
-            for ((key, value) in namedElementsMap.entries) {
-                if (key.contains(elementName)) {
-                    findReferenceInElement(value)
-                }
-            }
         }
     }
 }

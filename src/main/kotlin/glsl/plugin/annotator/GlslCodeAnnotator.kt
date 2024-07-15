@@ -9,17 +9,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childLeafs
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
-import com.intellij.refactoring.suggested.startOffset
-import glsl.GlslTypes.IDENTIFIER
 import glsl.GlslTypes.RETURN
 import glsl.data.GlslErrorMessages.Companion.INCOMPATIBLE_TYPES_IN_INIT
 import glsl.data.GlslErrorMessages.Companion.MISSING_RETURN_FUNCTION
-import glsl.data.GlslErrorMessages.Companion.NO_MATCHING_FUNCTION_CALL
-import glsl.plugin.psi.named.GlslNamedFunctionHeader
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslFunctionDefinition
 import glsl.psi.interfaces.GlslSingleDeclaration
-import glsl.psi.interfaces.GlslStructSpecifier
 
 
 class GlslCodeAnnotator : Annotator {

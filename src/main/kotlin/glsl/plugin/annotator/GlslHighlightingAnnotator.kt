@@ -7,7 +7,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.GlslIdentifier
-import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinConstant
 import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinFunction

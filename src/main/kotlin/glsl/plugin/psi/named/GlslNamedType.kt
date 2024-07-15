@@ -5,7 +5,10 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import glsl.plugin.code.highlighting.GlslTextAttributes
-import glsl.psi.interfaces.*
+import glsl.psi.interfaces.GlslBlockStructure
+import glsl.psi.interfaces.GlslStructDeclarator
+import glsl.psi.interfaces.GlslStructSpecifier
+import glsl.psi.interfaces.GlslTypeName
 import javax.swing.Icon
 
 /**

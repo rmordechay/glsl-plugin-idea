@@ -46,7 +46,7 @@
                                         implementationClass="glsl.plugin.reference.GlslRefactoring"/>
 
         <lang.documentationProvider     language="Glsl"
-                                        implementationClass="glsl.plugin.documentation.GlslDocsProvider"/>
+                                        implementationClass="glsl.plugin.documentation.GlslDocumentationProvider"/>
 
         <lang.findUsagesProvider        language="Glsl"
                                         implementationClass="glsl.plugin.reference.GlslFindUsageProvider"/>

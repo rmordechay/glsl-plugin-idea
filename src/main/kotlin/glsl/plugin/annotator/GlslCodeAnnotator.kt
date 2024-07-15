@@ -6,26 +6,20 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.SyntaxTraverser
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childLeafs
-import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
-import glsl.GlslTypes
 import glsl.GlslTypes.IDENTIFIER
 import glsl.GlslTypes.RETURN
 import glsl.data.GlslErrorMessages.Companion.INCOMPATIBLE_TYPES_IN_INIT
 import glsl.data.GlslErrorMessages.Companion.MISSING_RETURN_FUNCTION
 import glsl.data.GlslErrorMessages.Companion.NO_MATCHING_FUNCTION_CALL
-import glsl.plugin.psi.GlslType
-import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedFunctionHeader
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslFunctionDefinition
-import glsl.psi.interfaces.GlslJumpStatement
 import glsl.psi.interfaces.GlslSingleDeclaration
+import glsl.psi.interfaces.GlslStructSpecifier
 
 
 class GlslCodeAnnotator : Annotator {
@@ -36,13 +30,13 @@ class GlslCodeAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is GlslFunctionDefinition -> {
-                annotateFunctionDefinition(element, holder)
+                annotateMissingReturn(element, holder)
             }
             is GlslSingleDeclaration -> {
                 annotateSingleDeclaration(element, holder)
             }
             is GlslFunctionCall -> {
-                annotateIncorrectParamCount(element, holder)
+                annotateNoMatchingFunction(element, holder)
             }
         }
     }
@@ -50,24 +44,18 @@ class GlslCodeAnnotator : Annotator {
     /**
      *
      */
-    private fun annotateFunctionDefinition(element: GlslFunctionDefinition, holder: AnnotationHolder) {
-        annotateMissingReturn(element, holder)
-    }
-
-    /**
-     *
-     */
     private fun annotateSingleDeclaration(singleDeclaration: GlslSingleDeclaration, holder: AnnotationHolder) {
         val expr = singleDeclaration.exprNoAssignmentList.firstOrNull() ?: return
-        val exprTypes = expr.getExprType() ?: return
         val declarationType = singleDeclaration.getAssociatedType() ?: return
-        val expected = declarationType.getTypeText() ?: return
+        val exprType = expr.getExprType() ?: return
+        if (declarationType.isEqual(exprType)) return
+        setHighlightingError(expr, holder, INCOMPATIBLE_TYPES_IN_INIT)
     }
 
     /**
      *
      */
-    private fun annotateIncorrectParamCount(element: GlslFunctionCall, holder: AnnotationHolder) {
+    private fun annotateNoMatchingFunction(element: GlslFunctionCall, holder: AnnotationHolder) {
         val variableIdentifier = element.variableIdentifier
         if (variableIdentifier?.firstChild.elementType != IDENTIFIER) return
         val funcReference = variableIdentifier?.reference ?: return
@@ -76,10 +64,16 @@ class GlslCodeAnnotator : Annotator {
         val actualParamsExprs = element.exprNoAssignmentList
         val actualParamCount = actualParamsExprs.count()
         for (reference in resolvedReferences) {
-            val functionHeader = reference as? GlslNamedFunctionHeader ?: continue
-            val parameterDeclarators = functionHeader.getParameterDeclarators()
-            if (parameterDeclarators.count() == actualParamCount) {
-                return
+            if (reference is GlslNamedFunctionHeader) {
+                val parameterDeclarators = reference.getParameterDeclarators()
+                if (parameterDeclarators.count() == actualParamCount) {
+                    return
+                }
+            } else if (reference is GlslStructSpecifier) {
+                val structMembers = reference.getAssociatedType()?.getStructMembers() ?: return
+                if (structMembers.count() == actualParamCount) {
+                    return
+                }
             }
         }
         val textRange: TextRange
@@ -88,7 +82,9 @@ class GlslCodeAnnotator : Annotator {
         } else {
             textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
         }
-        setHighlightingError(textRange, holder, NO_MATCHING_FUNCTION_CALL.format(variableIdentifier.getName()))
+        val actualTypes = actualParamsExprs.mapNotNull { it.getExprType()?.getTypeText() }.joinToString(", ")
+        val msg = NO_MATCHING_FUNCTION_CALL.format(variableIdentifier.getName(), actualTypes)
+        setHighlightingError(textRange, holder, msg)
     }
 
     /**

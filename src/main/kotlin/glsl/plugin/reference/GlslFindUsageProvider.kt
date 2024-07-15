@@ -30,7 +30,7 @@ class GlslFindUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
         if (psiElement !is GlslNamedElement) return false
         val structSpecifier = psiElement.parent?.parent as? GlslStructSpecifier ?: return true
-        return GlslBuiltinUtils.isBuiltin(structSpecifier.name)
+        return !GlslBuiltinUtils.isBuiltin(structSpecifier.name)
     }
 
     /**

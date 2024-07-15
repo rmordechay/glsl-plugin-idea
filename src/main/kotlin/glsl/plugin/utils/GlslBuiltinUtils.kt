@@ -22,19 +22,6 @@ object GlslBuiltinUtils {
     private lateinit var builtinFuncs: Map<String, List<GlslFunctionPrototype>>
 
     /**
-     *
-     */
-    private fun getBuiltinFile(fileName: String): GlslFile? {
-        val project = ProjectManager.getInstance().defaultProject
-        val funcsString = getResourceFileAsString("builtin-objects/$fileName.glsl") ?: return null
-        val glslFile = PsiFileFactory.getInstance(project)
-            .createFileFromText(fileName, GlslFileType(), funcsString) as? GlslFile
-        glslFile?.viewProvider?.virtualFile?.isWritable = false
-        glslFile?.viewProvider
-        return glslFile
-    }
-
-    /**
      * Creates a map of the GLSL builtin functions with their name as a key and a list of their AST
      * as a value. Due to overloading, most functions have different signatures with the same name.
      * Therefore, we want to create a list of them and show all possible signatures to the user.
@@ -89,16 +76,6 @@ object GlslBuiltinUtils {
     /**
      *
      */
-    fun getVecComponent(name: String, vecType: String? = null): GlslNamedElement? {
-        if (vecType == null) {
-            return getVecStructs()["vec3"]?.get(name)
-        }
-        return getVecStructs()[vecType]?.get(name)
-    }
-
-    /**
-     *
-     */
     fun getBuiltinConstants(): Map<String, GlslNamedElement> {
         if (::builtinConstants.isInitialized) {
             return builtinConstants
@@ -116,9 +93,6 @@ object GlslBuiltinUtils {
         return constants
     }
 
-    /**
-     *
-     */
     fun getShaderVariables(fileExtension: String? = null): Map<String, GlslNamedElement> {
         if (!::defaultShaderVariables.isInitialized || !::shaderVariables.isInitialized) {
             setShaderVariables()
@@ -133,21 +107,11 @@ object GlslBuiltinUtils {
     /**
      *
      */
-    private fun isShaderVariable(variable: String, fileExtension: String?): Boolean {
-        if (fileExtension == null) return false
-        if (!::defaultShaderVariables.isInitialized || !::shaderVariables.isInitialized) {
-            setShaderVariables()
+    fun getVecComponent(name: String, vecType: String? = null): GlslNamedElement? {
+        if (vecType == null) {
+            return getVecStructs()["vec3"]?.get(name)
         }
-        fun isAinB(a: String, b: Map<String, GlslNamedElement>?): Boolean = if (b != null) a in b.keys else false
-        return when (val shaderType = getShaderType(fileExtension)) {
-            VERT -> isAinB(variable, shaderVariables[shaderType])
-            GEOM -> isAinB(variable, shaderVariables[shaderType])
-            FRAG -> isAinB(variable, shaderVariables[shaderType])
-            TESC -> isAinB(variable, shaderVariables[shaderType])
-            TESE -> isAinB(variable, shaderVariables[shaderType])
-            COMP -> isAinB(variable, shaderVariables[shaderType])
-            GLSL -> isAinB(variable, defaultShaderVariables)
-        }
+        return getVecStructs()[vecType]?.get(name)
     }
 
     /**
@@ -177,14 +141,15 @@ object GlslBuiltinUtils {
      */
     fun isBuiltin(name: String?, fileExtension: String? = null): Boolean {
         if (name == null) return false
-        return isBuiltinName(name, fileExtension) || isBuiltinConstant(name)
+        return isBuiltinFunction(name) || isBuiltinShaderVariable(name, fileExtension) || isBuiltinConstant(name)
     }
 
     /**
      *
      */
-    fun isBuiltinName(name: String, fileExtension: String? = null): Boolean {
-        return name in getBuiltinFuncs().keys || isShaderVariable(name, fileExtension)
+    fun isBuiltinFunction(name: String?): Boolean {
+        if (name == null) return false
+        return name in getBuiltinFuncs().keys
     }
 
     /**
@@ -192,6 +157,39 @@ object GlslBuiltinUtils {
      */
     fun isBuiltinConstant(name: String): Boolean {
         return name in getBuiltinConstants().keys
+    }
+
+    /**
+     *
+     */
+    fun isBuiltinShaderVariable(variable: String, fileExtension: String?): Boolean {
+        if (fileExtension == null) return false
+        if (!::defaultShaderVariables.isInitialized || !::shaderVariables.isInitialized) {
+            setShaderVariables()
+        }
+        fun isAinB(a: String, b: Map<String, GlslNamedElement>?): Boolean = if (b != null) a in b.keys else false
+        return when (val shaderType = getShaderType(fileExtension)) {
+            VERT -> isAinB(variable, shaderVariables[shaderType])
+            GEOM -> isAinB(variable, shaderVariables[shaderType])
+            FRAG -> isAinB(variable, shaderVariables[shaderType])
+            TESC -> isAinB(variable, shaderVariables[shaderType])
+            TESE -> isAinB(variable, shaderVariables[shaderType])
+            COMP -> isAinB(variable, shaderVariables[shaderType])
+            GLSL -> isAinB(variable, defaultShaderVariables)
+        }
+    }
+
+    /**
+     *
+     */
+    private fun getBuiltinFile(fileName: String): GlslFile? {
+        val project = ProjectManager.getInstance().openProjects.firstOrNull()
+        val funcsString = getResourceFileAsString("builtin-objects/$fileName.glsl") ?: return null
+        val fileFactory = PsiFileFactory.getInstance(project)
+        val glslFile = fileFactory.createFileFromText(fileName, GlslFileType(), funcsString) as? GlslFile
+        glslFile?.viewProvider?.virtualFile?.isWritable = false
+        glslFile?.viewProvider
+        return glslFile
     }
 
     /**

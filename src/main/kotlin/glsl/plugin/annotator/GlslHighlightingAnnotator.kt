@@ -9,7 +9,8 @@ import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.GlslIdentifierImpl
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinConstant
-import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinName
+import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinFunction
+import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinShaderVariable
 import glsl.psi.interfaces.GlslLayoutQualifierId
 
 
@@ -25,7 +26,7 @@ class GlslHighlightingAnnotator : Annotator {
         if (element !is GlslIdentifierImpl) return
         val extension = holder.currentAnnotationSession.file.virtualFile.extension
         val elementName = element.name
-        if (isBuiltinName(elementName, extension)) {
+        if (isBuiltinFunction(elementName) || isBuiltinShaderVariable(elementName, extension)) {
             createAnnotation(holder, GlslTextAttributes.BUILTIN_NAME_TEXT_ATTR)
         } else if (isBuiltinConstant(elementName)) {
             createAnnotation(holder, GlslTextAttributes.BUILTIN_GLOBAL_CONSTANTS)

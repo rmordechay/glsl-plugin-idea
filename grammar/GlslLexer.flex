@@ -259,20 +259,75 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "rayPayloadInEXT"                { return PAYLOADINEXT; }
   "hitAttributeNV"                 { return HITATTRNV; }
   "hitAttributeEXT"                { return HITATTREXT; }
+  // Builtin Types
+  // Scalars
   "void"                           { return VOID; }
   "bool"                           { return BOOL; }
   "float"                          { return FLOAT; }
   "double"                         { return DOUBLE; }
   "int"                            { return INT; }
-  "bvec2"                          { return BVEC2; }
-  "bvec3"                          { return BVEC3; }
-  "bvec4"                          { return BVEC4; }
+  "uint"                           { return UINT; }
+  "int64_t"                        { return INT64_T; }
+  "uint64_t"                       { return UINT64_T; }
+  "int8_t"                         { return INT8_T; }
+  "uint8_t"                        { return UINT8_T; }
+  "int16_t"                        { return INT16_T; }
+  "uint16_t"                       { return UINT16_T; }
+  "int32_t"                        { return INT32_T; }
+  "uint32_t"                       { return UINT32_T; }
+  "float16_t"                      { return FLOAT16_T; }
+  "float32_t"                      { return FLOAT32_T; }
+  "float64_t"                      { return FLOAT64_T; }
+  // Vectors
   "vec2"                           { return VEC2; }
   "vec3"                           { return VEC3; }
   "vec4"                           { return VEC4; }
+  "bvec2"                          { return BVEC2; }
+  "bvec3"                          { return BVEC3; }
+  "bvec4"                          { return BVEC4; }
   "ivec2"                          { return IVEC2; }
   "ivec3"                          { return IVEC3; }
   "ivec4"                          { return IVEC4; }
+  "uvec2"                          { return UVEC2; }
+  "uvec3"                          { return UVEC3; }
+  "uvec4"                          { return UVEC4; }
+  "dvec2"                          { return DVEC2; }
+  "dvec3"                          { return DVEC3; }
+  "dvec4"                          { return DVEC4; }
+  "i64vec2"                        { return I64VEC2; }
+  "i64vec3"                        { return I64VEC3; }
+  "i64vec4"                        { return I64VEC4; }
+  "u64vec2"                        { return U64VEC2; }
+  "u64vec3"                        { return U64VEC3; }
+  "u64vec4"                        { return U64VEC4; }
+  "i8vec2"                         { return I8VEC2; }
+  "i8vec3"                         { return I8VEC3; }
+  "i8vec4"                         { return I8VEC4; }
+  "u8vec2"                         { return U8VEC2; }
+  "u8vec3"                         { return U8VEC3; }
+  "u8vec4"                         { return U8VEC4; }
+  "i16vec2"                        { return I16VEC2; }
+  "i16vec3"                        { return I16VEC3; }
+  "i16vec4"                        { return I16VEC4; }
+  "u16vec2"                        { return U16VEC2; }
+  "u16vec3"                        { return U16VEC3; }
+  "u16vec4"                        { return U16VEC4; }
+  "i32vec2"                        { return I32VEC2; }
+  "i32vec3"                        { return I32VEC3; }
+  "i32vec4"                        { return I32VEC4; }
+  "u32vec2"                        { return U32VEC2; }
+  "u32vec3"                        { return U32VEC3; }
+  "u32vec4"                        { return U32VEC4; }
+  "f16vec2"                        { return F16VEC2; }
+  "f16vec3"                        { return F16VEC3; }
+  "f16vec4"                        { return F16VEC4; }
+  "f32vec2"                        { return F32VEC2; }
+  "f32vec3"                        { return F32VEC3; }
+  "f32vec4"                        { return F32VEC4; }
+  "f64vec2"                        { return F64VEC2; }
+  "f64vec3"                        { return F64VEC3; }
+  "f64vec4"                        { return F64VEC4; }
+  // Metrices
   "mat2"                           { return MAT2; }
   "mat3"                           { return MAT3; }
   "mat4"                           { return MAT4; }
@@ -285,10 +340,6 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "mat4x2"                         { return MAT4X2; }
   "mat4x3"                         { return MAT4X3; }
   "mat4x4"                         { return MAT4X4; }
-  "uint"                           { return UINT; }
-  "uvec2"                          { return UVEC2; }
-  "uvec3"                          { return UVEC3; }
-  "uvec4"                          { return UVEC4; }
   "dmat2"                          { return DMAT2; }
   "dmat3"                          { return DMAT3; }
   "dmat4"                          { return DMAT4; }
@@ -301,6 +352,43 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "dmat4x2"                        { return DMAT4X2; }
   "dmat4x3"                        { return DMAT4X3; }
   "dmat4x4"                        { return DMAT4X4; }
+  "f16mat2x2"                      { return F16MAT2X2; }
+  "f16mat2x3"                      { return F16MAT2X3; }
+  "f16mat2x4"                      { return F16MAT2X4; }
+  "f16mat3x2"                      { return F16MAT3X2; }
+  "f16mat3x3"                      { return F16MAT3X3; }
+  "f16mat3x4"                      { return F16MAT3X4; }
+  "f16mat4x2"                      { return F16MAT4X2; }
+  "f16mat4x3"                      { return F16MAT4X3; }
+  "f16mat4x4"                      { return F16MAT4X4; }
+  "f16mat2"                        { return F16MAT2; }
+  "f16mat3"                        { return F16MAT3; }
+  "f16mat4"                        { return F16MAT4; }
+  "f32mat2"                        { return F32MAT2; }
+  "f32mat3"                        { return F32MAT3; }
+  "f32mat4"                        { return F32MAT4; }
+  "f32mat2x2"                      { return F32MAT2X2; }
+  "f32mat2x3"                      { return F32MAT2X3; }
+  "f32mat2x4"                      { return F32MAT2X4; }
+  "f32mat3x2"                      { return F32MAT3X2; }
+  "f32mat3x3"                      { return F32MAT3X3; }
+  "f32mat3x4"                      { return F32MAT3X4; }
+  "f32mat4x2"                      { return F32MAT4X2; }
+  "f32mat4x3"                      { return F32MAT4X3; }
+  "f32mat4x4"                      { return F32MAT4X4; }
+  "f64mat2"                        { return F64MAT2; }
+  "f64mat3"                        { return F64MAT3; }
+  "f64mat4"                        { return F64MAT4; }
+  "f64mat2x2"                      { return F64MAT2X2; }
+  "f64mat2x3"                      { return F64MAT2X3; }
+  "f64mat2x4"                      { return F64MAT2X4; }
+  "f64mat3x2"                      { return F64MAT3X2; }
+  "f64mat3x3"                      { return F64MAT3X3; }
+  "f64mat3x4"                      { return F64MAT3X4; }
+  "f64mat4x2"                      { return F64MAT4X2; }
+  "f64mat4x3"                      { return F64MAT4X3; }
+  "f64mat4x4"                      { return F64MAT4X4; }
+  // Images
   "image1D"                        { return IMAGE1D; }
   "iimage1D"                       { return IIMAGE1D; }
   "uimage1D"                       { return UIMAGE1D; }
@@ -334,6 +422,17 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "image2DMSArray"                 { return IMAGE2DMSARRAY; }
   "iimage2DMSArray"                { return IIMAGE2DMSARRAY; }
   "uimage2DMSArray"                { return UIMAGE2DMSARRAY; }
+  "f16image1D"                     { return F16IMAGE1D; }
+  "f16image2D"                     { return F16IMAGE2D; }
+  "f16image3D"                     { return F16IMAGE3D; }
+  "f16image2DRect"                 { return F16IMAGE2DRECT; }
+  "f16imageCube"                   { return F16IMAGECUBE; }
+  "f16image1DArray"                { return F16IMAGE1DARRAY; }
+  "f16image2DArray"                { return F16IMAGE2DARRAY; }
+  "f16imageCubeArray"              { return F16IMAGECUBEARRAY; }
+  "f16imageBuffer"                 { return F16IMAGEBUFFER; }
+  "f16image2DMS"                   { return F16IMAGE2DMS; }
+  "f16image2DMSArray"              { return F16IMAGE2DMSARRAY; }
   "i64image1D"                     { return I64IMAGE1D; }
   "u64image1D"                     { return U64IMAGE1D; }
   "i64image2D"                     { return I64IMAGE2D; }
@@ -356,89 +455,7 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "u64image2DMS"                   { return U64IMAGE2DMS; }
   "i64image2DMSArray"              { return I64IMAGE2DMSARRAY; }
   "u64image2DMSArray"              { return U64IMAGE2DMSARRAY; }
-  "dvec2"                          { return DVEC2; }
-  "dvec3"                          { return DVEC3; }
-  "dvec4"                          { return DVEC4; }
-  "int64_t"                        { return INT64_T; }
-  "uint64_t"                       { return UINT64_T; }
-  "i64vec2"                        { return I64VEC2; }
-  "i64vec3"                        { return I64VEC3; }
-  "i64vec4"                        { return I64VEC4; }
-  "u64vec2"                        { return U64VEC2; }
-  "u64vec3"                        { return U64VEC3; }
-  "u64vec4"                        { return U64VEC4; }
-  "int8_t"                         { return INT8_T; }
-  "i8vec2"                         { return I8VEC2; }
-  "i8vec3"                         { return I8VEC3; }
-  "i8vec4"                         { return I8VEC4; }
-  "uint8_t"                        { return UINT8_T; }
-  "u8vec2"                         { return U8VEC2; }
-  "u8vec3"                         { return U8VEC3; }
-  "u8vec4"                         { return U8VEC4; }
-  "int16_t"                        { return INT16_T; }
-  "i16vec2"                        { return I16VEC2; }
-  "i16vec3"                        { return I16VEC3; }
-  "i16vec4"                        { return I16VEC4; }
-  "uint16_t"                       { return UINT16_T; }
-  "u16vec2"                        { return U16VEC2; }
-  "u16vec3"                        { return U16VEC3; }
-  "u16vec4"                        { return U16VEC4; }
-  "int32_t"                        { return INT32_T; }
-  "i32vec2"                        { return I32VEC2; }
-  "i32vec3"                        { return I32VEC3; }
-  "i32vec4"                        { return I32VEC4; }
-  "uint32_t"                       { return UINT32_T; }
-  "u32vec2"                        { return U32VEC2; }
-  "u32vec3"                        { return U32VEC3; }
-  "u32vec4"                        { return U32VEC4; }
-  "float16_t"                      { return FLOAT16_T; }
-  "f16vec2"                        { return F16VEC2; }
-  "f16vec3"                        { return F16VEC3; }
-  "f16vec4"                        { return F16VEC4; }
-  "f16mat2"                        { return F16MAT2; }
-  "f16mat3"                        { return F16MAT3; }
-  "f16mat4"                        { return F16MAT4; }
-  "f16mat2x2"                      { return F16MAT2X2; }
-  "f16mat2x3"                      { return F16MAT2X3; }
-  "f16mat2x4"                      { return F16MAT2X4; }
-  "f16mat3x2"                      { return F16MAT3X2; }
-  "f16mat3x3"                      { return F16MAT3X3; }
-  "f16mat3x4"                      { return F16MAT3X4; }
-  "f16mat4x2"                      { return F16MAT4X2; }
-  "f16mat4x3"                      { return F16MAT4X3; }
-  "f16mat4x4"                      { return F16MAT4X4; }
-  "float32_t"                      { return FLOAT32_T; }
-  "f32vec2"                        { return F32VEC2; }
-  "f32vec3"                        { return F32VEC3; }
-  "f32vec4"                        { return F32VEC4; }
-  "f32mat2"                        { return F32MAT2; }
-  "f32mat3"                        { return F32MAT3; }
-  "f32mat4"                        { return F32MAT4; }
-  "f32mat2x2"                      { return F32MAT2X2; }
-  "f32mat2x3"                      { return F32MAT2X3; }
-  "f32mat2x4"                      { return F32MAT2X4; }
-  "f32mat3x2"                      { return F32MAT3X2; }
-  "f32mat3x3"                      { return F32MAT3X3; }
-  "f32mat3x4"                      { return F32MAT3X4; }
-  "f32mat4x2"                      { return F32MAT4X2; }
-  "f32mat4x3"                      { return F32MAT4X3; }
-  "f32mat4x4"                      { return F32MAT4X4; }
-  "float64_t"                      { return FLOAT64_T; }
-  "f64vec2"                        { return F64VEC2; }
-  "f64vec3"                        { return F64VEC3; }
-  "f64vec4"                        { return F64VEC4; }
-  "f64mat2"                        { return F64MAT2; }
-  "f64mat3"                        { return F64MAT3; }
-  "f64mat4"                        { return F64MAT4; }
-  "f64mat2x2"                      { return F64MAT2X2; }
-  "f64mat2x3"                      { return F64MAT2X3; }
-  "f64mat2x4"                      { return F64MAT2X4; }
-  "f64mat3x2"                      { return F64MAT3X2; }
-  "f64mat3x3"                      { return F64MAT3X3; }
-  "f64mat3x4"                      { return F64MAT3X4; }
-  "f64mat4x2"                      { return F64MAT4X2; }
-  "f64mat4x3"                      { return F64MAT4X3; }
-  "f64mat4x4"                      { return F64MAT4X4; }
+  // Samplars
   "sampler2D"                      { return SAMPLER2D; }
   "samplerCube"                    { return SAMPLERCUBE; }
   "samplerCubeShadow"              { return SAMPLERCUBESHADOW; }
@@ -454,15 +471,6 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "usampler2DArray"                { return USAMPLER2DARRAY; }
   "sampler3D"                      { return SAMPLER3D; }
   "sampler2DShadow"                { return SAMPLER2DSHADOW; }
-  "texture2DArray"                 { return TEXTURE2DARRAY; }
-  "itexture2D"                     { return ITEXTURE2D; }
-  "itexture3D"                     { return ITEXTURE3D; }
-  "itextureCube"                   { return ITEXTURECUBE; }
-  "itexture2DArray"                { return ITEXTURE2DARRAY; }
-  "utexture2D"                     { return UTEXTURE2D; }
-  "utexture3D"                     { return UTEXTURE3D; }
-  "utextureCube"                   { return UTEXTURECUBE; }
-  "utexture2DArray"                { return UTEXTURE2DARRAY; }
   "sampler"                        { return SAMPLER; }
   "samplerShadow"                  { return SAMPLERSHADOW; }
   "textureCubeArray"               { return TEXTURECUBEARRAY; }
@@ -495,30 +503,6 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "sampler1DArray"                 { return SAMPLER1DARRAY; }
   "samplerExternalOES"             { return SAMPLEREXTERNALOES; }
   "__samplerExternal2DY2YEXT"      { return SAMPLEREXTERNAL2DY2YEXT; }
-  "itexture1DArray"                { return ITEXTURE1DARRAY; }
-  "utexture1D"                     { return UTEXTURE1D; }
-  "itexture1D"                     { return ITEXTURE1D; }
-  "utexture1DArray"                { return UTEXTURE1DARRAY; }
-  "textureBuffer"                  { return TEXTUREBUFFER; }
-  "itexture2DRect"                 { return ITEXTURE2DRECT; }
-  "utexture2DRect"                 { return UTEXTURE2DRECT; }
-  "itextureBuffer"                 { return ITEXTUREBUFFER; }
-  "utextureBuffer"                 { return UTEXTUREBUFFER; }
-  "texture2DMS"                    { return TEXTURE2DMS; }
-  "itexture2DMS"                   { return ITEXTURE2DMS; }
-  "utexture2DMS"                   { return UTEXTURE2DMS; }
-  "texture2DMSArray"               { return TEXTURE2DMSARRAY; }
-  "itexture2DMSArray"              { return ITEXTURE2DMSARRAY; }
-  "utexture2DMSArray"              { return UTEXTURE2DMSARRAY; }
-  "texture1D"                      { return TEXTURE1D; }
-  "texture2DRect"                  { return TEXTURE2DRECT; }
-  "texture1DArray"                 { return TEXTURE1DARRAY; }
-  "subpassInput"                   { return SUBPASSINPUT; }
-  "subpassInputMS"                 { return SUBPASSINPUTMS; }
-  "isubpassInput"                  { return ISUBPASSINPUT; }
-  "isubpassInputMS"                { return ISUBPASSINPUTMS; }
-  "usubpassInput"                  { return USUBPASSINPUT; }
-  "usubpassInputMS"                { return USUBPASSINPUTMS; }
   "f16sampler1D"                   { return F16SAMPLER1D; }
   "f16sampler2D"                   { return F16SAMPLER2D; }
   "f16sampler3D"                   { return F16SAMPLER3D; }
@@ -537,17 +521,33 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "f16sampler1DArrayShadow"        { return F16SAMPLER1DARRAYSHADOW; }
   "f16sampler2DArrayShadow"        { return F16SAMPLER2DARRAYSHADOW; }
   "f16samplerCubeArrayShadow"      { return F16SAMPLERCUBEARRAYSHADOW; }
-  "f16image1D"                     { return F16IMAGE1D; }
-  "f16image2D"                     { return F16IMAGE2D; }
-  "f16image3D"                     { return F16IMAGE3D; }
-  "f16image2DRect"                 { return F16IMAGE2DRECT; }
-  "f16imageCube"                   { return F16IMAGECUBE; }
-  "f16image1DArray"                { return F16IMAGE1DARRAY; }
-  "f16image2DArray"                { return F16IMAGE2DARRAY; }
-  "f16imageCubeArray"              { return F16IMAGECUBEARRAY; }
-  "f16imageBuffer"                 { return F16IMAGEBUFFER; }
-  "f16image2DMS"                   { return F16IMAGE2DMS; }
-  "f16image2DMSArray"              { return F16IMAGE2DMSARRAY; }
+  "texture2DArray"                 { return TEXTURE2DARRAY; }
+  "itexture2D"                     { return ITEXTURE2D; }
+  "itexture3D"                     { return ITEXTURE3D; }
+  "itextureCube"                   { return ITEXTURECUBE; }
+  "itexture2DArray"                { return ITEXTURE2DARRAY; }
+  "utexture2D"                     { return UTEXTURE2D; }
+  "utexture3D"                     { return UTEXTURE3D; }
+  "utextureCube"                   { return UTEXTURECUBE; }
+  "utexture2DArray"                { return UTEXTURE2DARRAY; }
+  "itexture1DArray"                { return ITEXTURE1DARRAY; }
+  "utexture1D"                     { return UTEXTURE1D; }
+  "itexture1D"                     { return ITEXTURE1D; }
+  "utexture1DArray"                { return UTEXTURE1DARRAY; }
+  "textureBuffer"                  { return TEXTUREBUFFER; }
+  "itexture2DRect"                 { return ITEXTURE2DRECT; }
+  "utexture2DRect"                 { return UTEXTURE2DRECT; }
+  "itextureBuffer"                 { return ITEXTUREBUFFER; }
+  "utextureBuffer"                 { return UTEXTUREBUFFER; }
+  "texture2DMS"                    { return TEXTURE2DMS; }
+  "itexture2DMS"                   { return ITEXTURE2DMS; }
+  "utexture2DMS"                   { return UTEXTURE2DMS; }
+  "texture2DMSArray"               { return TEXTURE2DMSARRAY; }
+  "itexture2DMSArray"              { return ITEXTURE2DMSARRAY; }
+  "utexture2DMSArray"              { return UTEXTURE2DMSARRAY; }
+  "texture1D"                      { return TEXTURE1D; }
+  "texture2DRect"                  { return TEXTURE2DRECT; }
+  "texture1DArray"                 { return TEXTURE1DARRAY; }
   "f16texture1D"                   { return F16TEXTURE1D; }
   "f16texture2D"                   { return F16TEXTURE2D; }
   "f16texture3D"                   { return F16TEXTURE3D; }
@@ -559,6 +559,12 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "f16textureBuffer"               { return F16TEXTUREBUFFER; }
   "f16texture2DMS"                 { return F16TEXTURE2DMS; }
   "f16texture2DMSArray"            { return F16TEXTURE2DMSARRAY; }
+  "subpassInput"                   { return SUBPASSINPUT; }
+  "subpassInputMS"                 { return SUBPASSINPUTMS; }
+  "isubpassInput"                  { return ISUBPASSINPUT; }
+  "isubpassInputMS"                { return ISUBPASSINPUTMS; }
+  "usubpassInput"                  { return USUBPASSINPUT; }
+  "usubpassInputMS"                { return USUBPASSINPUTMS; }
   "f16subpassInput"                { return F16SUBPASSINPUT; }
   "f16subpassInputMS"              { return F16SUBPASSINPUTMS; }
   "accelerationStructureNV"        { return ACCSTRUCTNV; }

@@ -1,19 +1,16 @@
-package glsl.plugin.psi.builtins
+package glsl.plugin.psi.named.builtins
 
 import com.intellij.lang.ASTNode
-import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.psi.PsiElement
 import glsl.data.GlslDefinitions
-import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedBuiltinType
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslBuiltinUtils
-import javax.swing.Icon
 
 
 /**
  *
  */
-abstract class GlslVector(node: ASTNode) : GlslBuiltinType(node) {
+abstract class GlslVector(node: ASTNode) : GlslNamedBuiltinType(node) {
     /**
      *
      */

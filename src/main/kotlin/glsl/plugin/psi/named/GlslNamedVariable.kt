@@ -1,13 +1,10 @@
 package glsl.plugin.psi.named
 
 import com.intellij.lang.ASTNode
-import glsl.plugin.psi.GlslType
-import glsl.plugin.psi.builtins.GlslBuiltinType
-import glsl.plugin.psi.builtins.GlslMatrix
-import glsl.plugin.psi.builtins.GlslScalar
-import glsl.plugin.psi.builtins.GlslVector
+import glsl.plugin.psi.named.builtins.GlslMatrix
+import glsl.plugin.psi.named.builtins.GlslScalar
+import glsl.plugin.psi.named.builtins.GlslVector
 import glsl.plugin.psi.named.types.GlslNamedStructSpecifier
-import glsl.psi.impl.GlslTypeNameImpl
 import glsl.psi.interfaces.GlslTypeSpecifier
 
 /**
@@ -30,7 +27,7 @@ interface GlslNamedVariable : GlslNamedElement {
         } else if (typeSpecifier.builtinTypeMatrix != null) {
             return typeSpecifier.builtinTypeMatrix as GlslMatrix
         } else if (typeSpecifier.builtinTypeRest != null) {
-            return typeSpecifier.builtinTypeRest as GlslBuiltinType
+            return typeSpecifier.builtinTypeRest as GlslNamedBuiltinType
         } else if (typeSpecifier.structSpecifier != null) {
             return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
         } else if (typeSpecifier.typeName != null) {

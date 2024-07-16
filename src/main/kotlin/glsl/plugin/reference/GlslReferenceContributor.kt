@@ -13,21 +13,21 @@ import glsl.plugin.psi.GlslVariable
  *
  */
 class GlslReferenceContributor : PsiReferenceContributor() {
-    private val numeric = StandardPatterns.or(
+    private val numericPattern = StandardPatterns.or(
         psiElement(GlslTypes.INTCONSTANT),
         psiElement(GlslTypes.UINTCONSTANT),
         psiElement(GlslTypes.FLOATCONSTANT),
         psiElement(GlslTypes.DOUBLECONSTANT),
     )
+    private val variablePattern = psiElement(GlslVariable::class.java)
+        .andNot(psiElement().afterLeaf(numericPattern))
+    private val typePattern = psiElement(GlslType::class.java)
+        .andNot(psiElement().afterLeaf(numericPattern))
 
     /**
     *
     */
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        val variablePattern = psiElement(GlslVariable::class.java)
-            .andNot(psiElement().afterLeaf(numeric))
-        val typePattern = psiElement(GlslType::class.java)
-            .andNot(psiElement().afterLeaf(numeric))
         registrar.registerReferenceProvider(variablePattern, GlslVariableReferenceProvider())
         registrar.registerReferenceProvider(typePattern, GlslTypeReferenceProvider())
     }

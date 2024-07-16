@@ -1,23 +1,21 @@
-package glsl.plugin.psi.builtins
+package glsl.plugin.psi.named
 
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import glsl.plugin.code.highlighting.GlslTextAttributes
-import glsl.plugin.psi.named.GlslNamedTypeImpl
-import glsl.plugin.psi.named.GlslNamedVariable
 import javax.swing.Icon
 
 /**
  *
  */
-abstract class GlslBuiltinType(node: ASTNode) : GlslNamedTypeImpl(node) {
+abstract class GlslNamedBuiltinType(node: ASTNode) : GlslNamedTypeImpl(node) {
 
     /**
      *
      */
-    override fun getPsi(): GlslBuiltinType {
+    override fun getPsi(): GlslNamedBuiltinType {
         return this
     }
 

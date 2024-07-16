@@ -1,9 +1,7 @@
 package glsl.plugin.psi.builtins
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import glsl.data.GlslDefinitions
-import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslBuiltinUtils
 
@@ -64,39 +62,4 @@ abstract class GlslVector(node: ASTNode) : GlslBuiltinType(node) {
         return implicitConversions?.contains(other) ?: false
     }
 
-    /**
-     *
-     */
-    override fun getBinaryExprType(rightExprType: GlslNamedType?, expr: PsiElement?): GlslNamedType? {
-//        if (rightExprType is GlslScalar || rightExprType is GlslVector) {
-//            return this
-//        } else if (rightExprType is GlslMatrix) {
-//            if (expr is GlslMulExpr) {
-//                val leftRows = getDimension()
-//                val leftColumn = 1
-//                val rightRows = rightExprType.getRowDimension()
-//                val rightColumns = rightExprType.getColumnDimension()
-//                if (leftColumn == rightRows) {
-//                    if (leftRows == rightColumns) {
-//                        return GlslVector("mat{$leftRows}")
-//                    } else {
-//                        return GlslVector("mat{$leftRows}x{$rightColumns}")
-//                    }
-//                }
-//            }
-//            return null
-//        }
-//        return this
-        return null
-//    }
-//
-//    /**
-//     *
-//     */
-//    fun getChildType(exprList: List<GlslExpr>): GlslTypeName {
-//        if (exprList.isEmpty()) {
-//            return this
-//        }
-//        return GlslScalar(getVectorComponentType())
-    }
 }

@@ -1,9 +1,7 @@
 package glsl.plugin.psi.builtins
 
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiElement
 import glsl.data.GlslDefinitions
-import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
 
 /**
@@ -32,25 +30,6 @@ abstract class GlslMatrix(node: ASTNode) : GlslBuiltinType(node) {
     override fun isConvertible(other: String): Boolean {
         val implicitConversions = GlslDefinitions.MATRICES[name]
         return implicitConversions?.contains(other) ?: false
-    }
-
-    /**
-     *
-     */
-    override fun getBinaryExprType(rightExprType: GlslNamedType?, expr: PsiElement?): GlslNamedType? {
-//        if (rightExprType is GlslVector) {
-//            if (expr is GlslMulExpr) {
-//                val leftRows = getRowDimension()
-//                val leftColumn = getColumnDimension()
-//                val rightRows = rightExprType.getDimension()
-//                if (leftColumn == rightRows) {
-//                    return GlslVector("vec$leftRows")
-//                }
-//            }
-//            return null
-//        }
-//        return this
-        return null
     }
 
     /**

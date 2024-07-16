@@ -56,5 +56,4 @@ abstract class GlslVariable(node: ASTNode) : ASTWrapperPsiElement(node), GlslIde
     fun isEmpty(): Boolean {
         return node.text == "IntellijIdeaRulezzz"
     }
-
 }

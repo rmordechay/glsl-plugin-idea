@@ -82,6 +82,10 @@ abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentif
      *
      */
     open fun getStructMembers(): List<GlslNamedVariable> {
+        val declaration = getDeclaration()
+        if (declaration != null) {
+            return (declaration as? GlslType)?.getStructMembers() ?: emptyList()
+        }
         val resolve = reference?.resolve() as? GlslNamedStructSpecifier
         return resolve?.getStructMembers() ?: emptyList()
     }

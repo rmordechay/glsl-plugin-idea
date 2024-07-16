@@ -7,7 +7,6 @@ import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
 import glsl.plugin.psi.GlslType
-import glsl.plugin.psi.builtins.GlslBuiltinType
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.reference.FilterType.CONTAINS

@@ -1,3 +1,6 @@
+![Downloads](https://img.shields.io/jetbrains/plugin/d/18470-glsl)
+![Rating](https://img.shields.io/jetbrains/plugin/r/stars/18470-glsl)
+
 # GLSL Plugin
 
 GLSL plugin support for JetBrains IDE's.

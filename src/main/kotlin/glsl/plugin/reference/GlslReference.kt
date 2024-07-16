@@ -30,6 +30,7 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
 
     protected var currentFilterType = EQUALS
     protected var project: Project? = null
+
     val resolvedReferences = arrayListOf<GlslNamedElement>()
 
     /**

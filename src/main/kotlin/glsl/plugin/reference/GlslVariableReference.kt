@@ -10,9 +10,10 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
-import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.GlslVariable
-import glsl.plugin.psi.named.*
+import glsl.plugin.psi.named.GlslNamedBlockStructure
+import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
@@ -295,8 +296,8 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
                 break
             }
             val structMemberName = parent?.getName() ?: return
-            nextMemberType = nextMemberType.getStructMember(structMemberName)
-                ?.getAssociatedType()!!
+            val structMember = nextMemberType.getStructMember(structMemberName)
+            nextMemberType = structMember?.getAssociatedType() ?: break
         }
     }
 

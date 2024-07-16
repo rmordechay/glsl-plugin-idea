@@ -57,9 +57,10 @@ class GlslHighlightingAnnotator : Annotator {
     private fun setDeclarationHighlighting(element: GlslIdentifier, holder: AnnotationHolder) {
         if (element.parent is GlslLayoutQualifierId) {
             createAnnotation(holder, GlslTextAttributes.VARIABLE_TEXT_ATTR)
-        } else if (element.isNamedElement()) {
-            createAnnotation(holder, (element.parent as GlslNamedElement).getHighlightTextAttr())
+            return
         }
+        val declaration = element.getDeclaration() ?: return
+        createAnnotation(holder, declaration.getHighlightTextAttr())
     }
 
     /**

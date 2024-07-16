@@ -17,12 +17,12 @@ interface GlslNamedVariable : GlslNamedElement {
     /**
      *
      */
-    fun getAssociatedType(): GlslType?
+    fun getAssociatedType(): GlslNamedType?
 
     /**
      *
      */
-    fun getType(typeSpecifier: GlslTypeSpecifier): GlslType? {
+    fun getType(typeSpecifier: GlslTypeSpecifier): GlslNamedType? {
         if (typeSpecifier.builtinTypeScalar != null) {
             return typeSpecifier.builtinTypeScalar as GlslScalar
         } else if (typeSpecifier.builtinTypeVector != null) {
@@ -34,7 +34,7 @@ interface GlslNamedVariable : GlslNamedElement {
         } else if (typeSpecifier.structSpecifier != null) {
             return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
         } else if (typeSpecifier.typeName != null) {
-            return typeSpecifier.typeName as GlslTypeNameImpl
+            return typeSpecifier.typeName?.reference?.resolve() as? GlslNamedType
         }
         return null
     }

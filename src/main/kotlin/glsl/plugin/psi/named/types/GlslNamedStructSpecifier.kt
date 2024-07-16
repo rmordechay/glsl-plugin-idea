@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.named.GlslNamedType
+import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.psi.interfaces.GlslStructDeclarator
 import glsl.psi.interfaces.GlslStructSpecifier
@@ -16,7 +17,7 @@ import javax.swing.Icon
 /**
  * type_specifier
  */
-abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslType(node), GlslNamedType {
+abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node), GlslNamedType {
 
     /**
      *

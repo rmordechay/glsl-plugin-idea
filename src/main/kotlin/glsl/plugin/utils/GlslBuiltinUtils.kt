@@ -9,8 +9,8 @@ import glsl.data.ShaderType.*
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.GlslNamedElement
-import glsl.plugin.psi.named.GlslNamedStructSpecifier
 import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.plugin.psi.named.types.GlslNamedStructSpecifier
 import glsl.plugin.utils.GlslUtils.getResourceFileAsString
 import glsl.psi.interfaces.*
 import java.util.*

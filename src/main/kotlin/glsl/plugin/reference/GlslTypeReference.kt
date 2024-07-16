@@ -56,7 +56,7 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
      */
     override fun shouldResolve(): Boolean {
         if (currentFilterType == CONTAINS && element.isEmpty()) return true
-        return element.parent.parent !is GlslStructSpecifier
+        return element.getDeclaration() == null
     }
 
     /**

@@ -1,13 +1,13 @@
 package glsl.plugin.psi.builtins
 
 import com.intellij.lang.ASTNode
-import glsl.plugin.psi.GlslType
+import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 
 /**
  *
  */
-abstract class GlslBuiltinType(node: ASTNode) : GlslType(node) {
+abstract class GlslBuiltinType(node: ASTNode) : GlslNamedTypeImpl(node) {
 
     /**
      *

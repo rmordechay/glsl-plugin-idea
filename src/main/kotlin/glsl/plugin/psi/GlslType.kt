@@ -8,8 +8,8 @@ import com.intellij.psi.PsiReferenceService
 import com.intellij.psi.util.PsiTreeUtil
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
-import glsl.plugin.psi.named.GlslNamedStructSpecifier
 import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.plugin.psi.named.types.GlslNamedStructSpecifier
 import glsl.plugin.reference.GlslTypeReference
 import glsl.plugin.utils.GlslUtils
 
@@ -52,60 +52,43 @@ abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentif
         return if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
     }
 
-    /**
-     *
-     */
-    open fun getStructMembers(): List<GlslNamedVariable> {
-        val declaration = getDeclaration()
-        if (declaration != null) {
-            return (declaration as? GlslType)?.getStructMembers() ?: emptyList()
-        }
-        val resolve = reference?.resolve() as? GlslNamedStructSpecifier
-        return resolve?.getStructMembers() ?: emptyList()
-    }
-
-    /**
-     *
-     */
-    open fun getStructMember(memberName: String): GlslNamedVariable? {
-        return getStructMembers().find { it.name == memberName }
-    }
-
-    /**
-     *
-     */
-    open fun isConvertible(other: String): Boolean {
-        return false
-    }
-
-    /**
-     *
-     */
-    open fun getDimension(): Int {
-        return -1
-    }
+//    /**
+//     *
+//     */
+//    open fun getStructMembers(): List<GlslNamedVariable> {
+//        val declaration = getDeclaration()
+//        if (declaration != null) {
+//            return (declaration as? GlslType)?.getStructMembers() ?: emptyList()
+//        }
+//        val resolve = reference?.resolve() as? GlslNamedStructSpecifier
+//        return resolve?.getStructMembers() ?: emptyList()
+//    }
+//
+//    /**
+//     *
+//     */
+//    open fun getStructMember(memberName: String): GlslNamedVariable? {
+//        return getStructMembers().find { it.name == memberName }
+//    }
+//
+//    /**
+//     *
+//     */
+//    open fun isConvertible(other: String): Boolean {
+//        return false
+//    }
+//
+//    /**
+//     *
+//     */
+//    open fun getDimension(): Int {
+//        return -1
+//    }
 
     /**
      *
      */
     fun isEmpty(): Boolean {
         return node.text == "IntellijIdeaRulezzz"
-    }
-
-    /**
-     *
-     */
-    fun isEqual(other: GlslType?): Boolean {
-        if (other == null) return false
-        val otherTypeText = other.name
-        return name == otherTypeText || isConvertible(otherTypeText)
-    }
-
-    /**
-     *
-     */
-    fun isEqual(other: String?): Boolean {
-        if (other == null) return false
-        return name == other || isConvertible(other)
     }
 }

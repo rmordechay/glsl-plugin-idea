@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.util.childrenOfType
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.GlslType
+import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariableImpl
 import glsl.psi.interfaces.GlslPpDefineFunction
 import glsl.psi.interfaces.GlslVariableIdentifier
@@ -32,7 +33,7 @@ abstract class GlslNamedPpDefineFunction(node: ASTNode) : GlslNamedVariableImpl(
     /**
      *
      */
-    override fun getAssociatedType(): GlslType? {
+    override fun getAssociatedType(): GlslNamedType? {
         return null
     }
 

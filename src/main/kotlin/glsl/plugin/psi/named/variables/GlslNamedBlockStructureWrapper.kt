@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.GlslType
+import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariableImpl
 import glsl.psi.interfaces.GlslBlockStructureWrapper
 import glsl.psi.interfaces.GlslVariableIdentifier
@@ -31,8 +32,8 @@ abstract class GlslNamedBlockStructureWrapper(node: ASTNode) : GlslNamedVariable
     /**
      *
      */
-    override fun getAssociatedType(): GlslType? {
-        return getPsi().blockStructure.typeName as GlslType
+    override fun getAssociatedType(): GlslNamedType? {
+        return getPsi().blockStructure
     }
 
     /**

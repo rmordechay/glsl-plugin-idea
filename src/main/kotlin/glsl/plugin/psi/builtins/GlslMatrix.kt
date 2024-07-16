@@ -1,13 +1,24 @@
 package glsl.plugin.psi.builtins
 
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.psi.PsiElement
 import glsl.data.GlslDefinitions
+import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
+import javax.swing.Icon
 
 /**
  *
  */
 abstract class GlslMatrix(node: ASTNode) : GlslBuiltinType(node) {
+
+    /**
+     *
+     */
+    override fun getPsi(): GlslNamedElement {
+        TODO("Not yet implemented")
+    }
 
     /**
      *
@@ -36,7 +47,7 @@ abstract class GlslMatrix(node: ASTNode) : GlslBuiltinType(node) {
      *
      */
     override fun getDimension(): Int {
-        val lastChar = name.last()
+        val lastChar = name?.last()
         return when (lastChar) {
             '2' -> 2
             '3' -> 3
@@ -45,32 +56,32 @@ abstract class GlslMatrix(node: ASTNode) : GlslBuiltinType(node) {
         }
     }
 
+    /**
+     *
+     */
+    override fun getHighlightTextAttr(): TextAttributesKey {
+        TODO("Not yet implemented")
+    }
 
-//    /**
-//     *
-//     */
-//    fun getColumnDimension(): Int? {
-//        return name?.last()?.digitToInt()
-//    }
-//
-//    /**
-//     *
-//     */
-//    fun getRowDimension(): Int {
-//        val dims = dimensionsRegex.find(name)?.groupValues ?: return 0
-//        if (dims[2].isNotEmpty()) {
-//            return dims[2].toInt()
-//        } else if (dims[3].isNotEmpty()) {
-//            return dims[3].toInt()
-//        }
-//        return 0
-//    }
+    /**
+     *
+     */
+    override fun getLookupIcon(): Icon? {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
+    override fun getNameIdentifier(): PsiElement? {
+        TODO("Not yet implemented")
+    }
 
     /**
      *
      */
     private fun getMatrixComponentType(): String {
-        val typeText = name.first()
+        val typeText = name?.first()
         return when (typeText) {
             'm', 'f' -> "float"
             'd' -> "double"

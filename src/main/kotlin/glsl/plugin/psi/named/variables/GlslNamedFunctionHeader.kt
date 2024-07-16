@@ -8,6 +8,7 @@ import com.intellij.psi.util.parentOfType
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariableImpl
 import glsl.plugin.utils.GlslUtils
 import glsl.psi.interfaces.GlslFunctionHeader
@@ -44,7 +45,7 @@ abstract class GlslNamedFunctionHeader(node: ASTNode) : GlslNamedVariableImpl(no
     /**
      *
      */
-    override fun getAssociatedType(): GlslType? {
+    override fun getAssociatedType(): GlslNamedType? {
         return getType(getPsi().typeSpecifier)
     }
 

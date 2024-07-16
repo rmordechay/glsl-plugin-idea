@@ -270,11 +270,11 @@ void main(int a) {}
 void main(int a, int b) {}
 void main(UserType a, int b) {}
 void main(UserType a, UserType b) {}
-UserType main() {}
-UserType main(int a) {}
-UserType main(int a, int b) {}
-UserType main(UserType a, int b) {}
-UserType main(UserType a, UserType b) {}
+UserType main() { return 0; }
+UserType main(int a) { return 0; }
+UserType main(int a, int b) { return 0; }
+UserType main(UserType a, int b) { return 0; }
+UserType main(UserType a, UserType b) { return 0; }
 
 noperspective centroid out vec2 a;
 centroid out vec2 a;

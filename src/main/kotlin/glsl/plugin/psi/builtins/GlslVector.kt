@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import glsl.data.GlslDefinitions
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.plugin.utils.GlslBuiltinUtils
 
 
 /**
@@ -16,15 +17,15 @@ abstract class GlslVector(node: ASTNode) : GlslBuiltinType(node) {
      *
      */
     override fun getStructMembers(): List<GlslNamedVariable> {
-//        val vectorComponents = GlslBuiltinUtils.getVecStructs()[name]
-        return emptyList()
+        val vectorComponents = GlslBuiltinUtils.getVecStructs()[name]?.values?.mapNotNull { it as? GlslNamedVariable }
+        return vectorComponents ?: emptyList()
     }
 
     /**
      *
      */
     override fun getStructMember(memberName: String): GlslNamedVariable? {
-        return null
+        return getStructMembers().find { it.name == memberName }
     }
 
     /**

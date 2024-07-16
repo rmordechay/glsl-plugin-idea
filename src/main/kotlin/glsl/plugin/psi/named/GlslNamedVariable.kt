@@ -29,6 +29,26 @@ interface GlslNamedVariable : GlslNamedElement {
      *
      */
     fun getAssociatedType(): GlslType?
+
+    /**
+     *
+     */
+    fun getType(typeSpecifier: GlslTypeSpecifier): GlslType? {
+        if (typeSpecifier.builtinTypeScalar != null) {
+            return typeSpecifier.builtinTypeScalar as GlslScalar
+        } else if (typeSpecifier.builtinTypeVector != null) {
+            return typeSpecifier.builtinTypeVector as GlslVector
+        } else if (typeSpecifier.builtinTypeMatrix != null) {
+            return typeSpecifier.builtinTypeMatrix as GlslMatrix
+        } else if (typeSpecifier.builtinTypeRest != null) {
+            return typeSpecifier.builtinTypeRest as GlslBuiltinType
+        } else if (typeSpecifier.structSpecifier != null) {
+            return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
+        } else if (typeSpecifier.typeName != null) {
+            return typeSpecifier.typeName as GlslTypeNameImpl
+        }
+        return null
+    }
 }
 
 /**
@@ -66,7 +86,8 @@ abstract class GlslNamedSingleDeclaration(node: ASTNode) : GlslNamedVariableImpl
      *
      */
     override fun getAssociatedType(): GlslType? {
-        return null
+        val typeSpecifier = getPsi().typeSpecifier
+        return getType(typeSpecifier)
     }
 
     /**
@@ -142,7 +163,7 @@ abstract class GlslNamedBlockStructureWrapper(node: ASTNode) : GlslNamedVariable
      *
      */
     override fun getAssociatedType(): GlslType? {
-        return null
+        return getPsi().blockStructure.typeName as GlslType
     }
 
     /**
@@ -229,21 +250,7 @@ abstract class GlslNamedStructDeclarator(node: ASTNode) : GlslNamedVariableImpl(
     override fun getAssociatedType(): GlslType? {
         val structDeclaration = getPsi().parent as GlslStructDeclaration
         val typeSpecifier = structDeclaration.typeSpecifier ?: return null
-
-        if (typeSpecifier.builtinTypeScalar != null) {
-            return typeSpecifier.builtinTypeVector as GlslScalar
-        } else if (typeSpecifier.builtinTypeVector != null) {
-            return typeSpecifier.builtinTypeVector as GlslVector
-        } else if (typeSpecifier.builtinTypeMatrix != null) {
-            return typeSpecifier.builtinTypeVector as GlslMatrix
-        } else if (typeSpecifier.builtinTypeRest != null) {
-            return typeSpecifier.builtinTypeVector as GlslBuiltinType
-        } else if (typeSpecifier.structSpecifier != null) {
-            return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
-        } else if (typeSpecifier.typeName != null) {
-            return typeSpecifier.typeName as GlslTypeNameImpl
-        }
-        return null
+        return getType(typeSpecifier)
     }
 
     /**
@@ -300,7 +307,7 @@ abstract class GlslNamedFunctionHeader(node: ASTNode) : GlslNamedVariableImpl(no
      *
      */
     override fun getAssociatedType(): GlslType? {
-        return null
+        return getType(getPsi().typeSpecifier)
     }
 
     /**
@@ -349,21 +356,7 @@ abstract class GlslNamedParameterDeclarator(node: ASTNode) : GlslNamedVariableIm
      *
      */
     override fun getAssociatedType(): GlslType? {
-        val typeSpecifier = getPsi().typeSpecifier
-        if (typeSpecifier.builtinTypeScalar != null) {
-            return typeSpecifier.builtinTypeVector as GlslScalar
-        } else if (typeSpecifier.builtinTypeVector != null) {
-            return typeSpecifier.builtinTypeVector as GlslVector
-        } else if (typeSpecifier.builtinTypeMatrix != null) {
-            return typeSpecifier.builtinTypeVector as GlslMatrix
-        } else if (typeSpecifier.builtinTypeRest != null) {
-            return typeSpecifier.builtinTypeVector as GlslBuiltinType
-        } else if (typeSpecifier.structSpecifier != null) {
-            return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
-        } else if (typeSpecifier.typeName != null) {
-            return typeSpecifier.typeName as GlslTypeNameImpl
-        }
-        return null
+        return getType(getPsi().typeSpecifier)
     }
 
     /**

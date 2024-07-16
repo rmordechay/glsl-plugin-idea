@@ -7,12 +7,15 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceService
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
+import glsl.plugin.psi.named.GlslNamedStructSpecifier
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.GlslTypeReference
 import glsl.plugin.utils.GlslUtils
+import glsl.psi.interfaces.GlslStructSpecifier
 
 /**
  *
@@ -77,14 +80,15 @@ abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentif
      *
      */
     open fun getStructMembers(): List<GlslNamedVariable> {
-        return emptyList()
+        val resolve = reference?.resolve() as? GlslNamedStructSpecifier
+        return resolve?.getStructMembers() ?: emptyList()
     }
 
     /**
      *
      */
     open fun getStructMember(memberName: String): GlslNamedVariable? {
-        return null
+        return getStructMembers().find { it.name == memberName }
     }
 
     /**

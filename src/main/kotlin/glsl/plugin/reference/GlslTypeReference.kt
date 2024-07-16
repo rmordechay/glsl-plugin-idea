@@ -7,13 +7,14 @@ import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
 import glsl.plugin.psi.GlslType
-import glsl.plugin.psi.GlslVariable
+import glsl.plugin.psi.builtins.GlslBuiltinType
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.psi.interfaces.GlslDeclaration
 import glsl.psi.interfaces.GlslExternalDeclaration
 import glsl.psi.interfaces.GlslStatement
+import glsl.psi.interfaces.GlslStructSpecifier
 
 class GlslTypeReference(private val element: GlslType, textRange: TextRange) : GlslReference(element, textRange) {
 
@@ -48,8 +49,7 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
             resolvedReferences.clear()
             currentFilterType = filterType
             resolveType()
-        } catch (_: StopLookupException) {
-        }
+        } catch (_: StopLookupException) { }
     }
 
     /**
@@ -57,7 +57,7 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
      */
     override fun shouldResolve(): Boolean {
         if (currentFilterType == CONTAINS && element.isEmpty()) return true
-        return element.parent !is GlslNamedType
+        return element.parent.parent !is GlslStructSpecifier
     }
 
     /**

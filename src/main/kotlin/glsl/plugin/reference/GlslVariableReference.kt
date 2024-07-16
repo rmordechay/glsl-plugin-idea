@@ -10,11 +10,9 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
+import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.GlslVariable
-import glsl.plugin.psi.named.GlslNamedBlockStructure
-import glsl.plugin.psi.named.GlslNamedElement
-import glsl.plugin.psi.named.GlslNamedStructSpecifier
-import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.plugin.psi.named.*
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
@@ -90,43 +88,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         resolveCache.resolveWithCaching(this, resolver, true, false)
         return resolvedReferences
     }
-
-//    /**
-//     *
-//     */
-//    fun resolveType(): GlslType? {
-//        try {
-//            var statementPrevSibling = getParentOfType(element, GlslStatement::class.java)
-//            while (statementPrevSibling != null) {
-//                resolveDeclarationType(statementPrevSibling.declaration)
-//                statementPrevSibling = getPrevSiblingOfType(statementPrevSibling, GlslStatement::class.java)
-//            }
-//            var externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
-//            while (externalDeclaration != null) {
-//                externalDeclaration = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
-//                val declaration = externalDeclaration?.declaration
-//                resolveDeclarationType(declaration)
-//            }
-//            return null
-//        } catch (_: StopLookupException) {
-//            return resolvedReferences.firstOrNull()?.getAssociatedType()
-//        }
-//    }
-//
-//    /**
-//     *
-//     */
-//    private fun resolveDeclarationType(declaration: GlslDeclaration?) {
-//        if (declaration != null) {
-//            val structSpecifier = declaration.singleDeclaration?.typeSpecifier?.typeSpecifierUser?.structSpecifier
-//            if (structSpecifier != null) {
-//                findReferenceInElement(structSpecifier)
-//            } else if (declaration.blockStructureWrapper != null) {
-//                findReferenceInElement(declaration.blockStructureWrapper?.blockStructure)
-//            }
-//        }
-
-//    }
 
     /**
      *
@@ -239,8 +200,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (singleDeclaration.variableIdentifier != null) {
             findReferenceInElement(singleDeclaration)
         }
-//        val structSpecifier = singleDeclaration.typeSpecifier.typeSpecifierUser?.structSpecifier
-//        findReferenceInElement(structSpecifier)
     }
 
     /**
@@ -327,8 +286,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
 
         for ((index, parent) in elementParents.withIndex()) {
             if (index == elementPosition) {
-                val a = nextMemberType.reference?.resolve() as? GlslNamedStructSpecifier
-                val structMembers = a?.getStructMembers()
+                val structMembers = nextMemberType.getStructMembers()
                 if (element.isEmpty()) {
                     findReferenceInElementList(structMembers, true)
                 } else {
@@ -338,8 +296,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             }
             val structMemberName = parent?.getName() ?: return
             nextMemberType = nextMemberType.getStructMember(structMemberName)
-                ?.getAssociatedType()
-                ?: break
+                ?.getAssociatedType()!!
         }
     }
 

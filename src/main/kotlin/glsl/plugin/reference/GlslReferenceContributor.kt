@@ -1,8 +1,10 @@
 package glsl.plugin.reference
 
 import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
+import glsl.GlslTypes
 import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.GlslVariable
 
@@ -11,12 +13,21 @@ import glsl.plugin.psi.GlslVariable
  *
  */
 class GlslReferenceContributor : PsiReferenceContributor() {
+    private val numeric = StandardPatterns.or(
+        psiElement(GlslTypes.INTCONSTANT),
+        psiElement(GlslTypes.UINTCONSTANT),
+        psiElement(GlslTypes.FLOATCONSTANT),
+        psiElement(GlslTypes.DOUBLECONSTANT),
+    )
+
     /**
     *
     */
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         val variablePattern = psiElement(GlslVariable::class.java)
+            .andNot(psiElement().afterLeaf(numeric))
         val typePattern = psiElement(GlslType::class.java)
+            .andNot(psiElement().afterLeaf(numeric))
         registrar.registerReferenceProvider(variablePattern, GlslVariableReferenceProvider())
         registrar.registerReferenceProvider(typePattern, GlslTypeReferenceProvider())
     }

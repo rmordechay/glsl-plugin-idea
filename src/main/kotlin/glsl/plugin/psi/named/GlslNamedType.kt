@@ -63,13 +63,6 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslType(node), GlslNam
     /**
      *
      */
-    override fun setName(name: String): PsiElement {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
     override fun getNameIdentifier(): GlslTypeName? {
         return getPsi().typeName
     }
@@ -162,13 +155,6 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslType(node), GlslName
      */
     override fun getLookupIcon(): Icon? {
         return AllIcons.Nodes.Type
-    }
-
-    /**
-     *
-     */
-    override fun setName(name: String): PsiElement {
-        TODO("Not yet implemented")
     }
 
     /**

@@ -7,7 +7,6 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceService
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.GlslNamedStructSpecifier
@@ -15,7 +14,6 @@ import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.GlslTypeReference
 import glsl.plugin.utils.GlslUtils
-import glsl.psi.interfaces.GlslStructSpecifier
 
 /**
  *
@@ -66,7 +64,11 @@ abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentif
         if (!GlslUtils.isShaderFile(this)) return this
         if (newName == null) return this
         val dummyDeclaration = "$newName;"
-        return getIdentifierFromFile(dummyDeclaration)
+        val dummyElement = (PsiFileFactory.getInstance(project)
+            .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
+            .firstChild
+        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslType::class.java)
+        return if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
     }
 
     /**

@@ -43,7 +43,11 @@ abstract class GlslVariable(node: ASTNode) : ASTWrapperPsiElement(node), GlslIde
         if (!GlslUtils.isShaderFile(this)) return this
         if (newName == null ) return this
         val dummyDeclaration = "void $newName;"
-        return getIdentifierFromFile(dummyDeclaration)
+        val dummyElement = (PsiFileFactory.getInstance(project)
+            .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
+            .firstChild
+        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslVariable::class.java)
+        return if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
     }
 
     /**

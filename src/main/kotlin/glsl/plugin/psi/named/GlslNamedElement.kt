@@ -12,6 +12,17 @@ import glsl.plugin.utils.GlslUtils.isShaderFile
 import javax.swing.Icon
 
 interface GlslNamedElement : PsiNameIdentifierOwner {
+    /**
+     *
+     */
+    override fun setName(newName: String): PsiElement {
+        if (!isShaderFile(this)) return this
+        val identifier = nameIdentifier
+        if (identifier is GlslIdentifier) {
+            return identifier.replaceElementName(newName) ?: this
+        }
+        return this
+    }
 
     /**
      * A bit of a weird function which solely casts the same object to the appropriate named element
@@ -36,18 +47,6 @@ interface GlslNamedElement : PsiNameIdentifierOwner {
 }
 
 abstract class GlslNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), GlslNamedElement {
-
-    /**
-    *
-    */
-    override fun setName(newName: String): PsiElement {
-        if (!isShaderFile(this)) return this
-        val identifier = nameIdentifier
-        if (identifier is GlslIdentifier) {
-            return identifier.replaceElementName(newName) ?: this
-        }
-        return this
-    }
 
     /**
     *

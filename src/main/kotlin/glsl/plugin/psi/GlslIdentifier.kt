@@ -35,18 +35,5 @@ interface GlslIdentifier: ContributedReferenceHost {
     fun isNamedElement(): Boolean {
         return parent is GlslNamedElement
     }
-
-    /**
-     *
-     */
-    fun getIdentifierFromFile(dummyDeclaration: String): GlslIdentifier {
-        val dummyElement = (PsiFileFactory.getInstance(project)
-            .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
-            .firstChild
-        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslIdentifier::class.java)
-        val glslIdentifier: GlslIdentifier =
-            if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
-        return glslIdentifier
-    }
 }
 

@@ -16,9 +16,17 @@ abstract class GlslScalar(node: ASTNode) : GlslBuiltinType(node) {
     /**
      *
      */
+    override fun getPsi(): GlslScalar {
+        return this
+    }
+
+    /**
+     *
+     */
     override fun getStructMembers(): List<GlslNamedVariable> {
         return emptyList()
     }
+
 
     /**
      *
@@ -26,7 +34,6 @@ abstract class GlslScalar(node: ASTNode) : GlslBuiltinType(node) {
     override fun getStructMember(memberName: String): GlslNamedVariable? {
         return null
     }
-
 
     /**
      *
@@ -41,33 +48,5 @@ abstract class GlslScalar(node: ASTNode) : GlslBuiltinType(node) {
      */
     override fun getDimension(): Int {
         return 1
-    }
-
-    /**
-     *
-     */
-    override fun getPsi(): GlslNamedElement {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    override fun getHighlightTextAttr(): TextAttributesKey {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    override fun getLookupIcon(): Icon? {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    override fun getNameIdentifier(): PsiElement? {
-        TODO("Not yet implemented")
     }
 }

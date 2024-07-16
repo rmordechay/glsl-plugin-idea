@@ -17,29 +17,8 @@ abstract class GlslVector(node: ASTNode) : GlslBuiltinType(node) {
     /**
      *
      */
-    override fun getPsi(): GlslNamedElement {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    override fun getHighlightTextAttr(): TextAttributesKey {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    override fun getLookupIcon(): Icon? {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    override fun getNameIdentifier(): PsiElement? {
-        TODO("Not yet implemented")
+    override fun getPsi(): GlslVector {
+        return this
     }
 
     /**

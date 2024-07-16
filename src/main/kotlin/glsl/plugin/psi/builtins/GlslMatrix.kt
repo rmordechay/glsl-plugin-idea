@@ -16,8 +16,8 @@ abstract class GlslMatrix(node: ASTNode) : GlslBuiltinType(node) {
     /**
      *
      */
-    override fun getPsi(): GlslNamedElement {
-        TODO("Not yet implemented")
+    override fun getPsi(): GlslMatrix {
+        return this
     }
 
     /**
@@ -54,27 +54,6 @@ abstract class GlslMatrix(node: ASTNode) : GlslBuiltinType(node) {
             '4' -> 4
             else -> 0
         }
-    }
-
-    /**
-     *
-     */
-    override fun getHighlightTextAttr(): TextAttributesKey {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    override fun getLookupIcon(): Icon? {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    override fun getNameIdentifier(): PsiElement? {
-        TODO("Not yet implemented")
     }
 
     /**

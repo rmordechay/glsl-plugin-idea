@@ -258,7 +258,6 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "rayPayloadInEXT"                { return PAYLOADINEXT; }
   "hitAttributeNV"                 { return HITATTRNV; }
   "hitAttributeEXT"                { return HITATTREXT; }
-  // Builtin Types
   // Scalars
   "void"                           { return VOID; }
   "bool"                           { return BOOL; }

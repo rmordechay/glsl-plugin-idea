@@ -6,6 +6,7 @@ import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
+import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
@@ -14,11 +15,11 @@ import glsl.psi.interfaces.GlslDeclaration
 import glsl.psi.interfaces.GlslExternalDeclaration
 import glsl.psi.interfaces.GlslStatement
 
-class GlslTypeReference(private val element: GlslVariable, textRange: TextRange) : GlslReference(element, textRange) {
+class GlslTypeReference(private val element: GlslType, textRange: TextRange) : GlslReference(element, textRange) {
 
     private val resolver = AbstractResolver<GlslTypeReference, GlslNamedType> { reference, _ ->
         reference.doResolve()
-        reference.resolvedReferences.firstOrNull() as GlslNamedType
+        reference.resolvedReferences.firstOrNull() as? GlslNamedType
     }
 
     /**
@@ -55,7 +56,7 @@ class GlslTypeReference(private val element: GlslVariable, textRange: TextRange)
      *
      */
     override fun shouldResolve(): Boolean {
-        if (currentFilterType == FilterType.CONTAINS && element.isEmpty()) return true
+        if (currentFilterType == CONTAINS && element.isEmpty()) return true
         return element.parent !is GlslNamedType
     }
 
@@ -92,13 +93,12 @@ class GlslTypeReference(private val element: GlslVariable, textRange: TextRange)
      *
      */
     private fun resolveDeclarationType(declaration: GlslDeclaration?) {
-        if (declaration != null) {
-            val structSpecifier = declaration.singleDeclaration?.typeSpecifier?.typeSpecifierUser?.structSpecifier
-            if (structSpecifier != null) {
-                findReferenceInElement(structSpecifier)
-            } else if (declaration.blockStructureWrapper != null) {
-                findReferenceInElement(declaration.blockStructureWrapper?.blockStructure)
-            }
+        if (declaration == null) return
+        val structSpecifier = declaration.singleDeclaration?.typeSpecifier?.structSpecifier
+        if (structSpecifier != null) {
+            findReferenceInElement(structSpecifier)
+        } else if (declaration.blockStructureWrapper != null) {
+            findReferenceInElement(declaration.blockStructureWrapper?.blockStructure)
         }
     }
 }

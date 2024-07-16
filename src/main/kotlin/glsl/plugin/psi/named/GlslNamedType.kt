@@ -1,59 +1,41 @@
 package glsl.plugin.psi.named
 
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import glsl.plugin.code.highlighting.GlslTextAttributes
+import glsl.plugin.psi.GlslType
 import glsl.psi.interfaces.GlslBlockStructure
 import glsl.psi.interfaces.GlslStructDeclarator
 import glsl.psi.interfaces.GlslStructSpecifier
 import glsl.psi.interfaces.GlslTypeName
 import javax.swing.Icon
 
-/**
- *
- */
-interface GlslNamedType : GlslNamedElement {
-    fun getStructMembers(): List<GlslNamedVariable>
-    fun getStructMember(memberName: String): GlslNamedVariable?
-    fun isConvertible(other: String): Boolean
-    fun getDimension(): Int
-    fun getBinaryExprType(rightExprType: GlslNamedType?, expr: PsiElement? = null): GlslNamedType?
-
-    /**
-     *
-     */
-    fun isEqual(other: GlslNamedType?): Boolean {
-        if (other == null) return false
-        val otherTypeText = other.name ?: return false
-        return name == otherTypeText || isConvertible(otherTypeText)
-    }
-
-    /**
-     *
-     */
-    fun isEqual(other: String?): Boolean {
-        if (other == null) return false
-        return name == other || isConvertible(other)
-    }
-}
 
 /**
  *
  */
-abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), GlslNamedType
+interface GlslNamedType : GlslNamedElement
 
 
 /**
  * type_specifier
  */
-abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node) {
+abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslType(node), GlslNamedType {
 
     /**
      *
      */
-    override fun getSelf(): GlslStructSpecifier {
+    override fun getName(): String {
+        return getPsi().typeName?.getName() ?: ""
+    }
+
+    /**
+     *
+     */
+    override fun getPsi(): GlslStructSpecifier {
         return this as GlslStructSpecifier
     }
 
@@ -67,6 +49,13 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node)
     /**
      *
      */
+    override fun getLookupElement(returnTypeText: String?): LookupElement? {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
     override fun getLookupIcon(): Icon? {
         return AllIcons.Nodes.Type
     }
@@ -74,15 +63,22 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node)
     /**
      *
      */
+    override fun setName(name: String): PsiElement {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
     override fun getNameIdentifier(): GlslTypeName? {
-        return getSelf().typeName
+        return getPsi().typeName
     }
 
     /**
      *
      */
     override fun getStructMembers(): List<GlslNamedVariable> {
-        val structDeclarationList = getSelf().structDeclarationList
+        val structDeclarationList = getPsi().structDeclarationList
         val structDeclarators = mutableListOf<GlslStructDeclarator>()
         for (structDeclaration in structDeclarationList) {
             for (structDeclarator in structDeclaration.structDeclaratorList) {
@@ -96,7 +92,7 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node)
      *
      */
     override fun getStructMember(memberName: String): GlslNamedVariable? {
-        val structDeclarationList = getSelf().structDeclarationList
+        val structDeclarationList = getPsi().structDeclarationList
         for (structDeclaration in structDeclarationList) {
             for (structDeclarator in structDeclaration.structDeclaratorList) {
                 if (structDeclarator.name != memberName) continue
@@ -131,12 +127,19 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node)
 /**
  * block_structure
  */
-abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node) {
+abstract class GlslNamedBlockStructure(node: ASTNode) : GlslType(node), GlslNamedType {
 
     /**
      *
      */
-    override fun getSelf(): GlslBlockStructure {
+    override fun getName(): String {
+        return getPsi().typeName.getName()
+    }
+
+    /**
+     *
+     */
+    override fun getPsi(): GlslBlockStructure {
         return this as GlslBlockStructure
     }
 
@@ -150,6 +153,13 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node) 
     /**
      *
      */
+    override fun getLookupElement(returnTypeText: String?): LookupElement? {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
     override fun getLookupIcon(): Icon? {
         return AllIcons.Nodes.Type
     }
@@ -157,15 +167,22 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node) 
     /**
      *
      */
+    override fun setName(name: String): PsiElement {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
     override fun getNameIdentifier(): GlslTypeName {
-        return getSelf().typeName
+        return getPsi().typeName
     }
 
     /**
      *
      */
     override fun getStructMembers(): List<GlslNamedVariable> {
-        val structDeclarationList = getSelf().structDeclarationList
+        val structDeclarationList = getPsi().structDeclarationList
         val structDeclarators = mutableListOf<GlslStructDeclarator>()
         for (structDeclaration in structDeclarationList) {
             for (structDeclarator in structDeclaration.structDeclaratorList) {
@@ -179,7 +196,7 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node) 
      *
      */
     override fun getStructMember(memberName: String): GlslNamedVariable? {
-        val structDeclarationList = getSelf().structDeclarationList
+        val structDeclarationList = getPsi().structDeclarationList
         for (structDeclaration in structDeclarationList) {
             for (structDeclarator in structDeclaration.structDeclaratorList) {
                 if (structDeclarator.name != memberName) continue

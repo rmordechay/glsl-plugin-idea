@@ -11,7 +11,13 @@ import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_TEXT_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_FUNC_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_OBJECT_NAME_ATTR
 import glsl.plugin.code.highlighting.GlslTextAttributes.VARIABLE_TEXT_ATTR
+import glsl.plugin.psi.GlslType
+import glsl.plugin.psi.builtins.GlslBuiltinType
+import glsl.plugin.psi.builtins.GlslMatrix
+import glsl.plugin.psi.builtins.GlslScalar
+import glsl.plugin.psi.builtins.GlslVector
 import glsl.plugin.utils.GlslUtils
+import glsl.psi.impl.GlslTypeNameImpl
 import glsl.psi.interfaces.*
 import javax.swing.Icon
 
@@ -22,7 +28,7 @@ interface GlslNamedVariable : GlslNamedElement {
     /**
      *
      */
-    fun getAssociatedType(): GlslNamedType?
+    fun getAssociatedType(): GlslType?
 }
 
 /**
@@ -38,7 +44,7 @@ abstract class GlslNamedSingleDeclaration(node: ASTNode) : GlslNamedVariableImpl
     /**
      *
      */
-    override fun getSelf(): GlslSingleDeclaration {
+    override fun getPsi(): GlslSingleDeclaration {
         return this as GlslSingleDeclaration
     }
 
@@ -46,7 +52,7 @@ abstract class GlslNamedSingleDeclaration(node: ASTNode) : GlslNamedVariableImpl
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getPsi().variableIdentifier
     }
 
     /**
@@ -59,7 +65,7 @@ abstract class GlslNamedSingleDeclaration(node: ASTNode) : GlslNamedVariableImpl
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
+    override fun getAssociatedType(): GlslType? {
         return null
     }
 
@@ -79,7 +85,7 @@ abstract class GlslNamedInitDeclaratorVariable(node: ASTNode) : GlslNamedVariabl
     /**
      *
      */
-    override fun getSelf(): GlslInitDeclaratorVariable {
+    override fun getPsi(): GlslInitDeclaratorVariable {
         return this as GlslInitDeclaratorVariable
     }
 
@@ -93,8 +99,8 @@ abstract class GlslNamedInitDeclaratorVariable(node: ASTNode) : GlslNamedVariabl
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
-        val declaration = getSelf().parent as GlslDeclaration
+    override fun getAssociatedType(): GlslType? {
+//        val declaration = getPsi().parent as GlslDeclaration
         return null
     }
 
@@ -102,7 +108,7 @@ abstract class GlslNamedInitDeclaratorVariable(node: ASTNode) : GlslNamedVariabl
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getPsi().variableIdentifier
     }
 
     /**
@@ -121,7 +127,7 @@ abstract class GlslNamedBlockStructureWrapper(node: ASTNode) : GlslNamedVariable
     /**
      *
      */
-    override fun getSelf(): GlslBlockStructureWrapper {
+    override fun getPsi(): GlslBlockStructureWrapper {
         return this as GlslBlockStructureWrapper
     }
 
@@ -135,7 +141,7 @@ abstract class GlslNamedBlockStructureWrapper(node: ASTNode) : GlslNamedVariable
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
+    override fun getAssociatedType(): GlslType? {
         return null
     }
 
@@ -143,7 +149,7 @@ abstract class GlslNamedBlockStructureWrapper(node: ASTNode) : GlslNamedVariable
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getPsi().variableIdentifier
     }
 
     /**
@@ -162,7 +168,7 @@ abstract class GlslNamedDeclarationIdentifierWrapper(node: ASTNode) : GlslNamedV
     /**
      *
      */
-    override fun getSelf(): GlslDeclarationIdentifierWrapper {
+    override fun getPsi(): GlslDeclarationIdentifierWrapper {
         return this as GlslDeclarationIdentifierWrapper
     }
 
@@ -176,7 +182,7 @@ abstract class GlslNamedDeclarationIdentifierWrapper(node: ASTNode) : GlslNamedV
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
+    override fun getAssociatedType(): GlslType? {
         return null
     }
 
@@ -184,7 +190,7 @@ abstract class GlslNamedDeclarationIdentifierWrapper(node: ASTNode) : GlslNamedV
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getPsi().variableIdentifier
     }
 
     /**
@@ -206,7 +212,7 @@ abstract class GlslNamedStructDeclarator(node: ASTNode) : GlslNamedVariableImpl(
     /**
      *
      */
-    override fun getSelf(): GlslStructDeclarator {
+    override fun getPsi(): GlslStructDeclarator {
         return this as GlslStructDeclarator
     }
 
@@ -220,8 +226,23 @@ abstract class GlslNamedStructDeclarator(node: ASTNode) : GlslNamedVariableImpl(
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
-        val structDeclaration = getSelf().parent as GlslStructDeclaration
+    override fun getAssociatedType(): GlslType? {
+        val structDeclaration = getPsi().parent as GlslStructDeclaration
+        val typeSpecifier = structDeclaration.typeSpecifier ?: return null
+
+        if (typeSpecifier.builtinTypeScalar != null) {
+            return typeSpecifier.builtinTypeVector as GlslScalar
+        } else if (typeSpecifier.builtinTypeVector != null) {
+            return typeSpecifier.builtinTypeVector as GlslVector
+        } else if (typeSpecifier.builtinTypeMatrix != null) {
+            return typeSpecifier.builtinTypeVector as GlslMatrix
+        } else if (typeSpecifier.builtinTypeRest != null) {
+            return typeSpecifier.builtinTypeVector as GlslBuiltinType
+        } else if (typeSpecifier.structSpecifier != null) {
+            return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
+        } else if (typeSpecifier.typeName != null) {
+            return typeSpecifier.typeName as GlslTypeNameImpl
+        }
         return null
     }
 
@@ -229,7 +250,7 @@ abstract class GlslNamedStructDeclarator(node: ASTNode) : GlslNamedVariableImpl(
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getPsi().variableIdentifier
     }
 
     /**
@@ -243,7 +264,7 @@ abstract class GlslNamedStructDeclarator(node: ASTNode) : GlslNamedVariableImpl(
      *
      */
     override fun getLookupElement(returnTypeText: String?): LookupElement? {
-        val name = getSelf().name ?: return null
+        val name = getPsi().name ?: return null
         val typeText = getAssociatedType()?.text
         return GlslUtils.createLookupElement(name, icon = getLookupIcon(), returnTypeText = typeText)
     }
@@ -257,7 +278,7 @@ abstract class GlslNamedFunctionHeader(node: ASTNode) : GlslNamedVariableImpl(no
     /**
      *
      */
-    override fun getSelf(): GlslFunctionHeader {
+    override fun getPsi(): GlslFunctionHeader {
         return this as GlslFunctionHeader
     }
 
@@ -272,13 +293,13 @@ abstract class GlslNamedFunctionHeader(node: ASTNode) : GlslNamedVariableImpl(no
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getPsi().variableIdentifier
     }
 
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
+    override fun getAssociatedType(): GlslType? {
         return null
     }
 
@@ -293,7 +314,7 @@ abstract class GlslNamedFunctionHeader(node: ASTNode) : GlslNamedVariableImpl(no
      *
      */
     override fun getLookupElement(returnTypeText: String?): LookupElement? {
-        val functionPrototype = getSelf().parentOfType<GlslFunctionPrototype>() ?: return null
+        val functionPrototype = getPsi().parentOfType<GlslFunctionPrototype>() ?: return null
         return GlslUtils.getFunctionLookupElement(functionPrototype, getLookupIcon())
     }
 
@@ -301,7 +322,7 @@ abstract class GlslNamedFunctionHeader(node: ASTNode) : GlslNamedVariableImpl(no
      *
      */
     fun getParameterDeclarators(): List<GlslNamedElement> {
-        val funcPrototype = getSelf().parent as GlslFunctionPrototype? ?: return emptyList()
+        val funcPrototype = getPsi().parent as GlslFunctionPrototype? ?: return emptyList()
         return funcPrototype.funcHeaderWithParams?.parameterDeclaratorList ?: emptyList()
     }
 }
@@ -313,7 +334,7 @@ abstract class GlslNamedParameterDeclarator(node: ASTNode) : GlslNamedVariableIm
     /**
      *
      */
-    override fun getSelf(): GlslParameterDeclarator {
+    override fun getPsi(): GlslParameterDeclarator {
         return this as GlslParameterDeclarator
     }
 
@@ -321,13 +342,27 @@ abstract class GlslNamedParameterDeclarator(node: ASTNode) : GlslNamedVariableIm
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().variableIdentifier
+        return getPsi().variableIdentifier
     }
 
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
+    override fun getAssociatedType(): GlslType? {
+        val typeSpecifier = getPsi().typeSpecifier
+        if (typeSpecifier.builtinTypeScalar != null) {
+            return typeSpecifier.builtinTypeVector as GlslScalar
+        } else if (typeSpecifier.builtinTypeVector != null) {
+            return typeSpecifier.builtinTypeVector as GlslVector
+        } else if (typeSpecifier.builtinTypeMatrix != null) {
+            return typeSpecifier.builtinTypeVector as GlslMatrix
+        } else if (typeSpecifier.builtinTypeRest != null) {
+            return typeSpecifier.builtinTypeVector as GlslBuiltinType
+        } else if (typeSpecifier.structSpecifier != null) {
+            return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
+        } else if (typeSpecifier.typeName != null) {
+            return typeSpecifier.typeName as GlslTypeNameImpl
+        }
         return null
     }
 
@@ -353,7 +388,7 @@ abstract class GlslNamedPpDefineObject(node: ASTNode) : GlslNamedVariableImpl(no
     /**
      *
      */
-    override fun getSelf(): GlslPpDefineObject {
+    override fun getPsi(): GlslPpDefineObject {
         return this as GlslPpDefineObject
     }
 
@@ -361,13 +396,13 @@ abstract class GlslNamedPpDefineObject(node: ASTNode) : GlslNamedVariableImpl(no
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().childrenOfType<GlslVariableIdentifier>().firstOrNull()
+        return getPsi().childrenOfType<GlslVariableIdentifier>().firstOrNull()
     }
 
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
+    override fun getAssociatedType(): GlslType? {
         return null
     }
 
@@ -393,7 +428,7 @@ abstract class GlslNamedPpDefineFunction(node: ASTNode) : GlslNamedVariableImpl(
     /**
      *
      */
-    override fun getSelf(): GlslPpDefineFunction {
+    override fun getPsi(): GlslPpDefineFunction {
         return this as GlslPpDefineFunction
     }
 
@@ -401,13 +436,13 @@ abstract class GlslNamedPpDefineFunction(node: ASTNode) : GlslNamedVariableImpl(
      *
      */
     override fun getNameIdentifier(): GlslVariableIdentifier? {
-        return getSelf().childrenOfType<GlslVariableIdentifier>().firstOrNull()
+        return getPsi().childrenOfType<GlslVariableIdentifier>().firstOrNull()
     }
 
     /**
      *
      */
-    override fun getAssociatedType(): GlslNamedType? {
+    override fun getAssociatedType(): GlslType? {
         return null
     }
 

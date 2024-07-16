@@ -5,7 +5,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import glsl.plugin.psi.GlslIdentifier
-import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.FilterType.CONTAINS
@@ -24,7 +23,7 @@ enum class FilterType {
 /**
  *
  */
-abstract class GlslReference(private val element: GlslVariable, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
+abstract class GlslReference(private val element: GlslIdentifier, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
     abstract fun doResolve(filterType: FilterType = EQUALS)
     abstract fun shouldResolve(): Boolean
     abstract override fun resolve(): GlslNamedElement?
@@ -65,7 +64,7 @@ abstract class GlslReference(private val element: GlslVariable, textRange: TextR
      */
     protected fun findReferenceInElement(namedElement: GlslNamedElement?) {
         val namedElementName = namedElement?.name ?: return
-        val elementName = element.name
+        val elementName = element.getName()
         if (currentFilterType == EQUALS) {
             if (namedElementName != elementName) return
             resolvedReferences.add(namedElement)
@@ -94,9 +93,9 @@ abstract class GlslReference(private val element: GlslVariable, textRange: TextR
      */
     protected fun findReferenceInElementMap(namedElementsMap: Map<String, GlslNamedVariable>) {
         if (namedElementsMap.isEmpty()) return
-        val elementName = element.name
+        val elementName = element.getName()
         if (currentFilterType == EQUALS) {
-            if (namedElementsMap.containsKey(element.name)) {
+            if (namedElementsMap.containsKey(element.getName())) {
                 findReferenceInElement(namedElementsMap[elementName])
             }
         } else if (currentFilterType == CONTAINS) {

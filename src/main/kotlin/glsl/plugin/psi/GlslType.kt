@@ -2,12 +2,15 @@ package glsl.plugin.psi
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceService
 import com.intellij.psi.util.PsiTreeUtil
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
+import glsl.plugin.psi.named.GlslNamedType
+import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.GlslTypeReference
 import glsl.plugin.utils.GlslUtils
 
@@ -15,6 +18,22 @@ import glsl.plugin.utils.GlslUtils
  *
  */
 abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentifier {
+    /**
+     *
+     */
+    fun isEqual(other: GlslType?): Boolean {
+        if (other == null) return false
+        val otherTypeText = other.name
+        return name == otherTypeText || isConvertible(otherTypeText)
+    }
+
+    /**
+     *
+     */
+    fun isEqual(other: String?): Boolean {
+        if (other == null) return false
+        return name == other || isConvertible(other)
+    }
 
     /**
      *
@@ -42,29 +61,50 @@ abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentif
      */
     override fun replaceElementName(newName: String?): GlslIdentifier? {
         if (!GlslUtils.isShaderFile(this)) return this
-        if (newName == null ) return this
+        if (newName == null) return this
         val dummyDeclaration = "$newName;"
-        val dummyElement = (PsiFileFactory.getInstance(project)
-            .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
-            .firstChild
-        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslIdentifier::class.java)
-        val glslIdentifier: GlslIdentifier = if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
-        return glslIdentifier
+        return getIdentifierFromFile(dummyDeclaration)
     }
-
-//    /**
-//    *
-//    */
-//    override fun getAsNamedElement(): GlslNamedElementImpl? {
-//        if (parent is GlslNamedVariable) return parent as GlslNamedVariableImpl
-//        if (parent is GlslTypeName) return parent as GlslNamedTypeImpl
-//        return null
-//    }
 
     /**
      *
      */
     fun isEmpty(): Boolean {
         return node.text == "IntellijIdeaRulezzz"
+    }
+
+    /**
+     *
+     */
+    open fun getStructMembers(): List<GlslNamedVariable> {
+        return emptyList()
+    }
+
+    /**
+     *
+     */
+    open fun getStructMember(memberName: String): GlslNamedVariable? {
+        return null
+    }
+
+    /**
+     *
+     */
+    open fun isConvertible(other: String): Boolean {
+        return false
+    }
+
+    /**
+     *
+     */
+    open fun getDimension(): Int {
+        return -1
+    }
+
+    /**
+     *
+     */
+    open fun getBinaryExprType(rightExprType: GlslNamedType?, expr: PsiElement? = null): GlslNamedType? {
+        return null
     }
 }

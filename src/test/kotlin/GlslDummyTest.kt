@@ -1,4 +1,6 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import junit.framework.TestCase
+import junit.framework.TestCase.assertNull
 import org.junit.Test
 
 class GlslDummyTest : BasePlatformTestCase() {
@@ -7,8 +9,10 @@ class GlslDummyTest : BasePlatformTestCase() {
     }
 
     fun testDummy() {
-        myFixture.configureByFiles("dummy.glsl")
-        myFixture.checkHighlighting(false, false, false)
-//        val referenceAtCaretPosition = myFixture.getReferenceAtCaretPosition("dummy.glsl")?.resolve()
+//        myFixture.configureByFiles("dummy.glsl")
+//        myFixture.checkHighlighting(false, false, false)
+        val reference = myFixture.getReferenceAtCaretPosition("dummy.glsl")
+        val resolve = reference?.resolve()
+        assertNotNull(resolve)
     }
 }

@@ -11,13 +11,14 @@ import com.intellij.psi.util.elementType
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
 import glsl.plugin.psi.GlslVariable
+import glsl.plugin.psi.named.GlslNamedBlockStructure
 import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedStructSpecifier
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
-import glsl.plugin.utils.GlslPsiUtils.getPostfixIdentifier
 import glsl.plugin.utils.GlslUtils.getPsiFile
 import glsl.psi.interfaces.*
 
@@ -251,7 +252,8 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (blockStructureWrapper == null) return
         findReferenceInElement(blockStructureWrapper)
         if (blockStructureWrapper.variableIdentifier == null) {
-            val structMembers = blockStructureWrapper.blockStructure.getStructMembers()
+            val blockStructure = blockStructureWrapper.blockStructure as? GlslNamedBlockStructure ?: return
+            val structMembers = blockStructure.getStructMembers()
             findReferenceInElementList(structMembers)
         }
     }
@@ -314,7 +316,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     private fun lookupInPostfixFieldSelection(postfixFieldSelection: GlslPostfixFieldSelection?) {
         if (postfixFieldSelection == null) return
         val rootExpr = getPostfixIdentifier(postfixFieldSelection.postfixExpr) ?: return
-        var nextMemberType = rootExpr.reference?.resolve()?.getAssociatedType()
+        var nextMemberType = rootExpr.reference?.resolve()?.getAssociatedType() ?: return
 
         val identifierList = postfixFieldSelection.postfixStructMemberList.map {
             if (it.functionCall != null) it.functionCall!!.variableIdentifier
@@ -325,16 +327,17 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
 
         for ((index, parent) in elementParents.withIndex()) {
             if (index == elementPosition) {
+                val a = nextMemberType.reference?.resolve() as? GlslNamedStructSpecifier
+                val structMembers = a?.getStructMembers()
                 if (element.isEmpty()) {
-                    findReferenceInElementList(nextMemberType?.getStructMembers(), true)
+                    findReferenceInElementList(structMembers, true)
                 } else {
-                    findReferenceInElementList(nextMemberType?.getStructMembers())
+                    findReferenceInElementList(structMembers)
                 }
                 break
             }
             val structMemberName = parent?.getName() ?: return
-            nextMemberType = nextMemberType
-                ?.getStructMember(structMemberName)
+            nextMemberType = nextMemberType.getStructMember(structMemberName)
                 ?.getAssociatedType()
                 ?: break
         }
@@ -353,6 +356,20 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (postfixStructMember != null) {
             lookupInPostfixFieldSelection(postfixStructMember.parent as? GlslPostfixFieldSelection)
             throw StopLookupException()
+        }
+    }
+
+
+    /**
+     *
+     */
+    private fun getPostfixIdentifier(postfixExpr: GlslPostfixExpr?): GlslVariable? {
+        return when (postfixExpr) {
+            is GlslPrimaryExpr -> postfixExpr.variableIdentifier as? GlslVariable
+            is GlslFunctionCall -> postfixExpr.variableIdentifier as? GlslVariable
+            is GlslPostfixArrayIndex -> getPostfixIdentifier(postfixExpr.postfixExpr)
+            is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
+            else -> null
         }
     }
 }

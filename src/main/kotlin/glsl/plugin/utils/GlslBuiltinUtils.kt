@@ -9,6 +9,7 @@ import glsl.data.ShaderType.*
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedStructSpecifier
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslUtils.getResourceFileAsString
 import glsl.psi.interfaces.*
@@ -125,13 +126,14 @@ object GlslBuiltinUtils {
         shaderVariables = EnumMap(ShaderType::class.java)
         val allShaderVariables = hashMapOf<String, GlslNamedVariable>()
         for (structSpecifier in structSpecifiers) {
+            val namedStruct = structSpecifier as GlslNamedStructSpecifier
             val structDeclarators = hashMapOf<String, GlslNamedVariable>()
             for (structMember in structSpecifier.getStructMembers()) {
                 val memberName = structMember.name ?: continue
                 structDeclarators[memberName] = structMember
                 allShaderVariables[memberName] = structMember
             }
-            val shaderType = getShaderType(structSpecifier.name)
+            val shaderType = getShaderType(namedStruct.name)
             shaderVariables[shaderType] = structDeclarators
         }
         defaultShaderVariables = allShaderVariables

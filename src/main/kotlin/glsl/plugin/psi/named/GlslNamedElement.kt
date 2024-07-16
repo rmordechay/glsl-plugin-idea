@@ -17,7 +17,7 @@ interface GlslNamedElement : PsiNameIdentifierOwner {
      * A bit of a weird function which solely casts the same object to the appropriate named element
      * in order to avoid method-injection, which can be confusing.
      */
-    fun getSelf(): GlslNamedElement
+    fun getPsi(): GlslNamedElement
 
     /**
      * Syntax highlighting color.
@@ -67,7 +67,7 @@ abstract class GlslNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node),
     *
     */
     override fun getLookupElement(returnTypeText: String?): LookupElement? {
-        val lookupString = getSelf().name ?: return null
+        val lookupString = getPsi().name ?: return null
         return GlslUtils.createLookupElement(lookupString, icon = getLookupIcon(), withBoldness = true)
     }
 }

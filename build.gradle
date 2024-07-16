@@ -70,7 +70,7 @@ patchPluginXml {
     changeNotes = changelog.get(pluginVersion).toHTML()
     pluginDescription = descriptionHtml
     sinceBuild = '223'
-    untilBuild = '241.*'
+    untilBuild = '242.*'
 }
 
 changelog {

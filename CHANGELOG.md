@@ -1,5 +1,9 @@
 # GLSL Plugin Changelog
 
+## [1.1.2]
+### Updated
+- Updated build version to 242.*
+
 ## [1.1.1]
 ### Added
 - Language injection to HTML script tag

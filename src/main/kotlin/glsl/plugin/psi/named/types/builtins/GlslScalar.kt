@@ -41,7 +41,7 @@ abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     override fun canCast(other: IElementType?): Boolean {
         if (other == null) return false
         val implicitConversions = GlslDefinitions.SCALARS[other]
-        return implicitConversions?.contains(other) ?: false
+        return implicitConversions?.contains(typeAsToken()) ?: false
     }
 
     /**

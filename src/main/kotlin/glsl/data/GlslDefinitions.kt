@@ -38,9 +38,9 @@ object GlslDefinitions {
      *
      */
     val SCALARS = mapOf(
-        INT to listOf(UINT, FLOAT, DOUBLE),
-        UINT to listOf(FLOAT, DOUBLE),
-        FLOAT to listOf(DOUBLE),
+        INT to listOf(INT, UINT, FLOAT, DOUBLE),
+        UINT to listOf(UINT, FLOAT, DOUBLE),
+        FLOAT to listOf(FLOAT, DOUBLE),
         DOUBLE to listOf(DOUBLE),
         BOOL to null,
     )
@@ -49,15 +49,15 @@ object GlslDefinitions {
      *
      */
     val VECTORS = mapOf(
-        VEC2 to listOf(DVEC2),
-        IVEC2 to listOf(VEC2, DVEC2),
-        UVEC2 to listOf(VEC2, DVEC2),
-        VEC3 to listOf(DVEC3),
-        IVEC3 to listOf(VEC3, DVEC3),
-        UVEC3 to listOf(VEC3, DVEC3),
-        VEC4 to listOf(DVEC4),
-        IVEC4 to listOf(VEC4, DVEC4),
-        UVEC4 to listOf(VEC4, DVEC4),
+        VEC2 to listOf(VEC2, DVEC2),
+        IVEC2 to listOf(IVEC2, VEC2, DVEC2),
+        UVEC2 to listOf(UVEC2, VEC2, DVEC2),
+        VEC3 to listOf(VEC3, DVEC3),
+        IVEC3 to listOf(IVEC3, VEC3, DVEC3),
+        UVEC3 to listOf(UVEC3, VEC3, DVEC3),
+        VEC4 to listOf(VEC4, DVEC4),
+        IVEC4 to listOf(IVEC4, VEC4, DVEC4),
+        UVEC4 to listOf(UVEC4, VEC4, DVEC4),
         BVEC2 to null, BVEC3 to null, BVEC4 to null, DVEC2 to null, DVEC3 to null, DVEC4 to null,
         I64VEC2 to null, I64VEC3 to null, I64VEC4 to null, U64VEC2 to null, U64VEC3 to null,
         U64VEC4 to null, I8VEC2 to null, I8VEC3 to null, I8VEC4 to null, U8VEC2 to null,

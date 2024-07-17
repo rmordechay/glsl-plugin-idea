@@ -72,7 +72,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      */
     private fun getFunctionCallType(functionCall: GlslFunctionCall): GlslNamedType? {
         if (functionCall.variableIdentifier != null) {
-            val reference = functionCall.variableIdentifier?.reference?.resolve()
+            val reference = functionCall.variableIdentifier?.reference?.resolve() ?: return null
             return (reference as? GlslNamedVariable)?.getAssociatedType()
         } else if (functionCall.typeSpecifier?.typeName != null) {
             val reference = functionCall.typeSpecifier?.typeName?.reference?.resolve() ?: return null

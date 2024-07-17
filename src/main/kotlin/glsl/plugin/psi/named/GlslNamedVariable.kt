@@ -31,10 +31,9 @@ interface GlslNamedVariable : GlslNamedElement {
             return typeSpecifier.builtinTypeRest as GlslBuiltinRest
         } else if (typeSpecifier.structSpecifier != null) {
             return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
+        } else if (typeSpecifier.typeName != null) {
+            return typeSpecifier.typeName?.reference?.resolve() as? GlslNamedType
         }
-//        else if (typeSpecifier.userType != null) {
-//            return typeSpecifier.userType?.reference?.resolve() as? GlslNamedType
-//        }
         return null
     }
 }

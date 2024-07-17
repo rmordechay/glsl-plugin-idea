@@ -280,7 +280,20 @@ noperspective centroid out vec2 a;
 centroid out vec2 a;
 smooth out vec2 a[];
 
+
+
+
+
 int function_definition(DummyBlock x, float y) {
+    d.x = abs(d.x) > EPS ? d.x : (d.x >= 0 ? EPS : -EPS);
+    d.y = abs(d.y) > EPS ? d.y : (d.y >= 0 ? EPS : -EPS);
+    d.z = abs(d.z) > EPS ? d.z : (d.z >= 0 ? EPS : -EPS);
+    if (d.x > 0.0f)
+    oct_mask ^= 1u, t_bias.x = 3.0f * t_coef.x - t_bias.x;
+    if (d.y > 0.0f)
+    oct_mask ^= 2u, t_bias.y = 3.0f * t_coef.y - t_bias.y;
+    if (d.z > 0.0f)
+    oct_mask ^= 4u, t_bias.z = 3.0f * t_coef.z - t_bias.z;
     ;;;;
     void main();
     void main(int a);

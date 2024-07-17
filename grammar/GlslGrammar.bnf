@@ -706,7 +706,7 @@ jump_statement
 // *** Expression ***
 // ******************
 expr
-    ::= assignment_expr
+    ::= assignment_expr (COMMA assignment_expr)*
     |   expr_no_assignment (COMMA expr_no_assignment)*
 
 // This rule should be like 'conditional_expr' in the original grammar, which have all
@@ -815,7 +815,7 @@ conditional_expr
     ::= expr_no_assignment QUESTION expr_no_assignment COLON expr_no_assignment
 
 assignment_expr
-    ::= unary_expr assignment_operator expr
+    ::= unary_expr assignment_operator expr_no_assignment
     {   pin(".*")=assignment_operator}
 
 assignment_operator

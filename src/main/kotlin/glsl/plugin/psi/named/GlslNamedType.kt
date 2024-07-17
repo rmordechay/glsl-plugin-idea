@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.firstLeaf
 import glsl.plugin.code.highlighting.GlslTextAttributes
-import glsl.plugin.psi.GlslType
 import javax.swing.Icon
 
 
@@ -16,13 +15,13 @@ import javax.swing.Icon
 interface GlslNamedType : GlslNamedElement {
     fun getStructMembers(): List<GlslNamedVariable>
     fun getStructMember(memberName: String): GlslNamedVariable?
-    fun isConvertible(other: String): Boolean
+    fun isConvertible(other: String?): Boolean
     fun getDimension(): Int
 
     /**
      *
      */
-    fun isEqual(other: GlslType?): Boolean {
+    fun isEqual(other: GlslNamedType?): Boolean {
         if (other == null) return false
         val otherTypeText = other.name
         return name == otherTypeText || isConvertible(otherTypeText)

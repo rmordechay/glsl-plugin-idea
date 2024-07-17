@@ -1,16 +1,10 @@
 package glsl.plugin.psi.named.types.builtins
 
-import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
-import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.firstLeaf
 import glsl.data.GlslDefinitions
-import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.psi.interfaces.GlslBuiltinTypeMatrix
-import javax.swing.Icon
 
 /**
  *
@@ -43,7 +37,8 @@ abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     /**
      *
      */
-    override fun isConvertible(other: String): Boolean {
+    override fun isConvertible(other: String?): Boolean {
+        if (other == null) return false
         val implicitConversions = GlslDefinitions.MATRICES[name]
         return implicitConversions?.contains(other) ?: false
     }

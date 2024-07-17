@@ -91,15 +91,15 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node),
     /**
      *
      */
-    override fun isConvertible(other: String): Boolean {
-        TODO("Not yet implemented")
+    override fun isConvertible(other: String?): Boolean {
+        return false
     }
 
     /**
      *
      */
     override fun getDimension(): Int {
-        TODO("Not yet implemented")
+        return 1
     }
 
 }

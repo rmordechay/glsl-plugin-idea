@@ -50,39 +50,6 @@ abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentif
         return if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
     }
 
-//    /**
-//     *
-//     */
-//    open fun getStructMembers(): List<GlslNamedVariable> {
-//        val declaration = getDeclaration()
-//        if (declaration != null) {
-//            return (declaration as? GlslType)?.getStructMembers() ?: emptyList()
-//        }
-//        val resolve = reference?.resolve() as? GlslNamedStructSpecifier
-//        return resolve?.getStructMembers() ?: emptyList()
-//    }
-//
-//    /**
-//     *
-//     */
-//    open fun getStructMember(memberName: String): GlslNamedVariable? {
-//        return getStructMembers().find { it.name == memberName }
-//    }
-//
-//    /**
-//     *
-//     */
-//    open fun isConvertible(other: String): Boolean {
-//        return false
-//    }
-//
-//    /**
-//     *
-//     */
-//    open fun getDimension(): Int {
-//        return -1
-//    }
-
     /**
      *
      */

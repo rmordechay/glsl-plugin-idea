@@ -34,7 +34,7 @@ abstract class GlslBuiltinRest(node: ASTNode) : GlslNamedTypeImpl(node), GlslBui
     /**
      *
      */
-    override fun isConvertible(other: String): Boolean {
+    override fun isConvertible(other: String?): Boolean {
         return false
     }
 

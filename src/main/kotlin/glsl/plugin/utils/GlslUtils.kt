@@ -13,7 +13,14 @@ import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiUtilCore
 import glsl.data.ShaderType
 import glsl.plugin.language.GlslFile
+import glsl.plugin.psi.named.GlslNamedType
+import glsl.plugin.psi.named.types.builtins.GlslBuiltinRest
+import glsl.plugin.psi.named.types.builtins.GlslMatrix
+import glsl.plugin.psi.named.types.builtins.GlslScalar
+import glsl.plugin.psi.named.types.builtins.GlslVector
+import glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier
 import glsl.psi.interfaces.GlslFunctionPrototype
+import glsl.psi.interfaces.GlslTypeSpecifier
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import javax.swing.Icon
@@ -174,6 +181,29 @@ object GlslUtils {
     fun isShaderFile(element: PsiElement): Boolean {
         val extension = element.containingFile.virtualFile.extension
         return enumValues<ShaderType>().any { extension?.lowercase() == it.name.lowercase() }
+    }
+
+    /**
+     *
+     */
+    /**
+     *
+     */
+    fun getType(typeSpecifier: GlslTypeSpecifier): GlslNamedType? {
+        if (typeSpecifier.builtinTypeScalar != null) {
+            return typeSpecifier.builtinTypeScalar as GlslScalar
+        } else if (typeSpecifier.builtinTypeVector != null) {
+            return typeSpecifier.builtinTypeVector as GlslVector
+        } else if (typeSpecifier.builtinTypeMatrix != null) {
+            return typeSpecifier.builtinTypeMatrix as GlslMatrix
+        } else if (typeSpecifier.builtinTypeRest != null) {
+            return typeSpecifier.builtinTypeRest as GlslBuiltinRest
+        } else if (typeSpecifier.structSpecifier != null) {
+            return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
+        } else if (typeSpecifier.typeName != null) {
+            return typeSpecifier.typeName?.reference?.resolve() as? GlslNamedType
+        }
+        return null
     }
 }
 

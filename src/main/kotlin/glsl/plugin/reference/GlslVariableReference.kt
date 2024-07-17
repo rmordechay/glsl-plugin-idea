@@ -18,6 +18,7 @@ import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
+import glsl.plugin.utils.GlslUtils
 import glsl.plugin.utils.GlslUtils.getPsiFile
 import glsl.psi.interfaces.*
 
@@ -151,13 +152,23 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         val funcCall = element.parent
         if (funcCall !is GlslFunctionCall) return
         val elementName = element.name
-        val builtinFuncs = getBuiltinFuncs()
-        if (!builtinFuncs.containsKey(elementName)) return
+        val builtinFuncs = getBuiltinFuncs()[elementName] ?: return
+        val actualParams = funcCall.exprNoAssignmentList
         for (func in builtinFuncs) {
-            if (func.key != elementName) continue
-            val functionHeaders = func.value.map { it.functionHeader }
-            findReferenceInElementList(functionHeaders, true)
-            throw StopLookupException()
+            val expectedParams = func.funcHeaderWithParams?.parameterDeclaratorList ?: continue
+            if (expectedParams.isEmpty() && actualParams.isEmpty()) {
+                findReferenceInElement(func.functionHeader)
+            }
+            var argsMatch = false
+            for ((actualParam, expectedParam) in actualParams.zip(expectedParams)) {
+                val actualType = actualParam.getExprType() ?: break
+                val expectedType = GlslUtils.getType(expectedParam.typeSpecifier) ?: break
+                if (!actualType.isEqual(expectedType)) break
+                argsMatch = true
+            }
+            if (argsMatch) {
+                findReferenceInElement(func.functionHeader)
+            }
         }
     }
 

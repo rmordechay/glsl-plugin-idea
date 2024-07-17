@@ -46,7 +46,7 @@ abstract class GlslNamedFunctionHeader(node: ASTNode) : GlslNamedVariableImpl(no
      *
      */
     override fun getAssociatedType(): GlslNamedType? {
-        return getType(getPsi().typeSpecifier)
+        return GlslUtils.getType(getPsi().typeSpecifier)
     }
 
     /**

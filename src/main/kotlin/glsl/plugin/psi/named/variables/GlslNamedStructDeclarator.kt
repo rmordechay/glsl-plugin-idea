@@ -39,7 +39,7 @@ abstract class GlslNamedStructDeclarator(node: ASTNode) : GlslNamedVariableImpl(
     override fun getAssociatedType(): GlslNamedType? {
         val structDeclaration = getPsi().parent as GlslStructDeclaration
         val typeSpecifier = structDeclaration.typeSpecifier ?: return null
-        return getType(typeSpecifier)
+        return GlslUtils.getType(typeSpecifier)
     }
 
     /**

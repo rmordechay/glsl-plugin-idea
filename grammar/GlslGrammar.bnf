@@ -17,13 +17,14 @@
     mixin("type_name")="glsl.plugin.psi.GlslType"
     // Types
     implements("struct_specifier")="glsl.plugin.psi.named.GlslNamedType"
-    mixin("struct_specifier")="glsl.plugin.psi.named.types.GlslNamedStructSpecifier"
+    mixin("struct_specifier")="glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier"
     implements("block_structure")="glsl.plugin.psi.named.GlslNamedType"
-    mixin("block_structure")="glsl.plugin.psi.named.types.GlslNamedBlockStructure"
-    mixin("builtin_type_scalar")="glsl.plugin.psi.named.builtins.GlslScalar"
-    mixin("builtin_type_vector")="glsl.plugin.psi.named.builtins.GlslVector"
-    mixin("builtin_type_matrix")="glsl.plugin.psi.named.builtins.GlslMatrix"
-    mixin("builtin_type_rest")="glsl.plugin.psi.named.GlslNamedBuiltinType"
+    mixin("block_structure")="glsl.plugin.psi.named.types.user.GlslNamedBlockStructure"
+    mixin("builtin_type_scalar")="glsl.plugin.psi.named.types.builtins.GlslScalar"
+    mixin("builtin_type_vector")="glsl.plugin.psi.named.types.builtins.GlslVector"
+    mixin("builtin_type_matrix")="glsl.plugin.psi.named.types.builtins.GlslMatrix"
+    mixin("builtin_type_rest")="glsl.plugin.psi.named.types.builtins.GlslBuiltinRest"
+    implements("builtin_type_scalar|builtin_type_vector|builtin_type_matrix|builtin_type_rest")="glsl.plugin.psi.named.GlslNamedType"
     // Identifiers
     implements("function_header")="glsl.plugin.psi.named.GlslNamedVariable"
     mixin("function_header")="glsl.plugin.psi.named.variables.GlslNamedFunctionHeader"
@@ -523,6 +524,7 @@
         FCOOPMATNV="fcoopmatNV"
         ICOOPMATNV="icoopmatNV"
         UCOOPMATNV="ucoopmatNV"
+        COOPMAT="coopmat"
         FLOATCONSTANT="regexp:((\d+[.]\d+)|(\d+[.])|([.]\d+))f?"
         UINTCONSTANT="regexp:(0x[\da-fA-F]+|\d+)u|U"
         INTCONSTANT="regexp:0x[\da-fA-F]+|\d+"
@@ -934,8 +936,9 @@ struct_declarator
 // **************
 // *** Types ****
 // **************
-type_name ::=
-    IDENTIFIER
+type_name
+    ::= IDENTIFIER
+    |   USER_TYPE_NAME
 
 private fully_specified_type
     ::= type_qualifier? type_specifier
@@ -947,7 +950,13 @@ type_parameter_specifier
     ::= LEFT_ANGLE type_parameter_specifier_list RIGHT_ANGLE
 
 private type_specifier_builtin
-    ::= builtin_type_scalar | builtin_type_vector | builtin_type_matrix | builtin_type_rest
+    ::= builtin_type_scalar | builtin_type_vector | builtin_type_matrix | builtin_type
+
+private builtin_type
+    ::= builtin_type_scalar
+    |   builtin_type_vector
+    |   builtin_type_matrix
+    |   builtin_type_rest
 
 builtin_type_scalar
     ::= VOID
@@ -1267,6 +1276,7 @@ builtin_type_rest
     |   FCOOPMATNV
     |   ICOOPMATNV
     |   UCOOPMATNV
+    |   COOPMAT
 
 // ******************
 // *** Qualifier ****

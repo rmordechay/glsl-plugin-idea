@@ -1,21 +1,50 @@
-package glsl.plugin.psi.named.builtins
+package glsl.plugin.psi.named.types.builtins
 
+import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.firstLeaf
 import glsl.data.GlslDefinitions
-import glsl.plugin.psi.named.GlslNamedBuiltinType
+import glsl.plugin.code.highlighting.GlslTextAttributes
+import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslBuiltinUtils
+import glsl.psi.interfaces.GlslBuiltinTypeVector
+import javax.swing.Icon
 
 
 /**
  *
  */
-abstract class GlslVector(node: ASTNode) : GlslNamedBuiltinType(node) {
+abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node) {
+
     /**
      *
      */
-    override fun getPsi(): GlslVector {
-        return this
+    override fun getPsi(): GlslBuiltinTypeVector {
+        return this as GlslBuiltinTypeVector
+    }
+
+    /**
+     *
+     */
+    override fun getHighlightTextAttr(): TextAttributesKey {
+        return GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR
+    }
+
+    /**
+     *
+     */
+    override fun getLookupIcon(): Icon? {
+        return AllIcons.Nodes.Type
+    }
+
+    /**
+     *
+     */
+    override fun getNameIdentifier(): PsiElement? {
+        return firstLeaf()
     }
 
     /**

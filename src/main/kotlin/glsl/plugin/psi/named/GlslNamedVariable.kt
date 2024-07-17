@@ -1,10 +1,11 @@
 package glsl.plugin.psi.named
 
 import com.intellij.lang.ASTNode
-import glsl.plugin.psi.named.builtins.GlslMatrix
-import glsl.plugin.psi.named.builtins.GlslScalar
-import glsl.plugin.psi.named.builtins.GlslVector
-import glsl.plugin.psi.named.types.GlslNamedStructSpecifier
+import glsl.plugin.psi.named.types.builtins.GlslBuiltinRest
+import glsl.plugin.psi.named.types.builtins.GlslMatrix
+import glsl.plugin.psi.named.types.builtins.GlslScalar
+import glsl.plugin.psi.named.types.builtins.GlslVector
+import glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier
 import glsl.psi.interfaces.GlslTypeSpecifier
 
 /**
@@ -27,12 +28,13 @@ interface GlslNamedVariable : GlslNamedElement {
         } else if (typeSpecifier.builtinTypeMatrix != null) {
             return typeSpecifier.builtinTypeMatrix as GlslMatrix
         } else if (typeSpecifier.builtinTypeRest != null) {
-            return typeSpecifier.builtinTypeRest as GlslNamedBuiltinType
+            return typeSpecifier.builtinTypeRest as GlslBuiltinRest
         } else if (typeSpecifier.structSpecifier != null) {
             return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
-        } else if (typeSpecifier.typeName != null) {
-            return typeSpecifier.typeName?.reference?.resolve() as? GlslNamedType
         }
+//        else if (typeSpecifier.userType != null) {
+//            return typeSpecifier.userType?.reference?.resolve() as? GlslNamedType
+//        }
         return null
     }
 }

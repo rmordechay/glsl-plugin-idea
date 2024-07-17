@@ -7,8 +7,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.GlslIdentifier
-import glsl.plugin.psi.named.GlslNamedBuiltinType
 import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.types.builtins.GlslMatrix
 import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinConstant
 import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinFunction
 import glsl.plugin.utils.GlslBuiltinUtils.isBuiltinShaderVariable
@@ -24,7 +24,7 @@ class GlslHighlightingAnnotator : Annotator {
      *
      */
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is GlslIdentifier || element is GlslNamedBuiltinType) return
+        if (element !is GlslIdentifier || element is GlslMatrix) return
         val extension = holder.currentAnnotationSession.file.virtualFile.extension
         val elementName = element.getName()
         if (isBuiltinFunction(elementName) || isBuiltinShaderVariable(elementName, extension)) {

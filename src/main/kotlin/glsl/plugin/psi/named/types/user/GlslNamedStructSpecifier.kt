@@ -1,4 +1,4 @@
-package glsl.plugin.psi.named.types
+package glsl.plugin.psi.named.types.user
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.icons.AllIcons
@@ -8,28 +8,28 @@ import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
-import glsl.psi.interfaces.GlslBlockStructure
 import glsl.psi.interfaces.GlslStructDeclarator
+import glsl.psi.interfaces.GlslStructSpecifier
 import glsl.psi.interfaces.GlslTypeName
 import javax.swing.Icon
 
 /**
- * block_structure
+ * type_specifier
  */
-abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node), GlslNamedType {
+abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node), GlslNamedType {
 
     /**
      *
      */
     override fun getName(): String {
-        return getPsi().typeName.getName()
+        return getPsi().typeName?.getName() ?: ""
     }
 
     /**
      *
      */
-    override fun getPsi(): GlslBlockStructure {
-        return this as GlslBlockStructure
+    override fun getPsi(): GlslStructSpecifier {
+        return this as GlslStructSpecifier
     }
 
     /**
@@ -56,7 +56,7 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node),
     /**
      *
      */
-    override fun getNameIdentifier(): GlslTypeName {
+    override fun getNameIdentifier(): GlslTypeName? {
         return getPsi().typeName
     }
 

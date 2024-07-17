@@ -1,22 +1,26 @@
-package glsl.plugin.psi.named
+package glsl.plugin.psi.named.types.builtins
 
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.firstLeaf
 import glsl.plugin.code.highlighting.GlslTextAttributes
+import glsl.plugin.psi.named.GlslNamedTypeImpl
+import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.psi.interfaces.GlslBuiltinTypeRest
 import javax.swing.Icon
 
 /**
  *
  */
-abstract class GlslNamedBuiltinType(node: ASTNode) : GlslNamedTypeImpl(node) {
+abstract class GlslBuiltinRest(node: ASTNode) : GlslNamedTypeImpl(node) {
 
     /**
      *
      */
-    override fun getPsi(): GlslNamedBuiltinType {
-        return this
+    override fun getPsi(): GlslBuiltinTypeRest {
+        return this as GlslBuiltinTypeRest
     }
 
     /**
@@ -37,7 +41,7 @@ abstract class GlslNamedBuiltinType(node: ASTNode) : GlslNamedTypeImpl(node) {
      *
      */
     override fun getNameIdentifier(): PsiElement? {
-        return this
+        return firstLeaf()
     }
 
     /**
@@ -67,5 +71,4 @@ abstract class GlslNamedBuiltinType(node: ASTNode) : GlslNamedTypeImpl(node) {
     override fun getDimension(): Int {
         return 1
     }
-
 }

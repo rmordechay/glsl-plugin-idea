@@ -26,6 +26,7 @@ private const val RECURSION_LEVEL_LIMIT = 50000
 class GlslLexer : LexerBase() {
     private val lexer = _GlslLexer()
     private val helperLexer = _GlslLexer()
+    private var userDefinedTypes = mutableSetOf<String>()
 
     private var myTokenType: IElementType? = null
     private var myText = ""
@@ -56,6 +57,7 @@ class GlslLexer : LexerBase() {
         myText = buffer.toString()
         myBufferEnd = endOffset
         macros.clear()
+        userDefinedTypes.clear()
         advance()
     }
 
@@ -94,6 +96,15 @@ class GlslLexer : LexerBase() {
      */
     override fun getTokenType(): IElementType? {
         if (inEndlessRecursion()) return null
+        if (myTokenType == IDENTIFIER) {
+            if (!lexer.afterType && !lexer.afterStruct && myTokenText in userDefinedTypes) {
+                lexer.afterType = true;
+                return USER_TYPE_NAME;
+            } else if (lexer.afterStruct) {
+                lexer.afterStruct = false;
+                userDefinedTypes.add(myTokenText)
+            }
+        }
         return myTokenType
     }
 

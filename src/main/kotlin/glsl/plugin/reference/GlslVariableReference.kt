@@ -13,7 +13,7 @@ import glsl.GlslTypes.MACRO_OBJECT
 import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
-import glsl.plugin.psi.named.types.GlslNamedBlockStructure
+import glsl.plugin.psi.named.types.user.GlslNamedBlockStructure
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs

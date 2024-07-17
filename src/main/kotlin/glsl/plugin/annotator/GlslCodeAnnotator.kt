@@ -9,12 +9,18 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.childLeafs
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
+import com.intellij.refactoring.suggested.startOffset
 import glsl.GlslTypes.RETURN
 import glsl.data.GlslErrorMessages.Companion.INCOMPATIBLE_TYPES_IN_INIT
 import glsl.data.GlslErrorMessages.Companion.MISSING_RETURN_FUNCTION
+import glsl.data.GlslErrorMessages.Companion.NO_MATCHING_FUNCTION_CALL
+import glsl.data.GlslErrorMessages.Companion.TOO_FEW_ARGUMENTS_CONSTRUCTOR
+import glsl.data.GlslErrorMessages.Companion.TOO_MANY_ARGUMENTS_CONSTRUCTOR
+import glsl.psi.impl.GlslFunctionHeaderImpl
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslFunctionDefinition
 import glsl.psi.interfaces.GlslSingleDeclaration
+import glsl.psi.interfaces.GlslStructSpecifier
 
 
 class GlslCodeAnnotator : Annotator {
@@ -51,35 +57,34 @@ class GlslCodeAnnotator : Annotator {
      *
      */
     private fun annotateNoMatchingFunction(element: GlslFunctionCall, holder: AnnotationHolder) {
-//        val variableIdentifier = element.variableIdentifier
-//        if (variableIdentifier?.firstChild.elementType != IDENTIFIER) return
-//        val funcReference = variableIdentifier?.reference ?: return
-//        val resolvedReferences = funcReference.resolveMany() ?: return
-//        if (resolvedReferences.isEmpty()) return
-//        val actualParamsExprs = element.exprNoAssignmentList
-//        val actualParamCount = actualParamsExprs.count()
-//        for (reference in resolvedReferences) {
-//            if (reference is GlslNamedFunctionHeader) {
-//                val parameterDeclarators = reference.getParameterDeclarators()
-//                if (parameterDeclarators.count() == actualParamCount) {
-//                    return
-//                }
-//            } else if (reference is GlslStructSpecifier) {
-////                val structMembers = reference.getAssociatedType()?.getStructMembers() ?: return
-////                if (structMembers.count() == actualParamCount) {
-////                    return
-////                }
-//            }
-//        }
-//        val textRange: TextRange
-//        if (actualParamsExprs.isNotEmpty()) {
-//            textRange = TextRange(actualParamsExprs.first().startOffset, actualParamsExprs.last().endOffset)
-//        } else {
-//            textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
-//        }
-//        val actualTypes = actualParamsExprs.mapNotNull { it.getExprType()?.getTypeText() }.joinToString(", ")
-//        val msg = NO_MATCHING_FUNCTION_CALL.format(variableIdentifier.getName(), actualTypes)
-//        setHighlightingError(textRange, holder, msg)
+        val funcCallIdentifier = element.variableIdentifier ?: element.typeSpecifier?.typeName ?: return
+        val funcReference = funcCallIdentifier.reference ?: return
+        val resolvedReference = funcReference.resolve() ?: return
+        val actualParamsExprs = element.exprNoAssignmentList
+        val actualParamCount = actualParamsExprs.count()
+
+        var msg: String? = null
+        if (resolvedReference is GlslFunctionHeaderImpl) {
+            val parameterDeclarators = resolvedReference.getParameterDeclarators()
+            if (parameterDeclarators.count() == actualParamCount) {
+                return
+            }
+            val actualTypes = actualParamsExprs.mapNotNull { it.getExprType()?.name }.joinToString(", ")
+            msg = NO_MATCHING_FUNCTION_CALL.format(funcCallIdentifier.getName(), actualTypes)
+        } else if (resolvedReference is GlslStructSpecifier) {
+            val expectedParamCount = resolvedReference.getStructMembers().count()
+            if (expectedParamCount < actualParamCount) {
+                msg = TOO_MANY_ARGUMENTS_CONSTRUCTOR.format(funcCallIdentifier.getName())
+            } else if (expectedParamCount > actualParamCount) {
+                msg = TOO_FEW_ARGUMENTS_CONSTRUCTOR.format(funcCallIdentifier.getName())
+            } else {
+                return
+            }
+        }
+        if (msg == null) return
+        val textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
+        setHighlightingError(textRange, holder, msg)
+
     }
 
     /**

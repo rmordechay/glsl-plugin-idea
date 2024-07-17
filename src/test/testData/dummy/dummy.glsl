@@ -1,9 +1,11 @@
+#version 330
 struct Ray {
-    vec3 origin;
-    vec3 direction;
+    int origin;
+    int direction;
 };
 
 void transformRay(inout Ray ray, mat4 matrix) {
-    ray.<caret>origin = (matrix * vec4(ray.origin, 1.0)).xyz;
-    ray.direction = normalize(matrix * vec4(ray.direction, 0.0)).xyz;
+    Ray rab = Ray<error descr="Too few arguments to constructor of 'Ray'.">(1)</error>;
+    Ray rab = Ray(1, 2);
+    Ray rab = Ray<error descr="Too many arguments to constructor of 'Ray'.">(1, 2, 3)</error>;
 }

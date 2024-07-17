@@ -15,7 +15,7 @@ import javax.swing.Icon
 /**
  *
  */
-abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node) {
+abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinType {
 
 
     /**

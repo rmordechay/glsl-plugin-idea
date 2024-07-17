@@ -15,7 +15,7 @@ import javax.swing.Icon
 /**
  *
  */
-abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node) {
+abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinType {
     /**
      *
      */

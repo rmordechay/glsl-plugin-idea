@@ -6,6 +6,8 @@
 ### Fixed
 - Formatting of macros didn't work correctly
 - Macro functions without params were recognized as macro object
+- Multiple assignment with commas didn't compile
+- Error message was wrong when calling a struct constructor
 
 ## [1.1.1]
 ### Added

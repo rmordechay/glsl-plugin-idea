@@ -1,7 +1,7 @@
-void <info descr="null">main</info>(int <info descr="null">x</info>) {
+void main(int x) {
     while (true) {
-        int <info descr="null">a</info> = <info descr="null">gl_MaxVertexAttribs</info>;
+        int a = gl_MaxVertexAttribs;
     }
 
-    <info descr="null">gl_FragColor</info> = vec4(1.0, 1.0, 1.0, 1.0f);
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0f);
 }

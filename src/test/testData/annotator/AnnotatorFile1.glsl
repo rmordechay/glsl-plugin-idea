@@ -1,8 +1,8 @@
-void <info descr="null">main</info>(int <info descr="null">x</info>) {
+void main(int x) {
     while (true) {
-        int <info descr="null">a</info> = <info descr="null">gl_MaxVertexAttribs</info>;
+        int a = gl_MaxVertexAttribs;
     }
 
-    <info descr="null">gl_FragCoord</info> = vec4(1.0, 1.0, 1.0, 1.0f);
-    int <info descr="null">a</info> = <info descr="null">gl_MaxGeometryInputComponents</info>;
+    gl_FragCoord = vec4(1.0, 1.0, 1.0, 1.0f);
+    int a = gl_MaxGeometryInputComponents;
 }

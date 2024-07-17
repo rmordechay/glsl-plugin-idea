@@ -27,11 +27,11 @@ class GlslLexer : LexerBase() {
     private val lexer = _GlslLexer()
     private val helperLexer = _GlslLexer()
 
-    private var myText: String = ""
-    private var myBufferEnd: Int = 0
     private var myTokenType: IElementType? = null
-    private var myTokenStart: Int = 0
-    private var myTokenText: String = ""
+    private var myText = ""
+    private var myBufferEnd = 0
+    private var myTokenStart = 0
+    private var myTokenText = ""
 
     private var macros = hashMapOf<String, GlslMacro>()
     private var macroDefine: GlslMacro? = null

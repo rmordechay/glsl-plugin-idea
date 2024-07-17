@@ -3,8 +3,6 @@ package glsl.plugin.psi
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
-import glsl.plugin.psi.named.GlslNamedType
 import glsl.psi.interfaces.*
 
 interface GlslExprType : PsiElement {
@@ -53,7 +51,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
 //                val lastExpr = variableIdentifiers.last() as? GlslVariable
 //                return lastExpr?.reference?.resolve()?.getAssociatedType()
             }
-            is GlslPostfixArrayIndex -> {
+            is GlslFieldSelection -> {
                 return getPostfixArrayType(postfixExpr)
             }
             is GlslPostfixInc -> return getPostfixType(postfixExpr.postfixExpr)
@@ -64,7 +62,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     /**
      *
      */
-    private fun getPostfixArrayType(postfixExpr: GlslPostfixArrayIndex): GlslType? {
+    private fun getPostfixArrayType(postfixExpr: GlslFieldSelection): GlslType? {
         val postfixType = getPostfixType(postfixExpr.postfixExpr)
 //        if (postfixType is GlslMatrix) {
 //            return postfixType.getChildType(postfixExpr.exprList)

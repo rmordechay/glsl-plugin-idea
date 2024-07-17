@@ -325,7 +325,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         return when (postfixExpr) {
             is GlslPrimaryExpr -> postfixExpr.variableIdentifier as? GlslVariable
             is GlslFunctionCall -> postfixExpr.variableIdentifier as? GlslVariable
-            is GlslPostfixArrayIndex -> getPostfixIdentifier(postfixExpr.postfixExpr)
+            is GlslFieldSelection -> getPostfixIdentifier(postfixExpr.postfixExpr)
             is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
             else -> null
         }

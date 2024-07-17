@@ -84,7 +84,7 @@ class GlslFormattingModelBuilder : FormattingModelBuilder {
             .between(DASH, PRIMARY_EXPR).none()
             .between(DASH, FUNCTION_CALL).none()
             .between(DASH, POSTFIX_INC).none()
-            .between(DASH, POSTFIX_ARRAY_INDEX).none()
+            .between(DASH, FIELD_SELECTION).none()
             .between(DASH, POSTFIX_FIELD_SELECTION).none()
             .around(KEYWORDS).spaces(1)
             .between(KEYWORDS, SEMICOLON).none()

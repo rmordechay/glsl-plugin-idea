@@ -17,23 +17,17 @@ interface GlslNamedType : GlslNamedElement {
     fun getStructMember(memberName: String): GlslNamedVariable?
     fun isConvertible(other: String?): Boolean
     fun getDimension(): Int
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
 
-    /**
-     *
-     */
-    fun isEqual(other: GlslNamedType?): Boolean {
-        if (other == null) return false
-        val otherTypeText = other.name
-        return name == otherTypeText || isConvertible(otherTypeText)
-    }
-
-    /**
-     *
-     */
-    fun isEqual(other: String?): Boolean {
-        if (other == null) return false
-        return name == other || isConvertible(other)
-    }
+//    /**
+//     *
+//     */
+//    fun isEqual(other: GlslNamedType?): Boolean {
+//        if (other == null) return false
+//        val otherTypeText = other.name
+//        return name == otherTypeText || isConvertible(otherTypeText)
+//    }
 }
 
 /**

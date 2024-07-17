@@ -49,7 +49,7 @@ class GlslCodeAnnotator : Annotator {
         val expr = singleDeclaration.exprNoAssignmentList.firstOrNull() ?: return
         val declarationType = singleDeclaration.getAssociatedType() ?: return
         val exprType = expr.getExprType() ?: return
-        if (declarationType.isEqual(exprType)) return
+        if (declarationType == exprType) return
         setHighlightingError(expr, holder, INCOMPATIBLE_TYPES_IN_INIT)
     }
 

@@ -73,22 +73,23 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    override fun shouldResolve(): Boolean {
-        if (currentFilterType == CONTAINS && element.isEmpty()) {
-            return true
-        }
-        return element.parent !is GlslNamedVariable || element.firstChild.elementType in listOf(MACRO_OBJECT, MACRO_FUNCTION)
+    fun resolveMany(): List<GlslNamedElement> {
+        if (!shouldResolve()) return emptyList()
+//        currentFilterType = EQUALS_MULTIPLE
+        project = element.project
+        val resolveCache = ResolveCache.getInstance(project!!)
+        resolveCache.resolveWithCaching(this, resolver, true, false)
+        return resolvedReferences
     }
 
     /**
      *
      */
-    fun resolveMany(): List<GlslNamedElement>? {
-        if (!shouldResolve()) return null
-        project = element.project
-        val resolveCache = ResolveCache.getInstance(project!!)
-        resolveCache.resolveWithCaching(this, resolver, true, false)
-        return resolvedReferences
+    override fun shouldResolve(): Boolean {
+        if (currentFilterType == CONTAINS && element.isEmpty()) {
+            return true
+        }
+        return element.parent !is GlslNamedVariable || element.firstChild.elementType in listOf(MACRO_OBJECT, MACRO_FUNCTION)
     }
 
     /**
@@ -163,7 +164,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             for ((actualParam, expectedParam) in actualParams.zip(expectedParams)) {
                 val actualType = actualParam.getExprType() ?: break
                 val expectedType = GlslUtils.getType(expectedParam.typeSpecifier) ?: break
-                if (!actualType.isEqual(expectedType)) break
+                if (expectedType != actualType) break
                 argsMatch = true
             }
             if (argsMatch) {

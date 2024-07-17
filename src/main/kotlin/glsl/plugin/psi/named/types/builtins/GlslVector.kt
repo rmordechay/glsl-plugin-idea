@@ -2,6 +2,7 @@ package glsl.plugin.psi.named.types.builtins
 
 import com.intellij.lang.ASTNode
 import glsl.data.GlslDefinitions
+import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslBuiltinUtils
@@ -72,4 +73,17 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
         }
     }
 
+    /**
+     *
+     */
+    override fun equals(other: Any?): Boolean {
+        return false
+    }
+
+    /**
+     *
+     */
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
 }

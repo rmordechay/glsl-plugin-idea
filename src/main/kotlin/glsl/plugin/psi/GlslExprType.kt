@@ -3,8 +3,11 @@ package glsl.plugin.psi
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.IElementType
+import glsl.GlslTypes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.*
 
 interface GlslExprType : PsiElement {
@@ -48,32 +51,19 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
                 return getFunctionCallType(postfixExpr)
             }
             is GlslPostfixFieldSelection -> {
-//                val variableIdentifiers = postfixExpr.postfixStructMemberList.mapNotNull { it.variableIdentifier }
-//                if (variableIdentifiers.isEmpty()) return null
-//                val lastExpr = variableIdentifiers.last() as? GlslVariable
-//                return lastExpr?.reference?.resolve()?.getAssociatedType()
+                val variableIdentifiers = postfixExpr.postfixStructMemberList.mapNotNull { it.variableIdentifier }
+                if (variableIdentifiers.isEmpty()) return null
+                val lastExpr = variableIdentifiers.last() as? GlslVariable
+                return lastExpr?.reference?.resolve()?.getAssociatedType()
             }
             is GlslFieldSelection -> {
-                return getFieldSelection(postfixExpr)
+                return getPostfixType(postfixExpr.postfixExpr)
             }
             is GlslPostfixInc -> {
                 return getPostfixType(postfixExpr.postfixExpr)
             }
         }
         return null
-    }
-
-    /**
-     *
-     */
-    private fun getFieldSelection(fieldSelection: GlslFieldSelection): GlslNamedType? {
-        val postfixType = getPostfixType(fieldSelection.postfixExpr)
-//        if (postfixType is GlslMatrix) {
-//            return postfixType.getChildType(postfixExpr.exprList)
-//        } else if (postfixType is GlslVector) {
-//            return postfixType.getChildType(postfixExpr.exprList)
-//        }
-        return postfixType
     }
 
     /**
@@ -110,11 +100,29 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
         } else if (postfixExpr.expr != null) {
             return postfixExpr.expr!!.getExprType()
         } else {
-            if (postfixExpr.intconstant != null) return null
-            else if (postfixExpr.uintconstant != null) return null
-            else if (postfixExpr.boolconstant != null) return null
-            else if (postfixExpr.floatconstant != null) return null
-            else if (postfixExpr.stringLiteral != null) return null
+            val node: ASTNode?
+            val elementType: IElementType?
+            if (postfixExpr.intconstant != null) {
+                node = postfixExpr.intconstant!!.node
+                elementType = GlslTypes.INT
+            } else if (postfixExpr.uintconstant != null) {
+                node = postfixExpr.uintconstant!!.node
+                elementType = GlslTypes.UINT
+            } else if (postfixExpr.boolconstant != null) {
+                node = postfixExpr.boolconstant!!.node
+                elementType = GlslTypes.BOOL
+            } else if (postfixExpr.floatconstant != null) {
+                node = postfixExpr.floatconstant!!.node
+                elementType = GlslTypes.FLOAT
+            } else if (postfixExpr.stringLiteral != null) {
+                node = postfixExpr.stringLiteral!!.node
+                elementType = GlslTypes.BOOL
+            } else {
+                node = null
+                elementType = null
+            }
+            val builtinType = GlslBuiltinTypeScalarImpl(node)
+            builtinType.literalElementType = elementType
         }
         return null
     }

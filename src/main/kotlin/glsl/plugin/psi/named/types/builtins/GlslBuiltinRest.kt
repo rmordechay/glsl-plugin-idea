@@ -44,4 +44,18 @@ abstract class GlslBuiltinRest(node: ASTNode) : GlslNamedTypeImpl(node), GlslBui
     override fun getDimension(): Int {
         return 1
     }
+
+    /**
+     *
+     */
+    override fun equals(other: Any?): Boolean {
+        return false
+    }
+
+    /**
+     *
+     */
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
 }

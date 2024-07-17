@@ -67,6 +67,20 @@ abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
             else -> ""
         }
     }
+
+    /**
+     *
+     */
+    override fun equals(other: Any?): Boolean {
+        return false
+    }
+
+    /**
+     *
+     */
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
 }
 
 

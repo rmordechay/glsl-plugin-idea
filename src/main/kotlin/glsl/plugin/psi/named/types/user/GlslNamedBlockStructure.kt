@@ -102,4 +102,17 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node),
         return 1
     }
 
+    /**
+     *
+     */
+    override fun equals(other: Any?): Boolean {
+        return false
+    }
+
+    /**
+     *
+     */
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
 }

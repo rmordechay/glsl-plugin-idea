@@ -26,27 +26,6 @@ abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     /**
      *
      */
-    override fun getHighlightTextAttr(): TextAttributesKey {
-        return GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR
-    }
-
-    /**
-     *
-     */
-    override fun getLookupIcon(): Icon? {
-        return AllIcons.Nodes.Type
-    }
-
-    /**
-     *
-     */
-    override fun getNameIdentifier(): PsiElement? {
-        return firstLeaf()
-    }
-
-    /**
-     *
-     */
     override fun getStructMembers(): List<GlslNamedVariable> {
         return emptyList()
     }

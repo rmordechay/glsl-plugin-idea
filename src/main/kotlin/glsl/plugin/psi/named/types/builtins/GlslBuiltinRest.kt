@@ -1,6 +1,7 @@
 package glsl.plugin.psi.named.types.builtins
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.tree.IElementType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.psi.interfaces.GlslBuiltinTypeRest
@@ -34,7 +35,7 @@ abstract class GlslBuiltinRest(node: ASTNode) : GlslNamedTypeImpl(node), GlslBui
     /**
      *
      */
-    override fun isConvertible(other: String?): Boolean {
+    override fun canCast(other: IElementType?): Boolean {
         return false
     }
 
@@ -43,19 +44,5 @@ abstract class GlslBuiltinRest(node: ASTNode) : GlslNamedTypeImpl(node), GlslBui
      */
     override fun getDimension(): Int {
         return 1
-    }
-
-    /**
-     *
-     */
-    override fun equals(other: Any?): Boolean {
-        return false
-    }
-
-    /**
-     *
-     */
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
     }
 }

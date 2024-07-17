@@ -164,7 +164,10 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             for ((actualParam, expectedParam) in actualParams.zip(expectedParams)) {
                 val actualType = actualParam.getExprType() ?: break
                 val expectedType = GlslUtils.getType(expectedParam.typeSpecifier) ?: break
-                if (expectedType != actualType) break
+                if (!expectedType.isEqual(actualType)) {
+                    argsMatch = false
+                    break
+                }
                 argsMatch = true
             }
             if (argsMatch) {

@@ -49,7 +49,7 @@ class GlslCodeAnnotator : Annotator {
         val expr = singleDeclaration.exprNoAssignmentList.firstOrNull() ?: return
         val declarationType = singleDeclaration.getAssociatedType() ?: return
         val exprType = expr.getExprType() ?: return
-        if (declarationType == exprType) return
+        if (declarationType.isEqual(exprType)) return
         setHighlightingError(expr, holder, INCOMPATIBLE_TYPES_IN_INIT)
     }
 
@@ -84,7 +84,6 @@ class GlslCodeAnnotator : Annotator {
         if (msg == null) return
         val textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
         setHighlightingError(textRange, holder, msg)
-
     }
 
     /**

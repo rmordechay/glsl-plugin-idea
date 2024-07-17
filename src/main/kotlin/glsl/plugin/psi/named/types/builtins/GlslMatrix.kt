@@ -1,6 +1,7 @@
 package glsl.plugin.psi.named.types.builtins
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.tree.IElementType
 import glsl.data.GlslDefinitions
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
@@ -37,9 +38,9 @@ abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     /**
      *
      */
-    override fun isConvertible(other: String?): Boolean {
+    override fun canCast(other: IElementType?): Boolean {
         if (other == null) return false
-        val implicitConversions = GlslDefinitions.MATRICES[name]
+        val implicitConversions = GlslDefinitions.MATRICES[other]
         return implicitConversions?.contains(other) ?: false
     }
 
@@ -66,20 +67,6 @@ abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
             'd' -> "double"
             else -> ""
         }
-    }
-
-    /**
-     *
-     */
-    override fun equals(other: Any?): Boolean {
-        return false
-    }
-
-    /**
-     *
-     */
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
     }
 }
 

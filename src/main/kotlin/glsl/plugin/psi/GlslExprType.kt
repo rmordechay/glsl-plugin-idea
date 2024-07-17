@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.PsiTreeUtil
 import glsl.GlslTypes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
@@ -71,7 +72,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      */
     private fun getFunctionCallType(functionCall: GlslFunctionCall): GlslNamedType? {
         if (functionCall.variableIdentifier != null) {
-            val reference = functionCall.variableIdentifier?.reference?.resolve() ?: return null
+            val reference = functionCall.variableIdentifier?.reference?.resolve()
             return (reference as? GlslNamedVariable)?.getAssociatedType()
         } else if (functionCall.typeSpecifier?.typeName != null) {
             val reference = functionCall.typeSpecifier?.typeName?.reference?.resolve() ?: return null
@@ -84,9 +85,9 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      *
      */
     private fun getBinaryExprType(expr: PsiElement): GlslNamedType? {
-//        val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
-//        val leftExpr = exprList.first().getExprType()
-//        val rightExpr = exprList.last().getExprType() ?: return null
+        val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
+        val leftExpr = exprList.first().getExprType()
+        val rightExpr = exprList.last().getExprType() ?: return null
         return null
     }
 
@@ -123,7 +124,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
             }
             val builtinType = GlslBuiltinTypeScalarImpl(node)
             builtinType.literalElementType = elementType
+            return builtinType
         }
-        return null
     }
 }

@@ -4,6 +4,8 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.psi.tree.IElementType
+import glsl.GlslTypes
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
@@ -91,8 +93,15 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node),
     /**
      *
      */
-    override fun isConvertible(other: String?): Boolean {
+    override fun canCast(other: IElementType?): Boolean {
         return false
+    }
+
+    /**
+     *
+     */
+    override fun typeAsToken(): IElementType? {
+        return GlslTypes.USER_TYPE_NAME
     }
 
     /**
@@ -100,19 +109,5 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node),
      */
     override fun getDimension(): Int {
         return 1
-    }
-
-    /**
-     *
-     */
-    override fun equals(other: Any?): Boolean {
-        return false
-    }
-
-    /**
-     *
-     */
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
     }
 }

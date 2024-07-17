@@ -1,8 +1,8 @@
 package glsl.plugin.psi.named.types.builtins
 
 import com.intellij.lang.ASTNode
+import com.intellij.psi.tree.IElementType
 import glsl.data.GlslDefinitions
-import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslBuiltinUtils
@@ -52,9 +52,9 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     /**
      *
      */
-    override fun isConvertible(other: String?): Boolean {
+    override fun canCast(other: IElementType?): Boolean {
         if (other == null) return false
-        val implicitConversions = GlslDefinitions.VECTORS[name]
+        val implicitConversions = GlslDefinitions.VECTORS[other]
         return implicitConversions?.contains(other) ?: false
     }
 
@@ -71,19 +71,5 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
             'b' -> "bool"
             else -> ""
         }
-    }
-
-    /**
-     *
-     */
-    override fun equals(other: Any?): Boolean {
-        return false
-    }
-
-    /**
-     *
-     */
-    override fun hashCode(): Int {
-        return javaClass.hashCode()
     }
 }

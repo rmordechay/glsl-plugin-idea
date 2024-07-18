@@ -1,1 +1,1 @@
-int a3 = normalize<error descr="No matching function for call to normalize().">(2, 3)</error>;
+float tc_max = min(2.0, 2.0);

@@ -3,6 +3,9 @@
 ## [1.1.2]
 ### Added
 - Autocompletion for include statement (not complete)
+- Add more error annotations
+### Updated
+- Performance improvement in resolving builtin functions 
 ### Fixed
 - Formatting of macros didn't work correctly
 - Macro functions without params were recognized as macro object

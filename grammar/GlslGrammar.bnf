@@ -1445,16 +1445,16 @@ spirv_instruction_qualifier_id
 // *** Preprocessor ****
 // *********************
 pp_statement
-    ::=  (PP_PRAGMA | PP_ERROR) <<ppText>> PP_END
-    |    (PP_UNDEF|PP_IFDEF|PP_IFNDEF) variable_identifier PP_END
-    |    pp_include_declaration END_INCLUDE
-    |    pp_define_function PP_END
-    |    pp_define_object PP_END
-    |    pp_conditional PP_END
-    |    pp_version_declaration PP_END
-    |    pp_extension PP_END
-    |    pp_line PP_END
-    |    macro_literal INTCONSTANT PP_END
+    ::=  (PP_PRAGMA | PP_ERROR) <<ppText>> (PP_END|<<eof>>)
+    |    (PP_UNDEF|PP_IFDEF|PP_IFNDEF) variable_identifier (PP_END|<<eof>>)
+    |    pp_include_declaration (END_INCLUDE|<<eof>>)
+    |    pp_define_function (PP_END|<<eof>>)
+    |    pp_define_object (PP_END|<<eof>>)
+    |    pp_conditional (PP_END|<<eof>>)
+    |    pp_version_declaration (PP_END|<<eof>>)
+    |    pp_extension (PP_END|<<eof>>)
+    |    pp_line (PP_END|<<eof>>)
+    |    macro_literal INTCONSTANT (PP_END|<<eof>>)
 
 
 pp_include_declaration

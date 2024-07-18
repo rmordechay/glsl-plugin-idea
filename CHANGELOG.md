@@ -6,6 +6,7 @@
 - Add more error annotations
 ### Updated
 - Performance improvement in resolving builtin functions 
+- Allowed macros at the end of file to not have new line 
 ### Fixed
 - Formatting of macros didn't work correctly
 - Macro functions without params were recognized as macro object

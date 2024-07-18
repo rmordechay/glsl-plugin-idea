@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import glsl.GlslTypes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.plugin.utils.GlslUtils
 import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.*
 
@@ -72,11 +73,10 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      */
     private fun getFunctionCallType(functionCall: GlslFunctionCall): GlslNamedType? {
         if (functionCall.variableIdentifier != null) {
-            val reference = functionCall.variableIdentifier?.reference?.resolve() ?: return null
-            return (reference as? GlslNamedVariable)?.getAssociatedType()
-        } else if (functionCall.typeSpecifier?.typeName != null) {
-            val reference = functionCall.typeSpecifier?.typeName?.reference?.resolve() ?: return null
-            return reference as? GlslNamedType
+            val reference = functionCall.variableIdentifier?.reference?.resolve() as? GlslNamedVariable ?: return null
+            return reference.getAssociatedType()
+        } else if (functionCall.typeSpecifier != null) {
+            return GlslUtils.getType(functionCall.typeSpecifier!!)
         }
         return null
     }

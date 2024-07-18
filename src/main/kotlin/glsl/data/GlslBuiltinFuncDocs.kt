@@ -10,7 +10,84 @@ import java.nio.file.Files
 import kotlin.io.path.Path
 
 
+/**
+ *
+ */
+@Suppress("unused")
+private fun sortFunctionsByTypePriority() {
+    val priorities = mapOf(
+        "bool" to 0,
+        "int" to 1,
+        "float" to 2,
+        "uint" to 3,
+        "double" to 4,
+        "vec2" to 5,
+        "vec3" to 6,
+        "vec4" to 7,
+        "ivec2" to 8,
+        "ivec3" to 9,
+        "ivec4" to 10,
+        "bvec2" to 11,
+        "bvec3" to 12,
+        "bvec4" to 13,
+        "uvec2" to 14,
+        "uvec3" to 15,
+        "uvec4" to 16,
+        "dvec2" to 17,
+        "dvec3" to 18,
+        "dvec4" to 19,
+        "mat2" to 20,
+        "mat3" to 21,
+        "mat4" to 22,
+        "umat2" to 23,
+        "umat3" to 24,
+        "umat4" to 25,
+        "imat2" to 26,
+        "imat3" to 27,
+        "imat4" to 28,
+        "bmat2" to 29,
+        "bmat3" to 30,
+        "bmat4" to 31,
+        "dmat2" to 32,
+        "dmat3" to 33,
+        "dmat4" to 34,
+        "mat3x2" to 35,
+        "mat2x4" to 36,
+        "mat3x4" to 37,
+    )
+    val lines =
+        Files.readAllLines(Path("/Users/roi.mordechay/Desktop/Programming/glsl-plugin-idea/src/main/resources/builtin-objects/glsl-builtin-functions.glsl"))
+    val re = "^\\w+ (\\w+)".toRegex()
+    lines.sortBy { re.matches(it) }
+    val funcs = mutableMapOf<String, MutableList<String>>()
+    for (line in lines) {
+        val value = re.matchAt(line, 0)?.groups?.get(1)?.value ?: return
+        funcs.putIfAbsent(value, mutableListOf())
+        funcs[value]?.add(line)
+    }
+    val sortedFuncs = mutableListOf<String>()
+    val file = File("builtin-functions.glsl")
+    for (func in funcs.values) {
+        val sortedStrings = func.sortedWith(compareBy { string ->
+            val text = priorities.entries.firstOrNull { (key, _) ->
+                val regex = "\\b$key\\b".toRegex()
+                regex.containsMatchIn(string)
+            }
+            if (text == null) {
+                println(string)
+            }
+            text!!.value
+        })
+        sortedFuncs.addAll(sortedStrings)
+    }
+    file.writeText("")
+    for (sortedFunc in sortedFuncs) {
+        file.appendText(sortedFunc + "\n")
+    }
+}
+@Suppress("unused")
 class DocsParts(val header: String, val parameters: Map<String, String>, val description: String?)
+
 
 /**
  *
@@ -43,7 +120,6 @@ private fun convertFuncTextToHtml(funcName: String, docsParts: DocsParts): Strin
     sb.append("</div>")
     return sb.toString()
 }
-
 
 @Suppress("unused")
 val replacements = mapOf(
@@ -86,6 +162,7 @@ val replacements = mapOf(
     "gimageCubeArray" to listOf("imageCubeArray", "iimageCubeArray", "uimageCubeArray"),
     "gimageBuffer" to listOf("imageBuffer", "iimageBuffer", "uimageBuffer"),
 )
+
 @Suppress("unused")
 val funcs = listOf(
     "int imageSize(readonly writeonly gimage1D image);",
@@ -94,6 +171,8 @@ val funcs = listOf(
 
 )
 
+
+@Suppress("unused")
 val imageParams = listOf("gimage3D image, ivec3 P",
     "gimageCube image, ivec3 P",
     "gimageBuffer image, int P",
@@ -106,8 +185,7 @@ val imageParams = listOf("gimage3D image, ivec3 P",
     "gimage2DMSArray image, ivec3 P, int sample",
 )
 
-
-
+@Suppress("unused")
 fun f2(funcs1: List<String>): List<String> {
     val lst = arrayListOf<String>()
     for (func in funcs1) {
@@ -146,74 +224,6 @@ fun main() {
 //            }
 //        }
 //    }
-    val priorities = mapOf(
-        "bool" to 0,
-        "int" to 1,
-        "float" to 2,
-        "uint" to 3,
-        "double" to 4,
-        "vec2" to 5,
-        "vec3" to 6,
-        "vec4" to 7,
-        "ivec2" to 8,
-        "ivec3" to 9,
-        "ivec4" to 10,
-        "bvec2" to 11,
-        "bvec3" to 12,
-        "bvec4" to 13,
-        "uvec2" to 14,
-        "uvec3" to 15,
-        "uvec4" to 16,
-        "dvec2" to 17,
-        "dvec3" to 18,
-        "dvec4" to 19,
-        "mat2" to 20,
-        "mat3" to 21,
-        "mat4" to 22,
-        "umat2" to 23,
-        "umat3" to 24,
-        "umat4" to 25,
-        "imat2" to 26,
-        "imat3" to 27,
-        "imat4" to 28,
-        "bmat2" to 29,
-        "bmat3" to 30,
-        "bmat4" to 31,
-        "dmat2" to 32,
-        "dmat3" to 33,
-        "dmat4" to 34,
-        "mat3x2" to 35,
-        "mat2x4" to 36,
-        "mat3x4" to 37,
-    )
-    val lines = Files.readAllLines(Path("/Users/roi.mordechay/Desktop/Programming/glsl-plugin-idea/src/main/resources/builtin-objects/glsl-builtin-functions.glsl"))
-    val re = "^\\w+ (\\w+)".toRegex()
-    lines.sortBy { re.matches(it) }
-    val funcs = mutableMapOf<String, MutableList<String>>()
-    for (line in lines) {
-        val value = re.matchAt(line, 0)?.groups?.get(1)?.value ?: return
-        funcs.putIfAbsent(value, mutableListOf())
-        funcs[value]?.add(line)
-    }
-    val sortedFuncs = mutableListOf<String>()
-    val file = File("builtin-functions.glsl")
-    for ((k, func) in funcs) {
-        val sortedStrings = func.sortedWith(compareBy { string ->
-            val text = priorities.entries.firstOrNull { (key, _) ->
-                val regex = "\\b$key\\b".toRegex()
-                regex.containsMatchIn(string)
-            }
-            if (text == null) {
-                println(string)
-            }
-            text!!.value
-        })
-        sortedFuncs.addAll(sortedStrings)
-    }
-    file.writeText("")
-    for (sortedFunc in sortedFuncs) {
-        file.appendText(sortedFunc + "\n")
-    }
 }
 
 

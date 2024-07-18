@@ -85,9 +85,9 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      *
      */
     private fun getBinaryExprType(expr: PsiElement): GlslNamedType? {
-        val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
-        val leftExpr = exprList.first().getExprType()
-        val rightExpr = exprList.last().getExprType() ?: return null
+//        val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
+//        val leftExpr = exprList.first().getExprType()
+//        val rightExpr = exprList.last().getExprType() ?: return null
         return null
     }
 
@@ -119,8 +119,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
                 node = postfixExpr.stringLiteral!!.node
                 elementType = GlslTypes.BOOL
             } else {
-                node = null
-                elementType = null
+                return null
             }
             val builtinType = GlslBuiltinTypeScalarImpl(node)
             builtinType.literalElementType = elementType

@@ -1,1 +1,0 @@
-float tc_max = min(2.0, 2.0);

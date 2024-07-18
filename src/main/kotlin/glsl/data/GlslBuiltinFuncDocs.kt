@@ -1,3 +1,7 @@
+/**
+ * This is only a dummy script that doesn't run as part of the plugin. It's just a separate
+ * to write builtin funcs to file, documentation etc.
+ */
 package glsl.data
 
 import com.intellij.lang.documentation.DocumentationMarkup

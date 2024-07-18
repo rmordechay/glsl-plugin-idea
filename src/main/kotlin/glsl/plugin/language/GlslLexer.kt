@@ -96,15 +96,7 @@ class GlslLexer : LexerBase() {
      */
     override fun getTokenType(): IElementType? {
         if (inEndlessRecursion()) return null
-        if (myTokenType == IDENTIFIER) {
-            if (!lexer.afterType && !lexer.afterStruct && myTokenText in userDefinedTypes) {
-                lexer.afterType = true;
-                return USER_TYPE_NAME;
-            } else if (lexer.afterStruct) {
-                lexer.afterStruct = false;
-                userDefinedTypes.add(myTokenText)
-            }
-        }
+        if (myTokenType == IDENTIFIER) return identifierOrType()
         return myTokenType
     }
 
@@ -157,6 +149,20 @@ class GlslLexer : LexerBase() {
         myTokenType = lexer.advance()
         myTokenText = lexer.yytext().toString()
         myTokenStart = lexer.tokenStart
+    }
+
+    /**
+     *
+     */
+    private fun identifierOrType(): IElementType? {
+        if (!lexer.afterType && !lexer.afterStruct && myTokenText in userDefinedTypes) {
+            lexer.afterType = true;
+            myTokenType = USER_TYPE_NAME;
+        } else if (lexer.afterStruct) {
+            lexer.afterStruct = false;
+            userDefinedTypes.add(myTokenText)
+        }
+        return myTokenType
     }
 
     /**

@@ -61,18 +61,18 @@ class GlslCodeAnnotator : Annotator {
         val funcReference = funcCallIdentifier.reference ?: return
         val resolvedReference = funcReference.resolve() ?: return
         val actualParamsExprs = element.exprNoAssignmentList
-        val actualParamCount = actualParamsExprs.count()
+        val actualParamCount = actualParamsExprs.size
 
         var msg: String? = null
         if (resolvedReference is GlslFunctionHeaderImpl) {
             val parameterDeclarators = resolvedReference.getParameterDeclarators()
-            if (parameterDeclarators.count() == actualParamCount) {
+            if (parameterDeclarators.size == actualParamCount) {
                 return
             }
             val actualTypes = actualParamsExprs.mapNotNull { it.getExprType()?.name }.joinToString(", ")
             msg = NO_MATCHING_FUNCTION_CALL.format(funcCallIdentifier.getName(), actualTypes)
         } else if (resolvedReference is GlslStructSpecifier) {
-            val expectedParamCount = resolvedReference.getStructMembers().count()
+            val expectedParamCount = resolvedReference.getStructMembers().size
             if (expectedParamCount < actualParamCount) {
                 msg = TOO_MANY_ARGUMENTS_CONSTRUCTOR.format(funcCallIdentifier.getName())
             } else if (expectedParamCount > actualParamCount) {

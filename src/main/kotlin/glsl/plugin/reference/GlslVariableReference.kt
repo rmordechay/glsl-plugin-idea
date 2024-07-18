@@ -159,6 +159,8 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             val expectedParams = func.funcHeaderWithParams?.parameterDeclaratorList ?: continue
             if (expectedParams.isEmpty() && actualParams.isEmpty()) {
                 findReferenceInElement(func.functionHeader)
+            } else if (expectedParams.size != actualParams.size) {
+                continue
             }
             var argsMatch = false
             for ((actualParam, expectedParam) in actualParams.zip(expectedParams)) {

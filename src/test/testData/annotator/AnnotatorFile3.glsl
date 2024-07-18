@@ -1,7 +1,7 @@
 int f();
 int f2(int a);
-int a1 = normalize(2);
-int a2 = normaliz(2, 3);
+float a1 = normalize(2);
+int a2 = <error descr="Incompatible types in initialization (and no available implicit conversion).">normalize(2)</error>;
 int a3 = normalize<error descr="No matching function for call to normalize().">(2, 3)</error>;
 int a4 = f();
 int a5 = f<error descr="No matching function for call to f().">(2, 3)</error>;

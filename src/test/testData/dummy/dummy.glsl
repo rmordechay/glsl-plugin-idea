@@ -1,1 +1,1 @@
-float a1 = normalize(2);
+int a3 = normalize<error descr="No matching function for call to normalize().">(2, 3)</error>;

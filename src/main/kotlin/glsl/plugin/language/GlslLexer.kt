@@ -240,7 +240,7 @@ class GlslLexer : LexerBase() {
             macroFuncParamIndex++
         } else if (macroParamNestingLevel >= 1 && myTokenType != LEFT_PAREN_MACRO_CALL) {
             val params = macroFunc?.params ?: return
-            if (params.count() <= macroFuncParamIndex) return
+            if (params.size <= macroFuncParamIndex) return
             val paramName = params[macroFuncParamIndex]
             val param = macroFuncCallParams?.getOrPut(paramName) { mutableListOf() }
             param?.addIfNotNull(myTokenType)

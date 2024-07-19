@@ -18,7 +18,6 @@ import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
-import glsl.plugin.utils.GlslUtils
 import glsl.plugin.utils.GlslUtils.getPsiFile
 import glsl.psi.interfaces.*
 
@@ -53,6 +52,17 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
+    override fun resolveMany(): List<GlslNamedElement> {
+        if (!shouldResolve()) return emptyList()
+        project = element.project
+        val resolveCache = ResolveCache.getInstance(project!!)
+        resolveCache.resolveWithCaching(this, resolver, true, false)
+        return resolvedReferences
+    }
+
+    /**
+     *
+     */
     override fun doResolve(filterType: FilterType) {
         try {
             resolvedReferences.clear()
@@ -68,18 +78,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
                 }
             lookupInGlobalScope(externalDeclaration)
         } catch (_: StopLookupException) { }
-    }
-
-    /**
-     *
-     */
-    fun resolveMany(): List<GlslNamedElement> {
-        if (!shouldResolve()) return emptyList()
-//        currentFilterType = EQUALS_MULTIPLE
-        project = element.project
-        val resolveCache = ResolveCache.getInstance(project!!)
-        resolveCache.resolveWithCaching(this, resolver, true, false)
-        return resolvedReferences
     }
 
     /**
@@ -116,7 +114,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
                     prevScope = lookupInInnerScope(prevScope)
                 }
                 is GlslFunctionDefinition -> { // The beginning of the function.
-                    lookupInFunctionPrototype(prevScope.functionPrototype, true)
+                    lookupInFunctionDeclarator(prevScope.functionDeclarator, true)
                     return prevScope.parent as GlslExternalDeclaration
                 }
                 else -> {
@@ -161,28 +159,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (funcCall !is GlslFunctionCall) return
         val elementName = element.name
         val builtinFuncs = getBuiltinFuncs()[elementName] ?: return
-        val actualParams = funcCall.exprNoAssignmentList
-        for (func in builtinFuncs) {
-            val expectedParams = func.funcHeaderWithParams?.parameterDeclaratorList ?: continue
-            if (expectedParams.isEmpty() && actualParams.isEmpty()) {
-                findReferenceInElement(func.functionHeader)
-            } else if (expectedParams.size != actualParams.size) {
-                continue
-            }
-            var argsMatch = false
-            for ((actualParam, expectedParam) in actualParams.zip(expectedParams)) {
-                val actualType = actualParam.getExprType() ?: break
-                val expectedType = GlslUtils.getType(expectedParam.typeSpecifier) ?: break
-                if (!expectedType.isEqual(actualType)) {
-                    argsMatch = false
-                    break
-                }
-                argsMatch = true
-            }
-            if (argsMatch) {
-                findReferenceInElement(func.functionHeader)
-            }
-        }
+        findReferenceInElementList(builtinFuncs, true)
     }
 
     /**
@@ -190,7 +167,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     private fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?) {
         if (externalDeclaration == null) return
-        lookupInFunctionPrototype(externalDeclaration.functionDefinition?.functionPrototype, false)
         lookupInDeclaration(externalDeclaration.declaration)
         lookupInPpStatement(externalDeclaration.ppStatement)
     }
@@ -212,7 +188,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (declaration == null) return
         lookupInSingleDeclaration(declaration.singleDeclaration)
         lookupInBlockStructureWrapper(declaration.blockStructureWrapper)
-        lookupInFunctionPrototype(declaration.functionPrototype, false)
+        lookupInFunctionDeclarator(declaration.functionDeclarator, false)
         findReferenceInElementList(declaration.declarationIdentifierWrapperList)
         findReferenceInElementList(declaration.initDeclaratorVariableList)
     }
@@ -245,11 +221,11 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInFunctionPrototype(functionPrototype: GlslFunctionPrototype?, withParams: Boolean) {
-        if (functionPrototype == null) return
-        findReferenceInElement(functionPrototype.functionHeader)
+    private fun lookupInFunctionDeclarator(functionDeclarator: GlslFunctionDeclarator?, withParams: Boolean) {
+        if (functionDeclarator == null) return
+        findReferenceInElement(functionDeclarator)
         if (withParams) {
-            findReferenceInElementList(functionPrototype.funcHeaderWithParams?.parameterDeclaratorList)
+            findReferenceInElementList(functionDeclarator.funcHeaderWithParams?.parameterDeclaratorList)
         }
     }
 

@@ -19,7 +19,7 @@ import glsl.plugin.psi.named.types.builtins.GlslMatrix
 import glsl.plugin.psi.named.types.builtins.GlslScalar
 import glsl.plugin.psi.named.types.builtins.GlslVector
 import glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier
-import glsl.psi.interfaces.GlslFunctionPrototype
+import glsl.psi.interfaces.GlslFunctionDeclarator
 import glsl.psi.interfaces.GlslTypeSpecifier
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -82,16 +82,15 @@ object GlslUtils {
      *
      */
     @JvmStatic
-    fun getFunctionLookupElement(func: GlslFunctionPrototype, icon: Icon?): LookupElement {
-        val functionHeader = func.functionHeader
-        var typeQualifierStr = functionHeader.typeQualifier?.text ?: ""
+    fun getFunctionLookupElement(func: GlslFunctionDeclarator, icon: Icon?): LookupElement {
+        var typeQualifierStr = func.typeQualifier?.text ?: ""
         // If type qualifier text has multiple words, take the first one
         if (typeQualifierStr.contains(" ")) {
             typeQualifierStr = typeQualifierStr.substring(0, typeQualifierStr.indexOf(' '))
         }
-        val typeSpecifierStr = functionHeader.getAssociatedType()?.name ?: ""
+        val typeSpecifierStr = func.getAssociatedType()?.name ?: ""
         val fullySpecifiedType = "$typeQualifierStr $typeSpecifierStr".trim()
-        val funcName = functionHeader.variableIdentifier.text
+        val funcName = func.variableIdentifier.text
         var funcHeader = "$funcName("
         val funcHeaderWithParams = func.funcHeaderWithParams
         var hasParams = false

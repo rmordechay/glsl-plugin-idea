@@ -1,0 +1,1 @@
+int a = normalize(2);

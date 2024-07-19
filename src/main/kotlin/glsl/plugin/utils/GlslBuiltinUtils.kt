@@ -21,27 +21,27 @@ object GlslBuiltinUtils {
     private lateinit var builtinConstants: Map<String, GlslNamedVariable>
     private lateinit var defaultShaderVariables: Map<String, GlslNamedVariable>
     private lateinit var shaderVariables: EnumMap<ShaderType, Map<String, GlslNamedVariable>>
-    private lateinit var builtinFuncs: Map<String, List<GlslFunctionPrototype>>
+    private lateinit var builtinFuncs: Map<String, List<GlslFunctionDeclarator>>
 
     /**
      * Creates a map of the GLSL builtin functions with their name as a key and a list of their AST
      * as a value. Due to overloading, most functions have different signatures with the same name.
      * Therefore, we want to create a list of them and show all possible signatures to the user.
      */
-    fun getBuiltinFuncs(): Map<String, List<GlslFunctionPrototype>> {
+    fun getBuiltinFuncs(): Map<String, List<GlslFunctionDeclarator>> {
         if (::builtinFuncs.isInitialized) {
             return builtinFuncs
         }
-        val funcs = mutableMapOf<String, MutableList<GlslFunctionPrototype>>()
+        val funcs = mutableMapOf<String, MutableList<GlslFunctionDeclarator>>()
         val builtinFile = getBuiltinFile("glsl-builtin-functions")
         val declarations = findChildrenOfType(builtinFile, GlslDeclaration::class.java)
         for (declaration in declarations) {
-            val funcName = findChildOfType(declaration, GlslFunctionHeader::class.java)?.name ?: continue
-            val functionPrototype = declaration.functionPrototype ?: continue
+            val funcName = findChildOfType(declaration, GlslFunctionDeclarator::class.java)?.name ?: continue
+            val functionDeclarator = declaration.functionDeclarator ?: continue
             if (funcs.containsKey(funcName)) {
-                funcs[funcName]?.add(functionPrototype)
+                funcs[funcName]?.add(functionDeclarator)
             } else {
-                funcs[funcName] = mutableListOf(functionPrototype)
+                funcs[funcName] = mutableListOf(functionDeclarator)
             }
         }
         builtinFuncs = funcs
@@ -57,7 +57,7 @@ object GlslBuiltinUtils {
         }
         val builtinFile = getBuiltinFile("glsl-vector-structs")
         val structSpecifiers = findChildrenOfType(builtinFile, GlslStructSpecifier::class.java).toList()
-        val lengthFunc = findChildOfType(builtinFile, GlslFunctionHeader::class.java)
+        val lengthFunc = findChildOfType(builtinFile, GlslFunctionDeclarator::class.java)
         val vecStructsTemp = hashMapOf<String, MutableMap<String, GlslNamedElement>>()
         for (structSpecifier in structSpecifiers) {
             val vecName = structSpecifier.name?.lowercase() ?: continue

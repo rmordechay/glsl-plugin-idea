@@ -26,8 +26,8 @@
     mixin("builtin_type_rest")="glsl.plugin.psi.named.types.builtins.GlslBuiltinRest"
     implements("builtin_type_scalar|builtin_type_vector|builtin_type_matrix|builtin_type_rest")="glsl.plugin.psi.named.GlslNamedType"
     // Identifiers
-    implements("function_header")="glsl.plugin.psi.named.GlslNamedVariable"
-    mixin("function_header")="glsl.plugin.psi.named.variables.GlslNamedFunctionHeader"
+    implements("function_declarator")="glsl.plugin.psi.named.GlslNamedVariable"
+    mixin("function_declarator")="glsl.plugin.psi.named.variables.GlslNamedFunctionDeclarator"
     implements("parameter_declarator")="glsl.plugin.psi.named.GlslNamedVariable"
     mixin("parameter_declarator")="glsl.plugin.psi.named.variables.GlslNamedParameterDeclarator"
     implements("single_declaration")="glsl.plugin.psi.named.GlslNamedVariable"
@@ -850,14 +850,14 @@ private interpolation_qualifier
 // ****************
 // *** Function ***
 // ****************
-function_prototype
+private function_prototype
     ::= attribute? function_declarator RIGHT_PAREN attribute?
     {   pin=2 }
 
-private function_declarator
+function_declarator
     ::= function_header func_header_with_params?
 
-function_header
+private function_header
     ::= fully_specified_type variable_identifier LEFT_PAREN
 
 private recover_func_header_with_params ::= !(RIGHT_PAREN)

@@ -61,8 +61,8 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
     /**
      *
      */
-    fun resolveMany(): List<GlslNamedElement>? {
-        if (!shouldResolve()) return null
+    override fun resolveMany(): List<GlslNamedElement> {
+        if (!shouldResolve()) return emptyList()
         project = element.project
         val resolveCache = ResolveCache.getInstance(project!!)
         resolveCache.resolveWithCaching(this, resolver, true, false)

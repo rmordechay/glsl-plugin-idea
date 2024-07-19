@@ -10,7 +10,6 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlText
 import glsl.plugin.language.GlslLanguage
 
-private const val JS_STRING_GLSL_PREFIX = "glsl:"
 
 class GlslMultiHostInjector : MultiHostInjector {
     /**

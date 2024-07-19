@@ -26,6 +26,7 @@ enum class FilterType {
 abstract class GlslReference(private val element: GlslIdentifier, textRange: TextRange) : PsiReferenceBase<GlslIdentifier>(element, textRange) {
     abstract fun doResolve(filterType: FilterType = EQUALS)
     abstract fun shouldResolve(): Boolean
+    abstract fun resolveMany(): List<GlslNamedElement>
     abstract override fun resolve(): GlslNamedElement?
 
     protected var currentFilterType = EQUALS

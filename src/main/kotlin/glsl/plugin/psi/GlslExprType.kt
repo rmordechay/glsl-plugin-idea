@@ -72,8 +72,25 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      */
     private fun getFunctionCallType(functionCall: GlslFunctionCall): GlslNamedType? {
         if (functionCall.variableIdentifier != null) {
-            val reference = functionCall.variableIdentifier?.reference?.resolve() as? GlslNamedVariable ?: return null
-            return reference.getAssociatedType()
+            val builtinFuncs = functionCall.variableIdentifier
+                ?.reference
+                ?.resolveMany()
+                ?.mapNotNull { (it as? GlslFunctionDeclarator) }
+                ?: return null
+            val exprTypes = functionCall.exprNoAssignmentList.map { it.getExprType() }
+            for (func in builtinFuncs) {
+                val paramTypes = func.funcHeaderWithParams
+                    ?.parameterDeclaratorList
+                    ?.map { it.getAssociatedType() }
+                    ?: continue
+                if (paramTypes.size != exprTypes.size) return null
+                val funcType = func.getAssociatedType()
+                val paramsTypesMatch = paramTypes.zip(paramTypes).all { it.first?.isEqual(it.second) == true }
+                if (paramsTypesMatch) {
+                    return funcType
+                }
+            }
+            return null
         } else if (functionCall.typeSpecifier != null) {
             return GlslUtils.getType(functionCall.typeSpecifier!!)
         }

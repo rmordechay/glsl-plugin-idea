@@ -16,11 +16,7 @@ import glsl.data.GlslErrorMessages.Companion.MISSING_RETURN_FUNCTION
 import glsl.data.GlslErrorMessages.Companion.NO_MATCHING_FUNCTION_CALL
 import glsl.data.GlslErrorMessages.Companion.TOO_FEW_ARGUMENTS_CONSTRUCTOR
 import glsl.data.GlslErrorMessages.Companion.TOO_MANY_ARGUMENTS_CONSTRUCTOR
-import glsl.psi.impl.GlslFunctionHeaderImpl
-import glsl.psi.interfaces.GlslFunctionCall
-import glsl.psi.interfaces.GlslFunctionDefinition
-import glsl.psi.interfaces.GlslSingleDeclaration
-import glsl.psi.interfaces.GlslStructSpecifier
+import glsl.psi.interfaces.*
 
 
 class GlslCodeAnnotator : Annotator {
@@ -64,8 +60,8 @@ class GlslCodeAnnotator : Annotator {
         val actualParamCount = actualParamsExprs.size
 
         var msg: String? = null
-        if (resolvedReference is GlslFunctionHeaderImpl) {
-            val parameterDeclarators = resolvedReference.getParameterDeclarators()
+        if (resolvedReference is GlslFunctionDeclarator) {
+            val parameterDeclarators = resolvedReference.funcHeaderWithParams?.parameterDeclaratorList ?: return
             if (parameterDeclarators.size == actualParamCount) {
                 return
             }
@@ -90,11 +86,12 @@ class GlslCodeAnnotator : Annotator {
      *
      */
     private fun annotateMissingReturn(element: GlslFunctionDefinition, holder: AnnotationHolder) {
-        if (element.functionPrototype.functionHeader.typeSpecifier.textMatches("void")) return
-        val returnExists = collectElements(element) { e -> e.elementType == RETURN}.isNotEmpty()
+        val functionDeclarator = element.functionDeclarator
+        if (functionDeclarator.typeSpecifier.textMatches("void")) return
+        val returnExists = collectElements(element) { e -> e.elementType == RETURN }.isNotEmpty()
         if (returnExists) return
         val textRange = TextRange(element.endOffset - 1, element.endOffset)
-        val funcName = element.functionPrototype.functionHeader.name
+        val funcName = functionDeclarator.name
         val msg = MISSING_RETURN_FUNCTION.format(funcName)
         setHighlightingError(textRange, holder, msg)
     }

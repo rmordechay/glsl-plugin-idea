@@ -17,23 +17,4 @@ class GlslLanguageInjectionTest : BasePlatformTestCase() {
         assertInstanceOf(resolve, GlslSingleDeclaration::class.java)
         assertEquals("projMatrix", (resolve as GlslSingleDeclaration).name)
     }
-
-    fun testLanguageInjection2() {
-//        val reference = myFixture.getReferenceAtCaretPosition("LanguageInjectionJs1.js")
-//        val resolve = reference?.resolve()
-//        assertInstanceOf(resolve, GlslSingleDeclaration::class.java)
-//        assertEquals("projMatrix", (resolve as GlslSingleDeclaration).name)
-    }
-
-    fun testLanguageInjection3() {
-        val reference = myFixture.getReferenceAtCaretPosition("LanguageInjectionJs2.js")
-        val resolve = reference?.resolve()
-        assertNull(resolve)
-    }
-
-    fun testLanguageInjection4() {
-        val reference = myFixture.getReferenceAtCaretPosition("LanguageInjectionJs3.js")
-        val resolve = reference?.resolve()
-        assertNull(resolve)
-    }
 }

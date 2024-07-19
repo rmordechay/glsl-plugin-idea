@@ -13,7 +13,6 @@ import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.psi.interfaces.GlslDeclaration
 import glsl.psi.interfaces.GlslExternalDeclaration
 import glsl.psi.interfaces.GlslStatement
-import glsl.psi.interfaces.GlslStructSpecifier
 
 class GlslTypeReference(private val element: GlslType, textRange: TextRange) : GlslReference(element, textRange) {
 

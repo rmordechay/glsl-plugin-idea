@@ -6,10 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.firstLeaf
-import glsl.GlslTypes
 import glsl.plugin.code.highlighting.GlslTextAttributes
-import glsl.plugin.psi.named.types.builtins.GlslScalar
 import javax.swing.Icon
 
 
@@ -41,7 +38,7 @@ abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), Gl
      *
      */
     override fun typeAsToken(): IElementType? {
-        return firstLeaf().elementType
+        return firstChild.elementType
     }
 
     /**
@@ -62,7 +59,7 @@ abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), Gl
      *
      */
     override fun getNameIdentifier(): PsiElement? {
-        return firstLeaf()
+        return firstChild
     }
 }
 

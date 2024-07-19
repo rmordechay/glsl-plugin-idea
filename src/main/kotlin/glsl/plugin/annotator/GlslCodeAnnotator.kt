@@ -6,7 +6,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.childLeafs
+import com.intellij.psi.util.PsiTreeUtil.collectElements
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
@@ -91,7 +91,7 @@ class GlslCodeAnnotator : Annotator {
      */
     private fun annotateMissingReturn(element: GlslFunctionDefinition, holder: AnnotationHolder) {
         if (element.functionPrototype.functionHeader.typeSpecifier.textMatches("void")) return
-        val returnExists = element.childLeafs().any { it.elementType == RETURN }
+        val returnExists = collectElements(element) { e -> e.elementType == RETURN}.isNotEmpty()
         if (returnExists) return
         val textRange = TextRange(element.endOffset - 1, element.endOffset)
         val funcName = element.functionPrototype.functionHeader.name

@@ -185,9 +185,7 @@ object GlslUtils {
     /**
      *
      */
-    /**
-     *
-     */
+    @JvmStatic
     fun getType(typeSpecifier: GlslTypeSpecifier): GlslNamedType? {
         if (typeSpecifier.builtinTypeScalar != null) {
             return typeSpecifier.builtinTypeScalar as GlslScalar

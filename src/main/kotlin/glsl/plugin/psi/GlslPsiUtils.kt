@@ -1,4 +1,4 @@
-package glsl.plugin.utils
+package glsl.plugin.psi
 
 import com.intellij.lang.PsiBuilder
 import glsl.GlslTypes

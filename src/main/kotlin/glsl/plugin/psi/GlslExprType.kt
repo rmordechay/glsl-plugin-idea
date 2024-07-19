@@ -7,7 +7,6 @@ import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
-import glsl.plugin.utils.GlslUtils
 import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.*
 
@@ -46,7 +45,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     private fun getPostfixType(postfixExpr: GlslPostfixExpr?): GlslNamedType? {
         when (postfixExpr) {
             is GlslPrimaryExpr -> return getPrimaryExprType(postfixExpr)
-            is GlslFunctionCall -> return getFunctionCallType(postfixExpr)
+            is GlslFunctionCall -> return (postfixExpr.reference?.resolve() as? GlslNamedVariable)?.getAssociatedType()
             is GlslFieldSelection -> return getPostfixType(postfixExpr.postfixExpr)
             is GlslPostfixInc -> return getPostfixType(postfixExpr.postfixExpr)
             is GlslPostfixFieldSelection -> return getPostfixSelectionType(postfixExpr)
@@ -57,31 +56,41 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     /**
      *
      */
-    private fun getFunctionCallType(functionCall: GlslFunctionCall): GlslNamedType? {
-        if (functionCall.variableIdentifier != null) {
-            val builtinFuncs = functionCall.variableIdentifier
-                ?.reference
-                ?.resolveMany()
-                ?.mapNotNull { (it as? GlslFunctionDeclarator) }
-                ?: return null
-            val exprTypes = functionCall.exprNoAssignmentList.map { it.getExprType() }
-            for (func in builtinFuncs) {
-                val paramTypes = func.funcHeaderWithParams
-                    ?.parameterDeclaratorList
-                    ?.map { it.getAssociatedType() }
-                    ?: continue
-                if (paramTypes.size != exprTypes.size) return null
-                val funcType = func.getAssociatedType()
-                val paramsTypesMatch = paramTypes.zip(paramTypes).all { it.first?.isEqual(it.second) == true }
-                if (paramsTypesMatch) {
-                    return funcType
-                }
-            }
-            return null
-        } else if (functionCall.typeSpecifier != null) {
-            return GlslUtils.getType(functionCall.typeSpecifier!!)
+    private fun getPrimaryExprType(postfixExpr: GlslPrimaryExpr): GlslNamedType? {
+        if (postfixExpr.variableIdentifier != null) {
+            val reference = postfixExpr.variableIdentifier?.reference?.resolve() ?: return null
+            return (reference as? GlslNamedVariable)?.getAssociatedType()
         }
-        return null
+
+        val expr = postfixExpr.expr
+        if (expr != null) {
+            return expr.getExprType()
+        }
+
+        val node: ASTNode?
+        val elementType: IElementType?
+        if (postfixExpr.intconstant != null) {
+            node = postfixExpr.intconstant!!.node
+            elementType = GlslTypes.INT
+        } else if (postfixExpr.uintconstant != null) {
+            node = postfixExpr.uintconstant!!.node
+            elementType = GlslTypes.UINT
+        } else if (postfixExpr.boolconstant != null) {
+            node = postfixExpr.boolconstant!!.node
+            elementType = GlslTypes.BOOL
+        } else if (postfixExpr.floatconstant != null) {
+            node = postfixExpr.floatconstant!!.node
+            elementType = GlslTypes.FLOAT
+        } else if (postfixExpr.stringLiteral != null) {
+            node = postfixExpr.stringLiteral!!.node
+            elementType = GlslTypes.STRING_LITERAL
+        } else {
+            return null
+        }
+
+        val builtinType = GlslBuiltinTypeScalarImpl(node)
+        builtinType.literalElementType = elementType
+        return builtinType
     }
 
     /**
@@ -92,42 +101,6 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
 //        val leftExpr = exprList.first().getExprType()
 //        val rightExpr = exprList.last().getExprType() ?: return null
         return null
-    }
-
-    /**
-     *
-     */
-    private fun getPrimaryExprType(postfixExpr: GlslPrimaryExpr): GlslNamedType? {
-        if (postfixExpr.variableIdentifier != null) {
-            val reference = postfixExpr.variableIdentifier?.reference?.resolve() ?: return null
-            return (reference as? GlslNamedVariable)?.getAssociatedType()
-        } else if (postfixExpr.expr != null) {
-            return postfixExpr.expr!!.getExprType()
-        } else {
-            val node: ASTNode?
-            val elementType: IElementType?
-            if (postfixExpr.intconstant != null) {
-                node = postfixExpr.intconstant!!.node
-                elementType = GlslTypes.INT
-            } else if (postfixExpr.uintconstant != null) {
-                node = postfixExpr.uintconstant!!.node
-                elementType = GlslTypes.UINT
-            } else if (postfixExpr.boolconstant != null) {
-                node = postfixExpr.boolconstant!!.node
-                elementType = GlslTypes.BOOL
-            } else if (postfixExpr.floatconstant != null) {
-                node = postfixExpr.floatconstant!!.node
-                elementType = GlslTypes.FLOAT
-            } else if (postfixExpr.stringLiteral != null) {
-                node = postfixExpr.stringLiteral!!.node
-                elementType = GlslTypes.BOOL
-            } else {
-                return null
-            }
-            val builtinType = GlslBuiltinTypeScalarImpl(node)
-            builtinType.literalElementType = elementType
-            return builtinType
-        }
     }
 
     /**

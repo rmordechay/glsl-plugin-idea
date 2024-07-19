@@ -19,6 +19,7 @@ import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
 import glsl.plugin.utils.GlslUtils.getPsiFile
+import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
 
 private const val INCLUDE_RECURSION_LIMIT = 1000
@@ -133,7 +134,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (statement.iterationStatement != null) {
             lookupInDeclaration(statement.iterationStatement?.declaration)
         }
-
         var statementPrevSibling = getPrevSiblingOfType(statement, GlslStatement::class.java)
         while (statementPrevSibling != null) {
             lookupInStatement(statementPrevSibling)
@@ -159,6 +159,15 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (funcCall !is GlslFunctionCall) return
         val elementName = element.name
         val builtinFuncs = getBuiltinFuncs()[elementName] ?: return
+        val exprTypes = funcCall.exprNoAssignmentList.map { it.getExprType() }
+        for (func in builtinFuncs) {
+            val paramTypes = (func as? GlslFunctionDeclaratorImpl)?.getParameterTypes() ?: continue
+            if (paramTypes.size != exprTypes.size) continue
+            val typesMatch = paramTypes.zip(exprTypes).all { it.first.isEqual(it.second) }
+            if (typesMatch) {
+                findReferenceInElement(func)
+            }
+        }
         findReferenceInElementList(builtinFuncs, true)
     }
 

@@ -60,4 +60,13 @@ abstract class GlslNamedFunctionDeclarator(node: ASTNode) : GlslNamedVariableImp
         val functionPrototype = getPsi().parentOfType<GlslFunctionDeclarator>() ?: return null
         return GlslUtils.getFunctionLookupElement(functionPrototype, getLookupIcon())
     }
+
+    /**
+     *
+     */
+    fun getParameterTypes(): List<GlslNamedType>? {
+        return getPsi().funcHeaderWithParams
+            ?.parameterDeclaratorList
+            ?.mapNotNull { it.getAssociatedType() }
+    }
 }

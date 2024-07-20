@@ -108,7 +108,7 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node),
     /**
      *
      */
-    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
+    override fun getBinaryType(other: GlslNamedElement?, operation: String): GlslNamedType? {
         return null
     }
 

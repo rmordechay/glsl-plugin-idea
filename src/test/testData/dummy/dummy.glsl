@@ -1,1 +1,1 @@
-float a = 1 + 2;
+vec3 a34 = mat3(1) * vec3(1);

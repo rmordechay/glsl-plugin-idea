@@ -3,6 +3,7 @@ package glsl.plugin.psi.named.types.builtins
 import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
 import glsl.data.GlslDefinitions
+import glsl.data.GlslErrorMessages
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
@@ -41,13 +42,17 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     /**
      *
      */
-    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
-        when {
-            other is GlslScalar -> return this
-            other is GlslVector -> return this
-            other is GlslMatrix && isMultiply -> return this
-            else -> return null
+    override fun getBinaryType(other: GlslNamedElement?, operation: String): GlslNamedType? {
+        when (other) {
+            is GlslScalar -> return this
+            is GlslVector -> return this
+            is GlslMatrix -> {
+                if (operation == "*") return this
+                errorMessage = GlslErrorMessages.DOES_NOT_OPERATE_ON.format(operation, name, other.name)
+                return this
+            }
         }
+        return null
     }
 
     /**

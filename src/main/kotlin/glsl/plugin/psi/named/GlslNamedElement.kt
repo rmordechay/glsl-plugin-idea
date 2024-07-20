@@ -31,7 +31,7 @@ interface GlslNamedElement : PsiNameIdentifierOwner {
     fun getPsi(): GlslNamedElement
 
     /**
-     * Syntax highlighting color.
+     * Syntax highlighting color
      */
     fun getHighlightTextAttr(): TextAttributesKey
 

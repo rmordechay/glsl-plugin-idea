@@ -24,20 +24,20 @@ vec3 a5 = vec3(1) - vec3(1);
 vec3 a6 = vec3(1) * vec3(1);
 vec3 a7 = vec3(1) / vec3(1);
 // Vector-Matrix
-mat3 a28 = vec3(1) + mat3(1);
-mat3 a29 = vec3(1) - mat3(1);
+mat3 a28 = <error descr="'+' does not operate on 'vec3' and 'mat3'.">vec3(1) + mat3(1)</error>;
+mat3 a29 = <error descr="'-' does not operate on 'vec3' and 'mat3'.">vec3(1) - mat3(1)</error>;
 vec3 a30 = vec3(1) * mat3(1);
-mat3 a31 = vec3(1) / mat3(1);
+mat3 a31 = <error descr="'/' does not operate on 'vec3' and 'mat3'.">vec3(1) / mat3(1)</error>;
 // Matrix-Scalar
 mat3 a24 = mat3(1) + 1;
 mat3 a25 = mat3(1) - 1;
 mat3 a26 = mat3(1) * 1;
 mat3 a27 = mat3(1) / 1;
 // Matrix-Vector
-mat3 a32 = mat3(1) + vec3(1);
-mat3 a33 = mat3(1) - vec3(1);
+mat3 a32 = <error descr="'+' does not operate on 'mat3' and 'vec3'.">mat3(1) + vec3(1)</error>;
+mat3 a33 = <error descr="'-' does not operate on 'mat3' and 'vec3'.">mat3(1) - vec3(1)</error>;
 vec3 a34 = mat3(1) * vec3(1);
-mat3 a35 = mat3(1) / vec3(1);
+mat3 a35 = <error descr="'/' does not operate on 'mat3' and 'vec3'.">mat3(1) / vec3(1)</error>;
 // Matrix-Matrix
 mat3 a8 = mat3(1) + mat3(1);
 mat3 a9 = mat3(1) - mat3(1);

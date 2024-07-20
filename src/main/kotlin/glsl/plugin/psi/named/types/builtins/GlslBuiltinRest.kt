@@ -23,7 +23,7 @@ abstract class GlslBuiltinRest(node: ASTNode) : GlslNamedTypeImpl(node), GlslBui
     /**
      *
      */
-    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
+    override fun getBinaryType(other: GlslNamedElement?, operation: String): GlslNamedType? {
         return null
     }
 

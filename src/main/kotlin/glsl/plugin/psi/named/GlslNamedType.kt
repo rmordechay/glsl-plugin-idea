@@ -14,12 +14,14 @@ import javax.swing.Icon
  *
  */
 interface GlslNamedType : GlslNamedElement {
+    var errorMessage: String?
+
     fun getStructMembers(): List<GlslNamedVariable>
     fun getStructMember(memberName: String): GlslNamedVariable?
     fun getDimension(): Int
     fun typeAsToken(): IElementType?
     fun canCast(other: IElementType?): Boolean
-    fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean = false): GlslNamedType?
+    fun getBinaryType(other: GlslNamedElement?, operation: String): GlslNamedType?
 
     /**
      *
@@ -35,6 +37,8 @@ interface GlslNamedType : GlslNamedElement {
  *
  */
 abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), GlslNamedType {
+    override var errorMessage: String? = null
+
     /**
      *
      */
@@ -60,7 +64,7 @@ abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), Gl
      *
      */
     override fun getNameIdentifier(): PsiElement? {
-        return this
+        return firstChild
     }
 }
 

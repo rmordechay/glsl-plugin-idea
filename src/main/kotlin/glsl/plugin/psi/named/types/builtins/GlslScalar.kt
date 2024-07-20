@@ -38,7 +38,7 @@ abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     /**
      *
      */
-    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
+    override fun getBinaryType(other: GlslNamedElement?, operation: String): GlslNamedType? {
         return when (other) {
             is GlslScalar -> this
             is GlslVector -> other

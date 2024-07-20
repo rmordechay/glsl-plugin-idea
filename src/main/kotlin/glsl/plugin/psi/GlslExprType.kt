@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import glsl.GlslTypes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.plugin.utils.GlslUtils.getFuncCallType
 import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.*
 
@@ -27,12 +28,12 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
             is GlslConditionalExpr -> return expr.exprNoAssignmentList.getOrNull(1)?.getExprType()
             is GlslRelationalExpr,
             is GlslEqualityExpr -> return getBooleanType()
-            is GlslMulExpr -> return getBinaryExprType(expr, true)
             is GlslAddExpr,
+            is GlslMulExpr,
             is GlslAndExpr,
+            is GlslShiftExpr,
             is GlslExclusiveOrExpr,
             is GlslInclusiveOrExpr,
-            is GlslShiftExpr,
             is GlslLogicalAndExpr,
             is GlslLogicalXorExpr,
             is GlslLogicalOrExpr -> return getBinaryExprType(expr)
@@ -44,17 +45,14 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      *
      */
     private fun getPostfixType(postfixExpr: GlslPostfixExpr?): GlslNamedType? {
-        when (postfixExpr) {
-            is GlslPrimaryExpr -> return getPrimaryExprType(postfixExpr)
-            is GlslFunctionCall -> {
-                val glslNamedVariable = postfixExpr.variableIdentifier?.reference?.resolve() as? GlslNamedVariable
-                return glslNamedVariable?.getAssociatedType()
-            }
-            is GlslFieldSelection -> return getPostfixType(postfixExpr.postfixExpr)
-            is GlslPostfixInc -> return getPostfixType(postfixExpr.postfixExpr)
-            is GlslPostfixFieldSelection -> return getPostfixSelectionType(postfixExpr)
+        return when (postfixExpr) {
+            is GlslPrimaryExpr -> getPrimaryExprType(postfixExpr)
+            is GlslFunctionCall -> getFuncCallType(postfixExpr)
+            is GlslFieldSelection -> getPostfixType(postfixExpr.postfixExpr)
+            is GlslPostfixInc -> getPostfixType(postfixExpr.postfixExpr)
+            is GlslPostfixFieldSelection -> getPostfixSelectionType(postfixExpr)
+            else -> null
         }
-        return null
     }
 
     /**
@@ -93,11 +91,12 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     /**
      *
      */
-    private fun getBinaryExprType(expr: PsiElement, mul: Boolean = false): GlslNamedType? {
+    private fun getBinaryExprType(expr: PsiElement): GlslNamedType? {
         val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
         val leftExpr = exprList.first().getExprType() ?: return null
         val rightExpr = exprList.last().getExprType() ?: return null
-        return leftExpr.getBinaryOpType(rightExpr)
+        val operation = expr.firstChild.nextSibling.nextSibling.text ?: ""
+        return leftExpr.getBinaryType(rightExpr, operation)
     }
 
     /**

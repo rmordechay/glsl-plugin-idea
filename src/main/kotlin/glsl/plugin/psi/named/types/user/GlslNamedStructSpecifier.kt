@@ -20,7 +20,6 @@ import javax.swing.Icon
  * type_specifier
  */
 abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node), GlslNamedType {
-
     /**
      *
      */
@@ -108,7 +107,7 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node)
     /**
      *
      */
-    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
+    override fun getBinaryType(other: GlslNamedElement?, operation: String): GlslNamedType? {
         return null
     }
 

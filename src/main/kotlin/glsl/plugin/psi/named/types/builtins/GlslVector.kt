@@ -3,6 +3,8 @@ package glsl.plugin.psi.named.types.builtins
 import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
 import glsl.data.GlslDefinitions
+import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslBuiltinUtils
@@ -34,6 +36,18 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
      */
     override fun getStructMember(memberName: String): GlslNamedVariable? {
         return getStructMembers().find { it.name == memberName }
+    }
+
+    /**
+     *
+     */
+    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
+        when {
+            other is GlslScalar -> return this
+            other is GlslVector -> return this
+            other is GlslMatrix && isMultiply -> return this
+            else -> return null
+        }
     }
 
     /**

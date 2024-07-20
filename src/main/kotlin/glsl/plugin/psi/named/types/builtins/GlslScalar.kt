@@ -3,6 +3,8 @@ package glsl.plugin.psi.named.types.builtins
 import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
 import glsl.data.GlslDefinitions
+import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.psi.interfaces.GlslBuiltinTypeScalar
@@ -11,8 +13,6 @@ import glsl.psi.interfaces.GlslBuiltinTypeScalar
  *
  */
 abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinType {
-    var literalElementType: IElementType? = null
-
     /**
      *
      */
@@ -38,10 +38,23 @@ abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     /**
      *
      */
+    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
+        return when (other) {
+            is GlslScalar -> this
+            is GlslVector -> other
+            is GlslMatrix -> other
+            else -> null
+        }
+    }
+
+    /**
+     *
+     */
     override fun canCast(other: IElementType?): Boolean {
         if (other == null) return false
         val implicitConversions = GlslDefinitions.SCALARS[other]
-        return implicitConversions?.contains(typeAsToken()) ?: false
+        val element = typeAsToken()
+        return implicitConversions?.contains(element) ?: false
     }
 
     /**
@@ -49,15 +62,5 @@ abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
      */
     override fun getDimension(): Int {
         return 1
-    }
-
-    /**
-     *
-     */
-    override fun typeAsToken(): IElementType? {
-        if (literalElementType != null) {
-            return literalElementType
-        }
-        return super.typeAsToken()
     }
 }

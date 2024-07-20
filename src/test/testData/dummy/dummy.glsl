@@ -1,1 +1,1 @@
-int a = normalize(2);
+float a = 1 + 2;

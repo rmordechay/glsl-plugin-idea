@@ -1,9 +1,10 @@
 package glsl.plugin.psi
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTFactory
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
-import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.PsiTreeUtil
 import glsl.GlslTypes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
@@ -26,7 +27,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
             is GlslConditionalExpr -> return expr.exprNoAssignmentList.getOrNull(1)?.getExprType()
             is GlslRelationalExpr,
             is GlslEqualityExpr -> return getBooleanType()
-            is GlslMulExpr,
+            is GlslMulExpr -> return getBinaryExprType(expr, true)
             is GlslAddExpr,
             is GlslAndExpr,
             is GlslExclusiveOrExpr,
@@ -45,7 +46,10 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     private fun getPostfixType(postfixExpr: GlslPostfixExpr?): GlslNamedType? {
         when (postfixExpr) {
             is GlslPrimaryExpr -> return getPrimaryExprType(postfixExpr)
-            is GlslFunctionCall -> return (postfixExpr.reference?.resolve() as? GlslNamedVariable)?.getAssociatedType()
+            is GlslFunctionCall -> {
+                val glslNamedVariable = postfixExpr.variableIdentifier?.reference?.resolve() as? GlslNamedVariable
+                return glslNamedVariable?.getAssociatedType()
+            }
             is GlslFieldSelection -> return getPostfixType(postfixExpr.postfixExpr)
             is GlslPostfixInc -> return getPostfixType(postfixExpr.postfixExpr)
             is GlslPostfixFieldSelection -> return getPostfixSelectionType(postfixExpr)
@@ -68,47 +72,40 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
         }
 
         val node: ASTNode?
-        val elementType: IElementType?
         if (postfixExpr.intconstant != null) {
-            node = postfixExpr.intconstant!!.node
-            elementType = GlslTypes.INT
+            node = ASTFactory.leaf(GlslTypes.INT, "int")
         } else if (postfixExpr.uintconstant != null) {
-            node = postfixExpr.uintconstant!!.node
-            elementType = GlslTypes.UINT
+            node = ASTFactory.leaf(GlslTypes.UINT, "uint")
         } else if (postfixExpr.boolconstant != null) {
-            node = postfixExpr.boolconstant!!.node
-            elementType = GlslTypes.BOOL
+            node = ASTFactory.leaf(GlslTypes.BOOL, "bool")
         } else if (postfixExpr.floatconstant != null) {
-            node = postfixExpr.floatconstant!!.node
-            elementType = GlslTypes.FLOAT
+            node = ASTFactory.leaf(GlslTypes.FLOAT, "float")
         } else if (postfixExpr.stringLiteral != null) {
-            node = postfixExpr.stringLiteral!!.node
-            elementType = GlslTypes.STRING_LITERAL
+            node = ASTFactory.leaf(GlslTypes.STRING_LITERAL, postfixExpr.text)
         } else {
             return null
         }
 
         val builtinType = GlslBuiltinTypeScalarImpl(node)
-        builtinType.literalElementType = elementType
         return builtinType
     }
 
     /**
      *
      */
-    private fun getBinaryExprType(expr: PsiElement): GlslNamedType? {
-//        val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
-//        val leftExpr = exprList.first().getExprType()
-//        val rightExpr = exprList.last().getExprType() ?: return null
-        return null
+    private fun getBinaryExprType(expr: PsiElement, mul: Boolean = false): GlslNamedType? {
+        val exprList = PsiTreeUtil.getChildrenOfTypeAsList(expr, GlslExpr::class.java)
+        val leftExpr = exprList.first().getExprType() ?: return null
+        val rightExpr = exprList.last().getExprType() ?: return null
+        return leftExpr.getBinaryOpType(rightExpr)
     }
 
     /**
      *
      */
     private fun getBooleanType(): GlslBuiltinTypeScalarImpl {
+        val node = ASTFactory.leaf(GlslTypes.BOOL, "bool")
         val builtinType = GlslBuiltinTypeScalarImpl(node)
-        builtinType.literalElementType = GlslTypes.BOOL
         return builtinType
     }
 

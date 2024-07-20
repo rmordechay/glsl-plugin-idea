@@ -20,5 +20,6 @@ class GlslErrorMessages {
         const val CANT_ACCESS_ARRAY_ELEMENT = "Can't access array element of type '%s'."
         const val CONSTRUCTOR_PRIMITIVE_ONE_ARGUMENT = "Constructor of primitive type must have at least one argument."
         const val INVALID_CALL_OF = "Invalid call of '%s' (not a function or subroutine uniform)."
+        const val DOES_NOT_OPERATE_ON = "'%s' does not operate on '%s' and '%s'."
     }
 }

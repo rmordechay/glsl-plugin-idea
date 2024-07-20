@@ -16,6 +16,7 @@ import glsl.data.GlslErrorMessages.Companion.MISSING_RETURN_FUNCTION
 import glsl.data.GlslErrorMessages.Companion.NO_MATCHING_FUNCTION_CALL
 import glsl.data.GlslErrorMessages.Companion.TOO_FEW_ARGUMENTS_CONSTRUCTOR
 import glsl.data.GlslErrorMessages.Companion.TOO_MANY_ARGUMENTS_CONSTRUCTOR
+import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
 
 
@@ -87,14 +88,15 @@ class GlslCodeAnnotator : Annotator {
      *
      */
     private fun annotateFuncCall(element: GlslFunctionCall, holder: AnnotationHolder, funcName: GlslVariableIdentifier) {
-        val functionDeclarator = funcName.reference?.resolve() as? GlslFunctionDeclarator ?: return
-        val actualParamsExprs = element.exprNoAssignmentList
-        val parameterDeclarators = functionDeclarator.funcHeaderWithParams?.parameterDeclaratorList ?: return
-        if (parameterDeclarators.size == actualParamsExprs.size) return
-        val actualTypes = actualParamsExprs.mapNotNull { it.getExprType()?.name }.joinToString(", ")
-        val msg = NO_MATCHING_FUNCTION_CALL.format(funcName.getName(), actualTypes)
-        val textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
-        setHighlightingError(textRange, holder, msg)
+        val functionDeclarator = funcName.reference?.resolve() as? GlslFunctionDeclaratorImpl ?: return
+        val paramTypes = functionDeclarator.getParameterTypes() ?: return
+        val exprTypes = element.exprNoAssignmentList.mapNotNull { it.getExprType() }
+        if (paramTypes.size != exprTypes.size) {
+            val actualTypesString = exprTypes.mapNotNull { it.name }.joinToString(", ")
+            val msg = NO_MATCHING_FUNCTION_CALL.format(funcName.getName(), actualTypesString)
+            val textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
+            setHighlightingError(textRange, holder, msg)
+        }
     }
 
     /**

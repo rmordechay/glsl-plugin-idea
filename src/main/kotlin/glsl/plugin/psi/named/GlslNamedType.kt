@@ -19,6 +19,7 @@ interface GlslNamedType : GlslNamedElement {
     fun getDimension(): Int
     fun typeAsToken(): IElementType?
     fun canCast(other: IElementType?): Boolean
+    fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean = false): GlslNamedType?
 
     /**
      *
@@ -38,7 +39,7 @@ abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), Gl
      *
      */
     override fun typeAsToken(): IElementType? {
-        return firstChild.elementType
+        return firstChild.elementType ?: elementType
     }
 
     /**
@@ -59,7 +60,7 @@ abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), Gl
      *
      */
     override fun getNameIdentifier(): PsiElement? {
-        return firstChild
+        return this
     }
 }
 

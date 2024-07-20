@@ -2,6 +2,8 @@ package glsl.plugin.psi.named.types.builtins
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
+import glsl.plugin.psi.named.GlslNamedElement
+import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.psi.interfaces.GlslBuiltinTypeRest
@@ -16,6 +18,13 @@ abstract class GlslBuiltinRest(node: ASTNode) : GlslNamedTypeImpl(node), GlslBui
      */
     override fun getPsi(): GlslBuiltinTypeRest {
         return this as GlslBuiltinTypeRest
+    }
+
+    /**
+     *
+     */
+    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
+        return null
     }
 
     /**

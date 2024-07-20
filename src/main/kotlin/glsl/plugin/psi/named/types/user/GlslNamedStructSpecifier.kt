@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
 import glsl.plugin.code.highlighting.GlslTextAttributes
+import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
@@ -102,6 +103,13 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node)
      */
     override fun typeAsToken(): IElementType? {
         return GlslTypes.USER_TYPE_NAME
+    }
+
+    /**
+     *
+     */
+    override fun getBinaryOpType(other: GlslNamedElement?, isMultiply: Boolean): GlslNamedType? {
+        return null
     }
 
     /**

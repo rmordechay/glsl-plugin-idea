@@ -80,7 +80,7 @@
     </extensions>
 
     <actions>
-        <action id="glsl.plugin.actions.GlslNewShaderFile" class="glsl.plugin.actions.GlslNewShaderFile" text="Shader File">
+        <action id="glsl.plugin.features.GlslNewShaderFile" class="glsl.plugin.features.GlslNewShaderFile" text="Shader File">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
         </action>
     </actions>

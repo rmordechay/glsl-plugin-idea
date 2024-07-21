@@ -27,7 +27,7 @@ private const val INCLUDE_RECURSION_LIMIT = 1000
 class GlslVariableReference(private val element: GlslVariable, textRange: TextRange) : GlslReference(element, textRange) {
     private var includeRecursionLevel = 0
 
-    private val resolver = AbstractResolver<GlslVariableReference, GlslNamedVariable> { reference, _ ->
+    private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
         reference.doResolve()
         reference.resolvedReferences.firstOrNull() as? GlslNamedVariable
     }
@@ -176,6 +176,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     private fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?) {
         if (externalDeclaration == null) return
+        lookupInFunctionDeclarator(externalDeclaration.functionDefinition?.functionDeclarator, false)
         lookupInDeclaration(externalDeclaration.declaration)
         lookupInPpStatement(externalDeclaration.ppStatement)
     }
@@ -334,7 +335,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         return when (postfixExpr) {
             is GlslPrimaryExpr -> postfixExpr.variableIdentifier as? GlslVariable
             is GlslFunctionCall -> postfixExpr.variableIdentifier as? GlslVariable
-            is GlslFieldSelection -> getPostfixIdentifier(postfixExpr.postfixExpr)
+            is GlslPostfixArrayIndex -> getPostfixIdentifier(postfixExpr.postfixExpr)
             is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
             else -> null
         }

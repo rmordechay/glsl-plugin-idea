@@ -7,8 +7,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil.collectElements
 import com.intellij.psi.util.elementType
-import com.intellij.refactoring.suggested.endOffset
-import com.intellij.refactoring.suggested.startOffset
 import glsl.GlslTypes.RETURN
 import glsl.data.GlslErrorMessages.Companion.INCOMPATIBLE_TYPES_IN_INIT
 import glsl.data.GlslErrorMessages.Companion.MISSING_RETURN_FUNCTION
@@ -17,7 +15,6 @@ import glsl.data.GlslErrorMessages.Companion.TOO_FEW_ARGUMENTS_CONSTRUCTOR
 import glsl.data.GlslErrorMessages.Companion.TOO_MANY_ARGUMENTS_CONSTRUCTOR
 import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
-import kotlin.math.sin
 
 
 /**
@@ -57,8 +54,9 @@ class GlslInspectionTooFewArguments : LocalInspectionTool() {
                     val actualParamsExprs = functionCall.exprNoAssignmentList
                     if (expectedParamCount > actualParamsExprs.size) {
                         val msg = TOO_FEW_ARGUMENTS_CONSTRUCTOR.format(constructorIdentifier.getName())
-                        val textRange = TextRange(functionCall.leftParen.startOffset, functionCall.rightParen.endOffset)
-                        holder.registerProblem(functionCall, msg, ProblemHighlightType.GENERIC_ERROR, textRange)
+                        val startOffset = functionCall.leftParen.textRange.startOffset
+                        val endOffset = functionCall.rightParen.textRange.endOffset
+                        holder.registerProblem(functionCall, msg, ProblemHighlightType.GENERIC_ERROR, TextRange(startOffset, endOffset))
                     }
                 }
             }
@@ -127,7 +125,8 @@ class GlslInspectionMissingReturn : LocalInspectionTool() {
                 if (functionDeclarator.typeSpecifier.textMatches("void")) return
                 val returnExists = collectElements(functionDefinition) { e -> e.elementType == RETURN }.isNotEmpty()
                 if (returnExists) return
-                val textRange = TextRange(functionDefinition.endOffset - 1, functionDefinition.endOffset)
+                val endOffset = functionDefinition.textRangeInParent.endOffset
+                val textRange = TextRange(endOffset - 1, endOffset)
                 val funcName = functionDeclarator.name
                 val msg = MISSING_RETURN_FUNCTION.format(funcName)
                 holder.registerProblem(functionDefinition, msg, ProblemHighlightType.GENERIC_ERROR, textRange)

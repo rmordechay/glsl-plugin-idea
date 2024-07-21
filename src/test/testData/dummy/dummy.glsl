@@ -1,1 +1,7 @@
-vec3 vdir = normalize(vec4(1));
+vec2 hash2() {
+    return vec2(1);
+}
+
+void main() {
+    vec2 a = <caret>hash2();
+}

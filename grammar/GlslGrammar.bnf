@@ -51,7 +51,7 @@
 
     extends("expr_no_assignment|assignment_expr")=expr
     extends("(comma_seperated|conditional|shift|relational|equality|and|exclusive_or|inclusive_or|logical_and|logical_xor|logical_or|mul|add|unary)_expr")=expr_no_assignment
-    extends("postfix_inc|postfix_field_selection|field_selection|primary_expr|function_call")=postfix_expr
+    extends("postfix_inc|postfix_field_selection|postfix_array_index|primary_expr|function_call")=postfix_expr
 
     name("postfix.*|.*expr")="expression"
     name(".*statement|case_label")="statement"
@@ -727,7 +727,7 @@ expr_no_assignment
     |   unary_expr
 
 postfix_expr
-    ::= field_selection
+    ::= postfix_array_index
     |   function_call
     |   postfix_field_selection
     |   postfix_inc
@@ -747,7 +747,7 @@ postfix_field_selection
     ::= postfix_expr (DOT postfix_struct_member)+
     {   pin(".*")=1    }
 
-field_selection
+postfix_array_index
     ::= postfix_expr (LEFT_BRACKET integer_expression RIGHT_BRACKET)+
 
 primary_expr_variable

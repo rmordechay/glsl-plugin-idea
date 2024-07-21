@@ -1,13 +1,14 @@
 package glsl.plugin.psi
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.lang.ASTFactory
+import com.intellij.lang.ASTFactory.leaf
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import glsl.GlslTypes
+import glsl.GlslTypes.*
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariable
+import glsl.plugin.utils.GlslUtils.createScalarTypeElement
 import glsl.plugin.utils.GlslUtils.getFuncCallType
 import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.*
@@ -48,7 +49,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
         return when (postfixExpr) {
             is GlslPrimaryExpr -> getPrimaryExprType(postfixExpr)
             is GlslFunctionCall -> getFuncCallType(postfixExpr)
-            is GlslFieldSelection -> getPostfixType(postfixExpr.postfixExpr)
+            is GlslPostfixArrayIndex -> getArrayIndexType(postfixExpr)
             is GlslPostfixInc -> getPostfixType(postfixExpr.postfixExpr)
             is GlslPostfixFieldSelection -> getPostfixSelectionType(postfixExpr)
             else -> null
@@ -58,35 +59,38 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     /**
      *
      */
-    private fun getPrimaryExprType(postfixExpr: GlslPrimaryExpr): GlslNamedType? {
-        if (postfixExpr.variableIdentifier != null) {
-            val reference = postfixExpr.variableIdentifier?.reference?.resolve() ?: return null
+    private fun getArrayIndexType(arrayIndex: GlslPostfixArrayIndex): GlslNamedType? {
+        val variableIdentifier = (arrayIndex.postfixExpr as GlslPrimaryExpr).variableIdentifier
+        val resolve = variableIdentifier?.reference?.resolve() as GlslNamedVariable?
+        return resolve?.getAssociatedType()?.getScalarType()
+    }
+
+    /**
+     *
+     */
+    private fun getPrimaryExprType(primaryExpr: GlslPrimaryExpr): GlslNamedType? {
+        if (primaryExpr.variableIdentifier != null) {
+            val reference = primaryExpr.variableIdentifier?.reference?.resolve() ?: return null
             return (reference as? GlslNamedVariable)?.getAssociatedType()
         }
 
-        val expr = postfixExpr.expr
+        val expr = primaryExpr.expr
         if (expr != null) {
             return expr.getExprType()
         }
-
-        val node: ASTNode?
-        if (postfixExpr.intconstant != null) {
-            node = ASTFactory.leaf(GlslTypes.INT, "int")
-        } else if (postfixExpr.uintconstant != null) {
-            node = ASTFactory.leaf(GlslTypes.UINT, "uint")
-        } else if (postfixExpr.boolconstant != null) {
-            node = ASTFactory.leaf(GlslTypes.BOOL, "bool")
-        } else if (postfixExpr.floatconstant != null) {
-            node = ASTFactory.leaf(GlslTypes.FLOAT, "float")
-        } else if (postfixExpr.stringLiteral != null) {
-            node = ASTFactory.leaf(GlslTypes.STRING_LITERAL, postfixExpr.text)
+        if (primaryExpr.intconstant != null) {
+            return createScalarTypeElement(INT, "int")
+        } else if (primaryExpr.uintconstant != null) {
+            return createScalarTypeElement(UINT, "uint")
+        } else if (primaryExpr.boolconstant != null) {
+            return createScalarTypeElement(BOOL, "bool")
+        } else if (primaryExpr.floatconstant != null) {
+            return createScalarTypeElement(FLOAT, "float")
         } else {
             return null
         }
-
-        val builtinType = GlslBuiltinTypeScalarImpl(node)
-        return builtinType
     }
+
 
     /**
      *
@@ -103,7 +107,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      *
      */
     private fun getBooleanType(): GlslBuiltinTypeScalarImpl {
-        val node = ASTFactory.leaf(GlslTypes.BOOL, "bool")
+        val node = leaf(BOOL, "bool")
         val builtinType = GlslBuiltinTypeScalarImpl(node)
         return builtinType
     }

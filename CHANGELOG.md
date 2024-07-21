@@ -3,6 +3,8 @@
 ## [1.1.3]
 ### Added
 - Enabling/disabling errors
+### Fixed
+- Array indexing of vector incorrectly showed an error
 
 ## [1.1.2]
 ### Added

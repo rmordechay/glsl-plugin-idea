@@ -3,14 +3,18 @@ package glsl.plugin.utils
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.lang.ASTFactory
+import com.intellij.lang.ASTFactory.leaf
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.FilenameIndex.getVirtualFilesByName
 import com.intellij.psi.search.GlobalSearchScope.allScope
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiUtilCore
+import glsl.GlslTypes.BUILTIN_TYPE_SCALAR
 import glsl.data.ShaderType
 import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.named.GlslNamedType
@@ -20,6 +24,7 @@ import glsl.plugin.psi.named.types.builtins.GlslMatrix
 import glsl.plugin.psi.named.types.builtins.GlslScalar
 import glsl.plugin.psi.named.types.builtins.GlslVector
 import glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier
+import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslFunctionDeclarator
 import glsl.psi.interfaces.GlslTypeSpecifier
@@ -217,6 +222,16 @@ object GlslUtils {
             return getType(functionCall.typeSpecifier!!)
         }
         return null
+    }
+
+    /**
+     *
+     */
+    @JvmStatic
+    fun createScalarTypeElement(elementType: IElementType, text: String): GlslBuiltinTypeScalarImpl {
+        val composite = ASTFactory.composite(BUILTIN_TYPE_SCALAR)
+        composite.rawAddChildren(leaf(elementType, text))
+        return GlslBuiltinTypeScalarImpl(composite)
     }
 }
 

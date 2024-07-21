@@ -1,11 +1,15 @@
 package glsl.plugin.psi
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTFactory
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceService
+import com.intellij.psi.impl.source.tree.ChangeUtil
 import com.intellij.psi.util.PsiTreeUtil
+import glsl.GlslTypes
+import glsl.GlslTypes.Factory
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.reference.GlslVariableReference
@@ -46,8 +50,8 @@ abstract class GlslVariable(node: ASTNode) : ASTWrapperPsiElement(node), GlslIde
         val dummyElement = (PsiFileFactory.getInstance(project)
             .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
             .firstChild
-        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslVariable::class.java)
-        return if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
+        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslVariable::class.java) ?: return this
+        return replace(newIdentifierNode) as? GlslIdentifier
     }
 
     /**

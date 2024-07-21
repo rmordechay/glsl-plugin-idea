@@ -31,8 +31,8 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
      *
      */
     override fun getStructMembers(): List<GlslNamedVariable> {
-        val vectorComponents = GlslBuiltinUtils.getVecStructs()[name]?.values?.mapNotNull { it as? GlslNamedVariable }
-        return vectorComponents ?: emptyList()
+        val vectorMembers = GlslBuiltinUtils.getVecStructs()[name]?.values?.toList()
+        return vectorMembers ?: emptyList()
     }
 
     /**

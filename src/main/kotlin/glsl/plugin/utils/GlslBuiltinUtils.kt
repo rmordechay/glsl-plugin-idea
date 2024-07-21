@@ -17,7 +17,7 @@ import java.util.*
 
 object GlslBuiltinUtils {
 
-    private lateinit var vecStructs: Map<String, Map<String, GlslNamedElement>>
+    private lateinit var vecStructs: Map<String, Map<String, GlslNamedVariable>>
     private lateinit var builtinConstants: Map<String, GlslNamedVariable>
     private lateinit var defaultShaderVariables: Map<String, GlslNamedVariable>
     private lateinit var shaderVariables: EnumMap<ShaderType, Map<String, GlslNamedVariable>>
@@ -51,14 +51,14 @@ object GlslBuiltinUtils {
     /**
      *
      */
-    fun getVecStructs(): Map<String, Map<String, GlslNamedElement>> {
+    fun getVecStructs(): Map<String, Map<String, GlslNamedVariable>> {
         if (::vecStructs.isInitialized) {
             return vecStructs
         }
         val builtinFile = getBuiltinFile("glsl-vector-structs")
         val structSpecifiers = findChildrenOfType(builtinFile, GlslStructSpecifier::class.java).toList()
         val lengthFunc = findChildOfType(builtinFile, GlslFunctionDeclarator::class.java)
-        val vecStructsTemp = hashMapOf<String, MutableMap<String, GlslNamedElement>>()
+        val vecStructsTemp = hashMapOf<String, MutableMap<String, GlslNamedVariable>>()
         for (structSpecifier in structSpecifiers) {
             val vecName = structSpecifier.name?.lowercase() ?: continue
             for (structDeclaration in structSpecifier.structDeclarationList) {
@@ -104,16 +104,6 @@ object GlslBuiltinUtils {
             return defaultShaderVariables
         }
         return shaderVariables[shaderType] ?: emptyMap()
-    }
-
-    /**
-     *
-     */
-    fun getVecComponent(name: String, vecType: String? = null): GlslNamedElement? {
-        if (vecType == null) {
-            return getVecStructs()["vec3"]?.get(name)
-        }
-        return getVecStructs()[vecType]?.get(name)
     }
 
     /**

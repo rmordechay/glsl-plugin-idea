@@ -46,8 +46,8 @@ abstract class GlslType(node: ASTNode) : ASTWrapperPsiElement(node), GlslIdentif
         val dummyElement = (PsiFileFactory.getInstance(project)
             .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
             .firstChild
-        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslType::class.java)
-        return if (newIdentifierNode != null) replace(newIdentifierNode) as GlslIdentifier else this
+        val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslType::class.java) ?: return this
+        return replace(newIdentifierNode) as? GlslIdentifier
     }
 
     /**

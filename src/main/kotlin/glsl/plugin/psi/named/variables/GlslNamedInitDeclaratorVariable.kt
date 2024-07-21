@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariableImpl
+import glsl.psi.interfaces.GlslDeclaration
 import glsl.psi.interfaces.GlslInitDeclaratorVariable
 import glsl.psi.interfaces.GlslVariableIdentifier
 import javax.swing.Icon
@@ -33,8 +34,8 @@ abstract class GlslNamedInitDeclaratorVariable(node: ASTNode) : GlslNamedVariabl
      *
      */
     override fun getAssociatedType(): GlslNamedType? {
-//        val declaration = getPsi().parent as GlslDeclaration
-        return null
+        val singleDeclaration = (getPsi().parent as? GlslDeclaration)?.singleDeclaration
+        return singleDeclaration?.getAssociatedType()
     }
 
     /**

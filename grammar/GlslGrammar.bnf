@@ -575,17 +575,15 @@ init_declarator_variable
 
 single_declaration
     ::= fully_specified_type variable_identifier array_specifier? (EQUAL initializer)?
-    |   fully_specified_type variable_identifier EQUAL initializer
-    |   fully_specified_type variable_identifier?
+    |   fully_specified_type
     {   pin(".*")=2 }
 
-private initializer_list
-    ::= initializer (COMMA initializer)*
-
 private initializer
-    ::= LEFT_BRACE initializer_list COMMA RIGHT_BRACE
-	|   LEFT_BRACE initializer_list? RIGHT_BRACE
+    ::= LEFT_BRACE initializer_list? RIGHT_BRACE
 	|   expr_no_assignment
+
+private initializer_list
+    ::= expr_no_assignment (COMMA expr_no_assignment)*
 
 private identifier_list
 	::= declaration_identifier_wrapper (COMMA declaration_identifier_wrapper)*

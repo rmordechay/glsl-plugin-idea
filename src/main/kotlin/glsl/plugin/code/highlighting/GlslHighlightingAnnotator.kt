@@ -1,11 +1,10 @@
-package glsl.plugin.annotator
+package glsl.plugin.code.highlighting
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
-import glsl.plugin.code.highlighting.GlslTextAttributes
 import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.types.builtins.GlslBuiltinType

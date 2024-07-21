@@ -21,12 +21,9 @@
 
         <lang.formatter                 language="Glsl"
                                         implementationClass="glsl.plugin.code.formatter.GlslFormattingModelBuilder"/>
-        <!--  Annotators  -->
-        <annotator                      language="Glsl"
-                                        implementationClass="glsl.plugin.annotator.GlslHighlightingAnnotator"/>
-        <annotator                      language="Glsl"
-                                        implementationClass="glsl.plugin.annotator.GlslCodeAnnotator"/>
         <!--  Syntax highlighting  -->
+        <annotator                      language="Glsl"
+                                        implementationClass="glsl.plugin.code.highlighting.GlslHighlightingAnnotator"/>
         <lang.syntaxHighlighterFactory  language="Glsl"
                                         implementationClass="glsl.plugin.code.highlighting.GlslSyntaxHighlightingFactory"/>
 
@@ -87,6 +84,11 @@
                                         groupName="GLSL"
                                         displayName="Too few arguments to constructor"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionTooFewArguments"/>
+        <localInspection                language="Glsl"
+                                        enabledByDefault="true"
+                                        groupName="GLSL"
+                                        displayName="Missing return for function"
+                                        implementationClass="glsl.plugin.inspections.GlslInspectionMissingReturn"/>
     </extensions>
 
     <actions>

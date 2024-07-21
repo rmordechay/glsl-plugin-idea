@@ -1,7 +1,4 @@
-vec2 hash2() {
-    return vec2(1);
-}
+float a = normalize(b);
 
-void main() {
-    vec2 a = <caret>hash2();
-}
+
+

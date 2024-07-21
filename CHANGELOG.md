@@ -3,6 +3,8 @@
 ## [1.1.3]
 ### Added
 - Enabling/disabling errors
+### Update
+- Small change in syntax colors for better distinction
 ### Fixed
 - Array indexing of vector incorrectly showed an error
 

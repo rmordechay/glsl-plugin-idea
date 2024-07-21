@@ -19,32 +19,32 @@ class GlslInspectionsTest : BasePlatformTestCase() {
         return "src/test/testData/inspections"
     }
 
-    fun testAnnotator1() {
+    fun testInspections1() {
         myFixture.configureByFile("InspectionsFile1.glsl")
         myFixture.checkHighlighting(false, false, false)
     }
 
-    fun testAnnotator2() {
+    fun testInspections2() {
         myFixture.configureByFile("InspectionsFile2.frag")
         myFixture.checkHighlighting(false, false, false)
     }
 
-    fun testAnnotator3() {
+    fun testInspections3() {
         myFixture.configureByFiles("InspectionsFile3.glsl")
         myFixture.checkHighlighting(false, false, false)
     }
 
-    fun testAnnotator4() {
+    fun testInspections4() {
         myFixture.configureByFiles("InspectionsFile4.glsl")
         myFixture.checkHighlighting(false, false, false)
     }
 
-    fun testAnnotator5() {
+    fun testInspections5() {
         myFixture.configureByFiles("InspectionsFile5.glsl")
         myFixture.checkHighlighting(false, false, false)
     }
 
-    fun testAnnotator6() {
+    fun testInspections6() {
         myFixture.configureByFiles("InspectionsFile6.glsl")
         myFixture.checkHighlighting(false, false, false)
     }

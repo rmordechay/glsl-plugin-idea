@@ -31,75 +31,11 @@ class GlslCodeAnnotator : Annotator {
                 annotateMissingReturn(element, holder)
             }
             is GlslSingleDeclaration -> {
-                annotateSingleDeclaration(element, holder)
+//                annotateSingleDeclaration(element, holder)
             }
             is GlslFunctionCall -> {
-                annotateNoMatchingFunction(element, holder)
+//                annotateNoMatchingFunction(element, holder)
             }
-        }
-    }
-
-    /**
-     *
-     */
-    private fun annotateSingleDeclaration(singleDeclaration: GlslSingleDeclaration, holder: AnnotationHolder) {
-        val expr = singleDeclaration.exprNoAssignmentList.firstOrNull() ?: return
-        val declarationType = singleDeclaration.getAssociatedType() ?: return
-        val exprType = expr.getExprType() ?: return
-        if (exprType.errorMessage != null) {
-            setHighlightingError(expr, holder, exprType.errorMessage!!)
-            return
-        }
-        if (declarationType.isEqual(exprType)) return
-        setHighlightingError(expr, holder, INCOMPATIBLE_TYPES_IN_INIT)
-    }
-
-    /**
-     *
-     */
-    private fun annotateNoMatchingFunction(element: GlslFunctionCall, holder: AnnotationHolder) {
-        val funcIdentifier = element.variableIdentifier
-        if (funcIdentifier != null) {
-            annotateFuncCall(element, holder, funcIdentifier)
-            return
-        }
-        val constructorIdentifier = element.typeSpecifier?.typeName
-        if (constructorIdentifier != null) {
-            annotateConstructor(element, holder, constructorIdentifier)
-            return
-        }
-    }
-
-    /**
-     *
-     */
-    private fun annotateConstructor(element: GlslFunctionCall, holder: AnnotationHolder, typeName: GlslTypeName) {
-        val structSpecifier = typeName.reference?.resolve() as? GlslStructSpecifier ?: return
-        val expectedParamCount = structSpecifier.getStructMembers().size
-        val actualParamsExprs = element.exprNoAssignmentList
-        var msg: String? = null
-        if (expectedParamCount < actualParamsExprs.size) {
-            msg = TOO_MANY_ARGUMENTS_CONSTRUCTOR.format(typeName.getName())
-        } else if (expectedParamCount > actualParamsExprs.size) {
-            msg = TOO_FEW_ARGUMENTS_CONSTRUCTOR.format(typeName.getName())
-        }
-        if (msg == null) return
-        val textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
-        setHighlightingError(textRange, holder, msg)
-    }
-
-    /**
-     *
-     */
-    private fun annotateFuncCall(element: GlslFunctionCall, holder: AnnotationHolder, funcName: GlslVariableIdentifier) {
-        val functionDeclarator = funcName.reference?.resolve() as? GlslFunctionDeclaratorImpl ?: return
-        val paramTypes = functionDeclarator.getParameterTypes() ?: return
-        val exprTypes = element.exprNoAssignmentList.mapNotNull { it.getExprType() }
-        if (paramTypes.size != exprTypes.size) {
-            val actualTypesString = exprTypes.mapNotNull { it.name }.joinToString(", ")
-            val msg = NO_MATCHING_FUNCTION_CALL.format(funcName.getName(), actualTypesString)
-            val textRange = TextRange(element.leftParen.startOffset, element.rightParen.endOffset)
-            setHighlightingError(textRange, holder, msg)
         }
     }
 

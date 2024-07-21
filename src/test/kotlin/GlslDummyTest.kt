@@ -1,7 +1,6 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import junit.framework.TestCase
-import junit.framework.TestCase.assertNull
-import org.junit.Test
+import glsl.plugin.inspections.GlslInspectionIncompatibleType
+import glsl.plugin.inspections.GlslInspectionTooManyArguments
 
 class GlslDummyTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String {
@@ -10,7 +9,9 @@ class GlslDummyTest : BasePlatformTestCase() {
 
     fun testDummy() {
         myFixture.configureByFiles("dummy.glsl")
-        myFixture.checkHighlighting(false, false, false)
+//        myFixture.checkHighlighting(false, false, false)
+        myFixture.enableInspections(GlslInspectionTooManyArguments())
+        myFixture.testHighlighting(false, false, false)
 //        val reference = myFixture.getReferenceAtCaretPosition("dummy.glsl")
 //        val resolve = reference?.resolve()
 //        assertNotNull(resolve)

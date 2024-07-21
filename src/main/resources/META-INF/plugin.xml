@@ -4,7 +4,6 @@
     <vendor>Walt Grace</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-<!--    <depends>JavaScript</depends>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <!--  File  -->
@@ -67,6 +66,27 @@
 
         <!--  Language Injection  -->
         <multiHostInjector              implementation="glsl.plugin.features.GlslMultiHostInjector"/>
+
+        <localInspection                language="Glsl"
+                                        enabledByDefault="true"
+                                        groupName="GLSL"
+                                        displayName="Incompatible types in initialization"
+                                        implementationClass="glsl.plugin.inspections.GlslInspectionIncompatibleType"/>
+        <localInspection                language="Glsl"
+                                        enabledByDefault="true"
+                                        groupName="GLSL"
+                                        displayName="No matching function for call"
+                                        implementationClass="glsl.plugin.inspections.GlslInspectionNoMatchingFunction"/>
+        <localInspection                language="Glsl"
+                                        enabledByDefault="true"
+                                        groupName="GLSL"
+                                        displayName="Too many arguments to constructor"
+                                        implementationClass="glsl.plugin.inspections.GlslInspectionTooManyArguments"/>
+        <localInspection                language="Glsl"
+                                        enabledByDefault="true"
+                                        groupName="GLSL"
+                                        displayName="Too few arguments to constructor"
+                                        implementationClass="glsl.plugin.inspections.GlslInspectionTooFewArguments"/>
     </extensions>
 
     <actions>

@@ -27,7 +27,7 @@ private const val INCLUDE_RECURSION_LIMIT = 1000
 class GlslVariableReference(private val element: GlslVariable, textRange: TextRange) : GlslReference(element, textRange) {
     private var includeRecursionLevel = 0
 
-    private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
+    private val resolver = AbstractResolver<GlslVariableReference, GlslNamedVariable> { reference, _ ->
         reference.doResolve()
         reference.resolvedReferences.firstOrNull() as? GlslNamedVariable
     }

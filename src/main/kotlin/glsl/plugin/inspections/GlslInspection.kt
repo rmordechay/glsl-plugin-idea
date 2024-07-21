@@ -17,6 +17,7 @@ import glsl.data.GlslErrorMessages.Companion.TOO_FEW_ARGUMENTS_CONSTRUCTOR
 import glsl.data.GlslErrorMessages.Companion.TOO_MANY_ARGUMENTS_CONSTRUCTOR
 import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
+import kotlin.math.sin
 
 
 /**
@@ -32,10 +33,6 @@ class GlslInspectionIncompatibleType : LocalInspectionTool() {
                 val expr = singleDeclaration.exprNoAssignmentList.firstOrNull() ?: return
                 val declarationType = singleDeclaration.getAssociatedType() ?: return
                 val exprType = expr.getExprType() ?: return
-                if (exprType.errorMessage != null) {
-                    holder.registerProblem(expr, exprType.errorMessage!!, ProblemHighlightType.GENERIC_ERROR)
-                    return
-                }
                 if (declarationType.isEqual(exprType)) return
                 holder.registerProblem(expr, INCOMPATIBLE_TYPES_IN_INIT, ProblemHighlightType.GENERIC_ERROR)
             }
@@ -134,6 +131,25 @@ class GlslInspectionMissingReturn : LocalInspectionTool() {
                 val funcName = functionDeclarator.name
                 val msg = MISSING_RETURN_FUNCTION.format(funcName)
                 holder.registerProblem(functionDefinition, msg, ProblemHighlightType.GENERIC_ERROR, textRange)
+            }
+        }
+    }
+}
+
+/**
+ *
+ */
+class GlslInspectionOperatorDoesNotOperate : LocalInspectionTool() {
+    /**
+     *
+     */
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : GlslVisitor() {
+            override fun visitSingleDeclaration(singleDeclaration: GlslSingleDeclaration) {
+                val expr = singleDeclaration.exprNoAssignmentList.firstOrNull() ?: return
+                val exprType = expr.getExprType()
+                if (exprType?.errorMessage == null) return
+                holder.registerProblem(expr, exprType.errorMessage!!, ProblemHighlightType.GENERIC_ERROR)
             }
         }
     }

@@ -2,6 +2,7 @@ package glsl.plugin.psi.named.types.builtins
 
 import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.elementType
 import glsl.data.GlslDefinitions
 import glsl.data.GlslErrorMessages
 import glsl.plugin.psi.named.GlslNamedElement
@@ -74,7 +75,7 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
     override fun canCast(other: IElementType?): Boolean {
         if (other == null) return false
         val implicitConversions = GlslDefinitions.VECTORS[other]
-        return implicitConversions?.contains(other) ?: false
+        return implicitConversions?.contains(elementType) ?: false
     }
 
     /**

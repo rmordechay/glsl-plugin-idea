@@ -64,31 +64,19 @@
         <!--  Language Injection  -->
         <multiHostInjector              implementation="glsl.plugin.features.GlslMultiHostInjector"/>
 
-        <localInspection                language="Glsl"
-                                        enabledByDefault="true"
-                                        groupName="GLSL"
-                                        displayName="Incompatible types in initialization"
+        <!--  Inspections  -->
+        <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Incompatible types in initialization"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionIncompatibleType"/>
-        <localInspection                language="Glsl"
-                                        enabledByDefault="true"
-                                        groupName="GLSL"
-                                        displayName="No matching function for call"
+        <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="No matching function for call"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionNoMatchingFunction"/>
-        <localInspection                language="Glsl"
-                                        enabledByDefault="true"
-                                        groupName="GLSL"
-                                        displayName="Too many arguments to constructor"
+        <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Too many arguments to constructor"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionTooManyArguments"/>
-        <localInspection                language="Glsl"
-                                        enabledByDefault="true"
-                                        groupName="GLSL"
-                                        displayName="Too few arguments to constructor"
+        <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Too few arguments to constructor"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionTooFewArguments"/>
-        <localInspection                language="Glsl"
-                                        enabledByDefault="true"
-                                        groupName="GLSL"
-                                        displayName="Missing return for function"
+        <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Missing return for function"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionMissingReturn"/>
+        <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Operator does not operate on"
+                                        implementationClass="glsl.plugin.inspections.GlslInspectionOperatorDoesNotOperate"/>
     </extensions>
 
     <actions>

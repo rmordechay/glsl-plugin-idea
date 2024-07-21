@@ -1,4 +1,4 @@
-package glsl.plugin.documentation
+package glsl.plugin.features
 
 import com.intellij.lang.documentation.DocumentationProvider
 import com.intellij.openapi.editor.Editor

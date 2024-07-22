@@ -1,3 +1,1 @@
-UserType main() {
-    int a;
-}
+int a = a__();

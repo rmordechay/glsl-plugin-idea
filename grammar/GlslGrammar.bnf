@@ -889,12 +889,10 @@ private function_call_header_no_parameters
 
 private function_call_header_with_parameters
     ::= function_identifier LEFT_PAREN expr_no_assignment (COMMA expr_no_assignment)*
-    {   pin=2   }
 
 private constructor_header
     ::= constructor_identifier LEFT_PAREN expr_no_assignment (COMMA expr_no_assignment)*
     |   constructor_identifier LEFT_PAREN
-    {   pin(".*")=2   }
 
 private function_identifier
     ::= variable_identifier array_specifier?

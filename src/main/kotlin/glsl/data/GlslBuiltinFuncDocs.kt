@@ -185,45 +185,8 @@ val imageParams = listOf("gimage3D image, ivec3 P",
     "gimage2DMSArray image, ivec3 P, int sample",
 )
 
-@Suppress("unused")
-fun f2(funcs1: List<String>): List<String> {
-    val lst = arrayListOf<String>()
-    for (func in funcs1) {
-        val funcSplit = func.split(" ")
-        val genTypes = funcSplit.filter { replacements.keys.contains(it) }.toSet()
-        if (genTypes.size == 2) {
-            val first = replacements[genTypes.first()]!!
-            val last = replacements[genTypes.last()]!!
-            first.zip(last).forEach { (x, y) ->
-                val find = "\\b${genTypes.first()}\\b".toRegex().replace(func, x)
-                val find2 = "\\b${genTypes.last()}\\b".toRegex().replace(find, y)
-                lst.add(find2)
-            }
-        } else if (genTypes.size == 1){
-            val rep = replacements[genTypes.first()] ?: return emptyList()
-            for (s in rep) {
-                lst.add(func.replace(genTypes.first(), s))
-            }
-        } else if (genTypes.isEmpty()) {
-            println(func)
-        } else {
-            print("***!!! $func !!!***")
-        }
-    }
-    return lst
-}
-
 fun main() {
-//    for (s in f2(funcs)) {
-//        println(s)
-//    }
-//    for (func in funcs) {
-//        if (func.contains("IMAGE_PARAMS")) {
-//            for (imageParam in imageParams) {
-//                println(func.replace("IMAGE_PARAMS", imageParam))
-//            }
-//        }
-//    }
+
 }
 
 

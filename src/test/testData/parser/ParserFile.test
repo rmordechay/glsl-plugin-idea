@@ -240,7 +240,7 @@ int a10 = a__[1].b.c;
 int a11 = a__ == true ? a + a : a;
 int a12 = a__ >= 5 ? a + a : a * 2;
 int a13 = a__ == 0 ? a + a : a + 1;
-int a14 = true ? b : a;
+float a14 = true ? b : a;
 
 layout (location) in vec2 layout_declration;
 layout (location = 0) in vec3 layout_declration;

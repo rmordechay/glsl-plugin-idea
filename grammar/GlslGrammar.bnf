@@ -574,9 +574,10 @@ init_declarator_variable
     ::= variable_identifier
 
 single_declaration
-    ::= fully_specified_type variable_identifier array_specifier? (EQUAL initializer)?
-    |   fully_specified_type
-    {   pin(".*")=2 }
+    ::= fully_specified_type variable_identifier array_specifier? EQUAL initializer
+    |   fully_specified_type variable_identifier array_specifier
+    |   fully_specified_type variable_identifier?
+    {   pin(".*")=4 }
 
 private initializer
     ::= LEFT_BRACE initializer_list? RIGHT_BRACE
@@ -886,15 +887,14 @@ constructor_call
 private function_call_header_no_parameters
     ::= function_identifier LEFT_PAREN VOID?
 
-private recover_function_call_header_with_parameters ::= !(RIGHT_PAREN)
-
 private function_call_header_with_parameters
     ::= function_identifier LEFT_PAREN expr_no_assignment (COMMA expr_no_assignment)*
-    {   recoverWhile=recover_function_call_header_with_parameters   }
+    {   pin=2   }
 
 private constructor_header
     ::= constructor_identifier LEFT_PAREN expr_no_assignment (COMMA expr_no_assignment)*
-    {   recoverWhile=recover_function_call_header_with_parameters   }
+    |   constructor_identifier LEFT_PAREN
+    {   pin(".*")=2   }
 
 private function_identifier
     ::= variable_identifier array_specifier?

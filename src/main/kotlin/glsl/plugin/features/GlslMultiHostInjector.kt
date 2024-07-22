@@ -34,21 +34,6 @@ class GlslMultiHostInjector : MultiHostInjector {
                     .addPlace(null, null, xmlText as PsiLanguageInjectionHost, textRangeInParent)
                     .doneInjecting()
             }
-//            is JSStringTemplateExpression -> {
-//                val stringTemplate = context.childLeafs().find { it.elementType == STRING_TEMPLATE_PART } ?: return
-//                if (!stringTemplate.text.startsWith(JS_STRING_GLSL_PREFIX)) return
-//                val startStringOffset = stringTemplate.textRangeInParent.startOffset + JS_STRING_GLSL_PREFIX.length
-//                val endStringOffset = stringTemplate.textRangeInParent.endOffset
-//                val textRange = TextRange(startStringOffset, endStringOffset)
-//                registrar.startInjecting(GlslLanguage.INSTANCE)
-//                    .addPlace(null, null, context as PsiLanguageInjectionHost, textRange)
-//                    .doneInjecting()
-//            }
-//            is JSLiteralExpression -> {
-//                registrar.startInjecting(GlslLanguage.INSTANCE)
-//                    .addPlace(null, null, context as PsiLanguageInjectionHost, (context as JSLiteralExpression).textRangeInParent)
-//                    .doneInjecting()
-//            }
         }
     }
 
@@ -56,7 +41,6 @@ class GlslMultiHostInjector : MultiHostInjector {
      *
      */
     override fun elementsToInjectIn(): MutableList<out Class<out PsiElement>> {
-//        return mutableListOf(XmlTag::class.java, JSLiteralExpression::class.java, JSStringTemplateExpression::class.java)
         return mutableListOf(XmlTag::class.java)
     }
 }

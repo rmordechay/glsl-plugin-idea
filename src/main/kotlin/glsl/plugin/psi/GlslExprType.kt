@@ -61,8 +61,8 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      */
     private fun getArrayIndexType(arrayIndex: GlslPostfixArrayIndex): GlslNamedType? {
         val variableIdentifier = (arrayIndex.postfixExpr as GlslPrimaryExpr).variableIdentifier
-        val resolve = variableIdentifier?.resolveReference()
-        return resolve?.getAssociatedType()?.getScalarType()
+        val resolvedReference = variableIdentifier?.resolveReference()
+        return resolvedReference?.getAssociatedType()?.getScalarType()
     }
 
     /**

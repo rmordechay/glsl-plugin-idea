@@ -154,6 +154,9 @@ in UserType {
 struct AB {
     int a;
 };
+
+AB ab = AB(a);
+
 const float CONSTANT_DECLRATION = 0.2;
 float;
 float single_declaration;

@@ -19,7 +19,6 @@ class GlslInspectionIncompatibleType : GlslInspection() {
      */
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GlslVisitor() {
-
             override fun visitSingleDeclaration(singleDeclaration: GlslSingleDeclaration) {
                 var expr = singleDeclaration.exprNoAssignmentList.firstOrNull()
                 if (expr == null) {
@@ -30,7 +29,6 @@ class GlslInspectionIncompatibleType : GlslInspection() {
                 if (declarationType.isEqual(exprType)) return
                 holder.registerProblem(expr, GlslErrorCode.INCOMPATIBLE_TYPES_IN_INIT.message, GENERIC_ERROR)
             }
-
         }
     }
 }

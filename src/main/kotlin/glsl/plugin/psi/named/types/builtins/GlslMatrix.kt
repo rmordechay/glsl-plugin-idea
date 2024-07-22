@@ -15,7 +15,7 @@ import glsl.psi.interfaces.GlslBuiltinTypeMatrix
  *
  */
 abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinType {
-
+    override var isPrimitive = true
 
     /**
      *
@@ -28,7 +28,6 @@ abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
      *
      */
     override fun getStructMembers(): List<GlslNamedVariable> {
-//        val lengthFunc = GlslBuiltinUtils.getVecComponent("length") ?: return emptyList()
         return emptyList()
     }
 

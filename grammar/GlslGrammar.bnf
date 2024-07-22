@@ -974,6 +974,7 @@ builtin_type_scalar
     |   FLOAT16_T
     |   FLOAT32_T
     |   FLOAT64_T
+    |   ATOMIC_UINT
 
 builtin_type_vector
     ::= VEC2

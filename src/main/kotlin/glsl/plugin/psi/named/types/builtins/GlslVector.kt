@@ -20,6 +20,7 @@ import glsl.psi.interfaces.GlslBuiltinTypeVector
  *
  */
 abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinType {
+    override var isPrimitive = true
 
     /**
      *

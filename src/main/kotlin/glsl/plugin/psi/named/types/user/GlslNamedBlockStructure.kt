@@ -20,6 +20,7 @@ import javax.swing.Icon
  * block_structure
  */
 abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node), GlslNamedType {
+    override var isPrimitive = false
 
     /**
      *

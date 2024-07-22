@@ -16,6 +16,7 @@ import javax.swing.Icon
  */
 interface GlslNamedType : GlslNamedElement {
     var glslError: GlslError?
+    var isPrimitive: Boolean
 
     fun getStructMembers(): List<GlslNamedVariable>
     fun getStructMember(memberName: String): GlslNamedVariable?

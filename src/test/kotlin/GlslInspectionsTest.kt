@@ -2,6 +2,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.plugin.inspections.GlslInspectionIncompatibleType
 import glsl.plugin.inspections.GlslInspectionMissingReturn
 import glsl.plugin.inspections.GlslInspectionOperatorDoesNotOperate
+import glsl.plugin.inspections.GlslInspectionPrimitiveConstructorNoArguments
 
 class GlslInspectionsTest : BasePlatformTestCase() {
 
@@ -24,6 +25,12 @@ class GlslInspectionsTest : BasePlatformTestCase() {
     fun testMissingReturn() {
         myFixture.enableInspections(GlslInspectionMissingReturn())
         myFixture.configureByFiles("InspectionsTestMissingReturn.glsl")
+        myFixture.checkHighlighting(false, false, false)
+    }
+
+    fun testPrimitiveConstructorZeroArguments() {
+        myFixture.enableInspections(GlslInspectionPrimitiveConstructorNoArguments())
+        myFixture.configureByFiles("InspectionPrimitiveConstructorNoArguments.glsl")
         myFixture.checkHighlighting(false, false, false)
     }
 }

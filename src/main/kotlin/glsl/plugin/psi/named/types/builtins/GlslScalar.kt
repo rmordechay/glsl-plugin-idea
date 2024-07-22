@@ -13,6 +13,8 @@ import glsl.psi.interfaces.GlslBuiltinTypeScalar
  *
  */
 abstract class GlslScalar(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinType {
+    override var isPrimitive = true
+
     /**
      *
      */

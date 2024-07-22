@@ -12,6 +12,7 @@ import glsl.psi.interfaces.GlslBuiltinTypeRest
  *
  */
 abstract class GlslBuiltinRest(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinType {
+    override var isPrimitive = true
 
     /**
      *

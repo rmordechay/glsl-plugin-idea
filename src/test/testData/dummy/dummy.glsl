@@ -1,2 +1,2 @@
-vec4 a = vec4(1);
-int b, c = a.brbg;
+mat4 a = mat4(1);
+int b, c = a.length();

@@ -3,6 +3,7 @@ package glsl.plugin.psi.named.types.builtins
 import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
 import glsl.data.GlslDefinitions
+import glsl.data.GlslError
 import glsl.data.GlslErrorCode
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
@@ -46,7 +47,8 @@ abstract class GlslMatrix(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
             is GlslScalar -> return this
             is GlslVector -> {
                 if (operation == "*") return this
-                errorMessage = GlslErrorCode.DOES_NOT_OPERATE_ON.message.format(operation, name, other.name)
+                val msg = GlslErrorCode.DOES_NOT_OPERATE_ON.message.format(operation, name, other.name)
+                glslError = GlslError(GlslErrorCode.DOES_NOT_OPERATE_ON, msg)
                 return this
             }
             is GlslMatrix -> return this

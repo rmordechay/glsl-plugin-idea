@@ -1,6 +1,5 @@
 package glsl.plugin.inspections
 
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
@@ -12,7 +11,9 @@ import glsl.psi.interfaces.GlslVisitor
 /**
  *
  */
-class GlslInspectionIncompatibleType : LocalInspectionTool() {
+class GlslInspectionIncompatibleType : GlslInspection() {
+    override val errorMessageCode = GlslErrorCode.INCOMPATIBLE_TYPES_IN_INIT
+
     /**
      *
      */

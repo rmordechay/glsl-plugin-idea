@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
+import glsl.data.GlslError
 import glsl.plugin.code.highlighting.GlslTextAttributes
 import javax.swing.Icon
 
@@ -14,7 +15,7 @@ import javax.swing.Icon
  *
  */
 interface GlslNamedType : GlslNamedElement {
-    var errorMessage: String?
+    var glslError: GlslError?
 
     fun getStructMembers(): List<GlslNamedVariable>
     fun getStructMember(memberName: String): GlslNamedVariable?
@@ -38,7 +39,7 @@ interface GlslNamedType : GlslNamedElement {
  *
  */
 abstract class GlslNamedTypeImpl(node: ASTNode) : GlslNamedElementImpl(node), GlslNamedType {
-    override var errorMessage: String? = null
+    override var glslError: GlslError? = null
 
     /**
      *

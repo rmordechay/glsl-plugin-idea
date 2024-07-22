@@ -1,8 +1,8 @@
 package glsl.plugin.inspections
 
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
 import glsl.data.GlslErrorCode
 import glsl.psi.interfaces.GlslFunctionCall
@@ -12,7 +12,9 @@ import glsl.psi.interfaces.GlslVisitor
 /**
  *
  */
-class GlslInspectionTooManyArguments : LocalInspectionTool() {
+class GlslInspectionTooManyArguments : GlslInspection() {
+    override val errorMessageCode = GlslErrorCode.TOO_MANY_ARGUMENTS_CONSTRUCTOR
+
     /**
      *
      */
@@ -23,10 +25,11 @@ class GlslInspectionTooManyArguments : LocalInspectionTool() {
                 val structSpecifier = constructorIdentifier.reference?.resolve() as? GlslStructSpecifier ?: return
                 val expectedParamCount = structSpecifier.getStructMembers().size
                 val actualParamsExprs = functionCall.exprNoAssignmentList
-                if (expectedParamCount < actualParamsExprs.size) {
-                    val msg = GlslErrorCode.TOO_MANY_ARGUMENTS_CONSTRUCTOR.message.format(constructorIdentifier.getName())
-                    holder.registerProblem(functionCall, msg, ProblemHighlightType.GENERIC_ERROR)
-                }
+                if (expectedParamCount >= actualParamsExprs.size) return
+                val msg = errorMessageCode.message.format(constructorIdentifier.getName())
+                val startOffset = functionCall.leftParen.textRange.startOffset
+                val endOffset = functionCall.rightParen.textRange.endOffset
+                holder.registerProblem(functionCall, msg, GENERIC_ERROR, TextRange(startOffset, endOffset))
             }
         }
     }

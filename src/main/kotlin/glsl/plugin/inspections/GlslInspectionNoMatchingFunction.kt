@@ -1,6 +1,5 @@
 package glsl.plugin.inspections
 
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
@@ -12,7 +11,9 @@ import glsl.psi.interfaces.GlslVisitor
 /**
  *
  */
-class GlslInspectionNoMatchingFunction : LocalInspectionTool() {
+class GlslInspectionNoMatchingFunction : GlslInspection() {
+    override val errorMessageCode = GlslErrorCode.NO_MATCHING_FUNCTION_CALL
+
     /**
      *
      */
@@ -27,7 +28,7 @@ class GlslInspectionNoMatchingFunction : LocalInspectionTool() {
                 if (paramTypes.size == exprTypes.size || exprTypes.any { it == null }) return
 
                 val actualTypesString = exprTypes.mapNotNull { it?.name }.joinToString(", ")
-                val msg = GlslErrorCode.NO_MATCHING_FUNCTION_CALL.message.format(funcIdentifier.getName(), actualTypesString)
+                val msg = errorMessageCode.message.format(funcIdentifier.getName(), actualTypesString)
                 holder.registerProblem(functionCall, msg, ProblemHighlightType.GENERIC_ERROR)
             }
         }

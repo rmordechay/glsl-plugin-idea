@@ -1,6 +1,5 @@
 package glsl.plugin.inspections
 
-import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.TextRange
@@ -15,7 +14,9 @@ import glsl.psi.interfaces.GlslVisitor
 /**
  *
  */
-class GlslInspectionMissingReturn : LocalInspectionTool() {
+class GlslInspectionMissingReturn : GlslInspection() {
+    override val errorMessageCode = GlslErrorCode.MISSING_RETURN_FUNCTION
+
     /**
      *
      */
@@ -24,13 +25,14 @@ class GlslInspectionMissingReturn : LocalInspectionTool() {
             override fun visitFunctionDefinition(functionDefinition: GlslFunctionDefinition) {
                 val functionDeclarator = functionDefinition.functionDeclarator
                 if (functionDeclarator.typeSpecifier.textMatches("void")) return
-                val returnExists = PsiTreeUtil.collectElements(functionDefinition) { e -> e.elementType == GlslTypes.RETURN }
+                val returnExists = PsiTreeUtil
+                    .collectElements(functionDefinition) { e -> e.elementType == GlslTypes.RETURN }
                     .isNotEmpty()
                 if (returnExists) return
                 val endOffset = functionDefinition.textRangeInParent.endOffset
                 val textRange = TextRange(endOffset - 1, endOffset)
                 val funcName = functionDeclarator.name
-                val msg = GlslErrorCode.MISSING_RETURN_FUNCTION.message.format(funcName)
+                val msg = errorMessageCode.message.format(funcName)
                 holder.registerProblem(functionDefinition, msg, ProblemHighlightType.GENERIC_ERROR, textRange)
             }
         }

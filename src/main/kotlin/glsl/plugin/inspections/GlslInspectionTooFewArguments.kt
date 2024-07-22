@@ -1,7 +1,6 @@
 package glsl.plugin.inspections
 
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
@@ -13,7 +12,9 @@ import glsl.psi.interfaces.GlslVisitor
 /**
  *
  */
-class GlslInspectionTooFewArguments : LocalInspectionTool() {
+class GlslInspectionTooFewArguments : GlslInspection() {
+    override val errorMessageCode = GlslErrorCode.TOO_FEW_ARGUMENTS_CONSTRUCTOR
+
     /**
      *
      */
@@ -25,13 +26,10 @@ class GlslInspectionTooFewArguments : LocalInspectionTool() {
                 val expectedParamCount = structSpecifier.getStructMembers().size
                 val actualParamsExprs = functionCall.exprNoAssignmentList
                 if (expectedParamCount <= actualParamsExprs.size) return
-                val msg = GlslErrorCode.TOO_FEW_ARGUMENTS_CONSTRUCTOR.message.format(constructorIdentifier.getName())
+                val msg = errorMessageCode.message.format(constructorIdentifier.getName())
                 val startOffset = functionCall.leftParen.textRange.startOffset
                 val endOffset = functionCall.rightParen.textRange.endOffset
-                holder.registerProblem(functionCall, msg,
-                    ProblemHighlightType.GENERIC_ERROR,
-                    TextRange(startOffset, endOffset)
-                )
+                holder.registerProblem(functionCall, msg, GENERIC_ERROR, TextRange(startOffset, endOffset))
             }
         }
     }

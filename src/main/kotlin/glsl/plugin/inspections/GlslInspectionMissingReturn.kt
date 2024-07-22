@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes
-import glsl.data.GlslErrorMessages
+import glsl.data.GlslErrorCode
 import glsl.psi.interfaces.GlslFunctionDefinition
 import glsl.psi.interfaces.GlslVisitor
 
@@ -30,7 +30,7 @@ class GlslInspectionMissingReturn : LocalInspectionTool() {
                 val endOffset = functionDefinition.textRangeInParent.endOffset
                 val textRange = TextRange(endOffset - 1, endOffset)
                 val funcName = functionDeclarator.name
-                val msg = GlslErrorMessages.MISSING_RETURN_FUNCTION.format(funcName)
+                val msg = GlslErrorCode.MISSING_RETURN_FUNCTION.message.format(funcName)
                 holder.registerProblem(functionDefinition, msg, ProblemHighlightType.GENERIC_ERROR, textRange)
             }
         }

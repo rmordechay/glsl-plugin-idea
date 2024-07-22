@@ -4,9 +4,10 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import glsl.data.GlslErrorMessages.Companion.INCOMPATIBLE_TYPES_IN_INIT
-import glsl.plugin.psi.named.GlslNamedType
-import glsl.psi.interfaces.*
+import glsl.data.GlslErrorCode
+import glsl.psi.interfaces.GlslDeclaration
+import glsl.psi.interfaces.GlslSingleDeclaration
+import glsl.psi.interfaces.GlslVisitor
 
 /**
  *
@@ -26,7 +27,7 @@ class GlslInspectionIncompatibleType : LocalInspectionTool() {
                 val declarationType = singleDeclaration.getAssociatedType() ?: return
                 val exprType = expr.getExprType() ?: return
                 if (declarationType.isEqual(exprType)) return
-                holder.registerProblem(expr, INCOMPATIBLE_TYPES_IN_INIT, GENERIC_ERROR)
+                holder.registerProblem(expr, GlslErrorCode.INCOMPATIBLE_TYPES_IN_INIT.message, GENERIC_ERROR)
             }
 
         }

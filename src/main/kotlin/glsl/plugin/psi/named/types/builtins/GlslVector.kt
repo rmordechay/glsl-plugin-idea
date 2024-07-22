@@ -5,7 +5,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes.*
 import glsl.data.GlslDefinitions
-import glsl.data.GlslErrorMessages
+import glsl.data.GlslErrorCode
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
@@ -31,7 +31,8 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
      *
      */
     override fun getStructMembers(): List<GlslNamedVariable> {
-        val vectorMembers = GlslBuiltinUtils.getVecStructs()[name]?.values?.toList()
+        val vectors = GlslBuiltinUtils.getVecStructs()[name]
+        val vectorMembers = vectors?.values?.toList()
         return vectorMembers ?: emptyList()
     }
 
@@ -66,7 +67,7 @@ abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinT
             is GlslVector -> return this
             is GlslMatrix -> {
                 if (operation == "*") return this
-                errorMessage = GlslErrorMessages.DOES_NOT_OPERATE_ON.format(operation, name, other.name)
+                errorMessage = GlslErrorCode.DOES_NOT_OPERATE_ON.message.format(operation, name, other.name)
                 return this
             }
         }

@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
-import glsl.data.GlslErrorMessages
+import glsl.data.GlslErrorCode
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslStructSpecifier
 import glsl.psi.interfaces.GlslVisitor
@@ -25,7 +25,7 @@ class GlslInspectionTooFewArguments : LocalInspectionTool() {
                 val expectedParamCount = structSpecifier.getStructMembers().size
                 val actualParamsExprs = functionCall.exprNoAssignmentList
                 if (expectedParamCount <= actualParamsExprs.size) return
-                val msg = GlslErrorMessages.TOO_FEW_ARGUMENTS_CONSTRUCTOR.format(constructorIdentifier.getName())
+                val msg = GlslErrorCode.TOO_FEW_ARGUMENTS_CONSTRUCTOR.message.format(constructorIdentifier.getName())
                 val startOffset = functionCall.leftParen.textRange.startOffset
                 val endOffset = functionCall.rightParen.textRange.endOffset
                 holder.registerProblem(functionCall, msg,

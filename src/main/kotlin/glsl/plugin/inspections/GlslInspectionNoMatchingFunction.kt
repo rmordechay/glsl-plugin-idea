@@ -4,8 +4,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import glsl.data.GlslErrorMessages
-import glsl.data.GlslErrorMessages.Companion.NO_MATCHING_FUNCTION_CALL
+import glsl.data.GlslErrorCode
 import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslVisitor
@@ -28,7 +27,7 @@ class GlslInspectionNoMatchingFunction : LocalInspectionTool() {
                 if (paramTypes.size == exprTypes.size || exprTypes.any { it == null }) return
 
                 val actualTypesString = exprTypes.mapNotNull { it?.name }.joinToString(", ")
-                val msg = NO_MATCHING_FUNCTION_CALL.format(funcIdentifier.getName(), actualTypesString)
+                val msg = GlslErrorCode.NO_MATCHING_FUNCTION_CALL.message.format(funcIdentifier.getName(), actualTypesString)
                 holder.registerProblem(functionCall, msg, ProblemHighlightType.GENERIC_ERROR)
             }
         }

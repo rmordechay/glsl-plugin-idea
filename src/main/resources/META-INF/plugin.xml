@@ -78,7 +78,7 @@
         <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Operator does not operate on"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionOperatorDoesNotOperate"/>
         <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Constructor of primitive type must have at least one argument"
-                                        implementationClass="glsl.plugin.inspections.GlslInspectionPrimitiveConstructorNoArguments"/>
+                                        implementationClass="glsl.plugin.inspections.GlslInspectionConstructorNoArguments"/>
     </extensions>
 
     <actions>

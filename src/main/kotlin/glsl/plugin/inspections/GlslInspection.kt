@@ -1,7 +1,6 @@
 package glsl.plugin.inspections
 
 import com.intellij.codeInspection.LocalInspectionTool
-import glsl.data.GlslErrorCode
 
 /**
  *

@@ -286,7 +286,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     private fun lookupInPostfixFieldSelection(postfixFieldSelection: GlslPostfixFieldSelection?) {
         if (postfixFieldSelection == null) return
         val rootExpr = getPostfixIdentifier(postfixFieldSelection.postfixExpr) ?: return
-        var nextMemberType = rootExpr.reference?.resolve()?.getAssociatedType() ?: return
+        var nextMemberType = rootExpr.resolveReference()?.getAssociatedType() ?: return
 
         val identifierList = postfixFieldSelection.postfixStructMemberList.map {
             if (it.functionCall != null) it.functionCall!!.variableIdentifier

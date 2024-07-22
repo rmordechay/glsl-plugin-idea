@@ -1,4 +1,4 @@
-package glsl.data
+package glsl.plugin.inspections
 
 data class GlslError(
     val errorCode: GlslErrorCode,

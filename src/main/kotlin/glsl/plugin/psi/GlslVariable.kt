@@ -12,6 +12,7 @@ import glsl.GlslTypes
 import glsl.GlslTypes.Factory
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
+import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.reference.GlslVariableReference
 import glsl.plugin.utils.GlslUtils
 

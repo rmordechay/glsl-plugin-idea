@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes
-import glsl.data.GlslErrorCode
 import glsl.psi.interfaces.GlslFunctionDefinition
 import glsl.psi.interfaces.GlslVisitor
 

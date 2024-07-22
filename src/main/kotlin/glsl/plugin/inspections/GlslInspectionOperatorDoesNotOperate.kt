@@ -3,7 +3,6 @@ package glsl.plugin.inspections
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import glsl.data.GlslErrorCode
 import glsl.psi.interfaces.GlslSingleDeclaration
 import glsl.psi.interfaces.GlslVisitor
 

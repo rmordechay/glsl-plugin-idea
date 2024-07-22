@@ -18,14 +18,12 @@ import glsl.GlslTypes.BUILTIN_TYPE_SCALAR
 import glsl.data.ShaderType
 import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.named.GlslNamedType
-import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.psi.named.types.builtins.GlslBuiltinRest
 import glsl.plugin.psi.named.types.builtins.GlslMatrix
 import glsl.plugin.psi.named.types.builtins.GlslScalar
 import glsl.plugin.psi.named.types.builtins.GlslVector
 import glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier
 import glsl.psi.impl.GlslBuiltinTypeScalarImpl
-import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslFunctionDeclarator
 import glsl.psi.interfaces.GlslTypeSpecifier
 import java.io.BufferedReader
@@ -193,7 +191,8 @@ object GlslUtils {
      *
      */
     @JvmStatic
-    fun getType(typeSpecifier: GlslTypeSpecifier): GlslNamedType? {
+    fun getType(typeSpecifier: GlslTypeSpecifier?): GlslNamedType? {
+        if (typeSpecifier == null) return null
         if (typeSpecifier.builtinTypeScalar != null) {
             return typeSpecifier.builtinTypeScalar as GlslScalar
         } else if (typeSpecifier.builtinTypeVector != null) {
@@ -205,21 +204,7 @@ object GlslUtils {
         } else if (typeSpecifier.structSpecifier != null) {
             return typeSpecifier.structSpecifier as GlslNamedStructSpecifier
         } else if (typeSpecifier.typeName != null) {
-            return typeSpecifier.typeName?.reference?.resolve() as? GlslNamedType
-        }
-        return null
-    }
-
-    /**
-     *
-     */
-    @JvmStatic
-    fun getFuncCallType(functionCall: GlslFunctionCall): GlslNamedType? {
-        if (functionCall.variableIdentifier != null) {
-            val reference = functionCall.variableIdentifier?.reference?.resolve() as? GlslNamedVariable
-            return reference?.getAssociatedType()
-        } else if (functionCall.typeSpecifier != null) {
-            return getType(functionCall.typeSpecifier!!)
+            return typeSpecifier.typeName?.resolveReference() as? GlslNamedType
         }
         return null
     }

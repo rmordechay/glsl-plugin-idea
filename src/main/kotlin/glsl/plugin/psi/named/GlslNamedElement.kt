@@ -44,6 +44,11 @@ interface GlslNamedElement : PsiNameIdentifierOwner {
      * The icon that is shown in the popup completion.
      */
     fun getLookupIcon(): Icon?
+
+    /**
+     * Get the type of identifier in case it's a variable or itself in case the identifier is a type
+     */
+    fun getAssociatedType(): GlslNamedType?
 }
 
 abstract class GlslNamedElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), GlslNamedElement {

@@ -5,8 +5,8 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes.*
 import glsl.data.GlslDefinitions
-import glsl.data.GlslError
-import glsl.data.GlslErrorCode
+import glsl.plugin.inspections.GlslError
+import glsl.plugin.inspections.GlslErrorCode
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedTypeImpl
@@ -19,7 +19,7 @@ import glsl.psi.interfaces.GlslBuiltinTypeVector
 /**
  *
  */
-abstract class GlslVector(node: ASTNode) : GlslNamedTypeImpl(node), GlslBuiltinType {
+abstract class GlslVector(node: ASTNode) : GlslBuiltinType(node) {
     override var isPrimitive = true
 
     /**

@@ -32,6 +32,13 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node),
     /**
      *
      */
+    override fun getAssociatedType(): GlslNamedType? {
+        return this
+    }
+
+    /**
+     *
+     */
     override fun getPsi(): GlslBlockStructure {
         return this as GlslBlockStructure
     }

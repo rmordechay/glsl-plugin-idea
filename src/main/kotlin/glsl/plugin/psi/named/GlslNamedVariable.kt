@@ -5,12 +5,7 @@ import com.intellij.lang.ASTNode
 /**
  *
  */
-interface GlslNamedVariable : GlslNamedElement {
-    /**
-     *
-     */
-    fun getAssociatedType(): GlslNamedType?
-}
+interface GlslNamedVariable : GlslNamedElement
 
 /**
  *

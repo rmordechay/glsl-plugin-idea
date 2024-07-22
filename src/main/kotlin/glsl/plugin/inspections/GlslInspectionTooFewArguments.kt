@@ -4,7 +4,8 @@ import com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
-import glsl.data.GlslErrorCode
+import glsl.plugin.utils.GlslUtils.getType
+import glsl.psi.interfaces.GlslConstructorCall
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslStructSpecifier
 import glsl.psi.interfaces.GlslVisitor
@@ -20,16 +21,15 @@ class GlslInspectionTooFewArguments : GlslInspection() {
      */
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object: GlslVisitor() {
-            override fun visitFunctionCall(functionCall: GlslFunctionCall) {
-                val constructorIdentifier = functionCall.typeSpecifier?.typeName ?: return
-                val structSpecifier = constructorIdentifier.reference?.resolve() as? GlslStructSpecifier ?: return
+            override fun visitConstructorCall(constructorCall: GlslConstructorCall) {
+                val structSpecifier = getType(constructorCall.typeSpecifier) as? GlslStructSpecifier ?: return
                 val expectedParamCount = structSpecifier.getStructMembers().size
-                val actualParamsExprs = functionCall.exprNoAssignmentList
+                val actualParamsExprs = constructorCall.exprNoAssignmentList
                 if (expectedParamCount <= actualParamsExprs.size) return
-                val msg = errorMessageCode.message.format(constructorIdentifier.getName())
-                val startOffset = functionCall.leftParen.textRange.startOffset
-                val endOffset = functionCall.rightParen.textRange.endOffset
-                holder.registerProblem(functionCall, msg, GENERIC_ERROR, TextRange(startOffset, endOffset))
+                val msg = errorMessageCode.message.format(structSpecifier.name)
+                val startOffset = constructorCall.leftParen.textRange.startOffset
+                val endOffset = constructorCall.rightParen.textRange.endOffset
+                holder.registerProblem(constructorCall, msg, GENERIC_ERROR, TextRange(startOffset, endOffset))
             }
         }
     }

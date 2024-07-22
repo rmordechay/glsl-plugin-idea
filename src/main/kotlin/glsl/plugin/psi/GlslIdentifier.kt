@@ -9,7 +9,6 @@ import glsl.plugin.reference.GlslReference
  *
  */
 interface GlslIdentifier: ContributedReferenceHost {
-
     /**
      *
      */
@@ -24,6 +23,13 @@ interface GlslIdentifier: ContributedReferenceHost {
      *
      */
     fun getName(): String
+
+    /**
+     *
+     */
+    fun resolveReference(): GlslNamedElement? {
+        return reference?.resolve()
+    }
 
     /**
      *

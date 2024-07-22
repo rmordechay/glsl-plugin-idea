@@ -7,9 +7,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import glsl.GlslTypes.*
 import glsl.plugin.psi.named.GlslNamedType
-import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.utils.GlslUtils.createScalarTypeElement
-import glsl.plugin.utils.GlslUtils.getFuncCallType
+import glsl.plugin.utils.GlslUtils.getType
 import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.*
 
@@ -48,7 +47,8 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     private fun getPostfixType(postfixExpr: GlslPostfixExpr?): GlslNamedType? {
         return when (postfixExpr) {
             is GlslPrimaryExpr -> getPrimaryExprType(postfixExpr)
-            is GlslFunctionCall -> getFuncCallType(postfixExpr)
+            is GlslFunctionCall -> postfixExpr.variableIdentifier?.resolveReference()?.getAssociatedType()
+            is GlslConstructorCall -> getType(postfixExpr.typeSpecifier)
             is GlslPostfixArrayIndex -> getArrayIndexType(postfixExpr)
             is GlslPostfixInc -> getPostfixType(postfixExpr.postfixExpr)
             is GlslPostfixFieldSelection -> getPostfixSelectionType(postfixExpr)
@@ -61,7 +61,7 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      */
     private fun getArrayIndexType(arrayIndex: GlslPostfixArrayIndex): GlslNamedType? {
         val variableIdentifier = (arrayIndex.postfixExpr as GlslPrimaryExpr).variableIdentifier
-        val resolve = variableIdentifier?.reference?.resolve() as GlslNamedVariable?
+        val resolve = variableIdentifier?.resolveReference()
         return resolve?.getAssociatedType()?.getScalarType()
     }
 
@@ -70,8 +70,8 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
      */
     private fun getPrimaryExprType(primaryExpr: GlslPrimaryExpr): GlslNamedType? {
         if (primaryExpr.variableIdentifier != null) {
-            val reference = primaryExpr.variableIdentifier?.reference?.resolve() ?: return null
-            return (reference as? GlslNamedVariable)?.getAssociatedType()
+            val reference = primaryExpr.variableIdentifier?.resolveReference() ?: return null
+            return reference.getAssociatedType()
         }
 
         val expr = primaryExpr.expr
@@ -119,6 +119,6 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
         val variableIdentifiers = postfixExpr.postfixStructMemberList.mapNotNull { it.variableIdentifier }
         if (variableIdentifiers.isEmpty()) return null
         val lastExpr = variableIdentifiers.last() as? GlslVariable
-        return lastExpr?.reference?.resolve()?.getAssociatedType()
+        return lastExpr?.resolveReference()?.getAssociatedType()
     }
 }

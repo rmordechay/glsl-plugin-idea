@@ -31,7 +31,7 @@ class GlslHighlightingAnnotator : Annotator {
         } else if (isBuiltinConstant(elementName)) {
             createAnnotation(holder, GlslTextAttributes.BUILTIN_GLOBAL_CONSTANTS)
         } else {
-            val reference = element.reference?.resolve()
+            val reference = element.resolveReference()
             if (reference != null) {
                 setReferenceHighlighting(reference, holder)
             } else {

@@ -8,6 +8,7 @@ import com.intellij.psi.PsiReferenceService
 import com.intellij.psi.util.PsiTreeUtil
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
+import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.reference.GlslTypeReference
 import glsl.plugin.utils.GlslUtils
 

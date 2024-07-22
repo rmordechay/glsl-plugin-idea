@@ -32,6 +32,13 @@ abstract class GlslNamedStructSpecifier(node: ASTNode) : GlslNamedTypeImpl(node)
     /**
      *
      */
+    override fun getAssociatedType(): GlslNamedType? {
+        return this
+    }
+
+    /**
+     *
+     */
     override fun getPsi(): GlslStructSpecifier {
         return this as GlslStructSpecifier
     }

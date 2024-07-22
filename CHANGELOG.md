@@ -4,6 +4,7 @@
 ### Added
 - Enabling/disabling errors
 ### Update
+- New builtin functions documentation with more information and nicer representation
 - Small change in syntax colors for better distinction
 ### Fixed
 - Array indexing of vector incorrectly showed an error

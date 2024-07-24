@@ -6,8 +6,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
 import glsl.plugin.utils.GlslUtils.getType
 import glsl.psi.interfaces.GlslConstructorCall
-import glsl.psi.interfaces.GlslFunctionCall
-import glsl.psi.interfaces.GlslStructSpecifier
 import glsl.psi.interfaces.GlslVisitor
 
 /**
@@ -20,15 +18,16 @@ class GlslInspectionTooFewArguments : GlslInspection() {
      *
      */
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        return object: GlslVisitor() {
+        return object : GlslVisitor() {
             override fun visitConstructorCall(constructorCall: GlslConstructorCall) {
-                val structSpecifier = getType(constructorCall.typeSpecifier) as? GlslStructSpecifier ?: return
-                val expectedParamCount = structSpecifier.getStructMembers().size
-                val actualParamsExprs = constructorCall.exprNoAssignmentList
-                if (expectedParamCount <= actualParamsExprs.size) return
-                val msg = errorMessageCode.message.format(structSpecifier.name)
-                val startOffset = constructorCall.leftParen.textRange.startOffset
-                val endOffset = constructorCall.rightParen.textRange.endOffset
+                val constructorType = getType(constructorCall.typeSpecifier) ?: return
+                if (constructorType.isPrimitive) return
+                val actualParamsCount = constructorCall.exprNoAssignmentList.size
+                val expectedParamCount = constructorType.getStructMembers().size
+                if (expectedParamCount <= actualParamsCount) return
+                val msg = errorMessageCode.message.format(constructorType.name)
+                val startOffset = constructorCall.leftParen.textRangeInParent.startOffset
+                val endOffset = constructorCall.rightParen.textRangeInParent.endOffset
                 holder.registerProblem(constructorCall, msg, GENERIC_ERROR, TextRange(startOffset, endOffset))
             }
         }

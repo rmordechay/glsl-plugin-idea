@@ -10,10 +10,11 @@ object GlslPsiUtils : GeneratedParserUtil() {
 
 
     /**
-     *  This method differentiates between a type and a variable. If we have 2
-     *  identifiers one after the other we know the first one is the type and the
-     *  second one is the variable. Without this check it's impossible to detect
-     *  when IDENTIFIER is a type and when is a variable.
+     *  This method differentiates between a type and a variable. If we have 2 identifiers
+     *  one after the other we know the first one must be a type and the second one a variable.
+     *  Normally this method is not doing much since the lexer is doing this job already, but
+     *  the lexer will fail if an undeclared user type is used and would make the whole parser crash.
+     *  In such cases this method will secure correct parsing.
      */
     @JvmStatic
     fun primaryExprVariable(builder: PsiBuilder, level: Int): Boolean {

@@ -1,5 +1,5 @@
-![Downloads](https://img.shields.io/jetbrains/plugin/d/18470-glsl)
-![Rating](https://img.shields.io/jetbrains/plugin/r/stars/18470-glsl)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/18470-glsl)](https://plugins.jetbrains.com/plugin/18470-glsl/reviews)
+[![Rating](https://img.shields.io/jetbrains/plugin/r/stars/18470-glsl)](https://plugins.jetbrains.com/plugin/18470-glsl/reviews)
 
 # GLSL Plugin
 

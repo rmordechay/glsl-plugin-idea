@@ -15,6 +15,7 @@ import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.psi.named.types.user.GlslNamedBlockStructure
 import glsl.plugin.reference.FilterType.CONTAINS
+import glsl.plugin.reference.FilterType.EQUALS_MANY
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
@@ -28,7 +29,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     private var includeRecursionLevel = 0
 
     private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
-        reference.doResolve()
+        reference.doResolve(currentFilterType)
         reference.resolvedReferences.firstOrNull() as? GlslNamedVariable
     }
 
@@ -56,6 +57,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     override fun resolveMany(): List<GlslNamedElement> {
         if (!shouldResolve()) return emptyList()
         project = element.project
+        currentFilterType = EQUALS_MANY
         val resolveCache = ResolveCache.getInstance(project!!)
         resolveCache.resolveWithCaching(this, resolver, true, false)
         return resolvedReferences

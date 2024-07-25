@@ -1,8 +1,5 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import glsl.plugin.inspections.GlslInspectionIncompatibleType
-import glsl.plugin.inspections.GlslInspectionMissingReturn
-import glsl.plugin.inspections.GlslInspectionOperatorDoesNotOperate
-import glsl.plugin.inspections.GlslInspectionConstructorNoArguments
+import glsl.plugin.inspections.*
 
 class GlslInspectionsTest : BasePlatformTestCase() {
 
@@ -19,6 +16,12 @@ class GlslInspectionsTest : BasePlatformTestCase() {
     fun testIncompatibleTypes() {
         myFixture.enableInspections(GlslInspectionIncompatibleType())
         myFixture.configureByFiles("InspectionsTestIncompatibleTypes.glsl")
+        myFixture.checkHighlighting(false, false, false)
+    }
+
+    fun testNoMatchingFunction() {
+        myFixture.enableInspections(GlslInspectionNoMatchingFunction())
+        myFixture.configureByFiles("InspectionsNoMatchingFunction.glsl")
         myFixture.checkHighlighting(false, false, false)
     }
 

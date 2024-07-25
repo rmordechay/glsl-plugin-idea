@@ -7,7 +7,8 @@ import com.intellij.psi.PsiReferenceBase
 import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
-import glsl.plugin.reference.FilterType.*
+import glsl.plugin.reference.FilterType.CONTAINS
+import glsl.plugin.reference.FilterType.EQUALS
 import glsl.psi.interfaces.GlslFunctionDefinition
 import glsl.psi.interfaces.GlslStatement
 
@@ -16,7 +17,6 @@ class StopLookupException : Exception()
 
 enum class FilterType {
     EQUALS,
-    EQUALS_MANY,
     CONTAINS
 }
 
@@ -32,7 +32,7 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
     protected var currentFilterType = EQUALS
     protected var project: Project? = null
 
-    val resolvedReferences = mutableListOf<GlslNamedElement>()
+    val resolvedReferences = arrayListOf<GlslNamedElement>()
 
     /**
      *
@@ -71,9 +71,6 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
             if (namedElementName != elementName) return
             resolvedReferences.add(namedElement)
             throw StopLookupException()
-        } else if (currentFilterType == EQUALS_MANY) {
-            if (namedElementName != elementName) return
-            resolvedReferences.add(namedElement)
         } else if (currentFilterType == CONTAINS && namedElementName.contains(elementName)) {
             resolvedReferences.add(namedElement)
         }

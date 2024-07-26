@@ -21,7 +21,7 @@ class GlslInspectionsTest : BasePlatformTestCase() {
 
     fun testNoMatchingFunction() {
         myFixture.enableInspections(GlslInspectionNoMatchingFunction())
-        myFixture.configureByFiles("InspectionsNoMatchingFunction.glsl")
+        myFixture.configureByFiles("InspectionsNoMatchingFunction.glsl", "InspectionsNoMatchingFunction2.glsl")
         myFixture.checkHighlighting(false, false, false)
     }
 

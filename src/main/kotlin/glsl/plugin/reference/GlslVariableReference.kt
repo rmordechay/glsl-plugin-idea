@@ -1,4 +1,5 @@
 package glsl.plugin.reference
+
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -148,27 +149,24 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     private fun lookupInBuiltin() {
         findReferenceInElementMap(getShaderVariables())
         findReferenceInElementMap(getBuiltinConstants())
-        resolveBuiltinFunc()
+        val builtinFuncs = getBuiltinFuncs()[element.name] ?: return
+        for (func in builtinFuncs) {
+            resolveFunction(func)
+        }
     }
 
     /**
      *
      */
-    private fun resolveBuiltinFunc() {
-        val funcCall = element.parent
-        if (funcCall !is GlslFunctionCall) return
-        val elementName = element.name
-        val builtinFuncs = getBuiltinFuncs()[elementName] ?: return
+    private fun resolveFunction(func: GlslFunctionDeclarator) {
+        val funcCall = element.parent as? GlslFunctionCall ?: return
         val exprTypes = funcCall.exprNoAssignmentList.map { it.getExprType() }
-        for (func in builtinFuncs) {
-            val paramTypes = (func as? GlslFunctionDeclaratorImpl)?.getParameterTypes() ?: continue
-            if (paramTypes.size != exprTypes.size) continue
-            val typesMatch = paramTypes.zip(exprTypes).all { it.first.isEqual(it.second) }
-            if (typesMatch) {
-                findReferenceInElement(func)
-            }
+        val paramTypes = (func as? GlslFunctionDeclaratorImpl)?.getParameterTypes() ?: return
+        if (paramTypes.size != exprTypes.size) return
+        val typesMatch = paramTypes.zip(exprTypes).all { it.first.isEqual(it.second) }
+        if (typesMatch) {
+            findReferenceInElement(func)
         }
-        findReferenceInElementList(builtinFuncs, true)
     }
 
     /**
@@ -233,7 +231,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     private fun lookupInFunctionDeclarator(functionDeclarator: GlslFunctionDeclarator?, withParams: Boolean) {
         if (functionDeclarator == null) return
-        findReferenceInElement(functionDeclarator)
+        resolveFunction(functionDeclarator)
         if (withParams) {
             findReferenceInElementList(functionDeclarator.funcHeaderWithParams?.parameterDeclaratorList)
         }

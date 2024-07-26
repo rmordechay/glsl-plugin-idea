@@ -20,15 +20,11 @@ class GlslInspectionNoMatchingFunction : GlslInspection() {
         return object : GlslVisitor() {
             override fun visitFunctionCall(functionCall: GlslFunctionCall) {
                 val funcIdentifier = functionCall.variableIdentifier ?: return
-                val functionDeclarator = funcIdentifier.resolveReference() as? GlslFunctionDeclaratorImpl ?: return
-
-                val paramTypes = functionDeclarator.getParameterTypes() ?: return
-                val exprTypes = functionCall.exprNoAssignmentList.map { it.getExprType() }
-                if (paramTypes.size == exprTypes.size || exprTypes.any { it == null }) return
-
-                val actualTypesString = exprTypes.mapNotNull { it?.name }.joinToString(", ")
-                val msg = errorMessageCode.message.format(funcIdentifier.getName(), actualTypesString)
-                holder.registerProblem(functionCall, msg, ProblemHighlightType.GENERIC_ERROR)
+//                val functionDeclarator = funcIdentifier.resolveReference() as? GlslFunctionDeclaratorImpl ?: return
+//                val exprTypes = functionCall.exprNoAssignmentList.map { it.getExprType() }
+//                val actualTypesString = exprTypes.mapNotNull { it?.name }.joinToString(", ")
+//                val msg = errorMessageCode.message.format(funcIdentifier.getName(), actualTypesString)
+//                holder.registerProblem(functionCall, msg, ProblemHighlightType.GENERIC_ERROR)
             }
         }
     }

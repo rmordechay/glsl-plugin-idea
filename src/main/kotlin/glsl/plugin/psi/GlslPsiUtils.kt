@@ -19,8 +19,8 @@ object GlslPsiUtils : GeneratedParserUtil() {
     @JvmStatic
     fun primaryExprVariable(builder: PsiBuilder, level: Int): Boolean {
         if (!recursion_guard_(builder, level, "primary_expr_variable")) return false
-        val isCurrentTokenIdentifier = builder.tokenType == GlslTypes.IDENTIFIER
-        val isNextTokenIdentifier = builder.lookAhead(1) == GlslTypes.IDENTIFIER
+        val isCurrentTokenIdentifier = builder.tokenType == IDENTIFIER
+        val isNextTokenIdentifier = builder.lookAhead(1) == IDENTIFIER
         if (isCurrentTokenIdentifier && !isNextTokenIdentifier) {
             builder.advanceLexer()
             return true

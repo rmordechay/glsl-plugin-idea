@@ -6,17 +6,12 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.ASTFactory
 import com.intellij.lang.ASTFactory.leaf
 import com.intellij.openapi.editor.EditorModificationUtil
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.search.FilenameIndex.getVirtualFilesByName
-import com.intellij.psi.search.GlobalSearchScope.allScope
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import com.intellij.psi.util.PsiUtilCore
 import glsl.GlslTypes.BUILTIN_TYPE_SCALAR
 import glsl.data.ShaderType
-import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.types.builtins.GlslBuiltinRest
 import glsl.plugin.psi.named.types.builtins.GlslMatrix
@@ -148,18 +143,6 @@ object GlslUtils {
                 EditorModificationUtil.moveCaretRelatively(context.editor, +1)
             }
         }
-    }
-
-    /**
-     *
-     */
-    @JvmStatic
-    fun getPsiFile(path: String, project: Project?): GlslFile? {
-        if (project == null) return null
-        val virtualFilesByName = getVirtualFilesByName(path, allScope(project))
-        if (virtualFilesByName.isEmpty()) return null
-        val psiFile = PsiUtilCore.getPsiFile(project, virtualFilesByName.first()) as GlslFile
-        return psiFile
     }
 
     /**

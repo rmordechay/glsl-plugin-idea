@@ -2,6 +2,7 @@ package glsl.plugin.reference
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import glsl.plugin.psi.GlslIdentifier
@@ -31,6 +32,7 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
 
     protected var currentFilterType = EQUALS
     protected var project: Project? = null
+    protected var currentFile: VirtualFile? = null
 
     val resolvedReferences = arrayListOf<GlslNamedElement>()
 

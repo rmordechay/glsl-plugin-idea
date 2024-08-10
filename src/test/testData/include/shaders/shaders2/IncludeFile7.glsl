@@ -1,2 +1,1 @@
-#include "IncludeFile4.glsl"
-int a = <caret>b;
+int a = 2;

@@ -1,7 +1,9 @@
 package glsl.plugin.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
@@ -9,8 +11,10 @@ import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
+import com.intellij.testFramework.utils.vfs.getPsiFile
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
+import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
@@ -19,7 +23,6 @@ import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
-import glsl.plugin.utils.GlslUtils.getPsiFile
 import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
 
@@ -39,6 +42,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     override fun resolve(): GlslNamedVariable? {
         if (!shouldResolve()) return null
         project = element.project
+        currentFile = element.containingFile.virtualFile
         val resolveCache = ResolveCache.getInstance(project!!)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
@@ -325,7 +329,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         }
     }
 
-
     /**
      *
      */
@@ -337,5 +340,15 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
             else -> null
         }
+    }
+
+
+    /**
+     *
+     */
+    private fun getPsiFile(path: String, project: Project?): GlslFile? {
+        if (project == null) return null
+        val vf = VfsUtil.findRelativeFile(path, currentFile) ?: return null
+        return vf.getPsiFile(project) as GlslFile
     }
 }

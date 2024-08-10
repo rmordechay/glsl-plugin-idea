@@ -1,5 +1,5 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import glsl.psi.interfaces.*
+import glsl.psi.interfaces.GlslSingleDeclaration
 
 class GlslIncludeTest : BasePlatformTestCase() {
 
@@ -24,5 +24,28 @@ class GlslIncludeTest : BasePlatformTestCase() {
         myFixture.configureByFiles("IncludeFile4.glsl", "IncludeFile5.glsl")
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile6.glsl")
         assertNoThrowable { reference?.resolve() }
+    }
+
+    fun testInclude4() {
+        myFixture.configureByFiles("shaders/shaders2/IncludeFile7.glsl", "shaders/IncludeFile7.glsl")
+        val reference = myFixture.getReferenceAtCaretPosition("shaders/IncludeFile8.glsl")
+        val resolve = reference?.resolve()
+        assertNull(resolve)
+    }
+
+    fun testInclude5() {
+        myFixture.configureByFiles("shaders/shaders2/IncludeFile7.glsl", "shaders/IncludeFile7.glsl")
+        val reference = myFixture.getReferenceAtCaretPosition("shaders/IncludeFile9.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslSingleDeclaration::class.java)
+        assertEquals("a", (resolve as GlslSingleDeclaration).name)
+    }
+
+    fun testInclude6() {
+        myFixture.configureByFiles("shaders/shaders2/IncludeFile7.glsl", "shaders/IncludeFile7.glsl")
+        val reference = myFixture.getReferenceAtCaretPosition("shaders/IncludeFile10.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslSingleDeclaration::class.java)
+        assertEquals("b", (resolve as GlslSingleDeclaration).name)
     }
 }

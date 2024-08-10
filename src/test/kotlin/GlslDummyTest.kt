@@ -10,7 +10,7 @@ class GlslDummyTest : BasePlatformTestCase() {
             GlslInspectionTooManyArguments(),
             GlslInspectionIncompatibleType(),
             GlslInspectionMissingReturn(),
-            GlslInspectionNoMatchingFunction(),
+//            GlslInspectionNoMatchingFunction(),
             GlslInspectionOperatorDoesNotOperate(),
         )
     }

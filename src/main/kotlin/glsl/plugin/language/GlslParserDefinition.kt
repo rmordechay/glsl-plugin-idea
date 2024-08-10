@@ -23,7 +23,7 @@ class GlslParserDefinition : ParserDefinition {
      *
      */
     override fun createLexer(project: Project): Lexer {
-        return GlslLexer()
+        return GlslLexer(project)
     }
 
     /**

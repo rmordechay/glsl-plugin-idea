@@ -6,7 +6,9 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.ASTFactory
 import com.intellij.lang.ASTFactory.leaf
 import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
@@ -20,6 +22,7 @@ import glsl.plugin.psi.named.types.builtins.GlslVector
 import glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier
 import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.GlslFunctionDeclarator
+import glsl.psi.interfaces.GlslPpIncludeDeclaration
 import glsl.psi.interfaces.GlslTypeSpecifier
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -149,6 +152,15 @@ object GlslUtils {
      *
      */
     @JvmStatic
+    fun getVirtualFile(targetPathString: String?, baseFile: VirtualFile?, project: Project?): VirtualFile? {
+        if (project == null || baseFile == null || targetPathString == null) return null
+        return baseFile.parent?.findFileByRelativePath(targetPathString)
+    }
+
+    /**
+     *
+     */
+    @JvmStatic
     fun getTokenSetAsStrings(tokenSet: TokenSet): Array<String> {
         return tokenSet.types.map { it.toString() }.toTypedArray()
     }
@@ -200,6 +212,20 @@ object GlslUtils {
         val composite = ASTFactory.composite(BUILTIN_TYPE_SCALAR)
         composite.rawAddChildren(leaf(elementType, text))
         return GlslBuiltinTypeScalarImpl(composite)
+    }
+
+    /**
+     *
+     */
+    @JvmStatic
+    fun getPathStringFromInclude(includeDeclaration: GlslPpIncludeDeclaration): String? {
+        return if (includeDeclaration.stringLiteral != null) {
+            includeDeclaration.stringLiteral!!.text.replace("\"", "")
+        } else if (includeDeclaration.includePath != null) {
+            includeDeclaration.includePath!!.text
+        } else {
+            return null
+        }
     }
 }
 

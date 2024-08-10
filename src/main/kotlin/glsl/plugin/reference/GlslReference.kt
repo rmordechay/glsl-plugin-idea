@@ -4,13 +4,20 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.util.childrenOfType
+import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.reference.FilterType.EQUALS
+import glsl.plugin.utils.GlslUtils.getPathStringFromInclude
+import glsl.plugin.utils.GlslUtils.getVirtualFile
+import glsl.psi.interfaces.GlslExternalDeclaration
 import glsl.psi.interfaces.GlslFunctionDefinition
+import glsl.psi.interfaces.GlslPpIncludeDeclaration
 import glsl.psi.interfaces.GlslStatement
 
 
@@ -21,6 +28,8 @@ enum class FilterType {
     CONTAINS
 }
 
+private const val INCLUDE_RECURSION_LIMIT = 1000
+
 /**
  *
  */
@@ -28,13 +37,17 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
     abstract fun doResolve(filterType: FilterType = EQUALS)
     abstract fun shouldResolve(): Boolean
     abstract fun resolveMany(): List<GlslNamedElement>
-    abstract override fun resolve(): GlslNamedElement?
+    abstract fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?)
 
+    abstract override fun resolve(): GlslNamedElement?
     protected var currentFilterType = EQUALS
     protected var project: Project? = null
     protected var currentFile: VirtualFile? = null
 
+    private var includeRecursionLevel = 0
+
     val resolvedReferences = arrayListOf<GlslNamedElement>()
+
 
     /**
      *
@@ -42,7 +55,6 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
     override fun handleElementRename(newElementName: String): PsiElement? {
         return element.replaceElementName(newElementName)
     }
-
 
     /**
      *  Gets the parent scope inside a function by traversing up the tree. A new scope is
@@ -109,5 +121,27 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
                 }
             }
         }
+    }
+
+    /**
+     *
+     */
+    protected fun lookupInIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
+        if (ppIncludeDeclaration == null) return
+        includeRecursionLevel++
+        val path = getPathStringFromInclude(ppIncludeDeclaration) ?: return
+        if (includeRecursionLevel >= INCLUDE_RECURSION_LIMIT) {
+            includeRecursionLevel = 0
+            throw StopLookupException()
+        }
+        val vf = getVirtualFile(path, currentFile, project) ?: return
+        val psiFile = PsiManager.getInstance(project!!).findFile(vf) as? GlslFile
+        val externalDeclarations = psiFile?.childrenOfType<GlslExternalDeclaration>()
+        if (externalDeclarations != null) {
+            for (externalDeclaration in externalDeclarations) {
+                lookupInExternalDeclaration(externalDeclaration)
+            }
+        }
+        includeRecursionLevel--
     }
 }

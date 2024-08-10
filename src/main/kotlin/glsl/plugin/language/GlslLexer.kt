@@ -1,6 +1,9 @@
 package glsl.plugin.language
 
 import com.intellij.lexer.LexerBase
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.readText
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.containers.addIfNotNull
@@ -8,6 +11,7 @@ import glsl.GlslTypes.*
 import glsl._GlslLexer
 import glsl._GlslLexer.*
 import glsl.data.GlslTokenSets.IGNORE_MACRO_BODY_TOKEN
+import glsl.plugin.utils.GlslUtils.getVirtualFile
 
 /**
  *
@@ -23,10 +27,9 @@ private const val RECURSION_LEVEL_LIMIT = 50000
 /**
  *
  */
-class GlslLexer : LexerBase() {
+class GlslLexer(private val project: Project? = null, private val baseFile: VirtualFile? = null) : LexerBase() {
     private val lexer = _GlslLexer()
     private val helperLexer = _GlslLexer()
-    private var userDefinedTypes = mutableSetOf<String>()
 
     private var myTokenType: IElementType? = null
     private var myText = ""
@@ -45,8 +48,6 @@ class GlslLexer : LexerBase() {
     private var macroParamNestingLevel: Int = 0
     private var macroFunc: GlslMacro? = null
 
-    private var shouldExpandInclude = false
-
     private var recursionLevel = 0
 
     /**
@@ -57,7 +58,6 @@ class GlslLexer : LexerBase() {
         myText = buffer.toString()
         myBufferEnd = endOffset
         macros.clear()
-        userDefinedTypes.clear()
         advance()
     }
 
@@ -65,7 +65,7 @@ class GlslLexer : LexerBase() {
      *
      */
     override fun advance() {
-        if (macroExpansion == null && !shouldExpandInclude) {
+        if (macroExpansion == null) {
             advanceLexer()
         }
 
@@ -79,6 +79,8 @@ class GlslLexer : LexerBase() {
             if (inMacroFuncCall) addMacroParamToken()
         } else if (inMacroFuncCall) {
             addMacroParamToken()
+        } else if (myTokenType in listOf(STRING_LITERAL, INCLUDE_PATH)) {
+            addIncludeUserTypes()
         }
 
         if (state == MACRO_IDENTIFIER_STATE && myTokenType == IDENTIFIER) {
@@ -96,7 +98,6 @@ class GlslLexer : LexerBase() {
      */
     override fun getTokenType(): IElementType? {
         if (inEndlessRecursion()) return null
-        if (myTokenType == IDENTIFIER) return identifierOrType()
         return myTokenType
     }
 
@@ -154,15 +155,16 @@ class GlslLexer : LexerBase() {
     /**
      *
      */
-    private fun identifierOrType(): IElementType? {
-        if (!lexer.afterType && !lexer.afterStruct && myTokenText in userDefinedTypes) {
-            lexer.afterType = true;
-            myTokenType = USER_TYPE_NAME;
-        } else if (lexer.afterStruct) {
-            lexer.afterStruct = false;
-            userDefinedTypes.add(myTokenText)
+    private fun addIncludeUserTypes() {
+        val path = myTokenText.replace("\"", "")
+        if (path.isEmpty()) return
+        val vf = getVirtualFile(path, baseFile, project) ?: return
+        val fileText = vf.readText()
+        helperLexer.reset(fileText, 0, fileText.length, YYINITIAL)
+        while (true) {
+            helperLexer.advance() ?: break
         }
-        return myTokenType
+        lexer.userDefinedTypes.addAll(helperLexer.userDefinedTypes)
     }
 
     /**

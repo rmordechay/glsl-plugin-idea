@@ -1,5 +1,6 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.psi.interfaces.GlslSingleDeclaration
+import glsl.psi.interfaces.GlslStructSpecifier
 
 class GlslIncludeTest : BasePlatformTestCase() {
 
@@ -15,12 +16,14 @@ class GlslIncludeTest : BasePlatformTestCase() {
         assertEquals("b", (resolve as GlslSingleDeclaration).name)
     }
 
-    fun testInclude2() {
+    fun testImportCyclesDontThrowErrors() {
+//        myFixture.configureByFile("IncludeFile3.glsl")
+//        myFixture.testHighlighting(false, false, false)
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile3.glsl")
         assertNoThrowable { reference?.resolve() }
     }
 
-    fun testInclude3() {
+    fun testImportCyclesDontThrowErrorsNested() {
         myFixture.configureByFiles("IncludeFile4.glsl", "IncludeFile5.glsl")
         val reference = myFixture.getReferenceAtCaretPosition("IncludeFile6.glsl")
         assertNoThrowable { reference?.resolve() }
@@ -47,5 +50,13 @@ class GlslIncludeTest : BasePlatformTestCase() {
         val resolve = reference?.resolve()
         assertInstanceOf(resolve, GlslSingleDeclaration::class.java)
         assertEquals("b", (resolve as GlslSingleDeclaration).name)
+    }
+
+    fun testInclude7() {
+        myFixture.configureByFiles("IncludeFile8.glsl")
+        val reference = myFixture.getReferenceAtCaretPosition("IncludeFile7.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslStructSpecifier::class.java)
+        assertEquals("A", (resolve as GlslStructSpecifier).name)
     }
 }

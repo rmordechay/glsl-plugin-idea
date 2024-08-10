@@ -27,6 +27,7 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
     override fun resolve(): GlslNamedType? {
         if (!shouldResolve()) return null
         project = element.project
+        currentFile = element.containingFile.virtualFile
         val resolveCache = ResolveCache.getInstance(project!!)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
@@ -81,10 +82,17 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
         var externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
         while (externalDeclaration != null) {
             externalDeclaration = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
-            val declaration = externalDeclaration?.declaration
-            resolveDeclarationType(declaration)
+            lookupInExternalDeclaration(externalDeclaration)
         }
         return null
+    }
+
+    /**
+     *
+     */
+    override fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?) {
+        lookupInIncludeDeclaration(externalDeclaration?.ppStatement?.ppIncludeDeclaration)
+        resolveDeclarationType(externalDeclaration?.declaration)
     }
 
     /**

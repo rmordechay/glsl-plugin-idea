@@ -1,20 +1,15 @@
 package glsl.plugin.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
-import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
-import com.intellij.testFramework.utils.vfs.getPsiFile
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
-import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
@@ -26,10 +21,8 @@ import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
 import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
 
-private const val INCLUDE_RECURSION_LIMIT = 1000
-
-class GlslVariableReference(private val element: GlslVariable, textRange: TextRange) : GlslReference(element, textRange) {
-    private var includeRecursionLevel = 0
+class GlslVariableReference(private val element: GlslVariable, textRange: TextRange) :
+    GlslReference(element, textRange) {
 
     private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
         reference.doResolve()
@@ -83,7 +76,8 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
                     getParentOfType(element, GlslExternalDeclaration::class.java)
                 }
             lookupInGlobalScope(externalDeclaration)
-        } catch (_: StopLookupException) { }
+        } catch (_: StopLookupException) {
+        }
     }
 
     /**
@@ -93,7 +87,20 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (currentFilterType == CONTAINS && element.isEmpty()) {
             return true
         }
-        return element.parent !is GlslNamedVariable || element.firstChild.elementType in listOf(MACRO_OBJECT, MACRO_FUNCTION)
+        return element.parent !is GlslNamedVariable || element.firstChild.elementType in listOf(
+            MACRO_OBJECT,
+            MACRO_FUNCTION
+        )
+    }
+
+    /**
+     *
+     */
+    override fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?) {
+        if (externalDeclaration == null) return
+        lookupInFunctionDeclarator(externalDeclaration.functionDefinition?.functionDeclarator, false)
+        lookupInDeclaration(externalDeclaration.declaration)
+        lookupInPpStatement(externalDeclaration.ppStatement)
     }
 
     /**
@@ -176,16 +183,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?) {
-        if (externalDeclaration == null) return
-        lookupInFunctionDeclarator(externalDeclaration.functionDefinition?.functionDeclarator, false)
-        lookupInDeclaration(externalDeclaration.declaration)
-        lookupInPpStatement(externalDeclaration.ppStatement)
-    }
-
-    /**
-     *
-     */
     private fun lookupInStatement(statement: GlslStatement?) {
         if (statement == null) return
         lookupInDeclaration(statement.declaration)
@@ -252,33 +249,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     }
 
     /**
-     *
-     */
-    private fun lookupInIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
-        if (ppIncludeDeclaration == null) return
-        includeRecursionLevel++
-        val path = if (ppIncludeDeclaration.stringLiteral != null) {
-            ppIncludeDeclaration.stringLiteral!!.text.replace("\"", "")
-        } else if (ppIncludeDeclaration.includePath != null) {
-            ppIncludeDeclaration.includePath!!.text
-        } else {
-            return
-        }
-        if (includeRecursionLevel >= INCLUDE_RECURSION_LIMIT) {
-            includeRecursionLevel = 0
-            throw StopLookupException()
-        }
-        val psiFile = getPsiFile(path, project)
-        val externalDeclarations = psiFile?.childrenOfType<GlslExternalDeclaration>()
-        if (externalDeclarations != null) {
-            for (externalDeclaration in externalDeclarations) {
-                lookupInExternalDeclaration(externalDeclaration)
-            }
-        }
-        includeRecursionLevel--
-    }
-
-    /**
      *  This method tries to resolve struct chained calls (e.g. 'a.b.c'). In order to resolve such an expression with an
      *  arbitrary number of chained names, we have to check for every name its previous name, resolve it, and check if
      *  the member is indeed there. If we have nested expression (with more than one dot), then we need to pass the type
@@ -340,15 +310,5 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
             else -> null
         }
-    }
-
-
-    /**
-     *
-     */
-    private fun getPsiFile(path: String, project: Project?): GlslFile? {
-        if (project == null) return null
-        val vf = VfsUtil.findRelativeFile(path, currentFile) ?: return null
-        return vf.getPsiFile(project) as GlslFile
     }
 }

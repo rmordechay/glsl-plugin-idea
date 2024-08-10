@@ -6,12 +6,15 @@ import com.intellij.psi.tree.IElementType;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static glsl.GlslTypes.*;
+import java.util.ArrayList;
+import java.util.List;
 
 %%
 
 %{
   public boolean afterStruct;
   public boolean afterType;
+  public List<String> userDefinedTypes = new ArrayList<>();
   public _GlslLexer() {
     this((java.io.Reader)null);
   }
@@ -586,7 +589,16 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   {UINTCONSTANT}                   { return UINTCONSTANT; }
   {BOOLCONSTANT}                   { return BOOLCONSTANT; }
   {STRING_LITERAL}                 { return STRING_LITERAL; }
-  {IDENTIFIER}                     { return IDENTIFIER; }
+  {IDENTIFIER}                     {
+    if (!afterType && !afterStruct && userDefinedTypes.contains(yytext().toString())){
+        afterType = true;
+        return USER_TYPE_NAME;
+    } else if (afterStruct) {
+        afterStruct = false;
+        userDefinedTypes.add(yytext().toString());
+    }
+    return IDENTIFIER;
+  }
 }
 
 [^] { return BAD_CHARACTER; }

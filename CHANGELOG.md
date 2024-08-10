@@ -8,6 +8,7 @@
 - Small change in syntax colors for better distinction
 ### Fixed
 - Array indexing of vector incorrectly showed an error
+- Ambiguous imports
 
 ## [1.1.2]
 ### Added

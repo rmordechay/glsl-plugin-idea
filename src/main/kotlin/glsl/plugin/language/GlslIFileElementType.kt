@@ -12,7 +12,7 @@ class GlslIFileElementType : IFileElementType(GlslLanguage.INSTANCE) {
     override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
         val project = psi.project
         val parserDefinition = GlslParserDefinition()
-        val builder = PsiBuilderImpl(project, parserDefinition, GlslLexer(), chameleon, chameleon.chars)
+        val builder = PsiBuilderImpl(project, parserDefinition, GlslLexer(project, psi.containingFile.virtualFile), chameleon, chameleon.chars)
         val parser = GlslParserAdapter()
         val rootNode = parser.parse(this, builder)
         return rootNode.firstChildNode

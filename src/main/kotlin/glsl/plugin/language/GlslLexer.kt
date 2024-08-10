@@ -3,7 +3,6 @@ package glsl.plugin.language
 import com.intellij.lexer.LexerBase
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.readText
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.containers.addIfNotNull
@@ -159,7 +158,7 @@ class GlslLexer(private val project: Project? = null, private val baseFile: Virt
         val path = myTokenText.replace("\"", "")
         if (path.isEmpty()) return
         val vf = getVirtualFile(path, baseFile, project) ?: return
-        val fileText = vf.readText()
+        val fileText = String(vf.contentsToByteArray())
         helperLexer.reset(fileText, 0, fileText.length, YYINITIAL)
         while (true) {
             helperLexer.advance() ?: break

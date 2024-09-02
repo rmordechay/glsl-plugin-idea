@@ -21,4 +21,4 @@ Assuming you're developing with Intellij (and you want to develop with Intellij)
 ## Test
 Just execute the `test` task from the Gradle tab or run specific classes or tests from within the ide.
 
-### [Donation](https://www.paypal.com/donate/?hosted_button_id=FVDM2Z3ESPC5Y)
+### [Donation with PayPal](https://www.paypal.com/donate/?hosted_button_id=FVDM2Z3ESPC5Y)

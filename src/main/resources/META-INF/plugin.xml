@@ -1,7 +1,7 @@
 <idea-plugin require-restart="true"> <!-- Even though the plugin can be dynamically loaded, it's safer to require restart. -->
     <id>OpenGL-Plugin</id>
     <name>GLSL</name>
-    <vendor>Walt Grace</vendor>
+    <vendor>Roi Mordechay</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
@@ -79,6 +79,8 @@
                                         implementationClass="glsl.plugin.inspections.GlslInspectionOperatorDoesNotOperate"/>
         <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Constructor of primitive type must have at least one argument"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionConstructorNoArguments"/>
+        <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Cyclic imports"
+                                        implementationClass="glsl.plugin.inspections.GlslInspectionCyclicImports"/>
     </extensions>
 
     <actions>

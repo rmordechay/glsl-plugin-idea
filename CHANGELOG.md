@@ -1,5 +1,7 @@
 # GLSL Plugin Changelog
 
+## [1.1.4]
+
 ## [1.1.3]
 ### Added
 - Enabling/disabling errors

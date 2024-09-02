@@ -17,10 +17,10 @@ class GlslIncludeTest : BasePlatformTestCase() {
     }
 
     fun testImportCyclesDontThrowErrors() {
-//        myFixture.configureByFile("IncludeFile3.glsl")
-//        myFixture.testHighlighting(false, false, false)
-        val reference = myFixture.getReferenceAtCaretPosition("IncludeFile3.glsl")
-        assertNoThrowable { reference?.resolve() }
+        myFixture.configureByFile("IncludeFile3.glsl")
+        myFixture.checkHighlighting()
+//        val reference = myFixture.getReferenceAtCaretPosition("IncludeFile3.glsl")
+//        assertNoThrowable { reference?.resolve() }
     }
 
     fun testImportCyclesDontThrowErrorsNested() {

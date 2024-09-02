@@ -152,7 +152,7 @@ class GlslLexer(private val project: Project? = null, private val baseFile: Virt
     }
 
     /**
-     *
+     * TODO: Make recursive lookup in include. Currently it only looks in first level.
      */
     private fun addIncludeUserTypes() {
         val path = myTokenText.replace("\"", "")

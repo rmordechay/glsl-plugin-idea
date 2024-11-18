@@ -1,6 +1,7 @@
 # GLSL Plugin Changelog
 
 ## [1.1.4]
+- Updated version
 
 ## [1.1.3]
 ### Added

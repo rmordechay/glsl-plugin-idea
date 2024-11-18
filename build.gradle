@@ -1,8 +1,10 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version "1.9.23"
-    id 'org.jetbrains.intellij' version "1.17.3"
+    id 'org.jetbrains.intellij.platform' version '2.1.0'
     id "org.jetbrains.grammarkit" version "2022.3.2.2"
-    id 'org.jetbrains.changelog' version "1.3.1"
+    id 'org.jetbrains.changelog' version "2.2.1"
     id 'java'
 }
 
@@ -11,6 +13,19 @@ version pluginVersion
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
+}
+
+dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity '2024.3'
+        testFramework TestFrameworkType.Platform.INSTANCE
+        instrumentationTools()
+    }
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.opentest4j:opentest4j:1.3.0'
 }
 
 compileJava {
@@ -22,14 +37,7 @@ compileKotlin {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_17
 }
 
-intellij {
-    version = 'CL-2024.1.4'
-//    version = 'CL-2022.3.3'
-    updateSinceUntilBuild = true
-}
-
 runIde {
-    buildSearchableOptions.enabled = false
     maxHeapSize = "6g"
 }
 
@@ -66,7 +74,7 @@ tasks.register('generateGrammarClean') {
 
 patchPluginXml {
     def descriptionHtml = file('plugin-info/description.html').text
-    changeNotes = changelog.get(pluginVersion).toHTML()
+    changeNotes = changelog.get(version.toString()).toHTML()
     pluginDescription = descriptionHtml
     sinceBuild = '223'
     untilBuild = '243.*'

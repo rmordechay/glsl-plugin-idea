@@ -4,7 +4,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslSingleDeclaration
 import glsl.psi.interfaces.GlslUnaryExpr
-import org.junit.Test
 
 
 class GlslDocumentationTest : BasePlatformTestCase() {

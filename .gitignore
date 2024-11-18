@@ -32,3 +32,4 @@ kotlin-ide/
 /archive/
 /src/main/gen/
 /glsl-spec/
+.intellijPlatform

@@ -34,9 +34,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     override fun resolve(): GlslNamedVariable? {
         if (!shouldResolve()) return null
-        project = element.project
-        currentFile = element.containingFile.virtualFile
-        val resolveCache = ResolveCache.getInstance(project!!)
+        val resolveCache = ResolveCache.getInstance(project)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
 
@@ -53,8 +51,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     override fun resolveMany(): List<GlslNamedElement> {
         if (!shouldResolve()) return emptyList()
-        project = element.project
-        val resolveCache = ResolveCache.getInstance(project!!)
+        val resolveCache = ResolveCache.getInstance(project)
         resolveCache.resolveWithCaching(this, resolver, true, false)
         return resolvedReferences
     }

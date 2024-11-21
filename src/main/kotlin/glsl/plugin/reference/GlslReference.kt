@@ -1,6 +1,5 @@
 package glsl.plugin.reference
 
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -41,13 +40,12 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
 
     abstract override fun resolve(): GlslNamedElement?
     protected var currentFilterType = EQUALS
-    protected var project: Project? = null
-    protected var currentFile: VirtualFile? = null
+    protected val project = element.project
+    private lateinit var currentFile: VirtualFile
 
     private var includeRecursionLevel = 0
 
     val resolvedReferences = arrayListOf<GlslNamedElement>()
-
 
     /**
      *
@@ -134,8 +132,11 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
             includeRecursionLevel = 0
             throw StopLookupException()
         }
+        if (!::currentFile.isInitialized) {
+            currentFile = element.containingFile.virtualFile
+        }
         val vf = getVirtualFile(path, currentFile, project) ?: return
-        val psiFile = PsiManager.getInstance(project!!).findFile(vf) as? GlslFile
+        val psiFile = PsiManager.getInstance(project).findFile(vf) as? GlslFile
         val externalDeclarations = psiFile?.childrenOfType<GlslExternalDeclaration>()
         if (externalDeclarations != null) {
             for (externalDeclaration in externalDeclarations) {

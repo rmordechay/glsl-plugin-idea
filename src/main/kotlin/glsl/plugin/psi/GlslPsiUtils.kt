@@ -1,7 +1,6 @@
 package glsl.plugin.psi
 
 import com.intellij.lang.PsiBuilder
-import glsl.GlslTypes
 import glsl.GlslTypes.*
 import utils.GeneratedParserUtil
 

@@ -12,7 +12,10 @@ import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier
 import glsl.plugin.utils.GlslUtils.getResourceFileAsString
-import glsl.psi.interfaces.*
+import glsl.psi.interfaces.GlslDeclaration
+import glsl.psi.interfaces.GlslFunctionDeclarator
+import glsl.psi.interfaces.GlslSingleDeclaration
+import glsl.psi.interfaces.GlslStructSpecifier
 import java.util.*
 
 object GlslBuiltinUtils {

@@ -7,7 +7,6 @@ import glsl.plugin.inspections.GlslError
 import glsl.plugin.inspections.GlslErrorCode
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
-import glsl.plugin.psi.named.GlslNamedTypeImpl
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.psi.interfaces.GlslBuiltinTypeMatrix
 

@@ -272,4 +272,12 @@ class GlslReferenceTest : BasePlatformTestCase() {
         assertInstanceOf(resolve, GlslInitDeclaratorVariable::class.java)
         assertEquals("c", (resolve as GlslInitDeclaratorVariable).name)
     }
+
+    fun testReference37() {
+        val reference = myFixture.getReferenceAtCaretPosition("ReferenceFile37.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslSingleDeclaration::class.java)
+        assertEquals("i", (resolve as GlslSingleDeclaration).name)
+        assertInstanceOf(resolve.parent?.parent, GlslIterationStatement::class.java)
+    }
 }

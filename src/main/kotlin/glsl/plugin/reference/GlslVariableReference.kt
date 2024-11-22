@@ -66,15 +66,14 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             lookupInPostfixStructMember()
             lookupInBuiltin()
             val statement = getParentOfType(element, GlslStatement::class.java)
-            val externalDeclaration: GlslExternalDeclaration? =
-                if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
-                    lookupInFunctionScope(statement)
-                } else {
-                    getParentOfType(element, GlslExternalDeclaration::class.java)
-                }
+            val externalDeclaration: GlslExternalDeclaration?
+            if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
+                externalDeclaration = lookupInFunctionScope(statement)
+            } else {
+                externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
+            }
             lookupInGlobalScope(externalDeclaration)
-        } catch (_: StopLookupException) {
-        }
+        } catch (_: StopLookupException) { }
     }
 
     /**
@@ -145,7 +144,8 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         }
         var statementPrevSibling = getPrevSiblingOfType(statement, GlslStatement::class.java)
         while (statementPrevSibling != null) {
-            lookupInStatement(statementPrevSibling)
+            lookupInDeclaration(statementPrevSibling.declaration)
+            lookupInPpStatement(statementPrevSibling.ppStatement)
             statementPrevSibling = getPrevSiblingOfType(statementPrevSibling, GlslStatement::class.java)
         }
         return getParentScope(statement)
@@ -175,16 +175,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (typesMatch) {
             findReferenceInElement(func)
         }
-    }
-
-    /**
-     *
-     */
-    private fun lookupInStatement(statement: GlslStatement?) {
-        if (statement == null) return
-        lookupInDeclaration(statement.declaration)
-        lookupInDeclaration(statement.iterationStatement?.declaration)
-        lookupInPpStatement(statement.ppStatement)
     }
 
     /**

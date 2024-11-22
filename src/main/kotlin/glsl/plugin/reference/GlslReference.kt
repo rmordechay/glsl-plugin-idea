@@ -37,15 +37,14 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
     abstract fun shouldResolve(): Boolean
     abstract fun resolveMany(): List<GlslNamedElement>
     abstract fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?)
-
     abstract override fun resolve(): GlslNamedElement?
+
     protected var currentFilterType = EQUALS
     protected val project = element.project
     private lateinit var currentFile: VirtualFile
+    val resolvedReferences = arrayListOf<GlslNamedElement>()
 
     private var includeRecursionLevel = 0
-
-    val resolvedReferences = arrayListOf<GlslNamedElement>()
 
     /**
      *

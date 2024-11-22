@@ -1,4 +1,4 @@
-package glsl.plugin.features
+package glsl.plugin.editor
 
 import com.intellij.codeInsight.template.TemplateActionContext
 import com.intellij.codeInsight.template.TemplateContextType

@@ -1,5 +1,9 @@
 # GLSL Plugin Changelog
 
+## [1.1.5]
+### Fixed
+- Iteration variable was resolved outside the iteration loop
+
 ## [1.1.4]
 - Updated version
 

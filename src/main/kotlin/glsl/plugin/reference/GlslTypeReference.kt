@@ -46,7 +46,9 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
             resolvedReferences.clear()
             currentFilterType = filterType
             resolveType()
-        } catch (_: StopLookupException) { }
+        } catch (_: StopLookupException) {
+            includeFiles.clear()
+        }
     }
 
     /**

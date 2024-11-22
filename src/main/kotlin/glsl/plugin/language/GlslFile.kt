@@ -15,7 +15,7 @@ class GlslFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, GlslL
     /**
     *
     */
-    override fun toString(): String = "Glsl File"
+    override fun toString(): String = viewProvider.virtualFile.name
 
     /**
     *

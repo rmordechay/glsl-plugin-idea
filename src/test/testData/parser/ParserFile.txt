@@ -1,4 +1,4 @@
-Glsl File(0,8491)
+ParserFile.test(0,8491)
   GlslExternalDeclarationImpl(EXTERNAL_DECLARATION)(0,13)
     GlslPpStatementImpl(PP_STATEMENT)(0,13)
       PsiElement(#version)('#version')(0,8)

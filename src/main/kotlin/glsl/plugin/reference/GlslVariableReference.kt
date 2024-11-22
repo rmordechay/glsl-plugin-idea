@@ -73,7 +73,9 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
                 externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
             }
             lookupInGlobalScope(externalDeclaration)
-        } catch (_: StopLookupException) { }
+        } catch (_: StopLookupException) {
+            includeFiles.clear()
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package glsl.plugin.features
+package glsl.plugin.editor
 
 import com.intellij.codeInsight.highlighting.PairedBraceMatcherAdapter
 import com.intellij.lang.BracePair

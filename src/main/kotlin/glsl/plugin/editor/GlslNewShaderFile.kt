@@ -1,4 +1,4 @@
-package glsl.plugin.features
+package glsl.plugin.editor
 
 import com.intellij.ide.actions.CreateFileFromTemplateAction
 import com.intellij.ide.actions.CreateFileFromTemplateDialog

@@ -1,4 +1,4 @@
-package glsl.plugin.code.formatter
+package glsl.plugin.editor.formatter
 
 import com.intellij.formatting.*
 import com.intellij.formatting.FormattingModelProvider.createFormattingModelForPsiFile

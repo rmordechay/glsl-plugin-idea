@@ -1,4 +1,4 @@
-package glsl.plugin.code.style
+package glsl.plugin.editor.style
 
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.CodeStyleAbstractPanel

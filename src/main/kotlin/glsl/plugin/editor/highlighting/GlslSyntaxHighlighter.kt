@@ -1,4 +1,4 @@
-package glsl.plugin.code.highlighting
+package glsl.plugin.editor.highlighting
 
 import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.Lexer
@@ -16,19 +16,19 @@ import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes
 import glsl._GlslHighlightLexer
 import glsl.data.GlslTokenSets
-import glsl.plugin.code.highlighting.GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.BOOLEAN_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.KEYWORD_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.LINE_COMMENT_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_FUNC_NAME_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.MACRO_OBJECT_NAME_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.MULTILINE_COMMENT_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.NUMBERS_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
-import glsl.plugin.code.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.BAD_CHARACTER_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.BOOLEAN_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.BUILTIN_TYPE_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.FUNC_PARAM_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.KEYWORD_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.LINE_COMMENT_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.MACRO_FUNC_NAME_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.MACRO_OBJECT_NAME_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.MULTILINE_COMMENT_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.NUMBERS_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.OPERATORS_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.PREPROCESSOR_TEXT_ATTR
+import glsl.plugin.editor.highlighting.GlslTextAttributes.STRING_TEXT_ATTR
 
 /**
  *

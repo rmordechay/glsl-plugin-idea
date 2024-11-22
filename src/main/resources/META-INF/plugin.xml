@@ -15,21 +15,23 @@
         <lang.parserDefinition          language="Glsl"
                                         implementationClass="glsl.plugin.language.GlslParserDefinition"/>
 
-        <codeStyleSettingsProvider      implementation="glsl.plugin.code.style.GlslCodeStyleProvider"/>
+        <codeStyleSettingsProvider      implementation="glsl.plugin.editor.style.GlslCodeStyleProvider"/>
 
-        <langCodeStyleSettingsProvider  implementation="glsl.plugin.code.style.GlslCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider  implementation="glsl.plugin.editor.style.GlslCodeStyleSettingsProvider"/>
 
         <lang.formatter                 language="Glsl"
-                                        implementationClass="glsl.plugin.code.formatter.GlslFormattingModelBuilder"/>
+                                        implementationClass="glsl.plugin.editor.formatter.GlslFormattingModelBuilder"/>
         <!--  Syntax highlighting  -->
         <annotator                      language="Glsl"
-                                        implementationClass="glsl.plugin.code.highlighting.GlslHighlightingAnnotator"/>
+                                        implementationClass="glsl.plugin.editor.highlighting.GlslHighlightingAnnotator"/>
         <lang.syntaxHighlighterFactory  language="Glsl"
-                                        implementationClass="glsl.plugin.code.highlighting.GlslSyntaxHighlightingFactory"/>
+                                        implementationClass="glsl.plugin.editor.highlighting.GlslSyntaxHighlightingFactory"/>
+
+        <lang.psiStructureViewFactory language="Glsl" implementationClass="glsl.plugin.editor.GlslStructureViewFactory"/>
 
         <additionalTextAttributes       scheme="Darcula"
                                         file="colors/GlslColorsConfiguration.xml"/>
-        <colorSettingsPage              implementation="glsl.plugin.code.highlighting.GlslColorSettings"/>
+        <colorSettingsPage              implementation="glsl.plugin.editor.highlighting.GlslColorSettings"/>
 
         <!--  Completion  -->
         <completion.contributor         language="Glsl"

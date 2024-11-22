@@ -1,4 +1,4 @@
-package glsl.plugin.code.highlighting
+package glsl.plugin.editor.highlighting
 
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter

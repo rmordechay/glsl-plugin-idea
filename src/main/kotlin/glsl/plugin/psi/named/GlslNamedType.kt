@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
-import glsl.plugin.code.highlighting.GlslTextAttributes
+import glsl.plugin.editor.highlighting.GlslTextAttributes
 import glsl.plugin.inspections.GlslError
 import javax.swing.Icon
 

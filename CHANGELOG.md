@@ -3,6 +3,8 @@
 ## [1.1.5]
 ### Fixed
 - Iteration variable was resolved outside the iteration loop
+### Added
+- File structure view
 
 ## [1.1.4]
 - Updated version

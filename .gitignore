@@ -33,3 +33,4 @@ kotlin-ide/
 /src/main/gen/
 /glsl-spec/
 .intellijPlatform
+.kotlin/

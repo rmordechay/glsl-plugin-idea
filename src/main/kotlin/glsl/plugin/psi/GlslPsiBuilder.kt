@@ -2,10 +2,10 @@ package glsl.plugin.psi
 
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
+import com.intellij.lang.parser.GeneratedParserUtilBase.*
 import glsl.GlslTypes.*
 import glsl._GlslParser
 import glsl.data.GlslTokenSets.IDENTIFIERS
-import utils.GeneratedParserUtil.*
 
 /**
  *

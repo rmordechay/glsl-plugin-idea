@@ -12,6 +12,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
+import com.intellij.testFramework.LightVirtualFileBase
+import com.intellij.util.asSafely
 import glsl.GlslTypes.BUILTIN_TYPE_SCALAR
 import glsl.data.ShaderType
 import glsl.plugin.psi.named.GlslNamedType
@@ -263,6 +265,12 @@ object GlslUtils {
         } else {
             return null
         }
+    }
+
+    @JvmStatic
+    fun PsiElement.getRealVirtualFile(): VirtualFile? {
+        val vf = this.containingFile?.viewProvider?.virtualFile
+        return vf.asSafely<LightVirtualFileBase>()?.originalFile ?: vf
     }
 }
 

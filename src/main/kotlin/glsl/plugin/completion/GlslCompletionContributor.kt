@@ -91,6 +91,7 @@ class GlslCompletionContributor : CompletionContributor() {
         // Builtin objects
         extend(CompletionType.BASIC, insideTypeSpecifier, GlslBuiltinTypesCompletion())
         extend(CompletionType.BASIC, insideExpression, GlslBuiltinFuncCompletion())
+
     }
 }
 

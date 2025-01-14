@@ -19,6 +19,7 @@ import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
+import glsl.plugin.utils.GlslUtils.getRealVirtualFile
 import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
 
@@ -36,7 +37,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     override fun resolve(): GlslNamedVariable? {
         if (!shouldResolve()) return null
         project = element.project
-        currentFile = element.containingFile.virtualFile
+        currentFile = element.getRealVirtualFile()
         val resolveCache = ResolveCache.getInstance(project!!)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
@@ -72,11 +73,11 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             val statement = getParentOfType(element, GlslStatement::class.java)
             val externalDeclaration: GlslExternalDeclaration? =
                 if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
-                    lookupInFunctionScope(statement)
+                    lookupInFunctionScope(currentFile, statement)
                 } else {
                     getParentOfType(element, GlslExternalDeclaration::class.java)
                 }
-            lookupInGlobalScope(externalDeclaration)
+            lookupInGlobalScope(currentFile, externalDeclaration)
         } catch (_: StopLookupException) {
         }
     }
@@ -97,21 +98,21 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    override fun lookupInExternalDeclaration(currentFile: VirtualFile?, externalDeclaration: GlslExternalDeclaration?) {
+    override fun lookupInExternalDeclaration(file: VirtualFile?, externalDeclaration: GlslExternalDeclaration?) {
         if (externalDeclaration == null) return
         lookupInFunctionDeclarator(externalDeclaration.functionDefinition?.functionDeclarator, false)
         lookupInDeclaration(externalDeclaration.declaration)
-        lookupInPpStatement(externalDeclaration.ppStatement)
+        lookupInPpStatement(file, externalDeclaration.ppStatement)
     }
 
     /**
      *
      */
-    private fun lookupInGlobalScope(externalDeclaration: GlslExternalDeclaration?) {
+    private fun lookupInGlobalScope(file: VirtualFile?, externalDeclaration: GlslExternalDeclaration?) {
         if (externalDeclaration == null) return
         var prevSibling = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
         while (prevSibling != null) {
-            lookupInExternalDeclaration(currentFile, prevSibling)
+            lookupInExternalDeclaration(file, prevSibling)
             prevSibling = getPrevSiblingOfType(prevSibling, GlslExternalDeclaration::class.java)
         }
     }
@@ -119,13 +120,13 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInFunctionScope(statement: GlslStatement?): GlslExternalDeclaration? {
+    private fun lookupInFunctionScope(file: VirtualFile?, statement: GlslStatement?): GlslExternalDeclaration? {
         if (statement == null) return null
-        var prevScope = lookupInInnerScope(statement)
+        var prevScope = lookupInInnerScope(file, statement)
         while (prevScope != null) {
             when (prevScope) {
                 is GlslStatement -> {
-                    prevScope = lookupInInnerScope(prevScope)
+                    prevScope = lookupInInnerScope(file, prevScope)
                 }
                 is GlslFunctionDefinition -> { // The beginning of the function.
                     lookupInFunctionDeclarator(prevScope.functionDeclarator, true)
@@ -142,14 +143,14 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInInnerScope(statement: GlslStatement?): PsiElement? {
+    private fun lookupInInnerScope(file: VirtualFile?, statement: GlslStatement?): PsiElement? {
         if (statement == null) return null
         if (statement.iterationStatement != null) {
             lookupInDeclaration(statement.iterationStatement?.declaration)
         }
         var statementPrevSibling = getPrevSiblingOfType(statement, GlslStatement::class.java)
         while (statementPrevSibling != null) {
-            lookupInStatement(statementPrevSibling)
+            lookupInStatement(file, statementPrevSibling)
             statementPrevSibling = getPrevSiblingOfType(statementPrevSibling, GlslStatement::class.java)
         }
         return getParentScope(statement)
@@ -184,11 +185,11 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInStatement(statement: GlslStatement?) {
+    private fun lookupInStatement(file: VirtualFile?, statement: GlslStatement?) {
         if (statement == null) return
         lookupInDeclaration(statement.declaration)
         lookupInDeclaration(statement.iterationStatement?.declaration)
-        lookupInPpStatement(statement.ppStatement)
+        lookupInPpStatement(file, statement.ppStatement)
     }
 
     /**
@@ -242,9 +243,9 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInPpStatement(ppStatement: GlslPpStatement?) {
+    private fun lookupInPpStatement(file: VirtualFile?, ppStatement: GlslPpStatement?) {
         if (ppStatement == null) return
-        lookupInIncludeDeclaration(currentFile, ppStatement.ppIncludeDeclaration)
+        lookupInIncludeDeclaration(file, ppStatement.ppIncludeDeclaration)
         findReferenceInElement(ppStatement.ppDefineObject)
         findReferenceInElement(ppStatement.ppDefineFunction)
     }

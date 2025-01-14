@@ -13,6 +13,7 @@
 - matrix * vector result was assumed to be a matrix
 - Array-indexing vector-typed struct members
 - #version autocomplete
+- Cross-file struct member autocomplete
 
 # Changed
 - Minimum IntelliJ version is now 2023.3

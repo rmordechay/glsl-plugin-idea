@@ -18,6 +18,7 @@ import glsl.plugin.utils.GlslBuiltinUtils
 import glsl.plugin.utils.GlslUtils
 import glsl.plugin.utils.GlslUtils.createLookupElement
 import glsl.plugin.utils.GlslUtils.createLookupElements
+import glsl.plugin.utils.GlslUtils.getRealVirtualFile
 import glsl.plugin.utils.GlslUtils.getVectorInsertHandler
 import javax.swing.Icon
 
@@ -135,7 +136,7 @@ class GlslIncludeStatementCompletion : GlslCompletionProvider() {
      *
      */
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, resultSet: CompletionResultSet) {
-        val virtualFile = parameters.originalFile.virtualFile
+        val virtualFile = parameters.originalFile.getRealVirtualFile() ?: return
         val parentDir = virtualFile.parent ?: return
         val lookupElements = mutableListOf<LookupElement>()
         for (siblingFile in parentDir.children) {

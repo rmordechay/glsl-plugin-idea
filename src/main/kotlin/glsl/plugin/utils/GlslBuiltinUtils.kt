@@ -4,6 +4,7 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil.findChildOfType
 import com.intellij.psi.util.PsiTreeUtil.findChildrenOfType
+import com.intellij.psi.util.findParentOfType
 import glsl.data.ShaderType
 import glsl.data.ShaderType.*
 import glsl.plugin.language.GlslFile
@@ -111,7 +112,7 @@ object GlslBuiltinUtils {
      */
     private fun setShaderVariables() {
         val shaderVariablesFile = getBuiltinFile("glsl-shader-variables")
-        val structSpecifiers = findChildrenOfType(shaderVariablesFile, GlslStructSpecifier::class.java).toList()
+        val structSpecifiers = findChildrenOfType(shaderVariablesFile, GlslStructSpecifier::class.java).filter { it.findParentOfType<GlslStructSpecifier>() == null }.toList()
         // Initializes map with ShaderType enum
         shaderVariables = EnumMap(ShaderType::class.java)
         val allShaderVariables = hashMapOf<String, GlslNamedVariable>()

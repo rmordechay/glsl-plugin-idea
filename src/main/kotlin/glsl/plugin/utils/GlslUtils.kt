@@ -154,7 +154,7 @@ object GlslUtils {
     @JvmStatic
     fun getVirtualFile(targetPathString: String?, baseFile: VirtualFile?, project: Project?): VirtualFile? {
         if (project == null || baseFile == null || targetPathString == null) return null
-        return baseFile.parent?.findFileByRelativePath(targetPathString)
+        return (if (baseFile.isDirectory) baseFile else baseFile.parent)?.findFileByRelativePath(targetPathString)
     }
 
     /**

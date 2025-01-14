@@ -99,6 +99,8 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
 
 <MACRO_IDENTIFIER_STATE> {
   {WHITE_SPACE}                    { return WHITE_SPACE; }
+  {BACKSLASH}                      { return WHITE_SPACE; }
+  {NEW_LINE}                       { yybegin(YYINITIAL); return PP_END; }
   {IDENTIFIER}                     { return IDENTIFIER; }
 }
 

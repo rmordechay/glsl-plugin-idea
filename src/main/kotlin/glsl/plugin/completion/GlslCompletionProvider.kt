@@ -65,7 +65,7 @@ class GlslGenericCompletion(private vararg var keywords: String, private val ico
     }
 }
 
-/**2
+/**
  *
  */
 class GlslPpCompletion : GlslCompletionProvider() {

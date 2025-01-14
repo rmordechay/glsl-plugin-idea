@@ -172,7 +172,14 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      *
      */
     private fun resolveFunction(func: GlslFunctionDeclarator) {
-        val funcCall = element.parent as? GlslFunctionCall ?: return
+        if (element.text.contains("IntellijIdeaRulezzz")) {
+            findReferenceInElement(func)
+            return
+        }
+        val funcCall = element.parent as? GlslFunctionCall ?: run {
+            findReferenceInElement(func)
+            return
+        }
         val exprTypes = funcCall.exprNoAssignmentList.map { it.getExprType() }
         val paramTypes = (func as? GlslFunctionDeclaratorImpl)?.getParameterTypes() ?: return
         if (paramTypes.size != exprTypes.size) return

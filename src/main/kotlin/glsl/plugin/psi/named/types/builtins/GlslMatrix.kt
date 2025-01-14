@@ -45,7 +45,7 @@ abstract class GlslMatrix(node: ASTNode) : GlslBuiltinType(node) {
         when (other) {
             is GlslScalar -> return this
             is GlslVector -> {
-                if (operation == "*") return this
+                if (operation == "*") return other
                 val msg = GlslErrorCode.DOES_NOT_OPERATE_ON.message.format(operation, name, other.name)
                 glslError = GlslError(GlslErrorCode.DOES_NOT_OPERATE_ON, msg)
                 return this

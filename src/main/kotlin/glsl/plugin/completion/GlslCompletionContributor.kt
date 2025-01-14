@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.or
+import glsl.GlslTypes
 import glsl.GlslTypes.*
 import glsl.data.GlslDefinitions
 import glsl.data.GlslTokenSets
@@ -53,6 +54,8 @@ class GlslCompletionContributor : CompletionContributor() {
         .andNot(afterDot)
         .inside(GlslExpr::class.java)
 
+    private val insideUnfinishedStatement = psiElement().afterLeaf(psiElement(GlslTypes.EQUAL)).inside(GlslSingleDeclaration::class.java)
+
     private val statementBeginning = psiElement()
         .andNot(psiElement().afterLeaf(numeric))
         .atStartOf(psiElement(GlslStatement::class.java))
@@ -91,6 +94,7 @@ class GlslCompletionContributor : CompletionContributor() {
         // Builtin objects
         extend(CompletionType.BASIC, insideTypeSpecifier, GlslBuiltinTypesCompletion())
         extend(CompletionType.BASIC, insideExpression, GlslBuiltinFuncCompletion())
+        extend(CompletionType.BASIC, insideUnfinishedStatement, GlslBuiltinFuncCompletion())
 
     }
 }

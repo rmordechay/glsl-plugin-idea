@@ -5,7 +5,7 @@ import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "1.9.21"
     id("org.jetbrains.intellij.platform") version "2.2.1"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("org.jetbrains.changelog") version "2.2.1"
@@ -14,7 +14,7 @@ plugins {
 }
 
 val pluginVersion: String by project
-val javaVersion = 21
+val javaVersion = 17
 
 group = "glsl.plugin"
 version = pluginVersion
@@ -28,7 +28,8 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity("2024.3")
+        //This needs to be the *oldest* supported version. verifyPlugin can be used to check it against newer versions.
+        intellijIdeaCommunity("2023.3.8")
         testFramework(TestFrameworkType.Platform)
     }
     testImplementation("junit:junit:4.13.2")
@@ -74,7 +75,7 @@ intellijPlatform {
         }
 
         ideaVersion {
-            sinceBuild = "243"
+            sinceBuild = "233" // Needs to be equal to the compile target intellij version
             untilBuild = provider { null }
         }
     }

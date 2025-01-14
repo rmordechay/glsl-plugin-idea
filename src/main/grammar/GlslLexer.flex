@@ -81,8 +81,6 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
 
 %%
 
-"IntellijIdeaRulezzz"    { return INTELLIJ_COMPLETION_DUMMY; }
-
 <MULITLINE_COMMENT_STATE> {
   "*/"                             { yybegin(YYINITIAL); return MULTILINE_COMMENT; }
   [^*\n]+                          { return MULTILINE_COMMENT; }
@@ -604,4 +602,5 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
     return IDENTIFIER;
   }
 }
+
 [^] { return BAD_CHARACTER; }

@@ -54,7 +54,7 @@ abstract class GlslNamedBlockStructure(node: ASTNode) : GlslNamedTypeImpl(node),
      *
      */
     override fun getLookupElement(returnTypeText: String?): LookupElement? {
-        TODO("Not yet implemented")
+        return null // TODO
     }
 
     /**

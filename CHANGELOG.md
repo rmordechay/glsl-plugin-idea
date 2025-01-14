@@ -17,6 +17,7 @@
 - Cross-file struct member autocomplete
 - Templates triggering inside include string autocompletion
 - Custom functions in autocomplete
+- Autocompletion for functions/variables in front of existing statements
 
 # Changed
 - Minimum IntelliJ version is now 2023.3

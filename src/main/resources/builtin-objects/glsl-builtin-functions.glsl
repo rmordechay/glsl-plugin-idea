@@ -1962,3 +1962,4 @@ uint usubBorrow(highp uint x, highp uint y, out lowp uint borrow);
 uvec2 usubBorrow(highp uvec2 x, highp uvec2 y, out lowp uvec2 borrow);
 uvec3 usubBorrow(highp uvec3 x, highp uvec3 y, out lowp uvec3 borrow);
 uvec4 usubBorrow(highp uvec4 x, highp uvec4 y, out lowp uvec4 borrow);
+vec4 ftransform();

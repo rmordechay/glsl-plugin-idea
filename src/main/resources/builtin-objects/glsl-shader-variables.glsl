@@ -119,3 +119,98 @@ struct TESE {
     patch in float gl_TessLevelOuter[4];
     patch in float gl_TessLevelInner[2];
 };
+
+//Compatibility profile
+struct COMPAT {
+    mat4 gl_ModelViewMatrix;
+    mat4 gl_ProjectionMatrix;
+    mat4 gl_ModelViewProjectionMatrix;
+    mat4 gl_TextureMatrix[];
+    mat3 gl_NormalMatrix;
+    mat4 gl_ModelViewMatrixInverse;
+    mat4 gl_ProjectionMatrixInverse;
+    mat4 gl_ModelViewProjectionMatrixInverse;
+    mat4 gl_TextureMatrixInverse[];
+    mat4 gl_ModelViewMatrixTranspose;
+    mat4 gl_ProjectionMatrixTranspose;
+    mat4 gl_ModelViewProjectionMatrixTranspose;
+    mat4 gl_TextureMatrixTranspose[];
+    mat4 gl_ModelViewMatrixInverseTranspose;
+    mat4 gl_ProjectionMatrixInverseTranspose;
+    mat4 gl_ModelViewProjectionMatrixInverseTranspose;
+    mat4 gl_TextureMatrixInverseTranspose[];
+    float gl_NormalScale;
+    vec4 gl_ClipPlane[];
+    struct gl_PointParameters {
+        float size;
+        float sizeMin;
+        float sizeMax;
+        float fadeThresholdSize;
+        float distanceConstantAttenuation;
+        float distanceLinearAttenuation;
+        float distanceQuadraticAttenuation;
+    } gl_Point;
+    struct gl_MaterialParameters {
+        vec4 emission;
+        vec4 ambient;
+        vec4 diffuse;
+        vec4 specular;
+        float shininess;
+    } gl_FrontMaterial;
+    struct gl_MaterialParameters {
+        vec4 emission;
+        vec4 ambient;
+        vec4 diffuse;
+        vec4 specular;
+        float shininess;
+    } gl_BackMaterial;
+    struct gl_LightSourceParameters {
+        vec4 ambient;
+        vec4 diffuse;
+        vec4 specular;
+        vec4 position;
+        vec4 halfVector;
+        vec3 spotDirection;
+        float spotExponent;
+        float spotCutoff;
+        float spotCosCutoff;
+        float constantAttenuation;
+        float linearAttenuation;
+        float quadraticAttenuation;
+    } gl_LightSource[];
+    struct gl_LightModelParameters {
+        vec4 ambient;
+    } gl_LightModel;
+    struct gl_LightModelProducts {
+        vec4 sceneColor;
+    } gl_FrontLightModelProduct;
+    struct gl_LightModelProducts {
+        vec4 sceneColor;
+    } gl_BackLightModelProduct;
+    struct gl_LightProducts {
+        vec4 ambient;
+        vec4 diffuse;
+        vec4 specular;
+    } gl_FrontLightProduct[];
+    struct gl_LightProducts {
+        vec4 ambient;
+        vec4 diffuse;
+        vec4 specular;
+    } gl_BackLightProduct[];
+    vec4 gl_TextureEnvColor[];
+    vec4 gl_EyePlaneS[];
+    vec4 gl_EyePlaneT[];
+    vec4 gl_EyePlaneR[];
+    vec4 gl_EyePlaneQ[];
+    vec4 gl_ObjectPlaneS[];
+    vec4 gl_ObjectPlaneT[];
+    vec4 gl_ObjectPlaneR[];
+    vec4 gl_ObjectPlaneQ[];
+    struct gl_FogParameters {
+        vec4 color;
+        float density;
+        float start;
+        float end;
+        float scale;
+    } gl_Fog;
+}

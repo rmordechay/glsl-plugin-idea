@@ -162,14 +162,17 @@ object GlslUtils {
         } else {
             realBaseFile = baseFile
         }
-        return (if (realBaseFile.isDirectory) realBaseFile else realBaseFile.parent)?.findFileByRelativePath(targetPathString)
+        val file = (if (realBaseFile.isDirectory) realBaseFile else realBaseFile.parent)?.findFileByRelativePath(targetPathString) ?: return null
+        if (file.isDirectory)
+            return null
+        return file
     }
 
     /**
      * Evil hack - FalsePattern
      */
     @JvmStatic
-    private fun resolveOptiFineShaderpackRoot(baseFile: VirtualFile): VirtualFile? {
+    fun resolveOptiFineShaderpackRoot(baseFile: VirtualFile): VirtualFile? {
         var current = baseFile.parent
         var shadersOffset = -1;
         var shadersFile: VirtualFile? = null

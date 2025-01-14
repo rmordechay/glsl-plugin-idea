@@ -5,6 +5,7 @@
 - GLSL Compatibility mode uniforms and ftransform()
 - Recursive include support
 - OptiFine shaderpack-style include support
+- Autocomplete for including files from different directories
 
 # Fixed
 - Tests failing on linux

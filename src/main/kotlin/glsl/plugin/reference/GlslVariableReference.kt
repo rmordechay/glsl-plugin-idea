@@ -37,7 +37,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     override fun resolve(): GlslNamedVariable? {
         if (!shouldResolve()) return null
         project = element.project
-        currentFile = element.getRealVirtualFile()
         val resolveCache = ResolveCache.getInstance(project!!)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
@@ -46,6 +45,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      *
      */
     override fun getVariants(): Array<LookupElement> {
+        project = element.project
         doResolve(CONTAINS)
         return resolvedReferences.mapNotNull { it.getLookupElement() }.toTypedArray()
     }
@@ -66,6 +66,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     override fun doResolve(filterType: FilterType) {
         try {
+            currentFile = element.getRealVirtualFile()
             resolvedReferences.clear()
             currentFilterType = filterType
             lookupInPostfixStructMember()

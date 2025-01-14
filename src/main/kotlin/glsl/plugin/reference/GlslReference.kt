@@ -37,7 +37,7 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
     abstract fun doResolve(filterType: FilterType = EQUALS)
     abstract fun shouldResolve(): Boolean
     abstract fun resolveMany(): List<GlslNamedElement>
-    abstract fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?)
+    abstract fun lookupInExternalDeclaration(relativeTo: VirtualFile?, externalDeclaration: GlslExternalDeclaration?)
 
     abstract override fun resolve(): GlslNamedElement?
     protected var currentFilterType = EQUALS
@@ -126,7 +126,7 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
     /**
      *
      */
-    protected fun lookupInIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
+    protected fun lookupInIncludeDeclaration(relativeTo: VirtualFile?, ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
         if (ppIncludeDeclaration == null) return
         includeRecursionLevel++
         val path = getPathStringFromInclude(ppIncludeDeclaration) ?: return
@@ -134,12 +134,12 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
             includeRecursionLevel = 0
             throw StopLookupException()
         }
-        val vf = getVirtualFile(path, currentFile, project) ?: return
+        val vf = getVirtualFile(path, relativeTo, project) ?: return
         val psiFile = PsiManager.getInstance(project!!).findFile(vf) as? GlslFile
         val externalDeclarations = psiFile?.childrenOfType<GlslExternalDeclaration>()
         if (externalDeclarations != null) {
             for (externalDeclaration in externalDeclarations) {
-                lookupInExternalDeclaration(externalDeclaration)
+                lookupInExternalDeclaration(vf, externalDeclaration)
             }
         }
         includeRecursionLevel--

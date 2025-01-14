@@ -2,6 +2,7 @@ package glsl.plugin.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
@@ -82,7 +83,7 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
         var externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
         while (externalDeclaration != null) {
             externalDeclaration = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
-            lookupInExternalDeclaration(externalDeclaration)
+            lookupInExternalDeclaration(currentFile, externalDeclaration)
         }
         return null
     }
@@ -90,8 +91,8 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
     /**
      *
      */
-    override fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?) {
-        lookupInIncludeDeclaration(externalDeclaration?.ppStatement?.ppIncludeDeclaration)
+    override fun lookupInExternalDeclaration(relativeTo: VirtualFile?, externalDeclaration: GlslExternalDeclaration?) {
+        lookupInIncludeDeclaration(relativeTo, externalDeclaration?.ppStatement?.ppIncludeDeclaration)
         resolveDeclarationType(externalDeclaration?.declaration)
     }
 

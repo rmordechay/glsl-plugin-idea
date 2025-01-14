@@ -154,7 +154,44 @@ object GlslUtils {
     @JvmStatic
     fun getVirtualFile(targetPathString: String?, baseFile: VirtualFile?, project: Project?): VirtualFile? {
         if (project == null || baseFile == null || targetPathString == null) return null
-        return (if (baseFile.isDirectory) baseFile else baseFile.parent)?.findFileByRelativePath(targetPathString)
+        val realBaseFile: VirtualFile;
+        if (targetPathString.startsWith('/')) {
+            realBaseFile = resolveOptiFineShaderpackRoot(baseFile) ?: baseFile
+        } else {
+            realBaseFile = baseFile
+        }
+        return (if (realBaseFile.isDirectory) realBaseFile else realBaseFile.parent)?.findFileByRelativePath(targetPathString)
+    }
+
+    /**
+     * Evil hack - FalsePattern
+     */
+    @JvmStatic
+    private fun resolveOptiFineShaderpackRoot(baseFile: VirtualFile): VirtualFile? {
+        var current = baseFile.parent
+        var shadersOffset = -1;
+        var shadersFile: VirtualFile? = null
+        var shaderpacksOffset = -1;
+        var offset = 0;
+        while (current != null) {
+            when(current.name) {
+                "shaders" -> {
+                    shadersOffset = offset
+                    shadersFile = current
+                }
+                "shaderpacks" -> {
+                    shaderpacksOffset = offset
+                    break
+                }
+            }
+            current = current.parent
+            offset++;
+        }
+        if (shadersFile != null && shadersOffset != -1 && shaderpacksOffset != -1 && shaderpacksOffset == shadersOffset + 2) {
+            //Shaderpack detected, hack absolute path.
+            return shadersFile
+        }
+        return null
     }
 
     /**

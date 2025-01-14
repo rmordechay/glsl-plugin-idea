@@ -15,6 +15,7 @@
 - Array-indexing vector-typed struct members
 - #version autocomplete
 - Cross-file struct member autocomplete
+- Templates triggering inside include string autocompletion
 
 # Changed
 - Minimum IntelliJ version is now 2023.3

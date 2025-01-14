@@ -29,7 +29,6 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
     override fun resolve(): GlslNamedType? {
         if (!shouldResolve()) return null
         project = element.project
-        currentFile = element.getRealVirtualFile()
         val resolveCache = ResolveCache.getInstance(project!!)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
@@ -38,6 +37,7 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
      *
      */
     override fun getVariants(): Array<LookupElement> {
+        project = element.project
         doResolve(CONTAINS)
         return resolvedReferences.mapNotNull { it.getLookupElement() }.toTypedArray()
     }
@@ -47,6 +47,7 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
      */
     override fun doResolve(filterType: FilterType) {
         try {
+            currentFile = element.getRealVirtualFile()
             resolvedReferences.clear()
             currentFilterType = filterType
             resolveType()

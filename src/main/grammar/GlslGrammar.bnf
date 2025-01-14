@@ -531,6 +531,7 @@
         BOOLCONSTANT="regexp:false|true"
         STRING_LITERAL="regexp:(\"([^\"\\]|\[.])*\")"
         IDENTIFIER="regexp:[a-zA-Z_]+\w*"
+        INTELLIJ_COMPLETION_DUMMY="intellij completion placeholder"
     ]
 }
 

@@ -7,6 +7,7 @@ import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
 import com.intellij.psi.util.PsiTreeUtil.getParentOfType
 import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
+import com.intellij.psi.util.findParentOfType
 import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedType
@@ -50,6 +51,12 @@ class GlslTypeReference(private val element: GlslType, textRange: TextRange) : G
             currentFile = element.getRealVirtualFile()
             resolvedReferences.clear()
             currentFilterType = filterType
+            val statement = element.findParentOfType<GlslStatement>()
+            if (statement != null && statement.declaration?.singleDeclaration?.typeSpecifier?.typeName?.reference == this) {
+                val fakeVar = GlslVariableReference(element, rangeInElement)
+                fakeVar.doResolve(filterType)
+                resolvedReferences.addAll(fakeVar.resolvedReferences)
+            }
             resolveType()
         } catch (_: StopLookupException) { }
     }

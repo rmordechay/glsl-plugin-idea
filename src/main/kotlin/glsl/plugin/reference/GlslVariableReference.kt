@@ -11,6 +11,8 @@ import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
+import glsl.plugin.psi.GlslIdentifier
+import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
@@ -23,7 +25,7 @@ import glsl.plugin.utils.GlslUtils.getRealVirtualFile
 import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
 
-class GlslVariableReference(private val element: GlslVariable, textRange: TextRange) :
+class GlslVariableReference(private val element: GlslIdentifier, textRange: TextRange) :
     GlslReference(element, textRange) {
 
     private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
@@ -320,5 +322,17 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
             else -> null
         }
+    }
+
+    private fun GlslIdentifier.isEmpty() = when(this) {
+        is GlslVariable -> this.isEmpty()
+        is GlslType -> this.isEmpty()
+        else -> throw AssertionError()
+    }
+
+    private val GlslIdentifier.name get() = when(this) {
+        is GlslVariable -> this.name
+        is GlslType -> this.name
+        else -> throw AssertionError()
     }
 }

@@ -6,7 +6,11 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.icons.AllIcons
+import com.intellij.psi.TokenType
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.prevLeaf
 import com.intellij.util.ProcessingContext
+import glsl.GlslTypes
 import glsl.data.GlslDefinitions
 import glsl.data.GlslTokenSets
 import glsl.plugin.language.GlslIcon
@@ -23,20 +27,40 @@ import javax.swing.Icon
  */
 abstract class GlslCompletionProvider : CompletionProvider<CompletionParameters>()
 
+enum class GlslPostWhiteSpaceCompletion {
+    Ignore,
+    Require,
+    Reject
+}
 /**
  *
  */
-class GlslGenericCompletion(private vararg var keywords: String, private val icon: Icon? = null) : GlslCompletionProvider() {
+class GlslGenericCompletion(private vararg var keywords: String, private val icon: Icon? = null, private val whitespace: GlslPostWhiteSpaceCompletion = GlslPostWhiteSpaceCompletion.Ignore) : GlslCompletionProvider() {
 
     /**
      *
      */
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, resultSet: CompletionResultSet) {
-        resultSet.addAllElements(keywords.map { createLookupElement(it, psiElement = parameters.position, icon = icon) })
+        val prevLeaf = parameters.position.prevLeaf(true)
+        val theResultSet = if (prevLeaf != null) {
+            val prevElementType = prevLeaf.elementType
+            when(whitespace) {
+                GlslPostWhiteSpaceCompletion.Require -> if (prevElementType != TokenType.WHITE_SPACE) return
+                GlslPostWhiteSpaceCompletion.Reject -> if (prevElementType == TokenType.WHITE_SPACE) return
+                GlslPostWhiteSpaceCompletion.Ignore -> {}
+            }
+            when(prevElementType) {
+                GlslTypes.INTCONSTANT -> resultSet.withPrefixMatcher(prevLeaf.text)
+                else -> resultSet
+            }
+        } else {
+            resultSet
+        }
+        theResultSet.addAllElements(keywords.map { createLookupElement(it, psiElement = parameters.position, icon = icon) })
     }
 }
 
-/**
+/**2
  *
  */
 class GlslPpCompletion : GlslCompletionProvider() {

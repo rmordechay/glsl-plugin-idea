@@ -1,13 +1,13 @@
 # GLSL Plugin Changelog
 ## [Unreleased]
 
-# Added
+### Added
 - GLSL Compatibility mode uniforms and ftransform()
 - Recursive include support
 - OptiFine shaderpack-style include support
 - Autocomplete for including files from different directories
 
-# Fixed
+### Fixed
 - Tests failing on linux
 - Bad vector swizzle constants for the `stpq` group
 - Includes cannot resolve custom types if there was a #define macro before them
@@ -20,7 +20,7 @@
 - Autocompletion for functions/variables in front of existing statements
 - Recursive included structs from builtins
 
-# Changed
+### Changed
 - Minimum IntelliJ version is now 2023.3
 
 ## [1.1.4]

@@ -118,8 +118,9 @@ abstract class GlslExprTypeImpl(node: ASTNode) : ASTWrapperPsiElement(node), Gls
     private fun getPostfixSelectionType(`postfixExpr`: GlslPostfixFieldSelection): GlslNamedType? {
         if (postfixExpr.postfixStructMemberList.isEmpty()) return null
         val lastExpr = postfixExpr.postfixStructMemberList.last()
-        if (lastExpr.variableIdentifier == null)
+        if (lastExpr.variableIdentifier == null) {
             return null
+        }
         val type = lastExpr.variableIdentifier?.resolveReference()?.getAssociatedType()
         if (lastExpr.expr != null) {
             return type?.getScalarType()

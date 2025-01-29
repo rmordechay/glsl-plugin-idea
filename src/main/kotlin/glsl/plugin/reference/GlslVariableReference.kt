@@ -17,12 +17,12 @@ import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.psi.named.types.user.GlslNamedBlockStructure
+import glsl.plugin.psi.named.variables.GlslNamedFunctionDeclarator
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
 import glsl.plugin.utils.GlslUtils.getRealVirtualFile
-import glsl.psi.impl.GlslFunctionDeclaratorImpl
 import glsl.psi.interfaces.*
 
 class GlslVariableReference(private val element: GlslIdentifier, textRange: TextRange) :
@@ -184,7 +184,7 @@ class GlslVariableReference(private val element: GlslIdentifier, textRange: Text
             return
         }
         val exprTypes = funcCall.exprNoAssignmentList.map { it.getExprType() }
-        val paramTypes = (func as? GlslFunctionDeclaratorImpl)?.getParameterTypes() ?: return
+        val paramTypes = (func as? GlslNamedFunctionDeclarator)?.getParameterTypes() ?: emptyList()
         if (paramTypes.size != exprTypes.size) return
         val typesMatch = paramTypes.zip(exprTypes).all { it.first.isEqual(it.second) }
         if (typesMatch) {

@@ -19,6 +19,7 @@
 - Custom functions in autocomplete
 - Autocompletion for functions/variables in front of existing statements
 - Recursive included structs from builtins
+- No highlighting/reference resolution for parameter-less function calls/declarations
 
 ### Changed
 - Minimum IntelliJ version is now 2023.3

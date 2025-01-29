@@ -77,7 +77,7 @@ class GlslSyntaxHighlighter : SyntaxHighlighterBase() {
  */
 object GlslTextAttributes {
     val VARIABLE_TEXT_ATTR = createTextAttributesKey("GLSL_VARIABLE", IDENTIFIER)
-    val USER_DEFINED_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_USER_DEFINED_TYPE", CLASS_NAME)
+    val USER_DEFINED_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_USER_DEFINED_TYPE", CLASS_REFERENCE)
     val BUILTIN_NAME_TEXT_ATTR = createTextAttributesKey("GLSL_BUILTIN_NAME_TEXT_ATTR", IDENTIFIER)
     val BUILTIN_GLOBAL_CONSTANTS = createTextAttributesKey("GLSL_BUILTIN_GLOBAL_CONSTANTS", CONSTANT)
     val STRING_TEXT_ATTR = createTextAttributesKey("GLSL_STRING", STRING)
@@ -86,12 +86,12 @@ object GlslTextAttributes {
     val PREPROCESSOR_TEXT_ATTR = createTextAttributesKey("GLSL_PREPROCESSOR", KEYWORD)
     val MACRO_OBJECT_NAME_ATTR = createTextAttributesKey("GLSL_MACRO_OBJECT_NAME", IDENTIFIER)
     val MACRO_FUNC_NAME_ATTR = createTextAttributesKey("GLSL_MACRO_FUNC_NAME", FUNCTION_CALL)
-    val STRUCT_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_STRUCT_IDENTIFIER", CLASS_NAME)
+    val STRUCT_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_STRUCT_IDENTIFIER", CLASS_REFERENCE)
     val NUMBERS_TEXT_ATTR = createTextAttributesKey("GLSL_NUMBER", NUMBER)
     val KEYWORD_TEXT_ATTR = createTextAttributesKey("GLSL_KEYWORD", KEYWORD)
     val FUNC_TEXT_ATTR = createTextAttributesKey("GLSL_FUNCTION", FUNCTION_CALL)
     val FUNC_PARAM_TEXT_ATTR = createTextAttributesKey("GLSL_FUNCTION_PARAM", PARAMETER)
-    val BUILTIN_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_BUILTIN_TYPE", CLASS_NAME)
+    val BUILTIN_TYPE_TEXT_ATTR = createTextAttributesKey("GLSL_BUILTIN_TYPE", CLASS_REFERENCE)
     val LINE_COMMENT_TEXT_ATTR = createTextAttributesKey("GLSL_LINE_COMMENT", LINE_COMMENT)
     val MULTILINE_COMMENT_TEXT_ATTR = createTextAttributesKey("GLSL_MULTILINE_COMMENT", LINE_COMMENT)
     val BAD_CHARACTER_TEXT_ATTR = createTextAttributesKey("GLSL_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)

@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.InsertHandler
-import com.intellij.codeInsight.completion.PlainPrefixMatcher
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.vfs.VirtualFile
@@ -182,7 +181,7 @@ class GlslIncludeStatementCompletion : GlslCompletionProvider() {
     }
 
     private fun resolveOptiFineAbsolutePathDirectory(p: String, virtualFile: VirtualFile): Triple<String, VirtualFile, Boolean>? {
-        val root = GlslUtils.resolveOptiFineShaderpackRoot(virtualFile) ?: return null
+        val root = GlslUtils.resolveSourceRoot(virtualFile) ?: return null
         return resolveRelativeDirectory(p, root, virtualFile)
     }
 

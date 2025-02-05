@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.findFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
@@ -158,7 +159,7 @@ object GlslUtils {
         if (project == null || baseFile == null || targetPathString == null) return null
         val realBaseFile: VirtualFile;
         if (targetPathString.startsWith('/')) {
-            realBaseFile = resolveOptiFineShaderpackRoot(baseFile) ?: baseFile
+            realBaseFile = resolveSourceRoot(baseFile) ?: baseFile
         } else {
             realBaseFile = baseFile
         }
@@ -169,16 +170,20 @@ object GlslUtils {
     }
 
     /**
-     * Evil hack - FalsePattern
+     *
      */
     @JvmStatic
-    fun resolveOptiFineShaderpackRoot(baseFile: VirtualFile): VirtualFile? {
-        var current = baseFile.parent
-        var shadersOffset = -1;
+    fun resolveSourceRoot(baseFile: VirtualFile): VirtualFile? {
+        return resolveMarkerSourceRoot(baseFile) ?: resolveMCShaderPackRoot(baseFile)
+    }
+
+    @JvmStatic
+    private fun resolveMCShaderPackRoot(baseFile: VirtualFile): VirtualFile? {
+        var shadersOffset = -1
         var shadersFile: VirtualFile? = null
-        var shaderpacksOffset = -1;
-        var offset = 0;
-        while (current != null) {
+        var shaderpacksOffset = -1
+        var offset = 0
+        baseFile.searchParents { current ->
             when(current.name) {
                 "shaders" -> {
                     shadersOffset = offset
@@ -186,17 +191,34 @@ object GlslUtils {
                 }
                 "shaderpacks" -> {
                     shaderpacksOffset = offset
-                    break
+                    return@searchParents
                 }
             }
-            current = current.parent
-            offset++;
+            offset++
         }
         if (shadersFile != null && shadersOffset != -1 && shaderpacksOffset != -1 && shaderpacksOffset == shadersOffset + 2) {
             //Shaderpack detected, hack absolute path.
             return shadersFile
         }
         return null
+    }
+
+    @JvmStatic
+    private fun resolveMarkerSourceRoot(baseFile: VirtualFile): VirtualFile? {
+        baseFile.searchParents { current ->
+            current.findFile(".glsl_idea_root")?.let { return it }
+        }
+        return null
+    }
+
+    private inline fun VirtualFile.searchParents(search: (VirtualFile) -> Unit) {
+        var depth = 0
+        var current = this.parent
+        while (depth < 128 && current != null) {
+            search(current)
+            current = current.parent
+            depth++
+        }
     }
 
     /**

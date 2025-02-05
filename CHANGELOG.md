@@ -4,7 +4,8 @@
 ### Added
 - GLSL Compatibility mode uniforms and ftransform()
 - Recursive include support
-- OptiFine shaderpack-style include support
+- MC shaderpack-style include support
+- Custom "absolute path" includes via marker file
 - Autocomplete for including files from different directories
 
 ### Fixed

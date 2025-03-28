@@ -2,6 +2,7 @@ package glsl.plugin.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.impl.source.resolve.ResolveCache.AbstractResolver
@@ -10,18 +11,21 @@ import com.intellij.psi.util.PsiTreeUtil.getPrevSiblingOfType
 import com.intellij.psi.util.elementType
 import glsl.GlslTypes.MACRO_FUNCTION
 import glsl.GlslTypes.MACRO_OBJECT
+import glsl.plugin.psi.GlslIdentifier
+import glsl.plugin.psi.GlslType
 import glsl.plugin.psi.GlslVariable
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
 import glsl.plugin.psi.named.types.user.GlslNamedBlockStructure
+import glsl.plugin.psi.named.variables.GlslNamedFunctionDeclarator
 import glsl.plugin.reference.FilterType.CONTAINS
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinConstants
 import glsl.plugin.utils.GlslBuiltinUtils.getBuiltinFuncs
 import glsl.plugin.utils.GlslBuiltinUtils.getShaderVariables
-import glsl.psi.impl.GlslFunctionDeclaratorImpl
+import glsl.plugin.utils.GlslUtils.getRealVirtualFile
 import glsl.psi.interfaces.*
 
-class GlslVariableReference(private val element: GlslVariable, textRange: TextRange) :
+class GlslVariableReference(private val element: GlslIdentifier, textRange: TextRange) :
     GlslReference(element, textRange) {
 
     private val resolver = AbstractResolver<GlslReference, GlslNamedVariable> { reference, _ ->
@@ -35,7 +39,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     override fun resolve(): GlslNamedVariable? {
         if (!shouldResolve()) return null
         project = element.project
-        currentFile = element.containingFile.virtualFile
         val resolveCache = ResolveCache.getInstance(project!!)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
@@ -44,6 +47,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      *
      */
     override fun getVariants(): Array<LookupElement> {
+        project = element.project
         doResolve(CONTAINS)
         return resolvedReferences.mapNotNull { it.getLookupElement() }.toTypedArray()
     }
@@ -64,6 +68,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     override fun doResolve(filterType: FilterType) {
         try {
+            currentFile = element.getRealVirtualFile()
             resolvedReferences.clear()
             currentFilterType = filterType
             lookupInPostfixStructMember()
@@ -71,11 +76,11 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             val statement = getParentOfType(element, GlslStatement::class.java)
             val externalDeclaration: GlslExternalDeclaration? =
                 if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
-                    lookupInFunctionScope(statement)
+                    lookupInFunctionScope(currentFile, statement)
                 } else {
                     getParentOfType(element, GlslExternalDeclaration::class.java)
                 }
-            lookupInGlobalScope(externalDeclaration)
+            lookupInGlobalScope(currentFile, externalDeclaration)
         } catch (_: StopLookupException) {
         }
     }
@@ -96,21 +101,21 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    override fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?) {
+    override fun lookupInExternalDeclaration(file: VirtualFile?, externalDeclaration: GlslExternalDeclaration?) {
         if (externalDeclaration == null) return
         lookupInFunctionDeclarator(externalDeclaration.functionDefinition?.functionDeclarator, false)
         lookupInDeclaration(externalDeclaration.declaration)
-        lookupInPpStatement(externalDeclaration.ppStatement)
+        lookupInPpStatement(file, externalDeclaration.ppStatement)
     }
 
     /**
      *
      */
-    private fun lookupInGlobalScope(externalDeclaration: GlslExternalDeclaration?) {
+    private fun lookupInGlobalScope(file: VirtualFile?, externalDeclaration: GlslExternalDeclaration?) {
         if (externalDeclaration == null) return
         var prevSibling = getPrevSiblingOfType(externalDeclaration, GlslExternalDeclaration::class.java)
         while (prevSibling != null) {
-            lookupInExternalDeclaration(prevSibling)
+            lookupInExternalDeclaration(file, prevSibling)
             prevSibling = getPrevSiblingOfType(prevSibling, GlslExternalDeclaration::class.java)
         }
     }
@@ -118,13 +123,13 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInFunctionScope(statement: GlslStatement?): GlslExternalDeclaration? {
+    private fun lookupInFunctionScope(file: VirtualFile?, statement: GlslStatement?): GlslExternalDeclaration? {
         if (statement == null) return null
-        var prevScope = lookupInInnerScope(statement)
+        var prevScope = lookupInInnerScope(file, statement)
         while (prevScope != null) {
             when (prevScope) {
                 is GlslStatement -> {
-                    prevScope = lookupInInnerScope(prevScope)
+                    prevScope = lookupInInnerScope(file, prevScope)
                 }
                 is GlslFunctionDefinition -> { // The beginning of the function.
                     lookupInFunctionDeclarator(prevScope.functionDeclarator, true)
@@ -141,14 +146,14 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInInnerScope(statement: GlslStatement?): PsiElement? {
+    private fun lookupInInnerScope(file: VirtualFile?, statement: GlslStatement?): PsiElement? {
         if (statement == null) return null
         if (statement.iterationStatement != null) {
             lookupInDeclaration(statement.iterationStatement?.declaration)
         }
         var statementPrevSibling = getPrevSiblingOfType(statement, GlslStatement::class.java)
         while (statementPrevSibling != null) {
-            lookupInStatement(statementPrevSibling)
+            lookupInStatement(file, statementPrevSibling)
             statementPrevSibling = getPrevSiblingOfType(statementPrevSibling, GlslStatement::class.java)
         }
         return getParentScope(statement)
@@ -170,9 +175,16 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      *
      */
     private fun resolveFunction(func: GlslFunctionDeclarator) {
-        val funcCall = element.parent as? GlslFunctionCall ?: return
+        if (element.text.contains("IntellijIdeaRulezzz")) {
+            findReferenceInElement(func)
+            return
+        }
+        val funcCall = element.parent as? GlslFunctionCall ?: run {
+            findReferenceInElement(func)
+            return
+        }
         val exprTypes = funcCall.exprNoAssignmentList.map { it.getExprType() }
-        val paramTypes = (func as? GlslFunctionDeclaratorImpl)?.getParameterTypes() ?: return
+        val paramTypes = (func as? GlslNamedFunctionDeclarator)?.getParameterTypes() ?: emptyList()
         if (paramTypes.size != exprTypes.size) return
         val typesMatch = paramTypes.zip(exprTypes).all { it.first.isEqual(it.second) }
         if (typesMatch) {
@@ -183,11 +195,11 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInStatement(statement: GlslStatement?) {
+    private fun lookupInStatement(file: VirtualFile?, statement: GlslStatement?) {
         if (statement == null) return
         lookupInDeclaration(statement.declaration)
         lookupInDeclaration(statement.iterationStatement?.declaration)
-        lookupInPpStatement(statement.ppStatement)
+        lookupInPpStatement(file, statement.ppStatement)
     }
 
     /**
@@ -241,9 +253,9 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
     /**
      *
      */
-    private fun lookupInPpStatement(ppStatement: GlslPpStatement?) {
+    private fun lookupInPpStatement(file: VirtualFile?, ppStatement: GlslPpStatement?) {
         if (ppStatement == null) return
-        lookupInIncludeDeclaration(ppStatement.ppIncludeDeclaration)
+        lookupInIncludeDeclaration(file, ppStatement.ppIncludeDeclaration)
         findReferenceInElement(ppStatement.ppDefineObject)
         findReferenceInElement(ppStatement.ppDefineFunction)
     }
@@ -310,5 +322,17 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             is GlslPostfixInc -> getPostfixIdentifier(postfixExpr.postfixExpr)
             else -> null
         }
+    }
+
+    private fun GlslIdentifier.isEmpty() = when(this) {
+        is GlslVariable -> this.isEmpty()
+        is GlslType -> this.isEmpty()
+        else -> throw AssertionError()
+    }
+
+    private val GlslIdentifier.name get() = when(this) {
+        is GlslVariable -> this.name
+        is GlslType -> this.name
+        else -> throw AssertionError()
     }
 }

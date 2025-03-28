@@ -4,9 +4,12 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.or
+import glsl.GlslTypes
 import glsl.GlslTypes.*
 import glsl.data.GlslDefinitions
 import glsl.data.GlslTokenSets
+import glsl.plugin.completion.GlslPostWhiteSpaceCompletion.Reject
+import glsl.plugin.completion.GlslPostWhiteSpaceCompletion.Require
 import glsl.plugin.utils.GlslUtils
 import glsl.psi.interfaces.*
 
@@ -34,6 +37,7 @@ class GlslCompletionContributor : CompletionContributor() {
     private val afterPpLiteral = psiElement().afterLeaf("#")
     private val insidePpStatement = psiElement().inside(GlslPpStatement::class.java)
     private val afterVersion = psiElement().afterLeaf(psiElement(INTCONSTANT).afterLeaf(psiElement(PP_VERSION)))
+    private val afterPpVersion = psiElement().afterLeaf(psiElement(PP_VERSION))
 
     private val insideIteration = psiElement()
         .inside(psiElement(GlslCompoundStatementNoNewScope::class.java).withParent(GlslIterationStatement::class.java))
@@ -49,6 +53,8 @@ class GlslCompletionContributor : CompletionContributor() {
         .andNot(psiElement().afterLeaf(numeric))
         .andNot(afterDot)
         .inside(GlslExpr::class.java)
+
+    private val insideUnfinishedStatement = psiElement().afterLeaf(psiElement(GlslTypes.EQUAL)).inside(GlslSingleDeclaration::class.java)
 
     private val statementBeginning = psiElement()
         .andNot(psiElement().afterLeaf(numeric))
@@ -81,11 +87,15 @@ class GlslCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC, statementBeginning, GlslGenericCompletion(*selectionKeywords, *iterationKeywords, *funcJumpsKeywords))
         extend(CompletionType.BASIC, insideIteration, GlslGenericCompletion(*iterationJumpsKeywords))
         extend(CompletionType.BASIC, afterPpLiteral, GlslPpCompletion())
-        extend(CompletionType.BASIC, afterVersion, GlslGenericCompletion(*GlslDefinitions.VERSIONS))
+        extend(CompletionType.BASIC, afterVersion, GlslGenericCompletion(*GlslDefinitions.VERSIONS, whitespace = Reject))
+        extend(CompletionType.BASIC, afterPpVersion, GlslGenericCompletion(*GlslDefinitions.VERSIONS, whitespace = Require))
+        extend(CompletionType.BASIC, afterVersion, GlslGenericCompletion(*GlslDefinitions.VERSION_MODES, whitespace = Require))
         extend(CompletionType.BASIC, insideInclude, GlslIncludeStatementCompletion())
         // Builtin objects
         extend(CompletionType.BASIC, insideTypeSpecifier, GlslBuiltinTypesCompletion())
         extend(CompletionType.BASIC, insideExpression, GlslBuiltinFuncCompletion())
+        extend(CompletionType.BASIC, insideUnfinishedStatement, GlslBuiltinFuncCompletion())
+
     }
 }
 

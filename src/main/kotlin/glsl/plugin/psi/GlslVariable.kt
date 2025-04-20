@@ -1,18 +1,13 @@
 package glsl.plugin.psi
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.lang.ASTFactory
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceService
-import com.intellij.psi.impl.source.tree.ChangeUtil
 import com.intellij.psi.util.PsiTreeUtil
-import glsl.GlslTypes
-import glsl.GlslTypes.Factory
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
-import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.reference.GlslVariableReference
 import glsl.plugin.utils.GlslUtils
 

@@ -1,5 +1,16 @@
 # GLSL Plugin Changelog
 
+## [1.1.5]
+### Fixed
+- Iteration variable was resolved outside the iteration loop
+- Fixed Dynamic type check
+- Fixed broken swizzling for the stpq group
+- Added compatibility profile uniforms
+- Fixed nested builtin struct namespace pollution
+### Added
+- File structure view
+- Improved highlighting for light themes.
+
 ## [1.1.4]
 - Updated version
 

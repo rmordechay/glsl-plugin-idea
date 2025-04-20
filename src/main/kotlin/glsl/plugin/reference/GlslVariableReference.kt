@@ -34,9 +34,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     override fun resolve(): GlslNamedVariable? {
         if (!shouldResolve()) return null
-        project = element.project
-        currentFile = element.containingFile.virtualFile
-        val resolveCache = ResolveCache.getInstance(project!!)
+        val resolveCache = ResolveCache.getInstance(project)
         return resolveCache.resolveWithCaching(this, resolver, true, false)
     }
 
@@ -53,8 +51,7 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
      */
     override fun resolveMany(): List<GlslNamedElement> {
         if (!shouldResolve()) return emptyList()
-        project = element.project
-        val resolveCache = ResolveCache.getInstance(project!!)
+        val resolveCache = ResolveCache.getInstance(project)
         resolveCache.resolveWithCaching(this, resolver, true, false)
         return resolvedReferences
     }
@@ -69,14 +66,15 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
             lookupInPostfixStructMember()
             lookupInBuiltin()
             val statement = getParentOfType(element, GlslStatement::class.java)
-            val externalDeclaration: GlslExternalDeclaration? =
-                if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
-                    lookupInFunctionScope(statement)
-                } else {
-                    getParentOfType(element, GlslExternalDeclaration::class.java)
-                }
+            val externalDeclaration: GlslExternalDeclaration?
+            if (statement != null) { // If true, we are inside a function (statements cannot occur outside).
+                externalDeclaration = lookupInFunctionScope(statement)
+            } else {
+                externalDeclaration = getParentOfType(element, GlslExternalDeclaration::class.java)
+            }
             lookupInGlobalScope(externalDeclaration)
         } catch (_: StopLookupException) {
+            includeFiles.clear()
         }
     }
 
@@ -148,7 +146,8 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         }
         var statementPrevSibling = getPrevSiblingOfType(statement, GlslStatement::class.java)
         while (statementPrevSibling != null) {
-            lookupInStatement(statementPrevSibling)
+            lookupInDeclaration(statementPrevSibling.declaration)
+            lookupInPpStatement(statementPrevSibling.ppStatement)
             statementPrevSibling = getPrevSiblingOfType(statementPrevSibling, GlslStatement::class.java)
         }
         return getParentScope(statement)
@@ -178,16 +177,6 @@ class GlslVariableReference(private val element: GlslVariable, textRange: TextRa
         if (typesMatch) {
             findReferenceInElement(func)
         }
-    }
-
-    /**
-     *
-     */
-    private fun lookupInStatement(statement: GlslStatement?) {
-        if (statement == null) return
-        lookupInDeclaration(statement.declaration)
-        lookupInDeclaration(statement.iterationStatement?.declaration)
-        lookupInPpStatement(statement.ppStatement)
     }
 
     /**

@@ -1,4 +1,4 @@
-package glsl.plugin.code.highlighting
+package glsl.plugin.editor.highlighting
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator

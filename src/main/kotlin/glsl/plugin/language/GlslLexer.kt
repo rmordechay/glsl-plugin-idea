@@ -232,7 +232,7 @@ class GlslLexer(private val project: Project? = null, private val baseFile: Virt
     }
 
     /**
-     *
+     * Collects the arguments of a macro call and saves them for later interpolation.
      */
     private fun addMacroParamToken() {
         if (macroParamNestingLevel == 0 && myTokenType == LEFT_PAREN) {
@@ -249,8 +249,9 @@ class GlslLexer(private val project: Project? = null, private val baseFile: Virt
             val params = macroFunc?.params ?: return
             if (params.size <= macroFuncParamIndex) return
             val paramName = params[macroFuncParamIndex]
-            val param = macroFuncCallParams?.getOrPut(paramName) { mutableListOf() }
-            param?.addIfNotNull(myTokenType)
+            macroFuncCallParams
+                ?.getOrPut(paramName, ::mutableListOf)
+                ?.addIfNotNull(myTokenType)
         }
 
         if (macroParamNestingLevel == 0) {
@@ -263,7 +264,7 @@ class GlslLexer(private val project: Project? = null, private val baseFile: Virt
     }
 
     /**
-     *
+     * Represents a start of a macro call
      */
     private fun isMacroCallStart(): Boolean {
         return myTokenType == IDENTIFIER &&
@@ -273,7 +274,7 @@ class GlslLexer(private val project: Project? = null, private val baseFile: Virt
     }
 
     /**
-     *
+     * Checks if the lexer is stuck in an infinite loop, and clears the data in case it is.
      */
     private fun inEndlessRecursion(): Boolean {
         if (recursionLevel++ < RECURSION_LEVEL_LIMIT) return false

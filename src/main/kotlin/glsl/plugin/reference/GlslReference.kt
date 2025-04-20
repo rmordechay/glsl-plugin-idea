@@ -1,13 +1,11 @@
 package glsl.plugin.reference
 
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.childrenOfType
-import glsl.plugin.language.GlslFile
 import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.psi.named.GlslNamedElement
 import glsl.plugin.psi.named.GlslNamedVariable
@@ -28,8 +26,6 @@ enum class FilterType {
     CONTAINS
 }
 
-private const val INCLUDE_RECURSION_LIMIT = 1000
-
 /**
  *
  */
@@ -38,16 +34,13 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
     abstract fun shouldResolve(): Boolean
     abstract fun resolveMany(): List<GlslNamedElement>
     abstract fun lookupInExternalDeclaration(externalDeclaration: GlslExternalDeclaration?)
-
     abstract override fun resolve(): GlslNamedElement?
+
     protected var currentFilterType = EQUALS
-    protected var project: Project? = null
-    protected var currentFile: VirtualFile? = null
-
-    private var includeRecursionLevel = 0
-
+    protected val project = element.project
     val resolvedReferences = arrayListOf<GlslNamedElement>()
-
+    protected val includeFiles = mutableListOf<PsiFile>()
+    private lateinit var _currentFile: PsiFile
 
     /**
      *
@@ -128,20 +121,31 @@ abstract class GlslReference(private val element: GlslIdentifier, textRange: Tex
      */
     protected fun lookupInIncludeDeclaration(ppIncludeDeclaration: GlslPpIncludeDeclaration?) {
         if (ppIncludeDeclaration == null) return
-        includeRecursionLevel++
+        includeFiles.add(ppIncludeDeclaration.containingFile)
+
         val path = getPathStringFromInclude(ppIncludeDeclaration) ?: return
-        if (includeRecursionLevel >= INCLUDE_RECURSION_LIMIT) {
-            includeRecursionLevel = 0
+        val vf = getVirtualFile(path, currentFile.virtualFile, project) ?: return
+        val psiFile = PsiManager.getInstance(project).findFile(vf) ?: return
+
+        if (includeFiles.contains(psiFile)) {
             throw StopLookupException()
         }
-        val vf = getVirtualFile(path, currentFile, project) ?: return
-        val psiFile = PsiManager.getInstance(project!!).findFile(vf) as? GlslFile
-        val externalDeclarations = psiFile?.childrenOfType<GlslExternalDeclaration>()
-        if (externalDeclarations != null) {
-            for (externalDeclaration in externalDeclarations) {
-                lookupInExternalDeclaration(externalDeclaration)
-            }
+
+        val externalDeclarations = psiFile.childrenOfType<GlslExternalDeclaration>()
+        for (externalDeclaration in externalDeclarations) {
+            lookupInExternalDeclaration(externalDeclaration)
         }
-        includeRecursionLevel--
     }
+
+
+    /**
+     *
+     */
+    private val currentFile: PsiFile
+        get() {
+            if (!::_currentFile.isInitialized) {
+                _currentFile = element.containingFile
+            }
+            return _currentFile
+        }
 }

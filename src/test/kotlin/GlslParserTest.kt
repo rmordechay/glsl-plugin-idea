@@ -1,6 +1,5 @@
 import com.intellij.testFramework.ParsingTestCase
 import glsl.plugin.language.GlslParserDefinition
-import org.junit.Test
 
 
 class GlslParserTest : ParsingTestCase("", "test", GlslParserDefinition()) {

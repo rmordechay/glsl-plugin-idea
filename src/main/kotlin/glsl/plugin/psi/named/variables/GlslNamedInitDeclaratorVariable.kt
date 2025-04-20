@@ -3,7 +3,7 @@ package glsl.plugin.psi.named.variables
 import com.intellij.icons.AllIcons
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import glsl.plugin.code.highlighting.GlslTextAttributes
+import glsl.plugin.editor.highlighting.GlslTextAttributes
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.GlslNamedVariableImpl
 import glsl.psi.interfaces.GlslDeclaration

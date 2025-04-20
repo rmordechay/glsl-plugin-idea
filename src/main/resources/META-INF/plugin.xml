@@ -15,21 +15,23 @@
         <lang.parserDefinition          language="Glsl"
                                         implementationClass="glsl.plugin.language.GlslParserDefinition"/>
 
-        <codeStyleSettingsProvider      implementation="glsl.plugin.code.style.GlslCodeStyleProvider"/>
+        <codeStyleSettingsProvider      implementation="glsl.plugin.editor.style.GlslCodeStyleProvider"/>
 
-        <langCodeStyleSettingsProvider  implementation="glsl.plugin.code.style.GlslCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider  implementation="glsl.plugin.editor.style.GlslCodeStyleSettingsProvider"/>
 
         <lang.formatter                 language="Glsl"
-                                        implementationClass="glsl.plugin.code.formatter.GlslFormattingModelBuilder"/>
+                                        implementationClass="glsl.plugin.editor.formatter.GlslFormattingModelBuilder"/>
         <!--  Syntax highlighting  -->
         <annotator                      language="Glsl"
-                                        implementationClass="glsl.plugin.code.highlighting.GlslHighlightingAnnotator"/>
+                                        implementationClass="glsl.plugin.editor.highlighting.GlslHighlightingAnnotator"/>
         <lang.syntaxHighlighterFactory  language="Glsl"
-                                        implementationClass="glsl.plugin.code.highlighting.GlslSyntaxHighlightingFactory"/>
+                                        implementationClass="glsl.plugin.editor.highlighting.GlslSyntaxHighlightingFactory"/>
+
+        <lang.psiStructureViewFactory language="Glsl" implementationClass="glsl.plugin.editor.GlslStructureViewFactory"/>
 
         <additionalTextAttributes       scheme="Darcula"
                                         file="colors/GlslColorsConfiguration.xml"/>
-        <colorSettingsPage              implementation="glsl.plugin.code.highlighting.GlslColorSettings"/>
+        <colorSettingsPage              implementation="glsl.plugin.editor.highlighting.GlslColorSettings"/>
 
         <!--  Completion  -->
         <completion.contributor         language="Glsl"
@@ -42,27 +44,27 @@
                                         implementationClass="glsl.plugin.reference.GlslRefactoring"/>
 
         <lang.documentationProvider     language="Glsl"
-                                        implementationClass="glsl.plugin.features.GlslDocumentationProvider"/>
+                                        implementationClass="glsl.plugin.editor.GlslDocumentationProvider"/>
 
         <lang.findUsagesProvider        language="Glsl"
                                         implementationClass="glsl.plugin.reference.GlslFindUsageProvider"/>
         <!--  Quote Handler-->
         <lang.quoteHandler              language="Glsl"
-                                        implementationClass="glsl.plugin.features.GlslQuoteHandler"/>
+                                        implementationClass="glsl.plugin.editor.GlslQuoteHandler"/>
 
         <!--  Brace Matcher  -->
         <lang.braceMatcher              language="Glsl"
-                                        implementationClass="glsl.plugin.features.GlslBraceMatcher"/>
+                                        implementationClass="glsl.plugin.editor.GlslBraceMatcher"/>
         <!--  Commenter  -->
         <lang.commenter                 language="Glsl"
-                                        implementationClass="glsl.plugin.features.GlslCommenter"/>
+                                        implementationClass="glsl.plugin.editor.GlslCommenter"/>
 
         <!--  Live Template  -->
         <defaultLiveTemplates           file="/live-templates/glsl-live-template.xml"/>
-        <liveTemplateContext            implementation="glsl.plugin.features.GlslTemplateContext" contextId="GLSL"/>
+        <liveTemplateContext implementation="glsl.plugin.editor.GlslTemplateContext" contextId="GLSL"/>
 
         <!--  Language Injection  -->
-        <multiHostInjector              implementation="glsl.plugin.features.GlslMultiHostInjector"/>
+        <multiHostInjector              implementation="glsl.plugin.editor.GlslMultiHostInjector"/>
 
         <!--  Inspections  -->
         <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Incompatible types in initialization"
@@ -84,7 +86,7 @@
     </extensions>
 
     <actions>
-        <action id="glsl.plugin.features.GlslNewShaderFile" class="glsl.plugin.features.GlslNewShaderFile" text="Shader File">
+        <action id="glsl.plugin.editor.GlslNewShaderFile" class="glsl.plugin.editor.GlslNewShaderFile" text="Shader File">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
         </action>
     </actions>

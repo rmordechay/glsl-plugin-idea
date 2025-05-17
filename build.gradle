@@ -1,8 +1,8 @@
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version "1.9.23"
-    id 'org.jetbrains.intellij.platform' version '2.1.0'
+    id 'org.jetbrains.kotlin.jvm' version "2.1.0"
+    id 'org.jetbrains.intellij.platform' version '2.6.0'
     id "org.jetbrains.grammarkit" version "2022.3.2.2"
     id 'org.jetbrains.changelog' version "2.2.1"
     id 'java'
@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity '2024.3'
+        intellijIdeaCommunity '2025.1'
         testFramework TestFrameworkType.Platform.INSTANCE
         instrumentationTools()
     }
@@ -29,12 +29,8 @@ dependencies {
 }
 
 compileJava {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 runIde {

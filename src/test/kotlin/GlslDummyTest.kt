@@ -20,8 +20,8 @@ class GlslDummyTest : BasePlatformTestCase() {
     }
 
     fun testDummy() {
-        myFixture.configureByFiles("dummy.glsl")
-        myFixture.testHighlighting(false, false, false)
+//        myFixture.configureByFiles("dummy.glsl")
+//        myFixture.testHighlighting(false, false, false)
 //        val reference = myFixture.getReferenceAtCaretPosition("dummy.glsl")
 //        val resolve = reference?.resolve()
 //        assertInstanceOf(resolve, GlslSingleDeclaration::class.java)

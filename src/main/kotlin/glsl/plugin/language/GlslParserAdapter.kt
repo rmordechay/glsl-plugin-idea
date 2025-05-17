@@ -1,10 +1,11 @@
 package glsl.plugin.language
 
 import com.intellij.lang.PsiBuilder
+import com.intellij.lang.parser.GeneratedParserUtilBase
+import com.intellij.lang.parser.GeneratedParserUtilBase.*
 import com.intellij.psi.tree.IElementType
 import glsl._GlslParser
 import glsl.plugin.psi.GlslPsiBuilder
-import utils.GeneratedParserUtil.*
 
 /**
  *
@@ -15,8 +16,8 @@ class GlslParserAdapter : _GlslParser() {
      *
      */
     override fun parseLight(root: IElementType, originalBuilder: PsiBuilder) {
-        val state = ErrorState()
-        ErrorState.initState(state, originalBuilder, root.language, EXTENDS_SETS_)
+        val state = GeneratedParserUtilBase.ErrorState()
+        GeneratedParserUtilBase.ErrorState.initState(state, originalBuilder, root, EXTENDS_SETS_)
         val builder = GlslPsiBuilder(originalBuilder, state, this)
         val marker = enter_section_(builder, 0, _COLLAPSE_, null)
         val result = parse_root_(root, builder)

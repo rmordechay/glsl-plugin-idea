@@ -1,16 +1,18 @@
 package glsl.plugin.psi
 
 import com.intellij.lang.PsiBuilder
+import com.intellij.lang.parser.GeneratedParserUtilBase
+import com.intellij.lang.parser.GeneratedParserUtilBase.enter_section_
+import com.intellij.lang.parser.GeneratedParserUtilBase.exit_section_
 import com.intellij.psi.tree.IElementType
 import glsl.GlslTypes.*
 import glsl._GlslParser
 import glsl.data.GlslTokenSets.IDENTIFIERS
-import utils.GeneratedParserUtil.*
 
 /**
  *
  */
-class GlslPsiBuilder(builder: PsiBuilder, state: ErrorState, parser: _GlslParser) : Builder(builder, state, parser) {
+class GlslPsiBuilder(builder: PsiBuilder, state: GeneratedParserUtilBase.ErrorState, parser: _GlslParser) : GeneratedParserUtilBase.Builder(builder, state, parser) {
     /**
      *
      */

@@ -1,5 +1,9 @@
 # GLSL Plugin Changelog
 
+## [1.1.6]
+### Updated
+- IDE build version.
+
 ## [1.1.5]
 ### Fixed
 - Iteration variable was resolved outside the iteration loop

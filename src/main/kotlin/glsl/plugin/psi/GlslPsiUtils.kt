@@ -1,11 +1,11 @@
 package glsl.plugin.psi
 
 import com.intellij.lang.PsiBuilder
+import com.intellij.lang.parser.GeneratedParserUtilBase
 import glsl.GlslTypes.*
-import utils.GeneratedParserUtil
 
 
-object GlslPsiUtils : GeneratedParserUtil() {
+object GlslPsiUtils : GeneratedParserUtilBase() {
 
 
     /**

@@ -1,5 +1,41 @@
 # GLSL Plugin Changelog
 
+## [Plus-1.0.0]
+
+### Added
+- **Live fragment shader preview** — a new `GLSL Preview` tool window (docked right, works in dumb mode) that renders the
+  compiled shader onto an OpenGL canvas at ~60 FPS, powered by LWJGL
+  - **`Fragment Shader` run configuration** with its own settings editor, so a shader can be started, stopped and re-run
+    like any other run target
+  - Run configurations are generated from context: a **gutter run marker** on fragment shader files starts the preview
+    without any manual setup
+  - **Configurable uniform mappings** — the preview feeds your own uniform names instead of forcing fixed ones:
+    - `Time` — elapsed time in seconds since the program started (`float`)
+    - `Resolution` — canvas resolution (`vec2`)
+    - `Mouse` — mouse position (`vec2`, origin top-left, `[-1,-1]` while the cursor is outside the canvas)
+    cancel the running program instead of silently ignoring the new run
+- New plugin icon and a new GLSL file icon
+
+### Updated
+- Rebranded to **GLSL Plus** (plugin id `OpenGL-Plugin-Plus`, version `Plus-1.0.0`)
+- README and plugin description now credit the original plugin, explain the fork's purpose and list the shader
+  visualizer/runner among the features
+- Housekeeping on the build: fixed the build script, upgraded the Gradle wrapper to 9.2.1 and extracted all library and
+  plugin versions into `gradle/libs.versions.toml`
+- Upgraded the GrammarKit plugin, which fixes the missing-dependencies bug reported to JetBrains
+
+### Fixed
+- LWJGL dependency/native version mismatches (now pinned through the LWJGL BOM)
+- A Gradle caching error in the build script
+- A typo in `GlslGrammar.bnf`
+
+//todo remove console logs
+---
+<center>
+
+#### _Old changes from original plugin:_
+</center>
+
 ## [1.1.6-fpfork-01]
 
 ### Fixed

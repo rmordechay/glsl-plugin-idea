@@ -27,7 +27,7 @@ class GlslFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, GlslL
  *
  */
 object GlslIcon {
-    val PLUGIN_FILE_ICON = IconLoader.getIcon("icons/file-icon.svg", GlslIcon::class.java)
+    val PLUGIN_FILE_ICON = IconLoader.getIcon("icons/glsl_file_icon.svg", GlslIcon::class.java)
 }
 
 /**

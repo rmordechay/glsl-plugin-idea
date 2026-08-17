@@ -29,10 +29,8 @@
 - A Gradle caching error in the build script
 - A typo in `GlslGrammar.bnf`
 
-//todo remove console logs
 ---
 <center>
-
 #### _Old changes from original plugin:_
 </center>
 

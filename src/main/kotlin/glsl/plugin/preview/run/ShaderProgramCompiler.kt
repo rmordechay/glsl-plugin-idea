@@ -1,5 +1,6 @@
 package glsl.plugin.preview.run
 
+import com.intellij.openapi.diagnostic.Logger
 import glsl.plugin.utils.exceptions.ShaderCompilerException
 import org.lwjgl.opengl.GL20.*
 
@@ -10,6 +11,8 @@ private const val DEFAULT_VERTEX_SHADER_SOURCE = """
                     gl_Position = vec4(position, 0.0, 1.0);
                 }
         """
+
+private val LOG = Logger.getInstance(ShaderProgramCompiler::class.java)
 
 
 class ShaderProgramCompiler {
@@ -58,7 +61,7 @@ class ShaderProgramCompiler {
      * @return program ID
      */
     private fun compileProgram(): Int {
-        println("Compiling program:")
+        LOG.debug("Compiling program:")
         if (vertexShaderId == -1 || fragShaderId == -1) throw IllegalStateException("Missing shaders")
         val programId = glCreateProgram()
         glAttachShader(programId, vertexShaderId)

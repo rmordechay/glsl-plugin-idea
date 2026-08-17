@@ -1,13 +1,11 @@
 package glsl.plugin.preview
 
 import com.intellij.execution.process.ProcessEvent
-import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessListener
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.jetbrains.rd.util.string.print
-import com.jetbrains.rd.util.string.println
 import fleet.util.computeIfAbsentShim
 import glsl.plugin.preview.run.GLProcessHandler
 import glsl.plugin.preview.run.ShaderProgramCompiler
@@ -55,6 +53,8 @@ class GlContextManager : Disposable {
 
 
     companion object {
+        private val LOG = Logger.getInstance(GlContextManager::class.java)
+
         @Volatile
         private var instances: MutableMap<Project, GlContextManager> = HashMap()
 
@@ -69,12 +69,15 @@ class GlContextManager : Disposable {
         this.project = project;
     }
 
+    /**
+     * Initialize the GL context and paint the canvas.
+     */
     init {
         this.glCanvas = object : AWTGLCanvas() {
 
             override fun addNotify() {
                 super.addNotify()
-                println("AWTGLCanvas addNotify: displayable=$isDisplayable showing=$isShowing size=$size")
+                LOG.debug("AWTGLCanvas addNotify: displayable=$isDisplayable showing=$isShowing size=$size")
             }
 
             override fun initGL() {
@@ -83,7 +86,7 @@ class GlContextManager : Disposable {
                 startNs = System.nanoTime()
 
                 glClearColor(0.5f, 0.1f, 0.5f, 1f)
-                println("GL initialized.")
+                LOG.debug("GL initialized.")
 
             }
 
@@ -127,11 +130,11 @@ class GlContextManager : Disposable {
 
         glCanvas.addComponentListener(object : ComponentAdapter() {
             override fun componentResized(e: ComponentEvent?) {
-                println("AWTGLCanvas resized: size=${glCanvas.size}, bounds=${glCanvas.bounds}")
+                LOG.debug("AWTGLCanvas resized: size=${glCanvas.size}, bounds=${glCanvas.bounds}")
             }
 
             override fun componentShown(e: ComponentEvent?) {
-                println("AWTGLCanvas shown: size=${glCanvas.size}, bounds=${glCanvas.bounds}")
+                LOG.debug("AWTGLCanvas shown: size=${glCanvas.size}, bounds=${glCanvas.bounds}")
             }
         })
     }
@@ -149,10 +152,10 @@ class GlContextManager : Disposable {
      * The request will be handled with the next render cycle.
      */
     fun queueCompile(runOptions: FragShaderRunOptions, processHandler: GLProcessHandler) {
-        if(this.currentRunning != null) {
+        if (this.currentRunning != null) {
             JBPopupFactory.getInstance().createConfirmation(
                 "Cancel current shader program?",
-                "Yes","No",
+                "Yes", "No",
                 {
                     this.currentRunning!!.printStdout("Stopping current shader program... (Triggered by user)")
                     this.currentRunning!!.terminate(200)
@@ -171,7 +174,7 @@ class GlContextManager : Disposable {
 
     private fun compile(compileRun: CompileRun) {
         try {
-            println("Compiling shader program:")
+            LOG.debug("Compiling shader program:")
             val shaderProgramCompiler = ShaderProgramCompiler(compileRun.processHandler);
             this.programId = shaderProgramCompiler.getProgramFromFrag(compileRun.settings.getFragDocument().text)
             setupRenderContext(compileRun.settings.getUniformMappings())
@@ -219,7 +222,7 @@ class GlContextManager : Disposable {
 
 
     private fun setupRenderContext(uniformMapping: Map<UniformType, String>) {
-        println("Setup render context:")
+        LOG.debug("Setup render context:")
         positionBuffer = glGenBuffers()
         glBindBuffer(GL_ARRAY_BUFFER, positionBuffer)
         // Fullscreen triangle in NDC:
@@ -237,9 +240,16 @@ class GlContextManager : Disposable {
         //todo make layout feature possible
 
         positionLocation = glGetAttribLocation(programId, "position")
-        uTimeLocation = glGetUniformLocation(programId, uniformMapping.getOrDefault(UniformType.TIME, UniformType.TIME.defaultName))
-        uResolutionLocation = glGetUniformLocation(programId, uniformMapping.getOrDefault(UniformType.RESOLUTION, UniformType.RESOLUTION.defaultName))
-        uMouseLocation = glGetUniformLocation(programId, uniformMapping.getOrDefault(UniformType.MOUSE, UniformType.MOUSE.defaultName))
+        uTimeLocation =
+            glGetUniformLocation(programId, uniformMapping.getOrDefault(UniformType.TIME, UniformType.TIME.defaultName))
+        uResolutionLocation = glGetUniformLocation(
+            programId,
+            uniformMapping.getOrDefault(UniformType.RESOLUTION, UniformType.RESOLUTION.defaultName)
+        )
+        uMouseLocation = glGetUniformLocation(
+            programId,
+            uniformMapping.getOrDefault(UniformType.MOUSE, UniformType.MOUSE.defaultName)
+        )
 
     }
 
@@ -264,7 +274,7 @@ class GlContextManager : Disposable {
         glUniform1f(uTimeLocation, time)
         glUniform2f(uResolutionLocation, w.toFloat(), h.toFloat())
         val mousePos = glCanvas.mousePosition;
-        if(mousePos == null) {
+        if (mousePos == null) {
             glUniform2f(uMouseLocation, -1f, -1f)
         } else {
             glUniform2f(uMouseLocation, mousePos.x.toFloat(), mousePos.y.toFloat())

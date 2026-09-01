@@ -184,8 +184,8 @@ run {
 
                 val configDir = when {
                     candidateConfigDirs.size == 1 -> candidateConfigDirs.single()
-                    candidateConfigDirs.isNotEmpty() -> candidateConfigDirs.maxBy { it.lastModified() } // nimm die "aktuellste"
-                    else -> sandboxRoot.resolve("config") // Fallback für ältere Layouts
+                    candidateConfigDirs.isNotEmpty() -> candidateConfigDirs.maxBy { it.lastModified() } // latest
+                    else -> sandboxRoot.resolve("config") // fallback for older layouts
                 }
 
                 configDir.mkdirs()

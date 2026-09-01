@@ -144,12 +144,12 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
     }
 
     private fun getOpenShaderFiles(): List<VirtualFile> {
-        val availailableFiles: MutableList<VirtualFile> = ArrayList()
+        val availableFiles: MutableList<VirtualFile> = ArrayList()
         getOpenedProjects().forEach { project ->
             val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(project);
             val openFiles: Set<VirtualFile> = fileEditorManager.openFiles.toSet()
-            availailableFiles += openFiles.filter { file -> file.extension in SUPPORTED_SHADER_FILE_ENDINGS }
+            availableFiles += openFiles.filter { file -> file.extension in SUPPORTED_SHADER_FILE_ENDINGS }
         }
-        return availailableFiles;
+        return availableFiles;
     }
 }

@@ -10,14 +10,14 @@ import com.intellij.openapi.vfs.VirtualFileManager
 import java.util.Objects
 
 /** Set only if document for fragment shader source could not be found and you want to mark this as an error */
-public val EMPTY_FILE_INPUT = "EMPTY"
+const val EMPTY_FILE_INPUT = "EMPTY"
 
 /**
  * Data class for run - options of fragment shaders
  */
 class FragShaderRunOptions() : LocatableRunConfigurationOptions() {
     var fragmentFile: String? by string()
-    var vertexFile: String? by string()
+    var vertexFile: String? by string()//todo not yet implemnented
     var uniformMappingsRaw: String? by string()
 
     /**

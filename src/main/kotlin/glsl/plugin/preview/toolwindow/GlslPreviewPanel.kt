@@ -21,9 +21,12 @@ class GlslPreviewPanel : Disposable {
     private val manager: GlContextManager;
     private val renderTimer: Timer;
 
+    /**
+     * Build canvas and init render timer.
+     */
     constructor(project: Project) {
         this.project = project;
-        this.manager = GlContextManager.Companion.getInstance(project);
+        this.manager = GlContextManager.getInstance(project);
 
 
         val emptyCanvas: Canvas = object : Canvas() {
@@ -32,10 +35,9 @@ class GlslPreviewPanel : Disposable {
                 g?.fillRect(0, 0, getWidth(), getHeight())
             }
         }
-        emptyCanvas.background = Color.BLUE;
+        emptyCanvas.background = Color.BLUE
 
         val shaderCanvas = manager.getCanvas()
-
 
         val wrapperLayout = RelativeLayout();
         val canvasConstraints = RelativeConstraints()
@@ -46,10 +48,9 @@ class GlslPreviewPanel : Disposable {
             .setMarginRight(10)
             .setAspectRatio(1.0)
         val canvasWrapper: JPanel = JPanel(wrapperLayout)
-//        canvasWrapper.background = Color.YELLOW;
 
-        canvasWrapper.add( shaderCanvas, canvasConstraints )
-        contentPanel = canvasWrapper;
+        canvasWrapper.add(shaderCanvas, canvasConstraints)
+        contentPanel = canvasWrapper
 
         this.renderTimer = Timer(1000 / 60) {
             if (shaderCanvas.isDisplayable && shaderCanvas.width > 0 && shaderCanvas.height > 0) {
@@ -62,10 +63,8 @@ class GlslPreviewPanel : Disposable {
     }
 
     fun getPanel(): JPanel {
-        return contentPanel;
+        return contentPanel
     }
-
-
 
     override fun dispose() {
         renderTimer.stop()

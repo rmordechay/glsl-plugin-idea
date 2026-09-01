@@ -18,6 +18,13 @@ import org.lwjgl.opengl.awt.AWTGLCanvas
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 
+/**
+ * Manages rendering, uniforms and compilation of shader programs.
+ * It also manages the GlContext.
+ *
+ * To compile and run a shader program, call [queueCompile].
+ *
+ */
 class GlContextManager : Disposable {
 
     private var glCanvas: AWTGLCanvas;
@@ -42,8 +49,9 @@ class GlContextManager : Disposable {
 
     private var pendingCompile: CompileRun? = null
     private var currentRunning: GLProcessHandler? = null
-    private var pendingStop: Boolean = false
+    private var pendingStop: Boolean = false //true if the panel should stop rendering in the next frame.
 
+    /** Queueable compile task */
     private data class CompileRun(val settings: FragShaderRunOptions, val processHandler: GLProcessHandler);
 
     val processTerminatedListener = object : ProcessListener {
@@ -90,6 +98,9 @@ class GlContextManager : Disposable {
 
             }
 
+            /**
+             * Renders a frame. Looks for pending stop and compile tasks.
+             */
             override fun paintGL() {
                 if (pendingStop) {
                     glDeleteProgram(programId)
@@ -182,7 +193,7 @@ class GlContextManager : Disposable {
         } catch (e: Exception) {
             if (e is ShaderCompilerException) {
                 compileRun.processHandler.printStderr(e.shaderInfoLog)
-                compileRun.processHandler.terminate(69)
+                compileRun.processHandler.terminate(69)//this exit code means nothing
             } else {
                 throw e;
             }
@@ -190,7 +201,10 @@ class GlContextManager : Disposable {
         }
     }
 
-    fun runShaderProgram() {
+    /**
+     * Run shader program if there is one in the gl context.
+     */
+    private fun runShaderProgram() {
         if (!initialized) {
             throw IllegalStateException("GL not initialized")
         }
@@ -254,7 +268,7 @@ class GlContextManager : Disposable {
     }
 
     /**
-     * Rende GL context stuff and update uniforms.
+     * Render GL context stuff and update uniforms.
      */
     private fun render() {
         val w = (glCanvas.width.coerceAtLeast(1) * glCanvas.graphicsConfiguration.defaultTransform.scaleX).toInt()

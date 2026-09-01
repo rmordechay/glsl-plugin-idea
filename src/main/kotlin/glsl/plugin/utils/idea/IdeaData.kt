@@ -18,7 +18,6 @@ data class FocusFileInfo(
 fun getFocusedFileInfo(project: Project): FocusFileInfo? {
     val editor = FileEditorManager.getInstance(project).selectedTextEditor ?: return null
     val document = editor.document
-
     val vFile = FileDocumentManager.getInstance().getFile(document) ?: return null
 
     return FocusFileInfo(

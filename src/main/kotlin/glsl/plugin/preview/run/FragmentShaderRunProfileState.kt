@@ -41,19 +41,6 @@ class FragmentShaderRunProfileState(private val project: Project, private val op
         }
         toolWindow.show();
 
-//        val fragmentFilePath = options.fragmentFile!!;
-//        val shaderFile = VirtualFileManager.getInstance().findFileByUrl(fragmentFilePath)
-//        if(shaderFile == null) {
-//            consoleView.print("Could not find file: $fragmentFilePath", ConsoleViewContentType.ERROR_OUTPUT);
-//            return DefaultExecutionResult(consoleView, NopProcessHandler())
-//        }
-//
-//        val document: Document? = FileDocumentManager.getInstance().getDocument(shaderFile)
-//        if (document == null) {
-//            consoleView.print("No editor document found", ConsoleViewContentType.ERROR_OUTPUT)
-//            return DefaultExecutionResult(consoleView, NopProcessHandler())
-//        }
-
         glContextManager.queueCompile(options, processHandler); //todo maybe implement some kind of already baker compiler settings
         return DefaultExecutionResult(consoleView, processHandler);
     }

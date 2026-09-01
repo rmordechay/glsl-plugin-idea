@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="9.5664 28.8042 475.5767 437.729" width="475.5767px" height="437.729px"
+     xmlns:bx="https://boxy-svg.com">
+    <g id="object-2">
+        <g transform="matrix(111.050079, -2.013623, 1.70295, 101.348648, 224.584137, 289.988892)" stroke-width="1.1849"
+           style="transform-origin: 25.419px -39.9895px 0px;" id="object-1">
+            <g stroke-width=".1881">
+                <g transform="matrix(1.5223 0 0 1.5379 -12.159 22.71)" stroke="#AFB1B3" stroke-width=".12294">
+                    <path d="m23.276-40.475 0.78683 0.12176 0.04725 0.87775-0.75992-0.0194z" color="#AFB1B3"
+                          style="paint-order: markers; fill: transparent;"/>
+                    <path d="M 24.764 -40.356 C 24.821 -40.343 25.117 -40.378 25.107 -40.389 L 24.797 -39.378 L 24.127 -39.473 L 24.08 -40.353 L 24.124 -40.355"
+                          color="#AFB1B3" style="paint-order: markers; fill: transparent;"/>
+                    <path d="m25.124-40.39 0.94626-0.01222-0.08272 0.89931-1.1731 0.12374z" color="#AFB1B3"
+                          style="paint-order: markers; fill: transparent;"/>
+                    <path d="m23.917-41.255 0.14594 0.88578-0.78683-0.12208 0.07447-0.81812z" color="#AFB1B3"
+                          style="paint-order: markers; fill: transparent;"/>
+                    <path d="M 25.007 -41.158 L 24.98 -41.331 L 25.982 -41.283 L 26.071 -40.419 L 25.126 -40.407 L 25.105 -40.539"
+                          color="#AFB1B3" style="paint-order: markers; fill: transparent;"/>
+                    <path d="M 24.176 -41.289 L 23.934 -41.273 L 24.188 -42.149 L 25.004 -42.074 L 24.964 -41.348 L 24.684 -41.33"
+                          color="#AFB1B3" style="paint-order: markers; fill: transparent;"/>
+                    <path d="m24.172-42.149-0.25418 0.87693-0.56675-0.0541-0.06758-0.78235z" color="#AFB1B3"
+                          style="paint-order: markers; fill: transparent;"/>
+                    <path d="m26.094-42.161-0.11222 0.86053-1.0006-0.04716 0.04-0.7274z" color="#AFB1B3"
+                          style="paint-order: markers; fill: transparent;"/>
+                </g>
+            </g>
+        </g>
+        <path d="M -714.459 -1447.7 L -589.409 -1209.58 L -839.51 -1209.58 L -714.459 -1447.7 Z"
+              bx:shape="triangle -839.51 -1447.7 250.101 238.116 0.5 0 1@2fc98c33"
+              style="stroke: #AFB1B3; fill: transparent; stroke-width: 16px; transform-origin: -714.468px -1328.68px 0px;"
+              transform="matrix(0, 1, -1, 0, 995.447945, 1571.016364)" id="object-0"/>
+    </g>
+</svg>
+

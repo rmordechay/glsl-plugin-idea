@@ -91,6 +91,7 @@
                 anchor="right"
                 canCloseContents="false"
                 canWorkInDumbMode="true"
+                icon="/icons/toolwindowIcon.svg"
         />
 
         <configurationType implementation="glsl.plugin.preview.run.settings.ShaderRunConfigurationType"/>

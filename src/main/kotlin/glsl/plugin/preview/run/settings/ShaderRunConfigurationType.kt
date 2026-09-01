@@ -10,7 +10,7 @@ class ShaderRunConfigurationType : ConfigurationTypeBase(
     id = "FragmentShaderRunConfigurationType",
     displayName = "Fragment Shader",
     description = "Run a fragment shader",
-    icon = IconLoader.getIcon("/icons/glsl_file_icon.svg", ShaderRunConfigurationType::class.java)
+    icon = IconLoader.getIcon("/icons/file-icon.svg", ShaderRunConfigurationType::class.java)
 ) {
     init {
         addFactory(ShaderRunConfigurationFactory(this))

@@ -74,9 +74,6 @@ configurations.configureEach {
 
 intellijPlatform {
     pluginConfiguration {
-        changelog {
-            headerParserRegex.set("""(?:[A-Za-z]+-)?\d+\.\d+\.\d+(?:-[A-Za-z0-9]+)*""".toRegex()) //todo test if it gets all other versions too
-        }
         version = pluginVersion
         description = file("plugin-info/description.html").readText()
         changeNotes = changelog.renderItem(changelog.get(pluginVersion), Changelog.OutputType.HTML)

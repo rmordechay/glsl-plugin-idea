@@ -92,12 +92,12 @@ class GlslPpCompletion : GlslCompletionProvider() {
  *
  */
 class GlslBuiltinFuncCompletion : GlslCompletionProvider() {
-    private val builtinFuncMap = GlslBuiltinUtils.getBuiltinFuncs()
 
     /**
      *
      */
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, resultSet: CompletionResultSet) {
+        val builtinFuncMap = GlslBuiltinUtils.getBuiltinFuncs(parameters.position.project)
         for ((funcName, funcOverloads) in builtinFuncMap) {
             val prefix = resultSet.prefixMatcher.prefix.lowercase()
             if (!funcName.lowercase().contains(prefix)) continue

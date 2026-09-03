@@ -165,9 +165,9 @@ class GlslVariableReference(private val element: GlslIdentifier, textRange: Text
      *
      */
     private fun lookupInBuiltin() {
-        findReferenceInElementMap(getShaderVariables())
-        findReferenceInElementMap(getBuiltinConstants())
-        val builtinFuncs = getBuiltinFuncs()[element.name] ?: return
+        findReferenceInElementMap(getShaderVariables(project))
+        findReferenceInElementMap(getBuiltinConstants(project))
+        val builtinFuncs = getBuiltinFuncs(project)[element.name] ?: return
         for (func in builtinFuncs) {
             resolveFunction(func)
         }

@@ -176,8 +176,12 @@ class GlslIncludeStatementCompletion : GlslCompletionProvider() {
                 lookupFiles.add(createLookupElement("$path$siblingFileName", returnTypeText = type, psiElement = parameters.position, insertHandler = insertHandler))
             }
         }
-        resultSet.addAllElements(lookupDirs)
-        resultSet.addAllElements(lookupFiles)
+        // The default prefix matcher includes the string literal's opening quote (since that's
+        // part of the same token up to the caret), which would filter out every lookup string
+        // added here since none of them start with a quote.
+        val pathResultSet = resultSet.withPrefixMatcher(path)
+        pathResultSet.addAllElements(lookupDirs)
+        pathResultSet.addAllElements(lookupFiles)
     }
 
     private fun resolveOptiFineAbsolutePathDirectory(p: String, virtualFile: VirtualFile): Triple<String, VirtualFile, Boolean>? {

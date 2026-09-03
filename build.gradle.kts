@@ -52,8 +52,14 @@ dependencies {
     runtimeOnly("org.lwjgl:lwjgl::natives-windows")
     runtimeOnly("org.lwjgl:lwjgl-opengl::natives-windows")
 
+    runtimeOnly("org.lwjgl:lwjgl::natives-windows-arm64")
+    runtimeOnly("org.lwjgl:lwjgl-opengl::natives-windows-arm64")
+
     runtimeOnly("org.lwjgl:lwjgl::natives-linux")
     runtimeOnly("org.lwjgl:lwjgl-opengl::natives-linux")
+
+    runtimeOnly("org.lwjgl:lwjgl::natives-linux-arm64")
+    runtimeOnly("org.lwjgl:lwjgl-opengl::natives-linux-arm64")
 
     runtimeOnly("org.lwjgl:lwjgl::natives-macos")
     runtimeOnly("org.lwjgl:lwjgl-opengl::natives-macos")

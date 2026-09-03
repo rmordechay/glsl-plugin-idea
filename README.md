@@ -13,7 +13,7 @@ Feel free to report any issue, problem, bug or add any request.
 
 ## Build & Run
 ``` shell
-git clone https://github.com/walt-grace/glsl-plugin-idea.git
+git clone https://github.com/rmordechay/glsl-plugin-idea.git
 ```
 Assuming you're developing with Intellij (and you want to develop with Intellij):
 1. **Generate grammar**. Execute the `generateGrammarClean` task from _gradle.build_ file or under _Tasks/other_ if you use the Gradle tab. 

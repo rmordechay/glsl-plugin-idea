@@ -98,8 +98,10 @@ override fun getTokenText(): String {
 
 So every synthetic token after a macro call reports the exact same zero-width
 `(offset, offset)` span, with the *same leftover text* as the real closing
-delimiter. Raw lexer dump for `f2(g(1, c), h(2, 3))` (`GlslLexer.start(text, 0,
-270)`, see the ad hoc test used to produce this):
+delimiter. Raw lexer dump for `f2(g(1, c), h(2, 3))`, obtained by instantiating
+`GlslLexer` directly and driving it with `lexer.start(text, 0, 270); while
+(lexer.tokenType != null) { ...print tokenStart/tokenEnd/tokenType/tokenText...;
+lexer.advance() }` over the snippet above:
 
 ```
 265-266 RIGHT_PAREN_MACRO_CALL ')'
@@ -174,12 +176,23 @@ Fixing this properly needs changes in (at least) two places, together:
    needs to recognize "a macro call was just consumed as a side effect of this very
    token peek" and report success, instead of only matching a literal `IDENTIFIER`.
 
-Both attempted fixes, and why (1) alone isn't enough and (2) alone isn't enough, are
-in the conversation history; the short version is that skipping the expansion tokens
-without also fixing `primaryExprVariable` still misses the outer-wrapper node, and
-fixing `primaryExprVariable` without skipping the expansion tokens corrupts parsing
-of whatever comes after the call (because the leaked tokens are still there for
-*something* downstream to trip over).
+Neither change is sufficient on its own:
+
+- Skipping the expansion tokens in `GlslPsiBuilder` (1) without also fixing
+  `primaryExprVariable` (2) still leaves `primary_expr_variable` reporting failure
+  for the macro call, so the outer `VARIABLE_IDENTIFIER` wrapper still never gets
+  created — the tree is merely missing the trailing garbage instead of missing the
+  wrapper *and* full of garbage.
+- Fixing `primaryExprVariable` (2) without skipping the expansion tokens (1) makes
+  `primary_expr_variable` claim success immediately (since the token position moved
+  during the peek), which short-circuits the backtracking retries that `f(1, 2)`
+  currently depends on to reach its "working" shape — so previously-passing macro
+  calls (including the simple `f(1, 2)` case) start failing instead, because the
+  leaked garbage tokens are still sitting there for the *next* rule to trip over.
+
+Both changes together were prototyped and did make `GlslParserTest` pass (after
+regenerating its golden file to match the new, simpler tree shape) — but see the
+formatter breakage below, which is why that combination was not kept.
 
 The real, non-hacky fix almost certainly belongs in **`GlslLexer.kt`** itself: the
 macro-body expansion feature needs to either carry a distinct, filterable token type

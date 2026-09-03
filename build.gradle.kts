@@ -58,6 +58,9 @@ dependencies {
     runtimeOnly("org.lwjgl:lwjgl::natives-macos")
     runtimeOnly("org.lwjgl:lwjgl-opengl::natives-macos")
 
+    runtimeOnly("org.lwjgl:lwjgl::natives-macos-arm64")
+    runtimeOnly("org.lwjgl:lwjgl-opengl::natives-macos-arm64")
+
     implementation(libs.lwjgl3.awt) {
         isTransitive = false
     }

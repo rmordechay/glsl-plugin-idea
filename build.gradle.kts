@@ -36,7 +36,7 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity(platformVersion) { useInstaller = false }
+        intellijIdea(platformVersion) { useInstaller = false }
         testFramework(TestFrameworkType.Platform)
     }
     testImplementation(libs.junit)
@@ -178,33 +178,19 @@ run {
             dependsOn("generateGrammarClean")
         }
 
-        runIde { //diables kubenetes because its trash and dumps our logs with bullshit
+        runIde {
             maxHeapSize = "6g"
+        }
 
-            doFirst {
-                val disabledIds = listOf(
-                    "com.intellij.kubernetes",
-                )
+        prepareSandbox {
+            // Kubernetes is trash and dumps our logs with bullshit.
+            disabledPlugins.add("com.intellij.kubernetes")
+        }
 
-                val sandboxRoot = layout.buildDirectory.dir("idea-sandbox").get().asFile
-
-                val candidateConfigDirs = sandboxRoot
-                    .listFiles()
-                    ?.filter { it.isDirectory }
-                    ?.map { it.resolve("config") }
-                    ?.filter { it.isDirectory }
-                    .orEmpty()
-
-                val configDir = when {
-                    candidateConfigDirs.size == 1 -> candidateConfigDirs.single()
-                    candidateConfigDirs.isNotEmpty() -> candidateConfigDirs.maxBy { it.lastModified() } // latest
-                    else -> sandboxRoot.resolve("config") // fallback for older layouts
-                }
-
-                configDir.mkdirs()
-                configDir.resolve("disabled_plugins.txt")
-                    .writeText(disabledIds.joinToString(System.lineSeparator()))
-            }
+        prepareTestSandbox {
+            // Vue's LSP service crashes on init in the headless test sandbox and spams
+            // unrelated tests with noise; the plugin doesn't need it.
+            disabledPlugins.add("org.jetbrains.plugins.vue")
         }
     }
 }

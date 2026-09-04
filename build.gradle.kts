@@ -32,7 +32,7 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdea(platformVersion) { useInstaller = false }
+        intellijIdeaCommunity(platformVersion) { useInstaller = false }
         testFramework(TestFrameworkType.Platform)
     }
     testImplementation(libs.junit)

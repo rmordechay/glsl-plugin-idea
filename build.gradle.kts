@@ -14,9 +14,9 @@ plugins {
     alias(libs.plugins.grammarKit)
 }
 
-val pluginVersion: String by project
-val platformVersion: String by project
-val sinceVersion: String by project
+val pluginVersion: String = providers.gradleProperty("pluginVersion").get()
+val platformVersion: String = providers.gradleProperty("platformVersion").get()
+val sinceVersion: String = providers.gradleProperty("sinceVersion").get()
 
 group = "glsl.plugin"
 version = pluginVersion
@@ -87,7 +87,7 @@ intellijPlatform {
         description = file("plugin-info/description.html").readText()
         changeNotes = changelog.renderItem(changelog.get(pluginVersion), Changelog.OutputType.HTML)
         ideaVersion {
-            sinceBuild = "223"
+            sinceBuild = sinceVersion
         }
     }
     publishing {

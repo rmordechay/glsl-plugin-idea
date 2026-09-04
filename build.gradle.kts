@@ -21,6 +21,10 @@ val sinceVersion: String = providers.gradleProperty("sinceVersion").get()
 group = "glsl.plugin"
 version = pluginVersion
 
+kotlin {
+    jvmToolchain(21)
+}
+
 repositories {
     mavenCentral()
     intellijPlatform {
@@ -74,6 +78,10 @@ configurations.configureEach {
             useVersion(libs.versions.lwjgl.get())
             because("All LWJGL artifacts must be compatible with lwjgl3-awt")
         }
+        if (requested.group == "org.jetbrains.kotlin" && requested.name == "kotlin-stdlib") {
+            useVersion(libs.versions.kotlin.get())
+            because("kotlin-stdlib must match the Kotlin compiler/IDE platform version, not the older version pulled in transitively by kotlinx-serialization-json")
+        }
     }
 }
 
@@ -102,8 +110,8 @@ tasks {
     val buildSearchableOptionsEnabled =
         providers.gradleProperty("buildSearchableOptionsEnabled").map(String::toBoolean).orElse(false)
     compileJava {
-        sourceCompatibility = JavaVersion.VERSION_25.majorVersion
-        targetCompatibility = JavaVersion.VERSION_25.majorVersion
+        sourceCompatibility = JavaVersion.VERSION_21.majorVersion
+        targetCompatibility = JavaVersion.VERSION_21.majorVersion
     }
 
     runIde {

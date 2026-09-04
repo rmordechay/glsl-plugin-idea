@@ -26,9 +26,9 @@ class GlslHighlightingAnnotator : Annotator {
         if (element !is GlslIdentifier || element is GlslBuiltinType) return
         val extension = holder.currentAnnotationSession.file.virtualFile.extension
         val elementName = element.getName()
-        if (isBuiltinFunction(elementName) || isBuiltinShaderVariable(elementName, extension)) {
+        if (isBuiltinFunction(element.project, elementName) || isBuiltinShaderVariable(element.project, elementName, extension)) {
             createAnnotation(holder, GlslTextAttributes.BUILTIN_NAME_TEXT_ATTR)
-        } else if (isBuiltinConstant(elementName)) {
+        } else if (isBuiltinConstant(element.project, elementName)) {
             createAnnotation(holder, GlslTextAttributes.BUILTIN_GLOBAL_CONSTANTS)
         } else {
             val reference = element.resolveReference()

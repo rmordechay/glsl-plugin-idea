@@ -84,6 +84,7 @@ object GlslTokenSets {
         PP_UNDEF,
         PP_VERSION,
         PP_INCLUDE,
+        PP_IMPORT,
         MACRO_LINE,
         MACRO_FILE,
         MACRO_VERSION

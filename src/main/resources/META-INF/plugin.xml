@@ -83,6 +83,21 @@
                                         implementationClass="glsl.plugin.inspections.GlslInspectionConstructorNoArguments"/>
         <localInspection                language="Glsl" enabledByDefault="true" groupName="GLSL" displayName="Cyclic imports"
                                         implementationClass="glsl.plugin.inspections.GlslInspectionCyclicImports"/>
+
+        <!--        Glsl Preview-->
+        <toolWindow
+                id="GLSL Preview"
+                factoryClass="glsl.plugin.preview.toolwindow.GlslPreviewToolWindowFactory"
+                anchor="right"
+                canCloseContents="false"
+                canWorkInDumbMode="true"
+                icon="/icons/toolwindowIcon.svg"
+        />
+
+        <configurationType implementation="glsl.plugin.preview.run.settings.ShaderRunConfigurationType"/>
+        <runConfigurationProducer language="Glsl" implementation="glsl.plugin.preview.run.gutteraction.FragShaderLazyRunConfigProducer"/>
+        <runLineMarkerContributor language="Glsl" implementationClass="glsl.plugin.preview.run.gutteraction.FragShaderRunLineMarkerContributor"/>
+
     </extensions>
 
     <actions>

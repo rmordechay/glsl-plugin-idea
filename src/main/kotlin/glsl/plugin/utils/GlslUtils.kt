@@ -8,10 +8,18 @@ import com.intellij.lang.ASTFactory.leaf
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.findFile
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
+import com.intellij.psi.search.FilenameIndex
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
+import com.intellij.testFramework.LightVirtualFileBase
+import com.intellij.util.asSafely
 import glsl.GlslTypes.BUILTIN_TYPE_SCALAR
 import glsl.data.ShaderType
 import glsl.plugin.psi.named.GlslNamedType
@@ -22,6 +30,7 @@ import glsl.plugin.psi.named.types.builtins.GlslVector
 import glsl.plugin.psi.named.types.user.GlslNamedStructSpecifier
 import glsl.psi.impl.GlslBuiltinTypeScalarImpl
 import glsl.psi.interfaces.GlslFunctionDeclarator
+import glsl.psi.interfaces.GlslPpImportDeclaration
 import glsl.psi.interfaces.GlslPpIncludeDeclaration
 import glsl.psi.interfaces.GlslTypeSpecifier
 import java.io.BufferedReader
@@ -154,7 +163,70 @@ object GlslUtils {
     @JvmStatic
     fun getVirtualFile(targetPathString: String?, baseFile: VirtualFile?, project: Project?): VirtualFile? {
         if (project == null || baseFile == null || targetPathString == null) return null
-        return baseFile.parent?.findFileByRelativePath(targetPathString)
+        val realBaseFile: VirtualFile;
+        if (targetPathString.startsWith('/')) {
+            realBaseFile = resolveSourceRoot(baseFile) ?: baseFile
+        } else {
+            realBaseFile = baseFile
+        }
+        val file = (if (realBaseFile.isDirectory) realBaseFile else realBaseFile.parent)?.findFileByRelativePath(targetPathString) ?: return null
+        if (file.isDirectory)
+            return null
+        return file
+    }
+
+    /**
+     *
+     */
+    @JvmStatic
+    fun resolveSourceRoot(baseFile: VirtualFile): VirtualFile? {
+        return resolveMarkerSourceRoot(baseFile) ?: resolveMCShaderPackRoot(baseFile)
+    }
+
+    @JvmStatic
+    private fun resolveMCShaderPackRoot(baseFile: VirtualFile): VirtualFile? {
+        var shadersOffset = -1
+        var shadersFile: VirtualFile? = null
+        var shaderpacksOffset = -1
+        var offset = 0
+        baseFile.searchParents { current ->
+            when(current.name) {
+                "shaders" -> {
+                    shadersOffset = offset
+                    shadersFile = current
+                }
+                "shaderpacks" -> {
+                    shaderpacksOffset = offset
+                    return@searchParents
+                }
+            }
+            offset++
+        }
+        if (shadersFile != null && shadersOffset != -1 && shaderpacksOffset != -1 && shaderpacksOffset == shadersOffset + 2) {
+            //Shaderpack detected, hack absolute path.
+            return shadersFile
+        }
+        return null
+    }
+
+    @JvmStatic
+    private fun resolveMarkerSourceRoot(baseFile: VirtualFile): VirtualFile? {
+        baseFile.searchParents { current ->
+            current.findFile(".glsl_idea_root")?.let {
+                return current
+            }
+        }
+        return null
+    }
+
+    private inline fun VirtualFile.searchParents(search: (VirtualFile) -> Unit) {
+        var depth = 0
+        var current = this.parent
+        while (depth < 128 && current != null) {
+            search(current)
+            current = current.parent
+            depth++
+        }
     }
 
     /**
@@ -227,5 +299,62 @@ object GlslUtils {
             return null
         }
     }
-}
 
+    @JvmStatic
+    fun PsiElement.getRealVirtualFile(): VirtualFile? {
+        val vf = this.containingFile?.viewProvider?.virtualFile
+        return vf.asSafely<LightVirtualFileBase>()?.originalFile ?: vf
+    }
+
+    @JvmStatic
+    fun getImportFullPath(project: Project, importDecl: GlslPpImportDeclaration): String? {
+        val namespace = importDecl.identifier?.text
+        val relativePath = importDecl.includePath?.text
+        val base = project.basePath ?: return null
+
+        return "$base/src/main/resources/assets/$namespace/shaders/$relativePath"
+            .replace('\\', '/')
+    }
+
+    @JvmStatic
+    fun getImportPsiFileLocal(project: Project, importDecl: GlslPpImportDeclaration): PsiFile? {
+        val fullPath = getImportFullPath(project, importDecl) ?: return null
+        val vFile = LocalFileSystem.getInstance().findFileByPath(fullPath) ?: return null
+        return PsiManager.getInstance(project).findFile(vFile)
+    }
+
+    @JvmStatic
+    fun findImportPsiFiles(project: Project, importDecl: GlslPpImportDeclaration): List<PsiFile> {
+        val namespace = importDecl.identifier?.text ?: return emptyList()
+        val relativePath = importDecl.includePath?.text ?: return emptyList()
+
+        val suffix = "/assets/$namespace/shaders/$relativePath".replace('\\', '/')
+        val fileName = relativePath.substringAfterLast('/')
+
+        val scope = GlobalSearchScope.allScope(project)
+
+        val vFiles = FilenameIndex.getVirtualFilesByName(project, fileName, scope)
+
+        val psiManager = PsiManager.getInstance(project)
+
+        return vFiles
+            .filter { vf ->
+                val p = vf.path.replace('\\', '/')
+                p.endsWith(suffix)
+            }
+            .mapNotNull { vf -> psiManager.findFile(vf) }
+    }
+
+    @JvmStatic
+    fun getImportPsiFile(project: Project, importDecl: GlslPpImportDeclaration): List<PsiFile> {
+        val local = getImportPsiFileLocal(project, importDecl)
+        val all = findImportPsiFiles(project, importDecl)
+
+        return buildList {
+            if (local != null) add(local)
+            for (f in all) {
+                if (f != local) add(f)
+            }
+        }
+    }
+}

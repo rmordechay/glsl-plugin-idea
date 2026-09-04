@@ -1,5 +1,30 @@
 # GLSL Plugin Changelog
 
+## [1.1.6-fpfork-01]
+
+### Fixed
+- Fixed relative include paths when including other files from different directories
+- Fixed #36 - Array index access of struct member vectors
+- Fixed autocompletion of `#version` version number, and also added autocompletion for the `core`/`compatibility`/`es` version suffixes
+- Fixed autocomplete on lines in front of existing expression assignment statements
+- Fixed autocomplete inside unfinished statements
+- Fixed stale state issues when switching IDE project
+
+### Added
+- Added support for multi-level recursive including of user types
+- Added support for Minecraft shaderpack "absolute path" includes
+  With this one, something like `#include "/foo.glsl"` will walk up the file tree, looking for this directory: `shaderpacks/<any directory name>/shaders/`, and evaluates the absolute path as a child path of this directory
+- Added support for declaring folders as glsl source roots through the use of a .glsl_idea_root marker file
+- Added cross-directory `#include` autocompletion
+- Added autocomplete for custom functions
+- Support for sodium `#import <sodium:include/fog.glsl>` statement
+  - Resolve path properly inside the mod
+  - Able to search dependency mods
+- Making `#import` and `#include` clickable reference
+- Support for NV_gpu_shader5 pointers `uint *data;`
+- Fix bool assignments such as `bool a = true==true;`
+- Added shader preview feature
+
 ## [1.1.6]
 ### Updated
 - IDE build version.

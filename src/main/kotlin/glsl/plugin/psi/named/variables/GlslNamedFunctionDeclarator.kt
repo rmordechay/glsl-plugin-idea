@@ -57,7 +57,7 @@ abstract class GlslNamedFunctionDeclarator(node: ASTNode) : GlslNamedVariableImp
      *
      */
     override fun getLookupElement(returnTypeText: String?): LookupElement? {
-        val functionPrototype = getPsi().parentOfType<GlslFunctionDeclarator>() ?: return null
+        val functionPrototype = getPsi().parentOfType<GlslFunctionDeclarator>(true) ?: return null
         return GlslUtils.getFunctionLookupElement(functionPrototype, getLookupIcon())
     }
 

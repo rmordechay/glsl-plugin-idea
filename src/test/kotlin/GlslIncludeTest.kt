@@ -58,4 +58,12 @@ class GlslIncludeTest : BasePlatformTestCase() {
         assertInstanceOf(resolve, GlslStructSpecifier::class.java)
         assertEquals("A", (resolve as GlslStructSpecifier).name)
     }
+
+    fun testRootMarkerFile() {
+        myFixture.configureByFiles("root/var_a.glsl", "root/.glsl_idea_root")
+        val reference = myFixture.getReferenceAtCaretPosition("root/subfolder/test_root_marker.glsl")
+        val resolve = reference?.resolve()
+        assertInstanceOf(resolve, GlslSingleDeclaration::class.java)
+        assertEquals("a", (resolve as GlslSingleDeclaration).name)
+    }
 }

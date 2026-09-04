@@ -31,6 +31,7 @@ import java.util.List;
 %state MACRO_FUNC_DEFINITION_STATE
 %state MACRO_BODY_STATE
 %state MACRO_INCLUDE_STATE
+%state MACRO_IMPORT_STATE
 %state MACRO_IGNORE_STATE
 
 WHITE_SPACE=[ \t\f]+
@@ -72,6 +73,7 @@ PP_ERROR="#error"
 PP_PRAGMA="#pragma"
 PP_EXTENSION="#extension"
 PP_INCLUDE="#include"
+PP_IMPORT="#import"
 PP_LINE="#line"
 MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
@@ -94,6 +96,16 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   "<"                              { return LEFT_ANGLE; }
   ">"                              { return RIGHT_ANGLE; }
   {STRING_LITERAL}                 { return STRING_LITERAL; }
+  {INCLUDE_PATH}                   { return INCLUDE_PATH; }
+}
+
+<MACRO_IMPORT_STATE> {
+  {WHITE_SPACE}                    { return WHITE_SPACE; }
+  {NEW_LINE}                       { yybegin(YYINITIAL); return END_INCLUDE; }
+  "<"                              { return LEFT_ANGLE; }
+  ">"                              { return RIGHT_ANGLE; }
+  ":"                              { return COLON; }
+  {IDENTIFIER}                     { return IDENTIFIER; }
   {INCLUDE_PATH}                   { return INCLUDE_PATH; }
 }
 
@@ -142,6 +154,7 @@ INCLUDE_PATH={IDENTIFIER}([\s\/]*{IDENTIFIER}\s*)*(\.{IDENTIFIER})?
   {PP_ERROR}                       { yybegin(MACRO_IGNORE_STATE); return PP_ERROR;}
   {PP_PRAGMA}                      { yybegin(MACRO_IGNORE_STATE); return PP_PRAGMA;}
   {PP_INCLUDE}                     { yybegin(MACRO_INCLUDE_STATE); return PP_INCLUDE;}
+  {PP_IMPORT}                      { yybegin(MACRO_IMPORT_STATE); return PP_IMPORT;}
   {PP_DEFINE}                      { yybegin(MACRO_IDENTIFIER_STATE); return PP_DEFINE;}
 
   ";"                              { afterType = false; return SEMICOLON; }

@@ -31,7 +31,7 @@ class GlslDocumentationProvider : DocumentationProvider {
         contextElement: PsiElement?,
         targetOffset: Int
     ): PsiElement? {
-        if (isBuiltinFunction(contextElement?.text)) {
+        if (isBuiltinFunction(file.project, contextElement?.text)) {
             return contextElement
         }
         return null
@@ -41,8 +41,9 @@ class GlslDocumentationProvider : DocumentationProvider {
      *
      */
     override fun generateDoc(element: PsiElement?, originalElement: PsiElement?): String? {
+        val project = element?.project ?: originalElement?.project ?: return null
         val elementText = element?.text
-        if (isBuiltinFunction(elementText)) {
+        if (isBuiltinFunction(project, elementText)) {
             return document?.getElementById(elementText!!).toString()
         }
         return null

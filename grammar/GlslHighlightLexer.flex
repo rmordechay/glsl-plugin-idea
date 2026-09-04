@@ -62,6 +62,7 @@ PP_ERROR="#error"
 PP_PRAGMA="#pragma"
 PP_EXTENSION="#extension"
 PP_INCLUDE="#include"
+PP_IMPORT="#import"
 PP_LINE="#line"
 MACRO_LINE="__LINE__"
 MACRO_FILE="__FILE__"
@@ -90,6 +91,7 @@ MACRO_VERSION="__VERSION__"
   {PP_ELSE}                        { return PP_ELSE; }
   {PP_ENDIF}                       { return PP_ENDIF; }
   {PP_INCLUDE}                     { return PP_INCLUDE; }
+  {PP_IMPORT}                      { return PP_IMPORT; }
   {PP_EXTENSION}                   { return PP_EXTENSION; }
   {PP_LINE}                        { return PP_LINE; }
   {MACRO_LINE}                     { return MACRO_LINE; }

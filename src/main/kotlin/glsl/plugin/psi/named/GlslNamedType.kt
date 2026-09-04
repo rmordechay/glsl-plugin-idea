@@ -30,6 +30,7 @@ interface GlslNamedType : GlslNamedElement {
      *
      */
     fun isEqual(other: GlslNamedType?): Boolean {
+        if (this.text == other?.text) return true
         val thisElementType = typeAsToken() ?: return false
         val otherElementType = other?.typeAsToken() ?: return false
         return thisElementType == otherElementType || canCast(otherElementType)

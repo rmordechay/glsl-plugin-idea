@@ -32,7 +32,7 @@ abstract class GlslVector(node: ASTNode) : GlslBuiltinType(node) {
      *
      */
     override fun getStructMembers(): List<GlslNamedVariable> {
-        val vectors = GlslBuiltinUtils.getVecStructs()[name]
+        val vectors = GlslBuiltinUtils.getVecStructs(project)[name]
         val vectorMembers = vectors?.values?.toList()
         return vectorMembers ?: emptyList()
     }

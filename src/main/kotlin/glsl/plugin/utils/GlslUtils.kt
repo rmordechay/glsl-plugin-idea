@@ -323,7 +323,7 @@ object GlslUtils {
 
         val scope = GlobalSearchScope.allScope(project)
 
-        val vFiles = FilenameIndex.getVirtualFilesByName(project, fileName, scope)
+        val vFiles = FilenameIndex.getVirtualFilesByName(fileName, scope)
 
         val psiManager = PsiManager.getInstance(project)
 

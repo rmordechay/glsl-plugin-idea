@@ -21,7 +21,7 @@ group = "glsl.plugin"
 version = pluginVersion
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
 
 repositories {
@@ -107,8 +107,8 @@ tasks {
     val buildSearchableOptionsEnabled =
         providers.gradleProperty("buildSearchableOptionsEnabled").map(String::toBoolean).orElse(false)
     compileJava {
-        sourceCompatibility = JavaVersion.VERSION_21.majorVersion
-        targetCompatibility = JavaVersion.VERSION_21.majorVersion
+        sourceCompatibility = JavaVersion.VERSION_25.majorVersion
+        targetCompatibility = JavaVersion.VERSION_25.majorVersion
     }
 
     runIde {

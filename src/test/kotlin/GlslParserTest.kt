@@ -19,4 +19,15 @@ class GlslParserTest : ParsingTestCase("", "test", GlslParserDefinition()) {
     fun testParserFile() {
         doTest(true)
     }
+
+    /**
+     * Documents the current (buggy) parse tree for a function-like macro call with a
+     * real, multi-token argument list used in expression position. See docs/macro-issues.MD
+     * for the root cause and why this is split out from testParserFile: the golden file here
+     * captures today's broken shape so it doesn't block the rest of the suite, and will need
+     * regenerating once the underlying lexer bug is fixed.
+     */
+    fun testMacroFunctionCallArgs() {
+        doTest(true)
+    }
 }

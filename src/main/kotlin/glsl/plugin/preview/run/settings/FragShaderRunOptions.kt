@@ -3,7 +3,7 @@ package glsl.plugin.preview.run.settings
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.intellij.execution.configurations.LocatableRunConfigurationOptions
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFileManager
@@ -38,7 +38,7 @@ class FragShaderRunOptions() : LocatableRunConfigurationOptions() {
      * @param name String
      */
     fun setUniformName(uniform: UniformType, name: String) {
-        val newMap = HashMap(getUniformMappings());
+        val newMap = HashMap(getUniformMappings())
         newMap[uniform] = name
         uniformMappingsRaw =
             jacksonObjectMapper().writeValueAsString(newMap) //I know this is inefficient AF but JetBrains generates this class anyway every 2 seconds new for some reason
@@ -48,7 +48,7 @@ class FragShaderRunOptions() : LocatableRunConfigurationOptions() {
      * Get fragment shader source document
      */
     fun getFragDocument(): Document {
-        return runReadAction {
+        return runReadActionBlocking {
             Objects.requireNonNull(fragmentFile)
             val fragFile = Objects.requireNonNull(
                 VirtualFileManager.getInstance().findFileByUrl(fragmentFile!!),

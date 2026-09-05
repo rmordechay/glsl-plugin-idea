@@ -3,7 +3,7 @@ package glsl.plugin.preview.run.settings
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.intellij.execution.configurations.LocatableRunConfigurationOptions
-import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFileManager
@@ -48,13 +48,13 @@ class FragShaderRunOptions() : LocatableRunConfigurationOptions() {
      * Get fragment shader source document
      */
     fun getFragDocument(): Document {
-        return ReadAction.compute<Document, Throwable> {
+        return runReadAction {
             Objects.requireNonNull(fragmentFile)
             val fragFile = Objects.requireNonNull(
                 VirtualFileManager.getInstance().findFileByUrl(fragmentFile!!),
                 "Could not find file for $fragmentFile"
             )!!
-            return@compute Objects.requireNonNull(FileDocumentManager.getInstance().getDocument(fragFile),"Could not find document for $fragmentFile")!!;
+            Objects.requireNonNull(FileDocumentManager.getInstance().getDocument(fragFile),"Could not find document for $fragmentFile")!!
         }
     }
 

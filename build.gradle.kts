@@ -69,6 +69,17 @@ dependencies {
     implementation(libs.lwjgl3.awt) {
         isTransitive = false
     }
+
+    // GLFW is only used in tests, to create a headless GL context for ShaderProgramCompilerTest
+    // without needing a realized AWTGLCanvas (which the production code uses instead).
+    testImplementation(libs.lwjgl.glfw)
+
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-windows")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-windows-arm64")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-linux")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-linux-arm64")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-macos")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-macos-arm64")
 }
 
 configurations.configureEach {

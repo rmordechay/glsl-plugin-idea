@@ -19,6 +19,7 @@ lwjgl-bom = { group = "org.lwjgl", name = "lwjgl-bom", version.ref = "lwjgl" }
 lwjgl = { group = "org.lwjgl", name = "lwjgl" }
 lwjgl-opengl = { group = "org.lwjgl", name = "lwjgl-opengl" }
 lwjgl-jawt = { group = "org.lwjgl", name = "lwjgl-jawt" }
+lwjgl-glfw = { group = "org.lwjgl", name = "lwjgl-glfw" }
 lwjgl3-awt = { group = "org.lwjglx", name = "lwjgl3-awt", version.ref = "lwjgl3-awt" }
 
 [plugins]

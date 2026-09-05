@@ -6,7 +6,6 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
-import fleet.util.computeIfAbsentShim
 import glsl.plugin.preview.run.GLProcessHandler
 import glsl.plugin.preview.run.ShaderProgramCompiler
 import glsl.plugin.preview.run.settings.FragShaderRunOptions
@@ -68,7 +67,7 @@ class GlContextManager : Disposable {
 
         fun getInstance(project: Project): GlContextManager {
             return instances[project] ?: synchronized(this) {
-                instances.computeIfAbsentShim(project, ::GlContextManager)
+                instances.getOrPut(project) { GlContextManager(project) }
             }
         }
     }

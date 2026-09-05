@@ -33,5 +33,13 @@ jobs:
       - name: Build plugin
         run: ./gradlew buildPlugin
 
+      - name: Install Xvfb and Mesa software renderer
+        # There's no GPU/display on this runner. ShaderProgramCompilerTest needs a real GL
+        # context (created headlessly via GLFW), which needs both a display server (Xvfb) and a
+        # software GL driver (Mesa's llvmpipe, forced on via LIBGL_ALWAYS_SOFTWARE below).
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri mesa-utils
+
       - name: Run tests
-        run: ./gradlew test
+        run: xvfb-run --auto-servernum ./gradlew test
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"

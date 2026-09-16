@@ -21,7 +21,7 @@
 
     uniform mat4 model;
     uniform mat4 view;
-    uniform mat4 projection;
+    uniform mat4 func_updated;
 
 
     /**
@@ -33,7 +33,7 @@
     }
 
     void main() {
-        gl_Position = projection * view * model * vec4(abs(aPos), 1.0f);
+        gl_Position = func_updated * view * model * vec4(abs(aPos), 1.0f);
         TexCoord = vec2(aTexCoord.x, aTexCoord.y);
     }
 </script>

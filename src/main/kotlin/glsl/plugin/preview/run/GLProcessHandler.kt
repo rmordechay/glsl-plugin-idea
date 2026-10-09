@@ -23,6 +23,12 @@ class GLProcessHandler : ProcessHandler() {
 
     override fun detachIsDefault(): Boolean = false
 
+    /**
+     * Closing the run tab stops the preview without asking. There's no external process to keep running, so the
+     * "Terminate or Disconnect?" dialog would only offer two ways of doing the same thing.
+     */
+    override fun isSilentlyDestroyOnClose(): Boolean = true
+
     override fun getProcessInput(): OutputStream? = null
 
     /**

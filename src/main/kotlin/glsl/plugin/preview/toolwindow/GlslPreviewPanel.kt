@@ -66,8 +66,11 @@ class GlslPreviewPanel : Disposable {
         return contentPanel
     }
 
+    /**
+     * Stops rendering. The [GlContextManager] (and its canvas) is owned by the project, not by this panel, so it
+     * is left for the platform to dispose when the project closes.
+     */
     override fun dispose() {
         renderTimer.stop()
-        manager.dispose()
     }
 }

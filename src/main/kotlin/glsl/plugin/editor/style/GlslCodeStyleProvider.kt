@@ -3,6 +3,7 @@ package glsl.plugin.editor.style
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.CodeStyleAbstractPanel
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
+import com.intellij.lang.Language
 import com.intellij.psi.codeStyle.CodeStyleConfigurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
@@ -20,6 +21,12 @@ class GlslCodeStyleProvider : CodeStyleSettingsProvider() {
     override fun getConfigurableDisplayName(): String {
         return "GLSL"
     }
+
+    /**
+     * Ties the settings page to the GLSL language, which the platform uses to derive the page's ID. Without it,
+     * the platform falls back to deriving the ID from the display name and reports a PluginException.
+     */
+    override fun getLanguage(): Language = GlslLanguage.INSTANCE
 
     /**
     *

@@ -3,6 +3,8 @@ package glsl.plugin.preview
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessListener
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -23,11 +25,13 @@ import java.awt.event.ComponentEvent
  *
  * To compile and run a shader program, call [queueCompile].
  *
+ * There is one instance per project (a project-level service), created on first use and disposed by the
+ * platform when its project is closed - get it with [getInstance].
  */
-class GlContextManager : Disposable {
+@Service(Service.Level.PROJECT)
+class GlContextManager(private val project: Project) : Disposable {
 
     private var glCanvas: AWTGLCanvas;
-    private val project: Project;
 
 
     // OpenGL resources
@@ -62,18 +66,12 @@ class GlContextManager : Disposable {
     companion object {
         private val LOG = Logger.getInstance(GlContextManager::class.java)
 
-        @Volatile
-        private var instances: MutableMap<Project, GlContextManager> = HashMap()
-
-        fun getInstance(project: Project): GlContextManager {
-            return instances[project] ?: synchronized(this) {
-                instances.getOrPut(project) { GlContextManager(project) }
-            }
-        }
-    }
-
-    private constructor(project: Project) {
-        this.project = project;
+        /**
+         * Returns [project]'s manager, creating it on first use. Use this from anything that needs the
+         * project's shader preview, e.g. to show its canvas or queue a shader for compilation. The manager is
+         * owned by the project, so callers must not dispose it.
+         */
+        fun getInstance(project: Project): GlContextManager = project.service()
     }
 
     /**

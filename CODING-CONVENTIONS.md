@@ -182,6 +182,9 @@ straightforward override), delete it.
 
 - Bug fixes and behavior changes **must** come with a test. Mention the test in the commit message if it
   isn't obvious (e.g. `fixed #include autocompletion bug (testIncludeCompletionAcrossDirectories)`).
+- Tests **must** check behavior, not restate definitions. A test that only asserts what a declaration says (e.g.
+  that an override returns the constant it was written to return) fails only if someone deletes the line, which
+  review catches anyway. A fix that only changes such a declaration or configuration value doesn't need a test.
 - Use `BasePlatformTestCase` for feature tests and `ParsingTestCase` for parser golden files. Test methods use the
   JUnit 3 `testXxx` naming that these base classes require.
 - New test names **must** describe what they test (`testSetUniformNameOverwritesExistingEntry`), never just

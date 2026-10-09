@@ -18,11 +18,10 @@ class GlslRenameProcessor : RenamePsiElementProcessor() {
     override fun canProcessElement(element: PsiElement): Boolean = element is GlslNamedElement
 
     override fun findReferences(element: PsiElement, searchScope: SearchScope, searchInCommentsAndStrings: Boolean): Collection<PsiReference> {
-
+        // allows GLSL language renaming in injected fragments outside the project scope (external libraries etc.)
         val injected = InjectedLanguageManager.getInstance(element.project).isInjectedFragment(element.containingFile)
-        if (!injected) return super.findReferences(element, searchScope, searchInCommentsAndStrings)
+        val scope = if (injected) PsiSearchHelper.getInstance(element.project).getUseScope(element) else searchScope;
 
-        val hostFileScope = PsiSearchHelper.getInstance(element.project).getUseScope(element)
-        return ReferencesSearch.search(element, hostFileScope).findAll()
+        return super.findReferences(element, scope, searchInCommentsAndStrings)
     }
 }

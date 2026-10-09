@@ -1,6 +1,7 @@
 import com.intellij.codeInsight.template.impl.TemplateManagerImpl
 import com.intellij.ide.DataManager
 import com.intellij.injected.editor.EditorWindow
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
@@ -101,6 +102,8 @@ class GlslRenamingTest : BasePlatformTestCase() {
 
         val editor = CommonDataKeys.EDITOR.getData(context) ?: myFixture.editor
         val topLevelEditor = (editor as? EditorWindow)?.delegate ?: editor
+        val fragmentRange = InjectedLanguageManager.getInstance(project).injectedToHost(element, element.containingFile.textRange)
+        val fragmentMarker = topLevelEditor.document.createRangeMarker(fragmentRange)
         val templateTesting = Disposer.newDisposable()
 
         try {
@@ -119,10 +122,11 @@ class GlslRenamingTest : BasePlatformTestCase() {
             // the refactoring runs after the template finishes, on a non-blocking read action; the document shows the result
             PlatformTestUtil.waitWithEventsDispatching(
                 "rename did not complete",
-                { !oldName.containsMatchIn(topLevelEditor.document.text) },
+                { !oldName.containsMatchIn(topLevelEditor.document.getText(fragmentMarker.textRange)) },
                 10
             )
         } finally {
+            fragmentMarker.dispose()
             Disposer.dispose(templateTesting)
         }
     }

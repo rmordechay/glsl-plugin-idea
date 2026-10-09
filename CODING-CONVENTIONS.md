@@ -70,39 +70,21 @@ what it does:
 ### Acronyms and abbreviations
 
 - Camel-case acronyms like ordinary words: `GlProcessHandler`, `GlContext`, not `GLProcessHandler`. The exception is
-  `MC`, which is always written in capitals (see the [glossary](#glossary)).
-- Don't abbreviate, except for the terms in the [glossary](#glossary). Write `fragmentShader`, `vertexShader`,
+  `MC`, which is always written in capitals (see the [glossary](GLOSSARY.md)).
+- Don't abbreviate, except for the terms in [GLOSSARY.md](GLOSSARY.md). Write `fragmentShader`, `vertexShader`,
   `function`, `declaration`, `attribute` and `string`, not `fragShader`, `vShader`, `func`, `decl`, `attr` or `str`.
   Single-letter or short local variables in small scopes (`i`, `it`, `vf`) are fine.
+- The glossary's grammar terms (`Pp`, `Expr`, …) appear in the generated PSI classes. Hand-written code **may**
+  use them where it refers to the corresponding grammar or PSI concept, so names stay searchable across the two.
+- Only domain acronyms may be added to the glossary, not grammar terms.
 
-### Glossary
-
-These abbreviations come from the grammar (`grammar/GlslGrammar.bnf`), so they appear in the generated PSI
-classes (`GlslPpIncludeDeclaration`, `GlslExprNoAssignment`, …). Hand-written code **may** use them where it
-refers to the corresponding grammar or PSI concept, so names stay searchable across the two. No other
-abbreviations are allowed.
+### Grammar names
 
 The grammar abbreviations are legacy. New grammar rules and tokens (`.bnf` and `.flex`) **must not** introduce
 new abbreviations. Spell names out (`function_header`, not `func_header`), because grammar names propagate into
 the generated PSI classes and from there into hand-written code. The one exception: a new rule that belongs to an
 existing family keeps that family's current prefix, abbreviated or not. A new preprocessor directive is
-`pp_warning`, not `preprocessor_warning`, so that related names stay together. Don't add grammar terms to this
-glossary. Only domain acronyms may be added.
-
-| Term     | Meaning                                                                                              |
-|----------|------------------------------------------------------------------------------------------------------|
-| `Pp`     | Preprocessor: the `#` directives (`#define`, `#include`, `#pragma`, `#version`, `#ifdef`, …)         |
-| `Expr`   | Expression                                                                                           |
-| `Func`   | Function. Only in references to grammar rules such as `func_header_with_params`; otherwise write `function`. |
-| `Init`   | Initializer, as in `init_declarator_variable`                                                        |
-| `Params` | Parameters                                                                                           |
-| `Id`     | Identifier, as in `layout_qualifier_id`                                                              |
-| `Spirv`  | SPIR-V, the Khronos intermediate shader representation; GLSL has `spirv_*` extension qualifiers      |
-| `Glsl`   | OpenGL Shading Language. Prefix for the plugin's classes.                                            |
-| `Gl`     | OpenGL                                                                                               |
-| `Psi`    | Program Structure Interface: the IntelliJ Platform's syntax-tree API                                 |
-| `Ast`    | Abstract syntax tree: the lower-level node tree the PSI is built on                                  |
-| `MC`     | Minecraft (shader packs, OptiFine/Iris/Sodium includes). Always written as `MC`, not `Mc`            |
+`pp_warning`, not `preprocessor_warning`, so that related names stay together.
 
 ## Documentation
 

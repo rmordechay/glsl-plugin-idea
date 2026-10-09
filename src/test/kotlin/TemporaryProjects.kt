@@ -8,6 +8,12 @@ import com.intellij.testFramework.fixtures.IdeaTestFixtureFactory
  * own project).
  *
  * The project is disposed even if [block] throws.
+ *
+ * Disposing the project checks that no editor anywhere in the IDE is still open - not just the temporary
+ * project's own. If the calling test has a file open in its own project when [block] returns (e.g. via
+ * `myFixture.configureByText`), the disposal fails with "Editor ... hasn't been released". Either open such files
+ * after this function returns, or close them at the end of [block] with `FileEditorManager.closeFile` (see
+ * `ShaderSettingsEditorTest`).
  */
 fun withTemporaryProject(name: String, block: (Project) -> Unit) {
     val projectFixture = IdeaTestFixtureFactory.getFixtureFactory().createFixtureBuilder(name).fixture

@@ -23,8 +23,8 @@ class GlslDocumentationTest : BasePlatformTestCase() {
             myFixture.editor, file, variableIdentifier, variableIdentifier.textOffset
         ) ?: variableIdentifier
         val doc = documentationProvider.generateDoc(element, originalElement)
-        assertNotNull(doc)
-        assertTrue(doc!!.contains("<div id=\"abs\">"))
+        assertNotNull("expected documentation to be generated for abs()", doc)
+        assertTrue("expected the generated documentation to contain the abs() section", doc!!.contains("<div id=\"abs\">"))
     }
 
 //    fun testDocumentationFile2() {

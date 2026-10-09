@@ -32,7 +32,11 @@ class ShaderRunConfigurationTest : BasePlatformTestCase() {
         assertThrows(RuntimeConfigurationError::class.java) {
             configuration.checkConfiguration()
         }
-        assertEquals(EMPTY_FILE_INPUT, configuration.getFragmentFile())
+        assertEquals(
+            "expected the missing fragment file to be reset to the empty sentinel",
+            EMPTY_FILE_INPUT,
+            configuration.getFragmentFile()
+        )
     }
 
     fun testSetUniformNameMergesIntoExistingMappings() {
@@ -42,6 +46,7 @@ class ShaderRunConfigurationTest : BasePlatformTestCase() {
         configuration.setUniformName(UniformType.MOUSE, "uMyMouse")
 
         assertEquals(
+            "expected the new uniform name to be merged into the existing mappings",
             mapOf(UniformType.TIME to "uMyTime", UniformType.MOUSE to "uMyMouse"),
             configuration.getUniforms()
         )
@@ -53,6 +58,10 @@ class ShaderRunConfigurationTest : BasePlatformTestCase() {
 
         configuration.setUniformNames(mapOf(UniformType.MOUSE to "uMyMouse"))
 
-        assertEquals(mapOf(UniformType.MOUSE to "uMyMouse"), configuration.getUniforms())
+        assertEquals(
+            "expected setUniformNames to replace all existing mappings",
+            mapOf(UniformType.MOUSE to "uMyMouse"),
+            configuration.getUniforms()
+        )
     }
 }

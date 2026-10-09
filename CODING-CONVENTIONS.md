@@ -165,8 +165,15 @@ straightforward override), delete it.
 
 ## Kotlin
 
-- Avoid `!!` in production code. Use `?.`, `?:`, early returns, or `checkNotNull(x) { "reason" }` /
-  `requireNotNull` when a null value is a programming error.
+- Don't use `!!` on values that can legitimately be null: PSI children (the parser builds trees for half-typed
+  code, so children are often missing while the user types), action and data-context values, and file or
+  document lookups. Handle the null by returning early, disabling the action, or returning `null`/an empty
+  result. An unhandled exception in a plugin shows up as an "IDE internal error" report blamed on the plugin.
+- Instead of a null check followed by `!!`, bind the value to a local:
+  `val literal = includeDeclaration.stringLiteral ?: return null`.
+- If a null value really would be a bug, use `checkNotNull(x) { "why this can't be null" }` (or `requireNotNull`
+  for arguments), so the error report explains the assumption instead of showing a bare
+  `NullPointerException`.
 - Validate state with `check`/`require` and a message rather than throwing a bare `IllegalStateException`.
 - Use a primary constructor rather than a secondary constructor that only assigns fields.
 - Prefer `val` and immutable collections. Keep mutable state `private`.

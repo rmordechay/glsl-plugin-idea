@@ -34,10 +34,10 @@ class GlContextManager(private val project: Project) : Disposable {
     private var glCanvas: AWTGLCanvas;
 
 
-    // OpenGL resources
+    // OpenGL resources. They all live in the canvas's GL context, and die with it.
     private var initialized = false
     private var startNs = 0L
-    private var programId: Int = -1
+    private var programId: Int = 0 // 0: no program (OpenGL never uses 0 as a program ID)
 
     // uniforms (optional)
     private var uTimeLocation = -1
@@ -46,8 +46,7 @@ class GlContextManager(private val project: Project) : Disposable {
 
     // rendering variables
     private var positionLocation = -1
-    private var positionBuffer = -1
-    private var vertexArrayBuffer: Int = 0
+    private var positionBuffer = 0 // 0: no buffer (glGenBuffers never returns 0)
 
 
     private var pendingCompile: CompileRun? = null
@@ -85,6 +84,20 @@ class GlContextManager(private val project: Project) : Disposable {
                 LOG.debug("AWTGLCanvas addNotify: displayable=$isDisplayable showing=$isShowing size=$size")
             }
 
+            /**
+             * Removing the canvas from the UI (e.g. closing its tool window) makes [AWTGLCanvas] destroy its GL
+             * context, and every program and buffer in it with it. Forget their IDs, so they are never used
+             * against a different context - if the canvas is shown again, it gets a new context and runs
+             * [initGL] again.
+             */
+            override fun removeNotify() {
+                super.removeNotify()
+                initialized = false
+                programId = 0
+                positionBuffer = 0
+                LOG.debug("AWTGLCanvas removeNotify: GL context and its resources are gone")
+            }
+
             override fun initGL() {
                 GL.createCapabilities()
                 initialized = true
@@ -101,7 +114,7 @@ class GlContextManager(private val project: Project) : Disposable {
             override fun paintGL() {
                 if (pendingStop) {
                     glDeleteProgram(programId)
-                    programId = -1
+                    programId = 0
                     clearCanvas()
                     pendingStop = false
                     currentRunning = null
@@ -113,7 +126,7 @@ class GlContextManager(private val project: Project) : Disposable {
                     currentRunning = pendingCompile!!.processHandler
                     pendingCompile = null
                 }
-                if (programId != -1) {
+                if (programId != 0) {
                     this@GlContextManager.render()
                 }
                 swapBuffers()//need to call that always because otherwise the canvas would not react to resize
@@ -183,7 +196,12 @@ class GlContextManager(private val project: Project) : Disposable {
     private fun compile(compileRun: CompileRun) {
         try {
             LOG.debug("Compiling shader program:")
-            val shaderProgramCompiler = ShaderProgramCompiler(compileRun.processHandler);
+            val shaderProgramCompiler = ShaderProgramCompiler(compileRun.processHandler)
+            // The compiler hands ownership of the program to us, so the previous one is ours to delete.
+            if (programId != 0) {
+                glDeleteProgram(programId)
+                programId = 0
+            }
             this.programId = shaderProgramCompiler.getProgramFromFrag(compileRun.settings.getFragDocument().text)
             setupRenderContext(compileRun.settings.getUniformMappings())
             runShaderProgram()
@@ -194,7 +212,7 @@ class GlContextManager(private val project: Project) : Disposable {
             } else {
                 throw e;
             }
-            this.programId = -1
+            this.programId = 0
         }
     }
 
@@ -205,7 +223,7 @@ class GlContextManager(private val project: Project) : Disposable {
         if (!initialized) {
             throw IllegalStateException("GL not initialized")
         }
-        if (programId == -1) {
+        if (programId == 0) {
             throw IllegalStateException("Program not compiled")
         }
         startNs = System.nanoTime()
@@ -222,18 +240,31 @@ class GlContextManager(private val project: Project) : Disposable {
     }
 
 
+    /**
+     * Called by the platform when the project closes. Deletes the GL program and buffer if the canvas's context
+     * still exists, making that context current first: with several projects open, another project's context
+     * may be current, and its objects can have the same IDs as ours.
+     *
+     * If the canvas has already been removed from the UI, [AWTGLCanvas.removeNotify] has destroyed the context
+     * (and the canvas) already, so there is nothing left to clean up. Calling [AWTGLCanvas.runInContext] then
+     * would create a new, empty context instead.
+     */
     override fun dispose() {
-        if (!initialized) return
+        if (!initialized || !glCanvas.isDisplayable) return
 
-        if (programId != 0) glDeleteProgram(programId)
-        if (vertexArrayBuffer != 0) glDeleteBuffers(vertexArrayBuffer)
-
-        glCanvas.disposeCanvas();
+        glCanvas.runInContext {
+            if (programId != 0) glDeleteProgram(programId)
+            if (positionBuffer != 0) glDeleteBuffers(positionBuffer)
+        }
+        programId = 0
+        positionBuffer = 0
+        // The canvas itself (and its context) is disposed by AWTGLCanvas.removeNotify when it leaves the UI.
     }
 
 
     private fun setupRenderContext(uniformMapping: Map<UniformType, String>) {
         LOG.debug("Setup render context:")
+        if (positionBuffer != 0) glDeleteBuffers(positionBuffer)
         positionBuffer = glGenBuffers()
         glBindBuffer(GL_ARRAY_BUFFER, positionBuffer)
         // Fullscreen triangle in NDC:

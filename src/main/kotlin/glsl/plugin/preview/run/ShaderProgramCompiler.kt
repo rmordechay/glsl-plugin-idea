@@ -15,33 +15,36 @@ private const val DEFAULT_VERTEX_SHADER_SOURCE = """
 private val LOG = Logger.getInstance(ShaderProgramCompiler::class.java)
 
 
-class ShaderProgramCompiler {
-
-    private var vertexShaderId = -1;
-    private var programId = -1;
-    private var fragShaderId = -1;
-    private val processHandler: GLProcessHandler;
-
-    constructor(processHandler: GLProcessHandler) {
-        this.processHandler = processHandler
-    }
+/**
+ * Compiles shader programs for the shader preview, printing compiler output to [processHandler]'s console.
+ *
+ * Doesn't hold any GL objects between calls: every program it returns belongs to the caller.
+ */
+class ShaderProgramCompiler(private val processHandler: GLProcessHandler) {
 
     /**
-     * Creates a program from a default vertex shader and a fragment shader.
-     * @param fragShaderSource
-     * @return program ID
+     * Compiles [fragShaderSource] together with the plugin's default full-screen vertex shader, and links them
+     * into a new program. Used by the preview whenever a shader is (re)started.
+     *
+     * The caller owns the returned program and must delete it (`glDeleteProgram`) when it's no longer needed.
+     * The intermediate shader objects are deleted before this returns, whether it succeeds or fails.
+     *
+     * Must be called with the GL context the program will be used in current.
+     *
+     * @throws ShaderCompilerException if compiling or linking fails; it carries the driver's info log.
      */
     fun getProgramFromFrag(fragShaderSource: String): Int {
-        if (vertexShaderId == -1) {
-            vertexShaderId = createVShader();
+        val vertexShaderId = createVertexShader()
+        try {
+            val fragShaderId = compileFragShader(fragShaderSource)
+            try {
+                return compileProgram(vertexShaderId, fragShaderId)
+            } finally {
+                glDeleteShader(fragShaderId)
+            }
+        } finally {
+            glDeleteShader(vertexShaderId)
         }
-        if (programId != -1) {
-            glDetachShader(programId, vertexShaderId)
-            glDeleteShader(fragShaderId)
-            glDeleteProgram(programId)
-        }
-        compileFragShader(fragShaderSource)
-        return compileProgram()
     }
 
     /**
@@ -50,40 +53,42 @@ class ShaderProgramCompiler {
      * @return fragment shader ID
      */
     private fun compileFragShader(shader: String): Int {
-        this.processHandler.printStdout("Compiling fragment shader...")
-        val fragShaderId = compileShader(GL_FRAGMENT_SHADER, shader)
-        this.fragShaderId = fragShaderId;
-        return fragShaderId
+        processHandler.printStdout("Compiling fragment shader...")
+        return compileShader(GL_FRAGMENT_SHADER, shader)
     }
 
     /**
-     * Compile program from vertex shader and fragment shader.
-     * @return program ID
+     * Links [vertexShaderId] and [fragShaderId] into a new program and returns its ID. On success, both shaders
+     * are detached again, so deleting them afterwards actually frees them. On failure, the program is deleted.
+     *
+     * @throws ShaderCompilerException if linking fails
      */
-    private fun compileProgram(): Int {
+    private fun compileProgram(vertexShaderId: Int, fragShaderId: Int): Int {
         LOG.debug("Compiling program:")
-        if (vertexShaderId == -1 || fragShaderId == -1) throw IllegalStateException("Missing shaders")
         val programId = glCreateProgram()
         glAttachShader(programId, vertexShaderId)
         glAttachShader(programId, fragShaderId)
         glLinkProgram(programId)
-        val infoLog = (glGetProgramInfoLog(programId))
+        val infoLog = glGetProgramInfoLog(programId)
         if (glGetProgrami(programId, GL_LINK_STATUS) == GL_FALSE) {
+            glDeleteProgram(programId)
             throw ShaderCompilerException(infoLog)
-        } else {
-            if(infoLog.trim().isNotEmpty()) {
-                this.processHandler.printStdout(infoLog);
-            }
         }
-        this.programId = programId;
+        // A linked program no longer needs its shaders, and a shader that's still attached isn't freed on delete.
+        glDetachShader(programId, vertexShaderId)
+        glDetachShader(programId, fragShaderId)
+        if (infoLog.trim().isNotEmpty()) {
+            processHandler.printStdout(infoLog)
+        }
         return programId
     }
 
     /**
-     * Compiles a shader.
+     * Compiles a shader. The shader object is deleted again if compilation fails.
      * @param shaderType the type of the shader ([GL_VERTEX_SHADER], [GL_FRAGMENT_SHADER])
      * @param shaderSource the source code of the shader
      * @return the ID of the compiled shader
+     * @throws ShaderCompilerException if compilation fails
      */
     private fun compileShader(shaderType: Int, shaderSource: String): Int {
         val shaderId = glCreateShader(shaderType)
@@ -93,12 +98,13 @@ class ShaderProgramCompiler {
 
         val infoLog = glGetShaderInfoLog(shaderId)
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
+            glDeleteShader(shaderId)
             throw ShaderCompilerException(infoLog)
         }
-        if(infoLog.trim().isNotEmpty()) {
-            processHandler.printStdout(infoLog);
+        if (infoLog.trim().isNotEmpty()) {
+            processHandler.printStdout(infoLog)
         }
-        processHandler.printStdout("$shaderTypeStr Shader compiled successfully");
+        processHandler.printStdout("$shaderTypeStr Shader compiled successfully")
         return shaderId
     }
 
@@ -106,7 +112,7 @@ class ShaderProgramCompiler {
      * Creates a vertex shader.
      * @return the ID of the created shader
      */
-    private fun createVShader(): Int {
+    private fun createVertexShader(): Int {
         processHandler.printStdout("Compiling vertex shader...")
         return compileShader(GL_VERTEX_SHADER, DEFAULT_VERTEX_SHADER_SOURCE)
     }

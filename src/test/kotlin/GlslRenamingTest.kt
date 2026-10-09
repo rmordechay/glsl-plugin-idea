@@ -91,13 +91,12 @@ class GlslRenamingTest : BasePlatformTestCase() {
         myFixture.checkResultByFile("RenamingIdentifierFile8Expected.html")
     }
 
-
+    // runs the full in-place rename chain (not just the processor as renameElementAtCaret does)
     private fun renameInPlace(newName: String) {
         val editorContext = DataManager.getInstance().getDataContext(myFixture.editor.contentComponent)
 
         val context = AnActionEvent.getInjectedDataContext(editorContext)
-        val element =
-            PsiElementRenameHandler.getElement(context) as? PsiNamedElement ?: error("no element to rename at caret")
+        val element = PsiElementRenameHandler.getElement(context) as? PsiNamedElement ?: error("no element to rename at caret")
         val oldName = Regex("\\b" + Regex.escape(element.name ?: error("element has no name")) + "\\b")
 
         val editor = CommonDataKeys.EDITOR.getData(context) ?: myFixture.editor

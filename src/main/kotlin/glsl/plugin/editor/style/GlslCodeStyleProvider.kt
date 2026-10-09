@@ -3,6 +3,7 @@ package glsl.plugin.editor.style
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.CodeStyleAbstractPanel
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
+import com.intellij.lang.Language
 import com.intellij.psi.codeStyle.CodeStyleConfigurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
@@ -13,6 +14,8 @@ import glsl.plugin.language.GlslLanguage
  *
  */
 class GlslCodeStyleProvider : CodeStyleSettingsProvider() {
+
+    override fun getLanguage(): Language = GlslLanguage.INSTANCE
 
     /**
     *

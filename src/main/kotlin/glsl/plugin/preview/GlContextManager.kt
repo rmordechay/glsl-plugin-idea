@@ -50,7 +50,7 @@ class GlContextManager(private val project: Project) : Disposable {
 
 
     private var pendingCompile: CompileRun? = null
-    private var currentRunning: GLProcessHandler? = null
+    private var currentRun: CompileRun? = null
     private var pendingStop: Boolean = false //true if the panel should stop rendering in the next frame.
 
     /** Queueable compile task */
@@ -85,10 +85,13 @@ class GlContextManager(private val project: Project) : Disposable {
             }
 
             /**
-             * Removing the canvas from the UI (e.g. closing its tool window) makes [AWTGLCanvas] destroy its GL
-             * context, and every program and buffer in it with it. Forget their IDs, so they are never used
-             * against a different context - if the canvas is shown again, it gets a new context and runs
-             * [initGL] again.
+             * Removing the canvas from the UI (e.g. closing, floating or docking its tool window) makes
+             * [AWTGLCanvas] destroy its GL context, and every program and buffer in it with it. Forget their IDs,
+             * so they are never used against a different context - if the canvas is shown again, it gets a new
+             * context and runs [initGL] again.
+             *
+             * If a shader is still running, it's queued to be compiled again, so it comes back as soon as the
+             * canvas is shown again instead of leaving a black preview behind.
              */
             override fun removeNotify() {
                 super.removeNotify()
@@ -96,6 +99,12 @@ class GlContextManager(private val project: Project) : Disposable {
                 programId = 0
                 positionBuffer = 0
                 LOG.debug("AWTGLCanvas removeNotify: GL context and its resources are gone")
+
+                val run = currentRun
+                if (run != null && pendingCompile == null) {
+                    run.processHandler.printStdout("The preview lost its GL context (e.g. its window was moved), recompiling...")
+                    pendingCompile = run
+                }
             }
 
             override fun initGL() {
@@ -117,14 +126,22 @@ class GlContextManager(private val project: Project) : Disposable {
                     programId = 0
                     clearCanvas()
                     pendingStop = false
-                    currentRunning = null
+                    currentRun = null
+                    // A run that ended before its (re)compile came around must not be compiled anymore.
+                    if (pendingCompile?.processHandler?.isProcessTerminated == true) {
+                        pendingCompile = null
+                    }
                     return
                 }
-                if (pendingCompile != null) {
-                    pendingCompile!!.processHandler.addProcessListener(processTerminatedListener)
-                    compile(pendingCompile!!)
-                    currentRunning = pendingCompile!!.processHandler
+                val compileRun = pendingCompile
+                if (compileRun != null) {
                     pendingCompile = null
+                    // A run that's re-queued after losing the GL context (see removeNotify) already has the listener.
+                    if (compileRun !== currentRun) {
+                        compileRun.processHandler.addProcessListener(processTerminatedListener)
+                    }
+                    compile(compileRun)
+                    currentRun = compileRun
                 }
                 if (programId != 0) {
                     this@GlContextManager.render()
@@ -173,15 +190,16 @@ class GlContextManager(private val project: Project) : Disposable {
      * The request will be handled with the next render cycle.
      */
     fun queueCompile(runOptions: FragShaderRunOptions, processHandler: GLProcessHandler) {
-        if (this.currentRunning != null) {
+        val running = currentRun
+        if (running != null) {
             JBPopupFactory.getInstance().createConfirmation(
                 "Cancel current shader program?",
                 "Yes", "No",
                 {
-                    this.currentRunning!!.printStdout("Stopping current shader program... (Triggered by user)")
-                    this.currentRunning!!.terminate(200)
-                    this.currentRunning = null
-                    this.pendingCompile = CompileRun(runOptions, processHandler)
+                    running.processHandler.printStdout("Stopping current shader program... (Triggered by user)")
+                    running.processHandler.terminate(200)
+                    currentRun = null
+                    pendingCompile = CompileRun(runOptions, processHandler)
                 },
                 {
                     processHandler.terminate(200)

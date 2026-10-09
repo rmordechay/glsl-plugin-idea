@@ -11,7 +11,11 @@ class FragShaderRunOptionsTest : BasePlatformTestCase() {
 
     fun testUniformMappingsDefaultToEmptyWhenUnset() {
         val options = FragShaderRunOptions()
-        assertEquals(emptyMap<UniformType, String>(), options.getUniformMappings())
+        assertEquals(
+            "expected no uniform mappings on a fresh FragShaderRunOptions",
+            emptyMap<UniformType, String>(),
+            options.getUniformMappings()
+        )
     }
 
     fun testUniformMappingsRoundTripThroughSetUniformMappings() {
@@ -20,7 +24,7 @@ class FragShaderRunOptionsTest : BasePlatformTestCase() {
 
         options.setUniformMappings(mappings)
 
-        assertEquals(mappings, options.getUniformMappings())
+        assertEquals("expected the uniform mappings to round-trip unchanged", mappings, options.getUniformMappings())
     }
 
     fun testSetUniformNameAddsANewEntryWithoutDisturbingOthers() {
@@ -30,6 +34,7 @@ class FragShaderRunOptionsTest : BasePlatformTestCase() {
         options.setUniformName(UniformType.MOUSE, "uMyMouse")
 
         assertEquals(
+            "expected the new uniform mapping to be added alongside the existing one",
             mapOf(UniformType.TIME to "uMyTime", UniformType.MOUSE to "uMyMouse"),
             options.getUniformMappings()
         )
@@ -41,7 +46,11 @@ class FragShaderRunOptionsTest : BasePlatformTestCase() {
 
         options.setUniformName(UniformType.TIME, "uNew")
 
-        assertEquals(mapOf(UniformType.TIME to "uNew"), options.getUniformMappings())
+        assertEquals(
+            "expected the existing uniform mapping to be overwritten",
+            mapOf(UniformType.TIME to "uNew"),
+            options.getUniformMappings()
+        )
     }
 
     fun testGetFragDocumentReturnsDocumentForConfiguredFile() {
@@ -51,7 +60,7 @@ class FragShaderRunOptionsTest : BasePlatformTestCase() {
 
         val document = options.getFragDocument()
 
-        assertEquals("void main() {}", document.text)
+        assertEquals("expected the document to contain the configured fragment file's text", "void main() {}", document.text)
     }
 
     fun testGetFragDocumentThrowsWhenFileCannotBeFound() {
@@ -62,6 +71,10 @@ class FragShaderRunOptionsTest : BasePlatformTestCase() {
             options.getFragDocument()
         }
         // Sanity check that the "not found" sentinel is a distinct value from a real path.
-        assertNotSame(EMPTY_FILE_INPUT, options.fragmentFile)
+        assertNotSame(
+            "expected the fragment file to differ from the \"not found\" sentinel",
+            EMPTY_FILE_INPUT,
+            options.fragmentFile
+        )
     }
 }

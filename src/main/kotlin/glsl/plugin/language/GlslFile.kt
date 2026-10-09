@@ -20,7 +20,7 @@ class GlslFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, GlslL
     /**
     *
     */
-    override fun getFileType(): FileType = GlslFileType()
+    override fun getFileType(): FileType = GlslFileType
 }
 
 /**
@@ -33,7 +33,7 @@ object GlslIcon {
 /**
  *
  */
-class GlslFileType : LanguageFileType(GlslLanguage.INSTANCE) {
+object GlslFileType : LanguageFileType(GlslLanguage.INSTANCE) {
 
     /**
     *

@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import glsl.plugin.psi.GlslIdentifier
 import glsl.plugin.utils.GlslUtils
-import glsl.plugin.utils.GlslUtils.isShaderFile
 import javax.swing.Icon
 
 interface GlslNamedElement : PsiNameIdentifierOwner {
@@ -16,11 +15,7 @@ interface GlslNamedElement : PsiNameIdentifierOwner {
      *
      */
     override fun setName(newName: String): PsiElement {
-        if (!isShaderFile(this)) return this
-        val identifier = nameIdentifier
-        if (identifier is GlslIdentifier) {
-            return identifier.replaceElementName(newName) ?: this
-        }
+        (nameIdentifier as? GlslIdentifier)?.replaceElementName(newName)
         return this
     }
 

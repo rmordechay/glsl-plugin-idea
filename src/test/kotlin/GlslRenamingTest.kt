@@ -1,3 +1,17 @@
+import com.intellij.codeInsight.template.impl.TemplateManagerImpl
+import com.intellij.ide.DataManager
+import com.intellij.injected.editor.EditorWindow
+import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.util.Disposer
+import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.refactoring.rename.PsiElementRenameHandler
+import com.intellij.refactoring.rename.RenameProcessor
+import com.intellij.refactoring.rename.inplace.MemberInplaceRenameHandler
+import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class GlslRenamingTest : BasePlatformTestCase() {
@@ -57,5 +71,64 @@ class GlslRenamingTest : BasePlatformTestCase() {
         myFixture.configureByFile("RenamingIdentifierFile9.glsl")
         myFixture.renameElementAtCaret("func_updated")
         myFixture.checkResultByFile("RenamingIdentifierFile9Expected.glsl")
+    }
+    // tests the full in-place rename chain in a GLSL file
+    fun testInplaceRenamingIdentifier() {
+        myFixture.configureByFile("RenamingIdentifierFile7.glsl")
+        renameInPlace("func_updated")
+        myFixture.checkResultByFile("RenamingIdentifierFile7Expected.glsl")
+    }
+
+    // in-place rename of GLSL injected in an HTML script (also verifies that other languages stay unchange)
+    fun testInplaceRenamingIdentifierInInjectedHtml() {
+        myFixture.configureByFile("RenamingIdentifierFile8.html")
+        renameInPlace("func_updated")
+        myFixture.checkResultByFile("RenamingIdentifierFile8Expected.html")
+    }
+
+    // renames GLSL injected in HTML even when the refactoring scope excludes the host file, as for library sources
+    fun testRenamingIdentifierInInjectedHtmlOutsideProjectScope() {
+        myFixture.configureByFile("RenamingIdentifierFile8.html")
+        RenameProcessor(project, myFixture.elementAtCaret, "func_updated", GlobalSearchScope.EMPTY_SCOPE, false, false).run()
+        myFixture.checkResultByFile("RenamingIdentifierFile8Expected.html")
+    }
+
+    // runs the full in-place rename chain (not just the processor as renameElementAtCaret does)
+    private fun renameInPlace(newName: String) {
+        val editorContext = DataManager.getInstance().getDataContext(myFixture.editor.contentComponent)
+
+        val context = AnActionEvent.getInjectedDataContext(editorContext)
+        val element = PsiElementRenameHandler.getElement(context) as? PsiNamedElement ?: error("no element to rename at caret")
+        val oldName = Regex("\\b" + Regex.escape(element.name ?: error("element has no name")) + "\\b")
+
+        val editor = CommonDataKeys.EDITOR.getData(context) ?: myFixture.editor
+        val topLevelEditor = (editor as? EditorWindow)?.delegate ?: editor
+        val fragmentRange = InjectedLanguageManager.getInstance(project).injectedToHost(element, element.containingFile.textRange)
+        val fragmentMarker = topLevelEditor.document.createRangeMarker(fragmentRange)
+        val templateTesting = Disposer.newDisposable()
+
+        try {
+            TemplateManagerImpl.setTemplateTesting(templateTesting)
+            MemberInplaceRenameHandler().doRename(element, editor, context)
+
+            val range = TemplateManagerImpl.getTemplateState(topLevelEditor)?.currentVariableRange
+                ?: error("in-place rename did not start")
+
+            WriteCommandAction.writeCommandAction(project).run<RuntimeException> {
+                topLevelEditor.document.replaceString(range.startOffset, range.endOffset, newName)
+            }
+
+            val state = TemplateManagerImpl.getTemplateState(topLevelEditor) ?: error("template vanished after typing")
+            state.gotoEnd(false)
+            // the refactoring runs after the template finishes, on a non-blocking read action; the document shows the result
+            PlatformTestUtil.waitWithEventsDispatching(
+                "rename did not complete",
+                { !oldName.containsMatchIn(topLevelEditor.document.getText(fragmentMarker.textRange)) },
+                10
+            )
+        } finally {
+            fragmentMarker.dispose()
+            Disposer.dispose(templateTesting)
+        }
     }
 }

@@ -21,7 +21,6 @@ import com.intellij.psi.tree.TokenSet
 import com.intellij.testFramework.LightVirtualFileBase
 import com.intellij.util.asSafely
 import glsl.GlslTypes.BUILTIN_TYPE_SCALAR
-import glsl.data.ShaderType
 import glsl.plugin.psi.named.GlslNamedType
 import glsl.plugin.psi.named.types.builtins.GlslBuiltinRest
 import glsl.plugin.psi.named.types.builtins.GlslMatrix
@@ -243,15 +242,6 @@ object GlslUtils {
     @JvmStatic
     fun removeArgsFromFuncText(funcText: String): String {
         return funcText.replace("\\(.*\\)".toRegex(), "")
-    }
-
-    /**
-     *
-     */
-    @JvmStatic
-    fun isShaderFile(element: PsiElement): Boolean {
-        val extension = element.containingFile.virtualFile.extension
-        return enumValues<ShaderType>().any { extension?.lowercase() == it.name.lowercase() }
     }
 
     /**

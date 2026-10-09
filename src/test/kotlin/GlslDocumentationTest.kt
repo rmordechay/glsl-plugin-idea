@@ -1,5 +1,5 @@
 
-import com.intellij.codeInsight.documentation.DocumentationManager
+import com.intellij.lang.LanguageDocumentation
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.psi.interfaces.GlslFunctionCall
 import glsl.psi.interfaces.GlslSingleDeclaration
@@ -17,13 +17,14 @@ class GlslDocumentationTest : BasePlatformTestCase() {
         val originalElement = myFixture.elementAtCaret as GlslSingleDeclaration
         val glslPostfixExpr = originalElement.exprNoAssignmentList.first() as GlslUnaryExpr
         val variableIdentifier = (glslPostfixExpr.postfixExpr as GlslFunctionCall).variableIdentifier
-        val element = DocumentationManager
-            .getInstance(project)
-            .findTargetElement(myFixture.editor, variableIdentifier?.containingFile, variableIdentifier)
-        val documentationProvider = DocumentationManager.getProviderFromElement(element)
+        val file = variableIdentifier?.containingFile
+        val documentationProvider = LanguageDocumentation.INSTANCE.forLanguage(file!!.language)
+        val element = documentationProvider.getCustomDocumentationElement(
+            myFixture.editor, file, variableIdentifier, variableIdentifier.textOffset
+        ) ?: variableIdentifier
         val doc = documentationProvider.generateDoc(element, originalElement)
-        assertNotNull(doc)
-        assertTrue(doc!!.contains("<div id=\"abs\">"))
+        assertNotNull("expected documentation to be generated for abs()", doc)
+        assertTrue("expected the generated documentation to contain the abs() section", doc!!.contains("<div id=\"abs\">"))
     }
 
 //    fun testDocumentationFile2() {

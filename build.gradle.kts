@@ -1,7 +1,6 @@
 import org.jetbrains.changelog.Changelog
-import org.jetbrains.grammarkit.tasks.GenerateLexerTask
+import org.jetbrains.intellij.platform.gradle.tasks.GenerateLexerTask
 
-import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
@@ -14,15 +13,15 @@ plugins {
     alias(libs.plugins.grammarKit)
 }
 
-val pluginVersion: String by project
-val platformVersion: String by project
-val sinceVersion: String by project
+val pluginVersion: String = providers.gradleProperty("pluginVersion").get()
+val platformVersion: String = providers.gradleProperty("platformVersion").get()
+val sinceVersion: String = providers.gradleProperty("sinceVersion").get()
 
 group = "glsl.plugin"
 version = pluginVersion
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
 
 repositories {
@@ -70,6 +69,17 @@ dependencies {
     implementation(libs.lwjgl3.awt) {
         isTransitive = false
     }
+
+    // GLFW is only used in tests, to create a headless GL context for ShaderProgramCompilerTest
+    // without needing a realized AWTGLCanvas (which the production code uses instead).
+    testImplementation(libs.lwjgl.glfw)
+
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-windows")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-windows-arm64")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-linux")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-linux-arm64")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-macos")
+    testRuntimeOnly("org.lwjgl:lwjgl-glfw::natives-macos-arm64")
 }
 
 configurations.configureEach {
@@ -77,6 +87,10 @@ configurations.configureEach {
         if (requested.group == "org.lwjgl") {
             useVersion(libs.versions.lwjgl.get())
             because("All LWJGL artifacts must be compatible with lwjgl3-awt")
+        }
+        if (requested.group == "org.jetbrains.kotlin" && requested.name == "kotlin-stdlib") {
+            useVersion(libs.versions.kotlin.get())
+            because("kotlin-stdlib must match the Kotlin compiler/IDE platform version, not the older version pulled in transitively by kotlinx-serialization-json")
         }
     }
 }
@@ -87,7 +101,7 @@ intellijPlatform {
         description = file("plugin-info/description.html").readText()
         changeNotes = changelog.renderItem(changelog.get(pluginVersion), Changelog.OutputType.HTML)
         ideaVersion {
-            sinceBuild = "223"
+            sinceBuild = sinceVersion
         }
     }
     publishing {
@@ -95,9 +109,7 @@ intellijPlatform {
     }
     pluginVerification {
         ides {
-            select {
-                types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
-            }
+            recommended()
         }
     }
 }
@@ -106,8 +118,8 @@ tasks {
     val buildSearchableOptionsEnabled =
         providers.gradleProperty("buildSearchableOptionsEnabled").map(String::toBoolean).orElse(false)
     compileJava {
-        sourceCompatibility = JavaVersion.VERSION_21.majorVersion
-        targetCompatibility = JavaVersion.VERSION_21.majorVersion
+        sourceCompatibility = JavaVersion.VERSION_25.majorVersion
+        targetCompatibility = JavaVersion.VERSION_25.majorVersion
     }
 
     runIde {
@@ -174,33 +186,19 @@ run {
             dependsOn("generateGrammarClean")
         }
 
-        runIde { //diables kubenetes because its trash and dumps our logs with bullshit
+        runIde {
             maxHeapSize = "6g"
+        }
 
-            doFirst {
-                val disabledIds = listOf(
-                    "com.intellij.kubernetes",
-                )
+        prepareSandbox {
+            // Kubernetes is trash and dumps our logs with bullshit.
+            disabledPlugins.add("com.intellij.kubernetes")
+        }
 
-                val sandboxRoot = layout.buildDirectory.dir("idea-sandbox").get().asFile
-
-                val candidateConfigDirs = sandboxRoot
-                    .listFiles()
-                    ?.filter { it.isDirectory }
-                    ?.map { it.resolve("config") }
-                    ?.filter { it.isDirectory }
-                    .orEmpty()
-
-                val configDir = when {
-                    candidateConfigDirs.size == 1 -> candidateConfigDirs.single()
-                    candidateConfigDirs.isNotEmpty() -> candidateConfigDirs.maxBy { it.lastModified() } // latest
-                    else -> sandboxRoot.resolve("config") // fallback for older layouts
-                }
-
-                configDir.mkdirs()
-                configDir.resolve("disabled_plugins.txt")
-                    .writeText(disabledIds.joinToString(System.lineSeparator()))
-            }
+        prepareTestSandbox {
+            // Vue's LSP service crashes on init in the headless test sandbox and spams
+            // unrelated tests with noise; the plugin doesn't need it.
+            disabledPlugins.add("org.jetbrains.plugins.vue")
         }
     }
 }

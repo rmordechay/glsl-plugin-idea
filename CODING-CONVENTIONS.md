@@ -69,7 +69,8 @@ what it does:
 
 ### Acronyms and abbreviations
 
-- Camel-case acronyms like ordinary words: `resolveMcShaderPackRoot`, `GlContext`, not `resolveMCShaderPackRoot`.
+- Camel-case acronyms like ordinary words: `GlProcessHandler`, `GlContext`, not `GLProcessHandler`. The exception is
+  `MC`, which is always written in capitals (see the [glossary](#glossary)).
 - Don't abbreviate, except for the terms in the [glossary](#glossary). Write `fragmentShader`, `vertexShader`,
   `function`, `declaration`, `attribute` and `string`, not `fragShader`, `vShader`, `func`, `decl`, `attr` or `str`.
   Single-letter or short local variables in small scopes (`i`, `it`, `vf`) are fine.
@@ -101,7 +102,7 @@ glossary. Only domain acronyms may be added.
 | `Gl`     | OpenGL                                                                                               |
 | `Psi`    | Program Structure Interface: the IntelliJ Platform's syntax-tree API                                 |
 | `Ast`    | Abstract syntax tree: the lower-level node tree the PSI is built on                                  |
-| `Mc`     | Minecraft (shader packs, OptiFine/Iris/Sodium includes)                                              |
+| `MC`     | Minecraft (shader packs, OptiFine/Iris/Sodium includes). Always written as `MC`, not `Mc`            |
 
 ## Documentation
 

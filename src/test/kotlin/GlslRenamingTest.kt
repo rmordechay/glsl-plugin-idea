@@ -72,19 +72,21 @@ class GlslRenamingTest : BasePlatformTestCase() {
         myFixture.renameElementAtCaret("func_updated")
         myFixture.checkResultByFile("RenamingIdentifierFile9Expected.glsl")
     }
-
+    // tests the full in-place rename chain in a GLSL file
     fun testInplaceRenamingIdentifier() {
         myFixture.configureByFile("RenamingIdentifierFile7.glsl")
         renameInPlace("func_updated")
         myFixture.checkResultByFile("RenamingIdentifierFile7Expected.glsl")
     }
 
+    // in-place rename of GLSL injected in an HTML script (also verifies that other languages stay unchange)
     fun testInplaceRenamingIdentifierInInjectedHtml() {
         myFixture.configureByFile("RenamingIdentifierFile8.html")
         renameInPlace("func_updated")
         myFixture.checkResultByFile("RenamingIdentifierFile8Expected.html")
     }
 
+    // renames GLSL injected in HTML even when the refactoring scope excludes the host file, as for library sources
     fun testRenamingIdentifierInInjectedHtmlOutsideProjectScope() {
         myFixture.configureByFile("RenamingIdentifierFile8.html")
         RenameProcessor(project, myFixture.elementAtCaret, "func_updated", GlobalSearchScope.EMPTY_SCOPE, false, false).run()

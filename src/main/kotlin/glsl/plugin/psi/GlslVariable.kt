@@ -9,7 +9,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import glsl.plugin.language.GlslFile
 import glsl.plugin.language.GlslFileType
 import glsl.plugin.reference.GlslVariableReference
-import glsl.plugin.utils.GlslUtils
 
 /**
  *
@@ -40,11 +39,10 @@ abstract class GlslVariable(node: ASTNode) : ASTWrapperPsiElement(node), GlslIde
     *
     */
     override fun replaceElementName(newName: String?): GlslIdentifier? {
-        if (!GlslUtils.isShaderFile(this)) return this
         if (newName == null ) return this
         val dummyDeclaration = "void $newName;"
         val dummyElement = (PsiFileFactory.getInstance(project)
-            .createFileFromText("dummy.glsl", GlslFileType(), dummyDeclaration) as GlslFile)
+            .createFileFromText("dummy.glsl", GlslFileType, dummyDeclaration) as GlslFile)
             .firstChild
         val newIdentifierNode = PsiTreeUtil.findChildOfType(dummyElement, GlslVariable::class.java) ?: return this
         return replace(newIdentifierNode) as? GlslIdentifier

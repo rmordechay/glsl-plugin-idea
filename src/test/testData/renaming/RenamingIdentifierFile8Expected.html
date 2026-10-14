@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        #projection { width: 100%; }
+        .projection { --projection: 1; }
+    </style>
 </head>
 <body>
 
@@ -21,7 +25,7 @@
 
     uniform mat4 model;
     uniform mat4 view;
-    uniform mat4 projection;
+    uniform mat4 func_updated;
 
 
     /**
@@ -33,9 +37,36 @@
     }
 
     void main() {
-        gl_Position = projection * view * model * vec4(abs(aPos), 1.0f);
+        gl_Position = func_updated * view * model * vec4(abs(aPos), 1.0f);
         TexCoord = vec2(aTexCoord.x, aTexCoord.y);
     }
+</script>
+
+<canvas id="projection" class="projection" onclick="toggle(projection)"></canvas>
+<p>projection</p>
+
+<script>
+    var projection = createMatrix();
+    function toggle(target) { return projection === target; }
+</script>
+
+<script type="module">
+    import { projection } from "./camera.js";
+    export const view = projection;
+</script>
+
+<script type="application/json">
+    { "projection": "perspective" }
+</script>
+
+<script type="text/yaml">
+    camera:
+      projection: perspective
+</script>
+
+<script type="text/x-markdown">
+# projection
+The projection matrix maps view space to clip space.
 </script>
 </body>
 </html>

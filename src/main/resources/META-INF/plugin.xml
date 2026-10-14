@@ -9,6 +9,7 @@
         <!--  File  -->
         <fileType                       name="Glsl File"
                                         implementationClass="glsl.plugin.language.GlslFileType"
+                                        fieldName="INSTANCE"
                                         language="Glsl"
                                         extensions="glsl;vert;vsh;tesc;tese;geom;gsh;frag;fsh;comp;"/>
         <!--  Language  -->
@@ -42,6 +43,8 @@
 
         <lang.refactoringSupport        language="Glsl"
                                         implementationClass="glsl.plugin.reference.GlslRefactoring"/>
+
+        <renamePsiElementProcessor      implementation="glsl.plugin.reference.GlslRenameProcessor"/>
 
         <lang.documentationProvider     language="Glsl"
                                         implementationClass="glsl.plugin.editor.GlslDocumentationProvider"/>

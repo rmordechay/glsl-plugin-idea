@@ -15,6 +15,10 @@ import glsl.plugin.language.GlslLanguage
  */
 class GlslCodeStyleProvider : CodeStyleSettingsProvider() {
 
+    /**
+     * Ties the settings page to the GLSL language, which the platform uses to derive the page's ID. Without it,
+     * the platform falls back to deriving the ID from the display name and reports a PluginException.
+     */
     override fun getLanguage(): Language = GlslLanguage.INSTANCE
 
     /**

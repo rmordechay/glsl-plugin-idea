@@ -3,11 +3,10 @@ package glsl.plugin.preview.run.settings
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.intellij.execution.configurations.LocatableRunConfigurationOptions
-import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFileManager
-import java.util.Objects
 
 /** Set only if document for fragment shader source could not be found and you want to mark this as an error */
 const val EMPTY_FILE_INPUT = "EMPTY"
@@ -17,7 +16,7 @@ const val EMPTY_FILE_INPUT = "EMPTY"
  */
 class FragShaderRunOptions() : LocatableRunConfigurationOptions() {
     var fragmentFile: String? by string()
-    var vertexFile: String? by string()//todo not yet implemnented
+    var vertexFile: String? by string() //todo not yet implemented
     var uniformMappingsRaw: String? by string()
 
     /**
@@ -38,23 +37,26 @@ class FragShaderRunOptions() : LocatableRunConfigurationOptions() {
      * @param name String
      */
     fun setUniformName(uniform: UniformType, name: String) {
-        val newMap = HashMap(getUniformMappings());
+        val newMap = HashMap(getUniformMappings())
         newMap[uniform] = name
         uniformMappingsRaw =
             jacksonObjectMapper().writeValueAsString(newMap) //I know this is inefficient AF but JetBrains generates this class anyway every 2 seconds new for some reason
     }
 
     /**
-     * Get fragment shader source document
+     * Returns the document of the configured [fragmentFile], i.e. the fragment shader source the preview compiles.
+     * The document reflects unsaved editor changes. Runs in a read action, so it can be called from any thread.
+     *
+     * @throws IllegalStateException if no fragment file is configured, or it (or its document) can't be found -
+     * e.g. because the file was deleted after the run configuration was created.
      */
     fun getFragDocument(): Document {
-        return ReadAction.compute<Document, Throwable> {
-            Objects.requireNonNull(fragmentFile)
-            val fragFile = Objects.requireNonNull(
-                VirtualFileManager.getInstance().findFileByUrl(fragmentFile!!),
-                "Could not find file for $fragmentFile"
-            )!!
-            return@compute Objects.requireNonNull(FileDocumentManager.getInstance().getDocument(fragFile),"Could not find document for $fragmentFile")!!;
+        return runReadActionBlocking {
+            val url = checkNotNull(fragmentFile) { "No fragment shader file configured" }
+            val file = checkNotNull(VirtualFileManager.getInstance().findFileByUrl(url)) { "Could not find file for $url" }
+            return@runReadActionBlocking checkNotNull(FileDocumentManager.getInstance().getDocument(file)) {
+                "Could not find document for $url"
+            }
         }
     }
 

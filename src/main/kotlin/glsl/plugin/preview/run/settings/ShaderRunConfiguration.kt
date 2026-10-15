@@ -54,7 +54,7 @@ class ShaderRunConfiguration(
     override fun checkSettingsBeforeRun() {
         try {
             options.getFragDocument()
-        } catch (e: NullPointerException) {
+        } catch (_: IllegalStateException) {
             options.fragmentFile = EMPTY_FILE_INPUT
             throw RuntimeConfigurationError("Fragment file could not be found.")
         }
@@ -63,7 +63,7 @@ class ShaderRunConfiguration(
     override fun checkConfiguration() {
         try {
             options.getFragDocument()
-        } catch (e: NullPointerException) {
+        } catch (_: IllegalStateException) {
             options.fragmentFile = EMPTY_FILE_INPUT
             throw RuntimeConfigurationError("Fragment file could not be found.")
         }

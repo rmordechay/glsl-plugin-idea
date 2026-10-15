@@ -6,7 +6,9 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.getOpenedProjects
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.ui.components.JBLabel
@@ -16,11 +18,11 @@ import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.IconUtil
 import com.intellij.util.ui.FormBuilder
+import com.intellij.util.ui.JBUI
 import glsl.plugin.preview.SUPPORTED_SHADER_FILE_ENDINGS
 import glsl.plugin.utils.idea.FileListCellRenderer
 import java.awt.GridBagConstraints
 import java.util.*
-import javax.swing.JComboBox
 import javax.swing.JComponent
 
 /**
@@ -28,12 +30,12 @@ import javax.swing.JComponent
  */
 class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
 
-    val fileListbox = JComboBox(getOpenShaderFiles().toTypedArray()).apply {
+    val fileListbox = ComboBox(getOpenShaderFiles().toTypedArray()).apply {
         renderer = FileListCellRenderer
     }
 
     var uniforms: Map<UniformType, JBTextField> =
-        UniformType.entries.associateWith { type -> JBTextField(type.defaultName, 15) };
+        UniformType.entries.associateWith { type -> JBTextField(type.defaultName, 15) }
 
     private val propertyGraph = PropertyGraph()
     val fragFileIsBroken = propertyGraph.property(false)
@@ -44,8 +46,8 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
      */
     override fun resetEditorFrom(configuration: ShaderRunConfiguration) {
         val fileManager: VirtualFileManager = VirtualFileManager.getInstance()
-        val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(configuration.project);
-        val currentFragFile = configuration.getFragmentFile();
+        val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(configuration.project)
+        val currentFragFile = configuration.getFragmentFile()
         if (currentFragFile != null) {
             if (currentFragFile == EMPTY_FILE_INPUT) {
                 fragFileIsBroken.set(true)
@@ -74,7 +76,7 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
      * Transfers ui state to run configuration
      */
     override fun applyEditorTo(configuration: ShaderRunConfiguration) {
-        var selectedFile = fileListbox.selectedItem as VirtualFile?
+        val selectedFile = fileListbox.selectedItem as VirtualFile?
         if (selectedFile != null) {
             fragFileIsBroken.set(false)
             configuration.setFragmentFile(selectedFile.url)
@@ -99,11 +101,11 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
                         toolTipText = "Can not find selected source file"
                     }
             }
-        };
+        }
 
         val formBuilder = FormBuilder.createFormBuilder()
             .addSeparator()
-            .addLabeledComponent("Fragment Shader File:", listboxRow)
+            .addLabeledComponent("Fragment shader file:", listboxRow)
             .addSeparator()
             .addComponent(JBLabel("Uniforms:"))
 
@@ -118,19 +120,19 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
         val uniformGrid = JBPanel<JBPanel<*>>(uniformSectionLayout)
         uniforms.forEach { (uniform, inputComponent) ->
             val label = JBLabel(uniform.label)
-            val tooltip = HelpTooltip();
-            tooltip.description = uniform.tooltip;
-            tooltip.installOn(label);
+            val tooltip = HelpTooltip()
+            tooltip.setDescription(HtmlChunk.text(uniform.tooltip))
+            tooltip.installOn(label)
 
             label.labelFor = inputComponent
 
             constraints.weightx = 0.0
-            constraints.insets = java.awt.Insets(0, 0, 0, 0)
+            constraints.insets = JBUI.emptyInsets()
             uniformGrid.add(label, constraints)
 
             constraints.gridx++
             constraints.weightx = 1.0
-            constraints.insets = java.awt.Insets(0, 30, 0, 30)
+            constraints.insets = JBUI.insets(0, 30)
             uniformGrid.add(inputComponent, constraints)
 
             constraints.gridx++
@@ -146,10 +148,10 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
     private fun getOpenShaderFiles(): List<VirtualFile> {
         val availableFiles: MutableList<VirtualFile> = ArrayList()
         getOpenedProjects().forEach { project ->
-            val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(project);
+            val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(project)
             val openFiles: Set<VirtualFile> = fileEditorManager.openFiles.toSet()
             availableFiles += openFiles.filter { file -> file.extension in SUPPORTED_SHADER_FILE_ENDINGS }
         }
-        return availableFiles;
+        return availableFiles
     }
 }

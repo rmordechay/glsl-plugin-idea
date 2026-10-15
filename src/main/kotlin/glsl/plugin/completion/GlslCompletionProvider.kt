@@ -9,9 +9,9 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.prevLeaf
-import com.intellij.refactoring.suggested.endOffset
-import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.startOffset
 import com.intellij.util.ProcessingContext
 import glsl.GlslTypes
 import glsl.data.GlslDefinitions

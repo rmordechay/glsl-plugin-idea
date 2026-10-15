@@ -67,8 +67,14 @@ class FragShaderRunOptionsTest : BasePlatformTestCase() {
         val options = FragShaderRunOptions()
         options.fragmentFile = "file://this/file/does/not/exist.frag"
 
-        assertThrows(NullPointerException::class.java) {
+        try {
             options.getFragDocument()
+            fail("expected an IllegalStateException for a fragment file that doesn't exist")
+        } catch (e: IllegalStateException) {
+            assertTrue(
+                "expected the error to name the missing file, got: ${e.message}",
+                e.message.orEmpty().contains("file://this/file/does/not/exist.frag")
+            )
         }
         // Sanity check that the "not found" sentinel is a distinct value from a real path.
         assertNotSame(

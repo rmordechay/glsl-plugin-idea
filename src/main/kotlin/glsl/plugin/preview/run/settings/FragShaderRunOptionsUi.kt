@@ -5,7 +5,7 @@ import com.intellij.ide.HelpTooltip
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.options.SettingsEditor
-import com.intellij.openapi.project.getOpenedProjects
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.text.HtmlChunk
@@ -26,9 +26,10 @@ import java.util.*
 import javax.swing.JComponent
 
 /**
- * View controller for the run configuration dialog
+ * View controller for the run configuration dialog of a shader run configuration in [project]. Only shader files
+ * open in [project] are offered as fragment shader.
  */
-class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
+class ShaderSettingsEditor(private val project: Project) : SettingsEditor<ShaderRunConfiguration>() {
 
     val fileListbox = ComboBox(getOpenShaderFiles().toTypedArray()).apply {
         renderer = FileListCellRenderer
@@ -146,12 +147,8 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
     }
 
     private fun getOpenShaderFiles(): List<VirtualFile> {
-        val availableFiles: MutableList<VirtualFile> = ArrayList()
-        getOpenedProjects().forEach { project ->
-            val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(project)
-            val openFiles: Set<VirtualFile> = fileEditorManager.openFiles.toSet()
-            availableFiles += openFiles.filter { file -> file.extension in SUPPORTED_SHADER_FILE_ENDINGS }
-        }
-        return availableFiles
+        return FileEditorManager.getInstance(project).openFiles
+            .distinct()
+            .filter { file -> file.extension in SUPPORTED_SHADER_FILE_ENDINGS }
     }
 }

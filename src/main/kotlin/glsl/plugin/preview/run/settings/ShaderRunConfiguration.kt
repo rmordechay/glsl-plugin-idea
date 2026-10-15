@@ -28,7 +28,7 @@ class ShaderRunConfiguration(
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
-        return ShaderSettingsEditor()
+        return ShaderSettingsEditor(project)
     }
 
     fun setFragmentFile(path: String) {

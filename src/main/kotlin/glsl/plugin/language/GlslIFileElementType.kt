@@ -9,9 +9,13 @@ import com.intellij.util.asSafely
 import glsl.plugin.utils.GlslUtils.getRealVirtualFile
 
 /**
+ * The element type of a GLSL file's root node; parses a file's contents with the macro-aware [GlslLexer].
  *
+ * This must stay a single instance: every [com.intellij.psi.tree.IElementType] that is constructed is registered
+ * in a global, never-shrinking registry of at most [Short.MAX_VALUE] entries. Creating one per file or per parse
+ * eventually fills it up, after which the IDE can't parse anything anymore.
  */
-class GlslIFileElementType : IFileElementType(GlslLanguage.INSTANCE) {
+object GlslIFileElementType : IFileElementType(GlslLanguage.INSTANCE) {
     override fun doParseContents(chameleon: ASTNode, psi: PsiElement): ASTNode? {
         val project = psi.project
         val parserDefinition = GlslParserDefinition()

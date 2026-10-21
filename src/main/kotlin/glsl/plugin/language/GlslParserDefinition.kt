@@ -33,11 +33,8 @@ class GlslParserDefinition : ParserDefinition {
         return GlslParserAdapter()
     }
 
-    /**
-     *
-     */
     override fun getFileNodeType(): IFileElementType {
-        return GlslIFileElementType()
+        return GlslIFileElementType
     }
 
     /**

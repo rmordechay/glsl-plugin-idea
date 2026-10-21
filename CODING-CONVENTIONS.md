@@ -160,6 +160,19 @@ straightforward override), delete it.
 - Use a primary constructor rather than a secondary constructor that only assigns fields.
 - Prefer `val` and immutable collections. Keep mutable state `private`.
 - Throw a specific exception type (see `utils/exceptions`) when callers are expected to handle the failure.
+- A multi-line lambda whose result is used **must** return it explicitly with a labelled return, so a reviewer
+  can see that the last line is a value and not a leftover statement:
+
+  ```kotlin
+  return runReadActionBlocking {
+      val file = checkNotNull(findFile(url)) { "Could not find file for $url" }
+      return@runReadActionBlocking checkNotNull(FileDocumentManager.getInstance().getDocument(file)) { "..." }
+  }
+  ```
+
+  Single-expression lambdas stay implicit: `files.map { it.name }`. A plain `return` inside a lambda passed to
+  an inline function (`runReadActionBlocking`, `map`, `forEach`, …) returns from the *enclosing function*, so
+  always use the label.
 
 ## Logging
 

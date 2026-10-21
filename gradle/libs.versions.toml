@@ -7,11 +7,10 @@ lwjgl3-awt = "0.2.3"
 
 # plugins
 changelog = "2.5.0"
-intelliJPlatform = "2.10.5"
-kotlin = "2.2.21"
+intelliJPlatform = "2.18.1"
+kotlin = "2.4.10"
 kover = "0.9.3"
 qodana = "2025.2.2"
-grammarKit = "2023.3.0.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -20,12 +19,13 @@ lwjgl-bom = { group = "org.lwjgl", name = "lwjgl-bom", version.ref = "lwjgl" }
 lwjgl = { group = "org.lwjgl", name = "lwjgl" }
 lwjgl-opengl = { group = "org.lwjgl", name = "lwjgl-opengl" }
 lwjgl-jawt = { group = "org.lwjgl", name = "lwjgl-jawt" }
+lwjgl-glfw = { group = "org.lwjgl", name = "lwjgl-glfw" }
 lwjgl3-awt = { group = "org.lwjglx", name = "lwjgl3-awt", version.ref = "lwjgl3-awt" }
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 intelliJPlatform = { id = "org.jetbrains.intellij.platform", version.ref = "intelliJPlatform" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-grammarKit = { id = "org.jetbrains.grammarkit", version.ref = "grammarKit" }
+grammarKit = { id = "org.jetbrains.intellij.platform.grammarkit", version.ref = "intelliJPlatform" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 qodana = { id = "org.jetbrains.qodana", version.ref = "qodana" }

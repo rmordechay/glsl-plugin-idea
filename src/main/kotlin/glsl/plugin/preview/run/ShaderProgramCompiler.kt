@@ -14,6 +14,13 @@ private const val DEFAULT_VERTEX_SHADER_SOURCE = """
 
 private val LOG = Logger.getInstance(ShaderProgramCompiler::class.java)
 
+/**
+ * The program ID meaning "no program". OpenGL never uses 0 for a real program: `glCreateProgram` returns it on
+ * failure, `glUseProgram(0)` unbinds, and `glDeleteProgram(0)` is silently ignored. Use it for "nothing compiled
+ * yet" instead of an arbitrary sentinel like -1, which OpenGL treats as an invalid ID.
+ */
+const val GL_PROGRAM_ID_UNSET = 0
+
 
 /**
  * Compiles shader programs for the shader preview, printing compiler output to [processHandler]'s console.

@@ -8,6 +8,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import glsl.plugin.preview.run.GL_PROGRAM_ID_UNSET
 import glsl.plugin.preview.run.GLProcessHandler
 import glsl.plugin.preview.run.ShaderProgramCompiler
 import glsl.plugin.preview.run.settings.FragShaderRunOptions
@@ -37,7 +38,7 @@ class GlContextManager(private val project: Project) : Disposable {
     // OpenGL resources. They all live in the canvas's GL context, and die with it.
     private var initialized = false
     private var startNs = 0L
-    private var programId: Int = 0 // 0: no program (OpenGL never uses 0 as a program ID)
+    private var programId: Int = GL_PROGRAM_ID_UNSET
 
     // uniforms (optional)
     private var uTimeLocation = -1
@@ -96,7 +97,7 @@ class GlContextManager(private val project: Project) : Disposable {
             override fun removeNotify() {
                 super.removeNotify()
                 initialized = false
-                programId = 0
+                programId = GL_PROGRAM_ID_UNSET
                 positionBuffer = 0
                 LOG.debug("AWTGLCanvas removeNotify: GL context and its resources are gone")
 
@@ -123,7 +124,7 @@ class GlContextManager(private val project: Project) : Disposable {
             override fun paintGL() {
                 if (pendingStop) {
                     glDeleteProgram(programId)
-                    programId = 0
+                    programId = GL_PROGRAM_ID_UNSET
                     clearCanvas()
                     pendingStop = false
                     currentRun = null
@@ -143,7 +144,7 @@ class GlContextManager(private val project: Project) : Disposable {
                     compile(compileRun)
                     currentRun = compileRun
                 }
-                if (programId != 0) {
+                if (programId != GL_PROGRAM_ID_UNSET) {
                     this@GlContextManager.render()
                 }
                 swapBuffers()//need to call that always because otherwise the canvas would not react to resize
@@ -218,9 +219,9 @@ class GlContextManager(private val project: Project) : Disposable {
             LOG.debug("Compiling shader program:")
             val shaderProgramCompiler = ShaderProgramCompiler(compileRun.processHandler)
             // The compiler hands ownership of the program to us, so the previous one is ours to delete.
-            if (programId != 0) {
+            if (programId != GL_PROGRAM_ID_UNSET) {
                 glDeleteProgram(programId)
-                programId = 0
+                programId = GL_PROGRAM_ID_UNSET
             }
             this.programId = shaderProgramCompiler.getProgramFromFrag(compileRun.settings.getFragDocument().text)
             setupRenderContext(compileRun.settings.getUniformMappings())
@@ -232,7 +233,7 @@ class GlContextManager(private val project: Project) : Disposable {
             } else {
                 throw e;
             }
-            this.programId = 0
+            this.programId = GL_PROGRAM_ID_UNSET
         }
     }
 
@@ -243,7 +244,7 @@ class GlContextManager(private val project: Project) : Disposable {
         if (!initialized) {
             throw IllegalStateException("GL not initialized")
         }
-        if (programId == 0) {
+        if (programId == GL_PROGRAM_ID_UNSET) {
             throw IllegalStateException("Program not compiled")
         }
         startNs = System.nanoTime()
@@ -273,10 +274,10 @@ class GlContextManager(private val project: Project) : Disposable {
         if (!initialized || !glCanvas.isDisplayable) return
 
         glCanvas.runInContext {
-            if (programId != 0) glDeleteProgram(programId)
+            if (programId != GL_PROGRAM_ID_UNSET) glDeleteProgram(programId)
             if (positionBuffer != 0) glDeleteBuffers(positionBuffer)
         }
-        programId = 0
+        programId = GL_PROGRAM_ID_UNSET
         positionBuffer = 0
         // The canvas itself (and its context) is disposed by AWTGLCanvas.removeNotify when it leaves the UI.
     }

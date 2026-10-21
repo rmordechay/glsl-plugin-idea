@@ -1,5 +1,6 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.plugin.preview.run.GLProcessHandler
+import glsl.plugin.preview.run.GL_PROGRAM_ID_UNSET
 import glsl.plugin.preview.run.ShaderProgramCompiler
 import glsl.plugin.utils.exceptions.ShaderCompilerException
 import org.lwjgl.glfw.GLFW.GLFW_FALSE
@@ -63,7 +64,7 @@ class ShaderProgramCompilerTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        assertTrue("expected a valid (non-zero) program id", programId != 0)
+        assertTrue("expected a valid (non-zero) program id", programId != GL_PROGRAM_ID_UNSET)
     }
 
     fun testInvalidFragmentShaderThrowsWithTheCompilerLog() {

@@ -1,5 +1,6 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import glsl.plugin.preview.run.GLProcessHandler
+import glsl.plugin.preview.run.GL_PROGRAM_ID_UNSET
 import glsl.plugin.preview.run.ShaderProgramCompiler
 import glsl.plugin.utils.exceptions.ShaderCompilerException
 import org.lwjgl.glfw.GLFW.GLFW_FALSE
@@ -11,6 +12,9 @@ import org.lwjgl.glfw.GLFW.glfwMakeContextCurrent
 import org.lwjgl.glfw.GLFW.glfwTerminate
 import org.lwjgl.glfw.GLFW.glfwWindowHint
 import org.lwjgl.opengl.GL
+import org.lwjgl.opengl.GL20.GL_ATTACHED_SHADERS
+import org.lwjgl.opengl.GL20.glDeleteProgram
+import org.lwjgl.opengl.GL20.glGetProgrami
 import org.lwjgl.opengl.GL20.glIsProgram
 import org.lwjgl.system.MemoryUtil.NULL
 
@@ -60,7 +64,7 @@ class ShaderProgramCompilerTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        assertTrue("expected a valid (non-zero) program id", programId != 0)
+        assertTrue("expected a valid (non-zero) program id", programId != GL_PROGRAM_ID_UNSET)
     }
 
     fun testInvalidFragmentShaderThrowsWithTheCompilerLog() {
@@ -82,5 +86,37 @@ class ShaderProgramCompilerTest : BasePlatformTestCase() {
         val secondProgramId = compiler.getProgramFromFrag("void main() { gl_FragColor = vec4(0.0); }")
 
         assertTrue("expected a valid program after recompiling", glIsProgram(secondProgramId))
+    }
+
+    fun testCompiledProgramKeepsNoShadersAttached() {
+        val compiler = ShaderProgramCompiler(GLProcessHandler())
+
+        val programId = compiler.getProgramFromFrag("void main() { gl_FragColor = vec4(1.0); }")
+
+        assertEquals(
+            "expected the vertex and fragment shaders to be detached (and deleted) once the program is linked",
+            0,
+            glGetProgrami(programId, GL_ATTACHED_SHADERS)
+        )
+    }
+
+    fun testCompilingAgainDoesNotDeleteAProgramTheCallerStillOwns() {
+        val compiler = ShaderProgramCompiler(GLProcessHandler())
+        val firstProgramId = compiler.getProgramFromFrag("void main() { gl_FragColor = vec4(1.0); }")
+
+        val secondProgramId = compiler.getProgramFromFrag("void main() { gl_FragColor = vec4(0.0); }")
+
+        // Drivers reuse the IDs of deleted objects, so if the first program was deleted, the second one may well
+        // have gotten its ID - which would make the first ID look valid.
+        assertFalse(
+            "expected the second program to get its own ID, not the (deleted) first program's",
+            secondProgramId == firstProgramId
+        )
+        assertTrue(
+            "expected the first program to stay valid until its owner deletes it",
+            glIsProgram(firstProgramId)
+        )
+        glDeleteProgram(firstProgramId)
+        glDeleteProgram(secondProgramId)
     }
 }

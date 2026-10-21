@@ -5,6 +5,8 @@ import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VfsUtilCore
+import com.intellij.openapi.vfs.VirtualFileManager
 import glsl.plugin.preview.run.FragmentShaderRunProfileState
 
 
@@ -28,19 +30,19 @@ class ShaderRunConfiguration(
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
-        return ShaderSettingsEditor()
+        return ShaderSettingsEditor(project)
     }
 
     fun setFragmentFile(path: String) {
-        options.fragmentFile = path;
+        options.fragmentFile = path
     }
 
     fun getFragmentFile(): String? {
-        return options.fragmentFile;
+        return options.fragmentFile
     }
 
     fun setUniformName(uniform: UniformType, name: String) {
-        options.setUniformName(uniform, name);
+        options.setUniformName(uniform, name)
     }
 
     fun setUniformNames(uniforms: Map<UniformType, String>) {
@@ -51,21 +53,21 @@ class ShaderRunConfiguration(
         return options.getUniformMappings()
     }
 
-    override fun checkSettingsBeforeRun() {
-        try {
-            options.getFragDocument()
-        } catch (_: IllegalStateException) {
-            options.fragmentFile = EMPTY_FILE_INPUT
-            throw RuntimeConfigurationError("Fragment file could not be found.")
-        }
-    }
+    override fun checkSettingsBeforeRun() = checkFragmentFileExists()
 
-    override fun checkConfiguration() {
-        try {
-            options.getFragDocument()
-        } catch (_: IllegalStateException) {
-            options.fragmentFile = EMPTY_FILE_INPUT
-            throw RuntimeConfigurationError("Fragment file could not be found.")
+    override fun checkConfiguration() = checkFragmentFileExists()
+
+    /**
+     * Rejects a configuration whose fragment shader file is unset or doesn't exist. A [RuntimeConfigurationError]
+     * keeps the configuration from running and shows the message in the run configuration dialog.
+     *
+     * The platform calls this often (whenever the dialog revalidates, and before every run), so it only checks:
+     * the configured path is kept, and the configuration works again as soon as the file is back.
+     */
+    private fun checkFragmentFileExists() {
+        val url = options.fragmentFile ?: throw RuntimeConfigurationError("No fragment shader file selected.")
+        if (VirtualFileManager.getInstance().findFileByUrl(url) == null) {
+            throw RuntimeConfigurationError("Fragment shader file could not be found: ${VfsUtilCore.urlToPath(url)}")
         }
     }
 }

@@ -5,7 +5,7 @@ import com.intellij.ide.HelpTooltip
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.options.SettingsEditor
-import com.intellij.openapi.project.getOpenedProjects
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.text.HtmlChunk
@@ -22,13 +22,13 @@ import com.intellij.util.ui.JBUI
 import glsl.plugin.preview.SUPPORTED_SHADER_FILE_ENDINGS
 import glsl.plugin.utils.idea.FileListCellRenderer
 import java.awt.GridBagConstraints
-import java.util.*
 import javax.swing.JComponent
 
 /**
- * View controller for the run configuration dialog
+ * View controller for the run configuration dialog of a shader run configuration in [project]. Only shader files
+ * open in [project] are offered as fragment shader.
  */
-class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
+class ShaderSettingsEditor(private val project: Project) : SettingsEditor<ShaderRunConfiguration>() {
 
     val fileListbox = ComboBox(getOpenShaderFiles().toTypedArray()).apply {
         renderer = FileListCellRenderer
@@ -42,23 +42,20 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
 
 
     /**
-     * Transfers configuration state to ui
+     * Transfers configuration state to ui. A configured fragment file that doesn't exist (anymore) is shown as
+     * broken with nothing selected; its path stays in the configuration until the user picks another file.
      */
     override fun resetEditorFrom(configuration: ShaderRunConfiguration) {
-        val fileManager: VirtualFileManager = VirtualFileManager.getInstance()
         val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(configuration.project)
         val currentFragFile = configuration.getFragmentFile()
         if (currentFragFile != null) {
-            if (currentFragFile == EMPTY_FILE_INPUT) {
-                fragFileIsBroken.set(true)
+            val file = VirtualFileManager.getInstance().findFileByUrl(currentFragFile)
+            if (file == null) {
                 fileListbox.selectedIndex = -1
             } else {
-                fileListbox.selectedItem = Objects.requireNonNull(
-                    fileManager.findFileByUrl(currentFragFile),
-                    "Could not find file for $currentFragFile"
-                )
-                fragFileIsBroken.set(false) //its not broken but the config is new
+                fileListbox.selectedItem = file
             }
+            fragFileIsBroken.set(file == null)
         } else {
             val currentFile = fileEditorManager.focusedEditor?.file
             if (currentFile?.extension in SUPPORTED_SHADER_FILE_ENDINGS) {
@@ -146,12 +143,8 @@ class ShaderSettingsEditor : SettingsEditor<ShaderRunConfiguration>() {
     }
 
     private fun getOpenShaderFiles(): List<VirtualFile> {
-        val availableFiles: MutableList<VirtualFile> = ArrayList()
-        getOpenedProjects().forEach { project ->
-            val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(project)
-            val openFiles: Set<VirtualFile> = fileEditorManager.openFiles.toSet()
-            availableFiles += openFiles.filter { file -> file.extension in SUPPORTED_SHADER_FILE_ENDINGS }
-        }
-        return availableFiles
+        return FileEditorManager.getInstance(project).openFiles
+            .distinct()
+            .filter { file -> file.extension in SUPPORTED_SHADER_FILE_ENDINGS }
     }
 }

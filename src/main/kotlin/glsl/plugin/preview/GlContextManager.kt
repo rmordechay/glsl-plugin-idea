@@ -190,6 +190,8 @@ class GlContextManager(private val project: Project) : Disposable {
      * The request will be handled with the next render cycle.
      */
     fun queueCompile(runOptions: FragShaderRunOptions, processHandler: GLProcessHandler) {
+        // local copy, as async code can null it in the background, leading to NPE
+        // then it's accessed inside the if below
         val running = currentRun
         if (running != null) {
             JBPopupFactory.getInstance().createConfirmation(

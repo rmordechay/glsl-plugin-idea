@@ -2,13 +2,23 @@
 
 ## [1.1.6-fpfork-01]
 
+### Changed
+- Requires IntelliJ-based IDEs 2026.1 or newer
+
 ### Fixed
+- Fixed the IDE eventually becoming unable to parse any file: every time a GLSL file was parsed, the plugin registered a new element type, until IntelliJ's global limit of 32767 was reached
 - Fixed relative include paths when including other files from different directories
+- Fixed references not being found when the same file is included through different nested includes
 - Fixed #36 - Array index access of struct member vectors
 - Fixed autocompletion of `#version` version number, and also added autocompletion for the `core`/`compatibility`/`es` version suffixes
 - Fixed autocomplete on lines in front of existing expression assignment statements
 - Fixed autocomplete inside unfinished statements
+- Fixed autocompletion of members of custom structs declared in other files
+- Fixed highlighting of function calls without parameters
+- Fixed bool assignments such as `bool a = true==true;`
 - Fixed stale state issues when switching IDE project
+- Fixed a `PluginException` ("Legacy configurable id calculation mode…") from the GLSL code style settings page
+- Fixed #76 - Oversized GLSL Preview tool window icon in Classic UI
 
 ### Added
 - Added support for multi-level recursive including of user types
@@ -20,10 +30,10 @@
 - Support for sodium `#import <sodium:include/fog.glsl>` statement
   - Resolve path properly inside the mod
   - Able to search dependency mods
-- Making `#import` and `#include` clickable reference
+- `#import` and `#include` paths are now clickable
 - Support for NV_gpu_shader5 pointers `uint *data;`
-- Fix bool assignments such as `bool a = true==true;`
-- Added shader preview feature
+- Added rename support for GLSL injected into other languages (e.g. in HTML)
+- Added shader preview feature, including support for arm64 macOS, Windows and Linux
 
 ## [1.1.6]
 ### Updated

@@ -1,6 +1,5 @@
 import com.intellij.execution.configurations.RuntimeConfigurationError
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import glsl.plugin.preview.run.settings.EMPTY_FILE_INPUT
 import glsl.plugin.preview.run.settings.ShaderRunConfiguration
 import glsl.plugin.preview.run.settings.ShaderRunConfigurationFactory
 import glsl.plugin.preview.run.settings.ShaderRunConfigurationType
@@ -25,18 +24,47 @@ class ShaderRunConfigurationTest : BasePlatformTestCase() {
         configuration.checkConfiguration()
     }
 
-    fun testCheckConfigurationFailsAndResetsFragmentFileWhenMissing() {
+    fun testChecksRejectAMissingFragmentFileWithoutForgettingIt() {
         val configuration = newConfiguration()
         configuration.setFragmentFile("file://this/file/does/not/exist.frag")
 
-        assertThrows(RuntimeConfigurationError::class.java) {
-            configuration.checkConfiguration()
-        }
-        assertEquals(
-            "expected the missing fragment file to be reset to the empty sentinel",
-            EMPTY_FILE_INPUT,
-            configuration.getFragmentFile()
+        val checks = mapOf<String, () -> Unit>(
+            "checkConfiguration" to configuration::checkConfiguration,
+            "checkSettingsBeforeRun" to configuration::checkSettingsBeforeRun,
         )
+        for ((name, check) in checks) {
+            try {
+                check()
+                fail("expected $name to reject a fragment file that doesn't exist")
+            } catch (e: RuntimeConfigurationError) {
+                // ConfigurationException.getMessage() is deprecated in favor of the HTML message.
+                val message = e.messageHtml.toString()
+                assertTrue(
+                    "expected $name's error to name the missing file, got: $message",
+                    message.contains("this/file/does/not/exist.frag")
+                )
+            }
+            assertEquals(
+                "expected $name to keep the configured path, so the configuration works again once the file is back",
+                "file://this/file/does/not/exist.frag",
+                configuration.getFragmentFile()
+            )
+        }
+    }
+
+    fun testCheckConfigurationPassesAgainOnceAMissingFragmentFileIsBack() {
+        val configuration = newConfiguration()
+        configuration.setFragmentFile("temp:///src/later.frag")
+        try {
+            configuration.checkConfiguration()
+            fail("expected checkConfiguration to reject the fragment file before it exists")
+        } catch (_: RuntimeConfigurationError) {
+        }
+
+        myFixture.addFileToProject("later.frag", "void main() {}")
+
+        // Throws (and fails the test) if the configuration still considers the file missing.
+        configuration.checkConfiguration()
     }
 
     fun testSetUniformNameMergesIntoExistingMappings() {

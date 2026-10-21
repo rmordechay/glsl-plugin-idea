@@ -50,6 +50,25 @@ class ShaderSettingsEditorTest : BasePlatformTestCase() {
         assertFalse("expected an open non-shader file not to be offered", textFile in offeredFiles)
     }
 
+    fun testDialogMarksAMissingFragmentFileAsBrokenAndKeepsItsPath() {
+        val configuration = newConfiguration()
+        configuration.setFragmentFile("file://this/file/does/not/exist.frag")
+        val editor = configuration.configurationEditor as ShaderSettingsEditor
+
+        editor.resetFrom(configuration)
+
+        assertTrue("expected the dialog to mark the missing fragment file as broken", editor.fragFileIsBroken.get())
+        assertNull("expected no file to be selected for a missing fragment file", editor.fileListbox.selectedItem)
+
+        editor.applyTo(configuration)
+
+        assertEquals(
+            "expected applying the dialog without picking a file to keep the configured path",
+            "file://this/file/does/not/exist.frag",
+            configuration.getFragmentFile()
+        )
+    }
+
     private fun newConfiguration(): ShaderRunConfiguration {
         val factory = ShaderRunConfigurationFactory(ShaderRunConfigurationType())
         return ShaderRunConfiguration(project, factory, "Fragment Shader")

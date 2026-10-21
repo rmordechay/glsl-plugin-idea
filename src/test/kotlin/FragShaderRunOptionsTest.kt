@@ -1,5 +1,4 @@
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import glsl.plugin.preview.run.settings.EMPTY_FILE_INPUT
 import glsl.plugin.preview.run.settings.FragShaderRunOptions
 import glsl.plugin.preview.run.settings.UniformType
 
@@ -76,11 +75,5 @@ class FragShaderRunOptionsTest : BasePlatformTestCase() {
                 e.message.orEmpty().contains("file://this/file/does/not/exist.frag")
             )
         }
-        // Sanity check that the "not found" sentinel is a distinct value from a real path.
-        assertNotSame(
-            "expected the fragment file to differ from the \"not found\" sentinel",
-            EMPTY_FILE_INPUT,
-            options.fragmentFile
-        )
     }
 }

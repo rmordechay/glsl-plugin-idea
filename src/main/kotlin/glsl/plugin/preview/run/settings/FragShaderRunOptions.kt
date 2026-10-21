@@ -8,9 +8,6 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFileManager
 
-/** Set only if document for fragment shader source could not be found and you want to mark this as an error */
-const val EMPTY_FILE_INPUT = "EMPTY"
-
 /**
  * Data class for run - options of fragment shaders
  */

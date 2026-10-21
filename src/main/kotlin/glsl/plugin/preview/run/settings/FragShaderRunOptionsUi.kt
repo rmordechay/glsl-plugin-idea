@@ -22,7 +22,6 @@ import com.intellij.util.ui.JBUI
 import glsl.plugin.preview.SUPPORTED_SHADER_FILE_ENDINGS
 import glsl.plugin.utils.idea.FileListCellRenderer
 import java.awt.GridBagConstraints
-import java.util.*
 import javax.swing.JComponent
 
 /**
@@ -43,23 +42,20 @@ class ShaderSettingsEditor(private val project: Project) : SettingsEditor<Shader
 
 
     /**
-     * Transfers configuration state to ui
+     * Transfers configuration state to ui. A configured fragment file that doesn't exist (anymore) is shown as
+     * broken with nothing selected; its path stays in the configuration until the user picks another file.
      */
     override fun resetEditorFrom(configuration: ShaderRunConfiguration) {
-        val fileManager: VirtualFileManager = VirtualFileManager.getInstance()
         val fileEditorManager: FileEditorManager = FileEditorManager.getInstance(configuration.project)
         val currentFragFile = configuration.getFragmentFile()
         if (currentFragFile != null) {
-            if (currentFragFile == EMPTY_FILE_INPUT) {
-                fragFileIsBroken.set(true)
+            val file = VirtualFileManager.getInstance().findFileByUrl(currentFragFile)
+            if (file == null) {
                 fileListbox.selectedIndex = -1
             } else {
-                fileListbox.selectedItem = Objects.requireNonNull(
-                    fileManager.findFileByUrl(currentFragFile),
-                    "Could not find file for $currentFragFile"
-                )
-                fragFileIsBroken.set(false) //its not broken but the config is new
+                fileListbox.selectedItem = file
             }
+            fragFileIsBroken.set(file == null)
         } else {
             val currentFile = fileEditorManager.focusedEditor?.file
             if (currentFile?.extension in SUPPORTED_SHADER_FILE_ENDINGS) {

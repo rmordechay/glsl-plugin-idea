@@ -1,6 +1,6 @@
 # GLSL Plugin Changelog
 
-## [1.1.6-fpfork-01]
+## [1.2.0]
 
 ### Changed
 - Requires IntelliJ-based IDEs 2026.1 or newer

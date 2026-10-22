@@ -18,7 +18,6 @@
 - Fixed bool assignments such as `bool a = true==true;`
 - Fixed stale state issues when switching IDE project
 - Fixed a `PluginException` ("Legacy configurable id calculation mode…") from the GLSL code style settings page
-- Fixed #76 - Oversized GLSL Preview tool window icon in Classic UI
 
 ### Added
 - Added support for multi-level recursive including of user types

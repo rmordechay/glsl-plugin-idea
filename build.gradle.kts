@@ -2,6 +2,7 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.intellij.platform.gradle.tasks.GenerateLexerTask
 
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 
 plugins {
     id("java")
@@ -22,6 +23,11 @@ version = pluginVersion
 
 kotlin {
     jvmToolchain(25)
+    compilerOptions {
+        // Kotlin otherwise copies the default methods of the platform's interfaces into every class that implements one, and
+        // the Plugin Verifier then reports the deprecated ones among them as overridden.
+        jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+    }
 }
 
 repositories {

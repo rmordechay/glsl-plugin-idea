@@ -24,6 +24,7 @@ version = pluginVersion
 kotlin {
     jvmToolchain(25)
     compilerOptions {
+        allWarningsAsErrors = true
         // Kotlin otherwise copies the default methods of the platform's interfaces into every class that implements one, and
         // the Plugin Verifier then reports the deprecated ones among them as overridden.
         jvmDefault = JvmDefaultMode.NO_COMPATIBILITY

@@ -1,0 +1,99 @@
+name: Publish Plugin
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-stable:
+    name: Publish to Stable channel
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Free disk space
+        # this allegedly clears up 20-30GB of space
+        # This is required because the java artifacts downloaded later can be _very_ large.
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          docker image prune --all --force
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          java-version: '25'
+          distribution: 'jetbrains'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Install Xvfb and Mesa software renderer
+        # Needed by the tests, see pr.yml.
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri mesa-utils
+
+      - name: Compute version
+        id: version
+        run: echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+
+      - name: Test, verify and publish plugin
+        run: xvfb-run --auto-servernum ./gradlew test verifyPlugin publishPlugin -PpluginVersion=${{ steps.version.outputs.version }} -PpluginChannels=Stable
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_GRADLE_PROJECT_intellijPlatformPublishingToken: ${{ secrets.JETBRAINS_TOKEN }}
+
+      - name: Upload plugin zip to release
+        run: gh release upload "${{ github.event.release.tag_name }}" build/distributions/*.zip --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-alpha:
+    name: Publish to glsl-alpha channel
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Free disk space
+        # this allegedly clears up 20-30GB of space
+        # This is required because the java artifacts downloaded later can be _very_ large.
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          docker image prune --all --force
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          java-version: '25'
+          distribution: 'jetbrains'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Install Xvfb and Mesa software renderer
+        # Needed by the tests, see pr.yml.
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri mesa-utils
+
+      - name: Compute version
+        id: version
+        run: |
+          base=$(grep '^pluginVersion=' gradle.properties | cut -d= -f2 | tr -d '\r')
+          echo "version=${base}-alpha.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Test, verify and publish plugin
+        run: xvfb-run --auto-servernum ./gradlew test verifyPlugin publishPlugin -PpluginVersion=${{ steps.version.outputs.version }} -PpluginChannels=glsl-alpha
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_GRADLE_PROJECT_intellijPlatformPublishingToken: ${{ secrets.JETBRAINS_TOKEN }}

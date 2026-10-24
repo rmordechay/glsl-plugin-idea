@@ -24,3 +24,6 @@ Assuming you're developing with Intellij (and you want to develop with Intellij)
 ## Test
 Just execute the `test` task from the Gradle tab or run specific classes or tests from within the ide.
 
+## Releasing
+See [RELEASING.md](RELEASING.md) for how releases and alpha builds are published, and how to publish from your own machine.
+

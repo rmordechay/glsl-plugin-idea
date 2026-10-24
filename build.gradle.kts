@@ -99,13 +99,18 @@ intellijPlatform {
     pluginConfiguration {
         version = pluginVersion
         description = file("plugin-info/description.html").readText()
-        changeNotes = changelog.renderItem(changelog.get(pluginVersion), Changelog.OutputType.HTML)
+        // Pre-release builds (e.g. "1.2.0-alpha.12" from the release workflow) show the notes of the version
+        // they lead up to, so the changelog only needs a section per release.
+        changeNotes = changelog.renderItem(changelog.get(pluginVersion.substringBefore('-')), Changelog.OutputType.HTML)
         ideaVersion {
             sinceBuild = sinceVersion
         }
     }
     publishing {
-        token = System.getenv("PUBLISH_TOKEN")
+        // Defaults to the alpha channel, so a publish without an explicit channel never reaches Stable users.
+        channels = listOf(providers.gradleProperty("pluginChannels").getOrElse("glsl-alpha"))
+        // Set it with -PintellijPlatformPublishingToken=..., or export ORG_GRADLE_PROJECT_intellijPlatformPublishingToken.
+        token = providers.gradleProperty("intellijPlatformPublishingToken")
     }
     pluginVerification {
         ides {

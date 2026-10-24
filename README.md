@@ -16,10 +16,11 @@ Feel free to report any issue, problem, bug or add any request.
 git clone https://github.com/rmordechay/glsl-plugin-idea.git
 ```
 Assuming you're developing with Intellij (and you want to develop with Intellij):
-1. **Generate grammar**. Execute the `generateGrammarClean` task from _gradle.build_ file or under _Tasks/other_ if you use the Gradle tab. 
+1. **Generate grammar**. Execute the `generateGrammarClean` task from _build.gradle.kts_ or under _Tasks/other_ if you use the Gradle tab.
+   Gradle builds do this automatically, but the IDE can only resolve the generated parser classes once they exist, so run it once after cloning.
 2. **Run**. Execute the `runIde` task (Intellij will build the project and then run the instance).
 
-\* If you're only interested in building the project without running it you can use task `buildPlugin` after step 1.
+\* If you're only interested in building the project without running it you can use task `buildPlugin`.
 
 ## Test
 Just execute the `test` task from the Gradle tab or run specific classes or tests from within the ide.

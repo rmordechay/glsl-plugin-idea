@@ -229,7 +229,9 @@ assertEquals("expected the declaration and both usages of `color` to be found", 
 
 - Keep commit subjects short and lowercase, describing the change (`replace deprecated ReadAction.compute`).
   Reference issues as `#123`.
-- Add user-visible changes to `CHANGELOG.md` under the current version's `Added`/`Fixed` sections.
+- Add user-visible changes to `CHANGELOG.md`, in the section of `pluginVersion` (the upcoming release, not the one
+  users have installed). See [RELEASING.md](RELEASING.md#changelog) for how the changelog becomes the plugin's change
+  notes.
 
 ## Existing code
 

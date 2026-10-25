@@ -7,8 +7,8 @@ The plugin is published to the [JetBrains Marketplace](https://plugins.jetbrains
 | `Stable`     | Everyone who installs the plugin from the Marketplace     | A GitHub release is published      | The release tag, e.g. `1.2.0`   |
 | `glsl-alpha` | Only users who added the alpha repository (see below)     | Every push to `main` (merged PR)   | e.g. `1.2.0-alpha.7`            |
 
-Both are published by [`.github/workflows/publish.yml`](.github/workflows/publish.yml), and both can also be published
-from a local machine (see [Publishing from a local machine](#publishing-from-a-local-machine)).
+Both are published by [`.github/workflows/publish.yml`](.github/workflows/publish.yml). Publishing from a local machine
+is possible, but only for emergencies (see [Publishing from a local machine](#publishing-from-a-local-machine)).
 
 ## Versions
 
@@ -115,6 +115,19 @@ The Marketplace token is the `JETBRAINS_TOKEN` repository secret.
 
 ## Publishing from a local machine
 
+**Don't, unless it's an emergency.** Releases and alpha builds are published by the pipeline. A local publish
+skips everything that makes a pipeline build trustworthy: it's built from whatever is on your machine (local changes,
+unpushed commits, your own JDK and environment) instead of a reviewed commit on `main`, and nothing records which
+code it was built from.
+
+An emergency is something like a critical fix that has to reach users while the pipeline can't publish it, e.g.
+because GitHub Actions is down or the workflow itself is broken. If you have to publish locally:
+
+- Build from a clean checkout of the exact commit you're publishing (`main`, or the release tag), with no local
+  changes.
+- Tell the other maintainers which version you published, and from which commit.
+- Fix whatever kept the pipeline from publishing, so the next release goes through it again.
+
 You need a Marketplace token: on the Marketplace, open your profile → *My Tokens* → *Generate Token*. Pass it through
 an environment variable rather than on the command line, so it doesn't end up in your shell history:
 
@@ -147,8 +160,7 @@ Stable users by accident.
 
 ### To `Stable`
 
-Prefer the pipeline: publishing a GitHub release does everything below, plus attaches the zip. If you have to
-publish from your machine (e.g. while GitHub Actions is down):
+This replaces step 2 of [Releasing a stable version](#releasing-a-stable-version):
 
 ```shell
 ./gradlew test verifyPlugin publishPlugin -PpluginVersion=1.3.0 -PpluginChannels=Stable
